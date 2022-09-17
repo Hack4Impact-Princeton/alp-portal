@@ -4,6 +4,14 @@ To get a copy of the repository locally:
 git clone https://github.com/Hack4Impact-Princeton/alp-portal.git
 ```
 
+### MongoDB Setup
+Create a local environment file:
+```bash
+cp .env.local.example .env.local
+```
+
+The MONGODB_URI connection string should be: "mongodb+srv://<username>:<password>@alp-portal.hh41pen.mongodb.net/?retryWrites=true&w=majority"
+
 ## Contributing to the Repository
 Create a new, local branch to make changes
 ```bash
