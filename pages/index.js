@@ -1,9 +1,18 @@
 import Link from 'next/link'
 import dbConnect from '../lib/dbConnect'
 import Pet from '../models/Pet'
+import SignUpBanner from '../components/SignUpBanner'
+import { useEffect, useState } from 'react'
+import useContentful from './useContentful'
 
 function HomePage() {
-  return <div>Welcome to ALP Portal!</div>
+
+  return (
+    <div>
+      <h1>Welcome to ALP Portal!</h1>
+    </div>
+    
+  );
 }
 
 /* Keep example code here, nothing should be dynamic on the home page */
