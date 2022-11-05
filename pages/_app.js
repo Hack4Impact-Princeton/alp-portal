@@ -1,10 +1,11 @@
-import '../css/style.css'
-import '../css/form.css'
-import Head from 'next/head'
-import Link from 'next/link'
-import Logo from '../components/Logo'
-import { useEffect, useState } from 'react'
-import useContentful from './useContentful'
+import "../css/style.css";
+import "../css/form.css";
+import Head from "next/head";
+import Link from "next/link";
+import Logo from "../components/Logo";
+import InstructionStepCard from "../components/InstructionStepCard";
+import { useEffect, useState } from "react";
+import useContentful from "./useContentful";
 
 function MyApp({ Component, pageProps }) {
   /* Hooks for Contentful logos */
@@ -47,12 +48,16 @@ function MyApp({ Component, pageProps }) {
       </div>
 
       <div>
+        <InstructionStepCard />
+      </div>
+
+      <div>
         {logos.map((logo, index) => (
-          <Logo key={index} logo={logo}/>
+          <Logo key={index} logo={logo} />
         ))}
       </div>
     </>
-  )
+  );
 }
 
-export default MyApp
+export default MyApp;
