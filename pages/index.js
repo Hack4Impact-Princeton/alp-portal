@@ -1,9 +1,15 @@
 import Link from 'next/link'
+import Navbar from '../components/Navbar'
 import dbConnect from '../lib/dbConnect'
 import Pet from '../models/Pet'
 
 function HomePage() {
-  return <div>Welcome to ALP Portal!</div>
+  return (
+    <div>
+      <Navbar></Navbar>
+      <div>Welcome to ALP Portal!</div>
+    </div>
+  );
 }
 
 /* Keep example code here, nothing should be dynamic on the home page */
