@@ -1,34 +1,14 @@
-import Link from 'next/link'
-import Navbar from '../components/Navbar'
-import dbConnect from '../lib/dbConnect'
-import Pet from '../models/Pet'
-import { useEffect, useState } from 'react'
 import useContentful from './useContentful'
+import Button from '@mui/material/Button';
 
-function HomePage() {
+function LandingPage() {
   return (
     <div>
-      <Navbar></Navbar>
-      <div>Welcome to ALP Portal!</div>
+      <h1>African Library Project</h1>
+      <h3>Organizer Platform</h3>
+      <Button variant="contained" href='/home'>Enter</Button>
     </div>
   );
 }
 
-/* Keep example code here, nothing should be dynamic on the home page */
-export async function getServerSideProps() {
-  await dbConnect()
-
-  /* find all the data in our database */
-  const result = await Pet.find({})
-  const pets = result.map((doc) => {
-    const pet = doc.toObject()
-    pet._id = pet._id.toString()
-    return pet
-  })
-
-  return { props: { pets: pets } }
-}
-/* end example pet code */
-
-// export const Index
-export default HomePage
+export default LandingPage

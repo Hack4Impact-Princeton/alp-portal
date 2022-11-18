@@ -29,11 +29,11 @@ function MyApp({ Component, pageProps }) {
         <Component {...pageProps} />
       </div>
 
-      <div>
+      {/* <div>
         {logos.map((logo, index) => (
           <Logo key={index} logo={logo}/>
         ))}
-      </div>
+      </div> */}
     </>
   )
 }

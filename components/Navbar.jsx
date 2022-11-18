@@ -1,12 +1,9 @@
-import { Drawer, List, ListItem, ListItemButton, ListItemIcon } from '@mui/material';
+import { Drawer, Link, List, ListItem, ListItemButton, ListItemIcon } from '@mui/material';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import FlagIcon from '@mui/icons-material/Flag';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import HomeIcon from '@mui/icons-material/Home';
 import ShareIcon from '@mui/icons-material/Share';
-// import { ChatBubbleIcon, FlagIcon, FormatListNumberedIcon, HomeIcon, ShareIcon } from '@mui/icons-material';
-import { useState } from 'react';
-import { orange } from '@mui/material/colors';
 
 const drawerWidth = 80;
 
@@ -28,17 +25,20 @@ export default function Navbar() {
             anchor="left"
         >
             <List>
-                <ListItem key="Home" sx={{
-                    alignItems: 'center',
-                }}>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <HomeIcon fontSize='large' sx={{
-                                color: 'white',
-                            }}></HomeIcon>
-                        </ListItemIcon>
-                    </ListItemButton>
-                </ListItem>
+                {/* Uncommenting out the Link causes the icons to render incorrectly, why? */}
+                {/* <Link href="/home" passHref> */}
+                    <ListItem key="Home" sx={{
+                        alignItems: 'center',
+                    }}>
+                        <ListItemButton component="a">
+                            <ListItemIcon>
+                                <HomeIcon fontSize='large' sx={{
+                                    color: 'white',
+                                }}></HomeIcon>
+                            </ListItemIcon>
+                        </ListItemButton>
+                    </ListItem>
+                {/* </Link> */}
                 <ListItem key="Organizer Checklist">
                     <ListItemButton>
                         <ListItemIcon>
