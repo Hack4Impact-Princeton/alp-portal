@@ -2,7 +2,6 @@ import Link from 'next/link'
 import Navbar from '../components/Navbar'
 import dbConnect from '../lib/dbConnect'
 import Pet from '../models/Pet'
-import SignUpBanner from '../components/SignUpBanner'
 import { useEffect, useState } from 'react'
 import useContentful from './useContentful'
 
