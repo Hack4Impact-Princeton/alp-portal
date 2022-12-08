@@ -8,9 +8,10 @@
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@mui/icons-material": "^5.10.16",
     "@mui/material": "^5.10.12",
-    "graphql-tools": "^8.3.6",
     "contentful": "^9.2.5",
+    "graphql-tools": "^8.3.6",
     "mongodb": "^4.8.1",
     "mongoose": "^6.6.1",
     "next": "latest",

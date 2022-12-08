@@ -3,7 +3,7 @@ import "../css/form.css";
 import Head from "next/head";
 import Link from "next/link";
 import Logo from "../components/Logo";
-import InstructionStepCard from "../components/InstructionStepCard";
+import InstructionStep from "../components/InstructionStep";
 import { useEffect, useState } from "react";
 import useContentful from "./useContentful";
 
@@ -48,7 +48,7 @@ function MyApp({ Component, pageProps }) {
       </div>
 
       <div>
-        <InstructionStepCard />
+        <InstructionStep />
       </div>
 
       <div>
