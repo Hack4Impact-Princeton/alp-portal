@@ -1,5 +1,4 @@
-import '../css/style.css'
-import '../css/form.css'
+import '../css/stylesheet.css'
 import Head from 'next/head'
 import Link from 'next/link'
 import Logo from '../components/Logo'
@@ -28,12 +27,6 @@ function MyApp({ Component, pageProps }) {
       <div className="grid wrapper">
         <Component {...pageProps} />
       </div>
-
-      {/* <div>
-        {logos.map((logo, index) => (
-          <Logo key={index} logo={logo}/>
-        ))}
-      </div> */}
     </>
   )
 }

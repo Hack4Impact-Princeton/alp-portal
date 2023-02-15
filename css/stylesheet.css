@@ -1,0 +1,16 @@
+* {
+    font-family: 'Open Sans', sans-serif;
+    box-sizing: border-box;
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.teampage {
+    height: 100vh;
+    width: 100vw;
+    padding: 1vw;
+}
