@@ -20,6 +20,7 @@ git branch <name-issue number>
 ```bash
 git switch <name-issue number>
 ```
+To test locally: ```npm run dev```
 
 Viewing all your local changes:
 ```bash
