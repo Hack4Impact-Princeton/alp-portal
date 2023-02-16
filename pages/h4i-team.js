@@ -6,6 +6,29 @@ function TeamPage () {
         <div className='teampage'>
             <h1>The Hack4Impact Team</h1>
             <h2>Spring 2023</h2>
+            <Grid container spacing={3}>
+                <Grid xs={3}>
+                    <TeamMember
+                        name="Emily Luo"
+                        role="Tech Lead"
+                        imgsrc=".\headshots\emily luo.jpg"
+                    ></TeamMember>
+                </Grid>
+                <Grid xs={3}>
+                    <TeamMember
+                        name="Harbin Hong"
+                        role="Developer"
+                        imgsrc=".\headshots\harbin hong.jpeg">
+                    </TeamMember>
+                </Grid>
+                <Grid xs={3}>
+                    <TeamMember
+                        name="Matt Drapkin"
+                        role="Developer"
+                        imgsrc=".\headshots\matt drapkin.jpeg"
+                    ></TeamMember>
+                </Grid>
+            </Grid>
             <h2>Fall 2022</h2>
             <Grid container spacing={3}>
                 <Grid xs={3}>
