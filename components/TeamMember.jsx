@@ -8,12 +8,13 @@ export default function TeamMember(props) {
         <Card style={{backgroundColor: 'lavender'}}>
             <CardActionArea>
                 <CardContent>
-                    <h3>{"Ivy Wang"}</h3>
-                    <h4>{"Tech Lead"}</h4>
+                    <h3>{props.name}, {props.year}</h3>
+                    <h4>{props.role}</h4>
+                    
                 </CardContent>
                 <CardMedia
                     component="img"
-                    alt={"Ivy Wang"}
+                    alt={props.name}
                     image={props.imgsrc}
                 ></CardMedia>
             </CardActionArea>
