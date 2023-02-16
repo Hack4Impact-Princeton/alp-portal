@@ -10,6 +10,7 @@ export default function TeamMember(props) {
                 <CardContent>
                     <h3>{props.name}</h3>
                     <h4>{props.role}</h4>
+                    <h4>{props.year}</h4>
                 </CardContent>
                 <CardMedia
                     component="img"

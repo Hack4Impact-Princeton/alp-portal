@@ -12,13 +12,15 @@ function TeamPage () {
                         name="Emily Luo"
                         role="Tech Lead"
                         imgsrc=".\headshots\emily luo.jpg"
+                        year = "2026"
                     ></TeamMember>
                 </Grid>
                 <Grid xs={3}>
                     <TeamMember
                         name="Harbin Hong"
                         role="Developer"
-                        imgsrc=".\headshots\harbin hong.jpeg">
+                        imgsrc=".\headshots\harbin hong.jpeg"
+                        year= "2025">
                     </TeamMember>
                 </Grid>
                 <Grid xs={3}>
@@ -26,6 +28,7 @@ function TeamPage () {
                         name="Matt Drapkin"
                         role="Developer"
                         imgsrc=".\headshots\matt drapkin.jpeg"
+                        year="2025"
                     ></TeamMember>
                 </Grid>
             </Grid>
@@ -36,24 +39,28 @@ function TeamPage () {
                         name="Ivy Wang"
                         role="Tech Lead"
                         imgsrc="https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug"
+                        year = "2023"
                     ></TeamMember>
                 </Grid>
                 <Grid xs={3}>
                     <TeamMember
                         name="Suhani Balachandran"
-                        imgsrc="https://whitmancollege.princeton.edu/sites/g/files/toruqf1576/files/styles/3x4_750w_1000h/public/people/picture_-_suhani_balachandran.jpg?itok=ZcVhhuTv">
+                        imgsrc="https://whitmancollege.princeton.edu/sites/g/files/toruqf1576/files/styles/3x4_750w_1000h/public/people/picture_-_suhani_balachandran.jpg?itok=ZcVhhuTv"
+                        year = "2025">
                     </TeamMember>
                 </Grid>
                 <Grid xs={3}>
                     <TeamMember
                         name="Ivy Wang"
                         imgsrc="https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug"
+                        year = "2023"
                     ></TeamMember>
                 </Grid>
                 <Grid xs={3}>
                     <TeamMember
                         name="Suhani Balachandran"
-                        imgsrc="https://whitmancollege.princeton.edu/sites/g/files/toruqf1576/files/styles/3x4_750w_1000h/public/people/picture_-_suhani_balachandran.jpg?itok=ZcVhhuTv">
+                        imgsrc="https://whitmancollege.princeton.edu/sites/g/files/toruqf1576/files/styles/3x4_750w_1000h/public/people/picture_-_suhani_balachandran.jpg?itok=ZcVhhuTv"
+                        year = "2025">
                     </TeamMember>
                 </Grid>
             </Grid>
