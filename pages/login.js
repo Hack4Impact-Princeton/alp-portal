@@ -5,8 +5,10 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import { ClientRequest } from 'http';
+import {useState } from 'react'
 
 const Login = () => {
+
     return (
         <div>
         {/* TODO: <img src="" alt="ALP-logo"/> */}
@@ -43,6 +45,11 @@ const Login = () => {
                     sx={{
                         marginTop: 3,
                     }}>Login</Button>
+                <Button variant="contained"
+                    sx={{
+                        marginTop: 3,
+                        marginLeft: 3,
+                    }}>Sign Up</Button>
             </Box>
         </Box>
         </div>
