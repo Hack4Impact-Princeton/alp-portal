@@ -6,7 +6,7 @@ function LandingPage() {
     <div>
       <h1>African Library Project</h1>
       <h3>Organizer Platform</h3>
-      <Button variant="contained" href='/home'>Enter</Button>
+      <Button variant="contained" href='/dash-volunteer'>Enter</Button>
     </div>
   );
 }

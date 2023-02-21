@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Navbar from '../components/Navbar'
 // import dbConnect from '../lib/dbConnect'
 
-function HomePage() {
+function DashVolunteer() {
     return (
       <div>
         <Navbar></Navbar>
@@ -29,4 +29,4 @@ function HomePage() {
 //   }
   /* end example pet code */
   
-export default HomePage
+export default DashVolunteer
