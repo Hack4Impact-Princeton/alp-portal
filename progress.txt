@@ -1,0 +1,2 @@
+to access serverside data, use getServerSideProps in react files outside of react components
+currently debugging how to import schemas without multiple imports
