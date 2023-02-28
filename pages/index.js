@@ -3,10 +3,12 @@ import Button from '@mui/material/Button';
 
 function LandingPage() {
   return (
-    <div>
-      <h1>African Library Project</h1>
-      <h3>Organizer Platform</h3>
-      <Button variant="contained" href='/dash-volunteer'>Enter</Button>
+    <div className="landing-div">
+      <div style={{height:"55vh"}}></div>
+      <h1 style={{fontSize: "7vh", color: "white", fontWeight: "300", margin: "0", marginBottom: "2vh", marginTop: "2vh"}}>African Library Project</h1>
+      <h3 style={{fontSize: "9vh", color: "white", fontWeight: "600", margin: "0", marginBottom: "4vh", marginTop: "2vh"}}>Organizer Platform</h3>
+      <Button variant="outlined" href='/dash-volunteer' className="landing-btn">log in</Button>
+      <Button variant="outlined" href='/dash-volunteer' className="landing-btn">sign up</Button>
     </div>
   );
 }
