@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import Navbar from '../components/Navbar'
+import InstructionStepCard from '../components/InstructionStepCard';
 // import dbConnect from '../lib/dbConnect'
 
 function DashVolunteer() {
@@ -9,6 +10,7 @@ function DashVolunteer() {
         <Box component="main">
             <div>Welcome to ALP Portal!</div>
         </Box>
+      <InstructionStepCard heading = "test" subheading = "test"/>
       </div>
     );
 }

@@ -25,12 +25,11 @@ export default function Navbar() {
             anchor="left"
         >
             <List>
-                {/* Uncommenting out the Link causes the icons to render incorrectly, why? */}
-                {/* <Link href="/home" passHref> */}
+                <Link href="https://www.google.com" passHref>
                     <ListItem key="Home" sx={{
                         alignItems: 'center',
                     }}>
-                        <ListItemButton component="a">
+                        <ListItemButton>
                             <ListItemIcon>
                                 <HomeIcon fontSize='large' sx={{
                                     color: 'white',
@@ -38,9 +37,9 @@ export default function Navbar() {
                             </ListItemIcon>
                         </ListItemButton>
                     </ListItem>
-                {/* </Link> */}
+                </Link>
                 <ListItem key="Organizer Checklist">
-                    <ListItemButton>
+                    <ListItemButton component = "a" href="https://www.google.com">
                         <ListItemIcon>
                             <FormatListNumberedIcon fontSize='large' sx={{
                                 color: 'white',
