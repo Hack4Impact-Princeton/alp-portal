@@ -12,10 +12,10 @@ export default function DashviewDriveCard(props) {
           <h2 style={{textAlign: "right"}}>Next deadline: {props.deadline} </h2>
         </Grid>
         <Grid item xs = {12}>
-            <h2> Steps placeholder </h2> 
+            <h2> Steps placeholder </h2>
         </Grid>
         <Grid item xs = {12}>
-            <h2> Books bar placeholder </h2> 
+            <h2> Books bar placeholder </h2>
         </Grid>
       </Grid>
     </div>
