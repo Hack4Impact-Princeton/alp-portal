@@ -1,7 +1,7 @@
 import { Drawer, Link, List, ListItem, ListItemButton, ListItemIcon } from '@mui/material';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import FlagIcon from '@mui/icons-material/Flag';
-import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
+import Person2Icon from '@mui/icons-material/Person2';
 import HomeIcon from '@mui/icons-material/Home';
 import ShareIcon from '@mui/icons-material/Share';
 
@@ -42,9 +42,9 @@ export default function Navbar() {
                 <ListItem key="Organizer Checklist">
                     <ListItemButton>
                         <ListItemIcon>
-                            <FormatListNumberedIcon fontSize='large' sx={{
+                            <Person2Icon fontSize='large' sx={{
                                 color: 'white',
-                            }}></FormatListNumberedIcon>
+                            }}></Person2Icon>
                         </ListItemIcon>
                     </ListItemButton>
                 </ListItem>
