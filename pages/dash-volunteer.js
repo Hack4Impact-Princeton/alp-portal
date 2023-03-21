@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import DashviewDriveCard from '../components/DashviewDriveCard'
 import Grid from '@mui/material/Grid'; // Grid version 1
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Drawer from '@mui/material';
@@ -10,8 +11,8 @@ import Stack from '@mui/material/Stack';
 
 function DashVolunteer() {
   return (
-    <div>
-        <Navbar></Navbar>
+    <Grid>
+      <Grid><Navbar></Navbar></Grid>
         <Stack direction="column"
           justifyContent="center"
           alignItems="center"
@@ -24,16 +25,15 @@ function DashVolunteer() {
             direction="column"
             justifyContent="center"
             alignItems="center"
-            spacing={20} sx={{backgroundColor:'yellow'}}>
-              <div /*style={{backgroundColor:"blue"}}*/>Placeholder 1</div>
-              <div style={{backgroundColor:"blue"}}>Placeholder 2</div>
-              <div style={{backgroundColor:"blue"}}>Placeholder 3</div>
-              <div style={{backgroundColor:"blue"}}>Placeholder 4</div>
-              <div style={{backgroundColor:"blue"}}>Placeholder 5</div>
+            container spacing={10}>
+              <DashviewDriveCard></DashviewDriveCard>
+              <DashviewDriveCard></DashviewDriveCard>
+              <DashviewDriveCard></DashviewDriveCard>
+              <DashviewDriveCard></DashviewDriveCard>
           </Stack>
         </Stack>
-        
-    </div>
+     
+    </Grid>
   );
 }
 
