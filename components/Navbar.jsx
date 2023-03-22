@@ -25,8 +25,7 @@ export default function Navbar() {
             anchor="left"
         >
             <List>
-                {/* Uncommenting out the Link causes the icons to render incorrectly, why? */}
-                {/* <Link href="/home" passHref> */}
+                <Link href="/dash-volunteer" passHref>
                     <ListItem key="Home" sx={{
                         alignItems: 'center',
                     }}>
@@ -38,43 +37,51 @@ export default function Navbar() {
                             </ListItemIcon>
                         </ListItemButton>
                     </ListItem>
-                {/* </Link> */}
-                <ListItem key="Organizer Checklist">
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <Person2Icon fontSize='large' sx={{
-                                color: 'white',
-                            }}></Person2Icon>
-                        </ListItemIcon>
-                    </ListItemButton>
-                </ListItem>
-                <ListItem key="Milestones">
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <FlagIcon fontSize='large' sx={{
-                                color: 'white',
-                            }}></FlagIcon>
-                        </ListItemIcon>
-                    </ListItemButton>
-                </ListItem>
-                <ListItem key="Contact Us">
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <ShareIcon fontSize='large' sx={{
-                                color: 'white',
-                            }}></ShareIcon>
-                        </ListItemIcon>
-                    </ListItemButton>
-                </ListItem>
-                <ListItem key="Forum">
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <ChatBubbleIcon fontSize='large' sx={{
-                                color: 'white',
-                            }}></ChatBubbleIcon>
-                        </ListItemIcon>
-                    </ListItemButton>
-                </ListItem>
+                </Link>
+                <Link href="/dash-volunteer" passHref>
+                    <ListItem key="Organizer Checklist">
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <Person2Icon fontSize='large' sx={{
+                                    color: 'white',
+                                }}></Person2Icon>
+                            </ListItemIcon>
+                        </ListItemButton>
+                    </ListItem>
+                </Link>
+                <Link href="/leaderboard" passHref>
+                    <ListItem key="Milestones">
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <FlagIcon fontSize='large' sx={{
+                                    color: 'white',
+                                }}></FlagIcon>
+                            </ListItemIcon>
+                        </ListItemButton>
+                    </ListItem>
+                </Link>
+                <Link href="/h4i-team" passHref>
+                    <ListItem key="Contact Us">
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <ShareIcon fontSize='large' sx={{
+                                    color: 'white',
+                                }}></ShareIcon>
+                            </ListItemIcon>
+                        </ListItemButton>
+                    </ListItem>
+                </Link>
+                <Link href="/forum" passHref>
+                    <ListItem key="Forum">
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <ChatBubbleIcon fontSize='large' sx={{
+                                    color: 'white',
+                                }}></ChatBubbleIcon>
+                            </ListItemIcon>
+                        </ListItemButton>
+                    </ListItem>
+                </Link>
             </List>
         </Drawer>
     );
