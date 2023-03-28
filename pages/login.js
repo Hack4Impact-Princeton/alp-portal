@@ -27,11 +27,10 @@ const Login = () => {
     const signUpHandler = async () => {
         try {
             const data = {email: email, password: password}
-            let result = await fetch('/api/volunteerAccounts/user', {
+            await fetch('/api/volunteerAccounts/user', {
                 method: "POST",
                 body: JSON.stringify(data),
             });
-            console.log(result)
         } catch (e) {
             console.error(e)
         }

@@ -8,7 +8,6 @@ const handler = async(req, res) => {
     try {
         if (req.method == "POST") {
             const {email, password} = JSON.parse(req.body)
-            console.log(`email: ${email}, password ${password}`)
             await dbConnect()
             const VolunteerAccount = getVolunteerAccountModel()
             const volunteerAccount = new VolunteerAccount({
@@ -24,7 +23,6 @@ const handler = async(req, res) => {
                 badges: 0
             })
             await volunteerAccount.save()
-            console.log(volunteerAccount)
             res.json(volunteerAccount)
         }
     }  catch (e) {
