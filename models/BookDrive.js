@@ -21,10 +21,10 @@ const BookDriveSchema = new Schema ({
         intFee: {type: Boolean},
         domFee: {type: Boolean},
         materials: {
-        boxes: {type: Boolean},
-        extraCardboard: {type: Boolean},
-        tape: {type: Boolean},
-        mailingLabels: {type: Boolean}
+            boxes: {type: Boolean},
+            extraCardboard: {type: Boolean},
+            tape: {type: Boolean},
+            mailingLabels: {type: Boolean}
         }
     },
     fl: {

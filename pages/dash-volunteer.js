@@ -6,9 +6,12 @@ import Grid from '@mui/material/Grid'; // Grid version 1
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Drawer from '@mui/material';
 import Stack from '@mui/material/Stack';
+import dbConnect from '../lib/dbConnect'
+import getBookDriveModel from '../models/BookDrive';
 
-
-function DashVolunteer() {
+function DashVolunteer(props) {
+  let drives = JSON.parse(props.drives)
+  console.log(drives)
   return (
     <Grid>
       <Grid><Navbar></Navbar></Grid>
@@ -36,21 +39,6 @@ function DashVolunteer() {
      
     </Grid>
   );
-import dbConnect from '../lib/dbConnect'
-import getBookDriveModel from '../models/BookDrive';
-function DashVolunteer(props) {
-  // parse stringified json
-  let drives = JSON.parse(props.drives)
-  console.log(drives)
-  return (
-    <div>
-      <Navbar></Navbar>
-      <Box component="main">
-        <div>Welcome to ALP Portal!</div>
-        <div>{props.drives}</div> 
-      </Box>
-    </div>
-  );
 }
 
 /* Keep example code here, nothing should be dynamic on the home page */
@@ -62,6 +50,5 @@ export async function getServerSideProps() {
   // stringify data before sending
   return { props: { drives: JSON.stringify(drives) } }
 }
-/* end example pet code */
 
 export default DashVolunteer
