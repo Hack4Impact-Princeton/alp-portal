@@ -2,26 +2,38 @@ import mongoose from 'mongoose'
 const {Schema} = mongoose
 
 const BookDriveSchema = new Schema ({
-    booksCurrent: {
-        type: Number
+    driveID: {type: String},
+    organizer: {type: String},
+    startDate: {type: String},
+    completedDate: {type: String},
+    status: {type: Number},
+    booksGoal: {type: Number},
+    gs: {
+        fundraise: {type: String},
+        terms: {type: Boolean}
     },
-    booksGoal: {
-        type: Number
+    cb: {
+        booksCurrent: {type: Number},
+        updateFreq: {type: Number},
+        lastUpdate: {type: String}
     },
-    completedDate: {
-        type: String
+    pts: {
+        intFee: {type: Boolean},
+        domFee: {type: Boolean},
+        materials: {
+        boxes: {type: Boolean},
+        extraCardboard: {type: Boolean},
+        tape: {type: Boolean},
+        mailingLabels: {type: Boolean}
+        }
     },
-    driveID: {
-        type: String
-    },
-    organizer: {
-        type: String
-    },
-    startDate: {
-        type: String
-    },
-    status: {
-        type: Number
+    fl: {
+        startDate: {type: String},
+        endDate: {type: String},
+        dateSent: {type: String},
+        numBoxes: {type: Number},
+        numBooks: {type: Number},
+        shipFee: {type: Number}
     }
 }, { collection : 'bookDrive' });
 
