@@ -1,12 +1,42 @@
 // import '../css/style.css'
 // import '../css/form.css'
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { ClientRequest } from "http";
+import getVolunteerAccountModel from "../models/volunteerAccounts";
+import dbConnect from "../lib/dbConnect";
 
-const Login = () => {
+function Login(props) {
+  let drives = JSON.parse(props.drives);
+
+  let emailsToPwhashs = {};
+  for (let i = 0; i < drives.length; i++) {
+    emailsToPwhashs[drives[i]["email"]] = drives[i]["pwhash"];
+  }
+  /* test signal for seeing if login successful */
+  const [loginSign, changeLoginSign] = useState("");
+  function verifyLogin() {
+    if (login in emailsToPwhashs && emailsToPwhashs[login] == pwd) {
+      changeLoginSign("Login Successful");
+    } else {
+      changeLoginSign("Login Unsuccessful");
+    }
+
+    document.getElementById("buttonAppear").innerHTML =
+      "<button href='/dash-volunteer'>Hi</button>";
+  }
+
+  const [login, setLogin] = useState("NA");
+  const changeLogin = (event) => {
+    setLogin(event.target.value);
+  };
+
+  const [pwd, setPwd] = useState("NA");
+  const changePwd = (event) => {
+    setPwd(event.target.value);
+  };
 
   return (
     <div>
@@ -32,6 +62,7 @@ const Login = () => {
           }}
         >
           <TextField
+            onChange={changeLogin}
             fullWidth
             required
             id="email"
@@ -43,6 +74,7 @@ const Login = () => {
             }}
           />
           <TextField
+            onChange={changePwd}
             fullWidth
             required
             id="password"
@@ -54,6 +86,7 @@ const Login = () => {
             }}
           />
           <Button
+            onClick={verifyLogin}
             variant="contained"
             sx={{
               marginTop: 3,
@@ -61,10 +94,23 @@ const Login = () => {
           >
             Login
           </Button>
+
+          <span id="buttonAppear"></span>
         </Box>
       </Box>
     </div>
   );
-};
+}
+
+/* Keep example code here, nothing should be dynamic on the home page */
+export async function getServerSideProps() {
+  await dbConnect();
+  const volunteerAccount = getVolunteerAccountModel();
+  /* find all the data in our database */
+  const drives = await volunteerAccount.find({});
+  // stringify data before sending
+  return { props: { drives: JSON.stringify(drives) } };
+}
+/* end example pet code */
 
 export default Login;
