@@ -2,6 +2,7 @@ import Box from '@mui/material/Box';
 import Navbar from '../components/Navbar'
 import dbConnect from '../lib/dbConnect'
 import getBookDriveModel from '../models/BookDrive';
+import getVolunteerAccountModel from '../models/VolunteerAccount';
 function DashVolunteer(props) {
   // parse stringified json
   let drives = JSON.parse(props.drives)
@@ -20,7 +21,7 @@ function DashVolunteer(props) {
 /* Keep example code here, nothing should be dynamic on the home page */
 export async function getServerSideProps() {
   await dbConnect()
-  const BookDrive = getBookDriveModel();
+  const BookDrive = getVolunteerAccountModel();
   /* find all the data in our database */
   const drives = await BookDrive.find({})
   // stringify data before sending
