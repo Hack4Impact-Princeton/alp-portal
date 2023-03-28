@@ -14,8 +14,8 @@ import getVolunteerAccountModel from '../models/VolunteerAccount';
 
 const Login = () => {
 
-    const [email, setEmail] = useState("initial email")
-    const [password, setPassword] = useState("initial password")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
 
     const handleSetEmail = (emailText) => {
         setEmail(emailText.target.value)
@@ -26,27 +26,17 @@ const Login = () => {
 
     const signUpHandler = async () => {
         try {
-            console.log("signup handler")
-            setPassword("initial val")
-            let result = signUp(email, password);      
-            setPassword(result.password)
-            setEmail(result.email)
+            const data = {email: email, password: password}
+            let result = await fetch('/api/volunteerAccounts/user', {
+                method: "POST",
+                body: JSON.stringify(data),
+            });
+            console.log(result)
         } catch (e) {
             console.error(e)
         }
         
     }
-
-    const test = async () => {
-        try {
-            setPassword("changed password")
-            setEmail("changed email")
-            console.log("does this show?")
-        } catch (e) {
-            console.error(e)
-        }
-    }
-
 
     return (
         <div>
@@ -101,30 +91,30 @@ const Login = () => {
 }
 
 
-async function signUp(email, password) {
-    try {
-        console.log("signup called")
-        await dbConnect()
-        const VolunteerAccount = getVolunteerAccountModel()
-        const volunteerAccount = new VolunteerAccount({
-            fname: "test_fname",
-            lname: "test_lname",
-            alp_id: 2,
-            ageBucket: 1,
-            email: email,
-            pwhash: password,
-            location: 5,
-            dateJoined: 0,
-            allDrives: 0,
-            badges: 0
-        })
-        await volunteerAccount.save()
-        console.log(volunteerAccount)
-        return {email: "this worked", password: "this worked"}
-    } catch (e){
-        console.error(e)
-    }
-}
+// async function signUp(email, password) {
+//     try {
+//         console.log("signup called")
+//         await dbConnect()
+//         const VolunteerAccount = getVolunteerAccountModel()
+//         const volunteerAccount = new VolunteerAccount({
+//             fname: "test_fname",
+//             lname: "test_lname",
+//             alp_id: 2,
+//             ageBucket: 1,
+//             email: email,
+//             pwhash: password,
+//             location: 5,
+//             dateJoined: 0,
+//             allDrives: 0,
+//             badges: 0
+//         })
+//         await volunteerAccount.save()
+//         console.log(volunteerAccount)
+//         return {email: "this worked", password: "this worked"}
+//     } catch (e){
+//         console.error(e)
+//     }
+// }
 
 
 
