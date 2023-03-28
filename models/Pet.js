@@ -56,4 +56,10 @@ const PetSchema = new mongoose.Schema({
   },
 })
 
-export default mongoose.models.Pet || mongoose.model('Pet', PetSchema)
+function getPetModel(){
+  if ("Pet" in mongoose.models) {
+    return mongoose.models.Pet;
+  }
+  return mongoose.model("Pet", PetSchema);
+}
+export default getPetModel;

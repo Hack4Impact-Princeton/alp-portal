@@ -6,8 +6,47 @@ import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import { ClientRequest } from 'http';
 import {useState } from 'react'
+const mongoose = require('mongoose')
+import dbConnect from '../lib/dbConnect'
+import getPetModel from '../models/Pet'
+import getVolunteerAccountModel from '../models/VolunteerAccount';
+// import signUp from '../backend/UserController'
 
 const Login = () => {
+
+    const [email, setEmail] = useState("initial email")
+    const [password, setPassword] = useState("initial password")
+
+    const handleSetEmail = (emailText) => {
+        setEmail(emailText.target.value)
+    }
+    const handleSetPassword = (passwordText) => {
+        setPassword(passwordText.target.value)
+    }
+
+    const signUpHandler = async () => {
+        try {
+            console.log("signup handler")
+            setPassword("initial val")
+            let result = signUp(email, password);      
+            setPassword(result.password)
+            setEmail(result.email)
+        } catch (e) {
+            console.error(e)
+        }
+        
+    }
+
+    const test = async () => {
+        try {
+            setPassword("changed password")
+            setEmail("changed email")
+            console.log("does this show?")
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
 
     return (
         <div>
@@ -31,12 +70,16 @@ const Login = () => {
                     height: 300,
                 }}
                 >
-                <TextField fullWidth required id="email" label="Email" variant="outlined"
+                <TextField fullWidth required id="email" label="Email" variant="outlined" 
+                    value={email}
+                    onChange={handleSetEmail}
                     sx={{
                         mt: 2,
                         mb: 2
                     }}/>
-                <TextField fullWidth required id="password" label="Password" variant="outlined"
+                <TextField fullWidth 
+                    required id="password" label="Password" variant="outlined" 
+                    value={password} onChange={handleSetPassword}
                     sx={{
                         mt: 2,
                         mb: 2
@@ -46,6 +89,7 @@ const Login = () => {
                         marginTop: 3,
                     }}>Login</Button>
                 <Button variant="contained"
+                    onClick={signUpHandler}
                     sx={{
                         marginTop: 3,
                         marginLeft: 3,
@@ -55,5 +99,33 @@ const Login = () => {
         </div>
     )
 }
+
+
+async function signUp(email, password) {
+    try {
+        console.log("signup called")
+        await dbConnect()
+        const VolunteerAccount = getVolunteerAccountModel()
+        const volunteerAccount = new VolunteerAccount({
+            fname: "test_fname",
+            lname: "test_lname",
+            alp_id: 2,
+            ageBucket: 1,
+            email: email,
+            pwhash: password,
+            location: 5,
+            dateJoined: 0,
+            allDrives: 0,
+            badges: 0
+        })
+        await volunteerAccount.save()
+        console.log(volunteerAccount)
+        return {email: "this worked", password: "this worked"}
+    } catch (e){
+        console.error(e)
+    }
+}
+
+
 
 export default Login
