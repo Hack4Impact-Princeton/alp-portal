@@ -1,14 +1,17 @@
 import Box from '@mui/material/Box';
 import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
+import dbConnect from '../lib/dbConnect'
+import getBookDriveModel from '../models/BookDrive';
 import DriveCard from '../components/DriveCard'
 import Grid from '@mui/material/Grid'; // Grid version 1
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Drawer from '@mui/material';
 import Stack from '@mui/material/Stack';
 
-
-function DashVolunteer() {
+function DashVolunteer(props) {
+  // parse stringified json
+  let drives = JSON.parse(props.drives)
+  console.log(drives)
   return (
     <Grid>
       <Grid><Navbar></Navbar></Grid>
@@ -37,21 +40,17 @@ function DashVolunteer() {
     </Grid>
   );
 }
+  
+export async function getServerSideProps() {
+  await dbConnect()
+  const BookDrive = getBookDriveModel();
+  /* find all the data in our database */
+  const drives = await BookDrive.find({})
+  // stringify data before sending
+  return { props: { drives: JSON.stringify(drives) } }
+}
 
-/* Keep example code here, nothing should be dynamic on the home page */
-//   export async function getServerSideProps() {
-//     await dbConnect()
 
-//     /* find all the data in our database */
-//     const result = await Pet.find({})
-//     const pets = result.map((doc) => {
-//       const pet = doc.toObject()
-//       pet._id = pet._id.toString()
-//       return pet
-//     })
 
-//     return { props: { pets: pets } }
-//   }
-/* end example pet code */
 
 export default DashVolunteer
