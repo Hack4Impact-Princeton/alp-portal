@@ -1,16 +1,9 @@
-// import '../css/style.css'
-// import '../css/form.css'
 import React from 'react'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import { ClientRequest } from 'http';
 import {useState } from 'react'
-const mongoose = require('mongoose')
-import dbConnect from '../lib/dbConnect'
-import getPetModel from '../models/Pet'
-import getVolunteerAccountModel from '../models/VolunteerAccount';
-// import signUp from '../backend/UserController'
 
 const Login = () => {
 
@@ -27,14 +20,13 @@ const Login = () => {
     const signUpHandler = async () => {
         try {
             const data = {email: email, password: password}
-            await fetch('/api/volunteerAccounts/user', {
+            await fetch('/api/volunteeraccounts', {
                 method: "POST",
                 body: JSON.stringify(data),
             });
         } catch (e) {
             console.error(e)
         }
-        
     }
 
     return (
@@ -88,33 +80,5 @@ const Login = () => {
         </div>
     )
 }
-
-
-// async function signUp(email, password) {
-//     try {
-//         console.log("signup called")
-//         await dbConnect()
-//         const VolunteerAccount = getVolunteerAccountModel()
-//         const volunteerAccount = new VolunteerAccount({
-//             fname: "test_fname",
-//             lname: "test_lname",
-//             alp_id: 2,
-//             ageBucket: 1,
-//             email: email,
-//             pwhash: password,
-//             location: 5,
-//             dateJoined: 0,
-//             allDrives: 0,
-//             badges: 0
-//         })
-//         await volunteerAccount.save()
-//         console.log(volunteerAccount)
-//         return {email: "this worked", password: "this worked"}
-//     } catch (e){
-//         console.error(e)
-//     }
-// }
-
-
 
 export default Login
