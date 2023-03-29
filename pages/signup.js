@@ -4,7 +4,7 @@ import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import { ClientRequest } from 'http';
 
-const Login = () => {
+const Signup = () => {
     return (
         <div>
         {/* TODO: <img src="" alt="ALP-logo"/> */}
@@ -57,4 +57,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default Signup
