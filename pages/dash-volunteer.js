@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
+import dbConnect from '../lib/dbConnect'
+import getBookDriveModel from '../models/BookDrive';
 import DriveCard from '../components/DriveCard'
 import Grid from '@mui/material/Grid'; // Grid version 1
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
@@ -10,6 +11,7 @@ import dbConnect from '../lib/dbConnect'
 import getBookDriveModel from '../models/BookDrive';
 
 function DashVolunteer(props) {
+  // parse stringified json
   let drives = JSON.parse(props.drives)
   console.log(drives)
   return (
@@ -40,8 +42,7 @@ function DashVolunteer(props) {
     </Grid>
   );
 }
-
-/* Keep example code here, nothing should be dynamic on the home page */
+  
 export async function getServerSideProps() {
   await dbConnect()
   const BookDrive = getBookDriveModel();
@@ -50,5 +51,8 @@ export async function getServerSideProps() {
   // stringify data before sending
   return { props: { drives: JSON.stringify(drives) } }
 }
+
+
+
 
 export default DashVolunteer
