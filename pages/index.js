@@ -7,8 +7,8 @@ function LandingPage() {
       <div style={{height:"55vh"}}></div>
       <h1 style={{fontSize: "7vh", color: "white", fontWeight: "300", margin: "0", marginBottom: "2vh", marginTop: "2vh"}}>African Library Project</h1>
       <h3 style={{fontSize: "9vh", color: "white", fontWeight: "600", margin: "0", marginBottom: "4vh", marginTop: "2vh"}}>Organizer Platform</h3>
-      <Button variant="outlined" href='/dash-volunteer' className="landing-btn">log in</Button>
-      <Button variant="outlined" href='/dash-volunteer' className="landing-btn">sign up</Button>
+      <Button variant="outlined" href='/login' className="landing-btn">log in</Button>
+      <Button variant="outlined" href='/signup' className="landing-btn">sign up</Button>
     </div>
   );
 }

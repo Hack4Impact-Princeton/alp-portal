@@ -4,11 +4,11 @@ import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import { ClientRequest } from 'http';
 
-const Login = () => {
+const Signup = () => {
     return (
         <div>
         {/* TODO: <img src="" alt="ALP-logo"/> */}
-        <h2> ALP Volunteer Portal Login </h2>
+        <h2> Sign up to volunteer with African Library Project! </h2>
         <Box 
             display="flex"
             alignItems="center"
@@ -27,6 +27,16 @@ const Login = () => {
                     height: 300,
                 }}
                 >
+                <TextField fullWidth required id="fname" label="First Name" variant="outlined"
+                    sx={{
+                        mt: 2,
+                        mb: 2
+                }}/>
+                <TextField fullWidth required id="lname" label="Last Name" variant="outlined"
+                    sx={{
+                        mt: 2,
+                        mb: 2
+                }}/>
                 <TextField fullWidth required id="email" label="Email" variant="outlined"
                     sx={{
                         mt: 2,
@@ -40,11 +50,11 @@ const Login = () => {
                 <Button variant="contained"
                     sx={{
                         marginTop: 3,
-                    }}>Login</Button>
+                    }}>Signup</Button>
             </Box>
         </Box>
         </div>
     )
 }
 
-export default Login
+export default Signup
