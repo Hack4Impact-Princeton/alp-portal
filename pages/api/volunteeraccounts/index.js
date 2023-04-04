@@ -8,7 +8,6 @@ export default async function handler(req, res) {
     switch (req.method) {
         case 'POST':
             try {
-                console.log("API Handler")
                 const {email, password, fname, lname} = JSON.parse(req.body)
                 const volunteerAccount = new VolunteerAccount({
                     fname: fname,
@@ -22,12 +21,8 @@ export default async function handler(req, res) {
                     allDrives: 0,
                     badges: 0
                 })
-                console.log("volunteerAccount new?", volunteerAccount);
                 const account = await volunteerAccount.save()
-                console.log(account.nInserted);
-                console.log(account.writeError.errmsg);
                 res.status(200).json({success: true, data: account}) 
-                console.log("HERE"); 
                 break
             } catch (error) {
                 res.status(400).json({ success: false, data: error })
