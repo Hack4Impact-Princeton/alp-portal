@@ -2,9 +2,41 @@ import React from 'react'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
-import { ClientRequest } from 'http';
+import {useState } from 'react'
 
 const Signup = () => {
+    const [fname, setFName] = useState("")
+    const [lname, setLName] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+
+    const handleSetFName = (fName) => {
+        setFName(fName.target.value)
+    }
+    const handleSetLName = (lName) => {
+        setLName(lName.target.value)
+    }
+    const handleSetEmail = (emailText) => {
+        setEmail(emailText.target.value)
+    }
+    const handleSetPassword = (passwordText) => {
+        setPassword(passwordText.target.value)
+    }
+
+
+    const signUpHandler = async () => {
+        try {
+            const data = {fname: fname, lname: lname, email: email, password: password}
+            console.log(JSON.stringify(data))
+            await fetch('../api/volunteeraccounts', {
+                method: "POST",
+                body: JSON.stringify(data),
+            });
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
     return (
         <div>
         {/* TODO: <img src="" alt="ALP-logo"/> */}
@@ -28,26 +60,31 @@ const Signup = () => {
                 }}
                 >
                 <TextField fullWidth required id="fname" label="First Name" variant="outlined"
+                    value={fname} onChange={handleSetFName}
                     sx={{
                         mt: 2,
                         mb: 2
                 }}/>
                 <TextField fullWidth required id="lname" label="Last Name" variant="outlined"
+                    value={lname} onChange={handleSetLName}
                     sx={{
                         mt: 2,
                         mb: 2
                 }}/>
                 <TextField fullWidth required id="email" label="Email" variant="outlined"
+                    value={email} onChange={handleSetEmail}
                     sx={{
                         mt: 2,
                         mb: 2
                     }}/>
                 <TextField fullWidth required id="password" label="Password" variant="outlined"
+                    value={password} onChange={handleSetPassword}
                     sx={{
                         mt: 2,
                         mb: 2
                     }}/>
                 <Button variant="contained"
+                    onClick={signUpHandler}
                     sx={{
                         marginTop: 3,
                     }}>Signup</Button>
