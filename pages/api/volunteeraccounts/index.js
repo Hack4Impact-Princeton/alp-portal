@@ -1,7 +1,6 @@
 import dbConnect from '../../../lib/dbConnect'
 import getVolunteerAccountModel from '../../../models/VolunteerAccount'
 
-
 // right now a lot of the data is hard-coded
 export default async function handler(req, res) {
     await dbConnect()
@@ -10,10 +9,10 @@ export default async function handler(req, res) {
         case 'POST':
             try {
                 console.log("API Handler")
-                const {email, password} = JSON.parse(req.body)
+                const {email, password, fname, lname} = JSON.parse(req.body)
                 const volunteerAccount = new VolunteerAccount({
-                    fname: "Ivy",
-                    lname: "Wang",
+                    fname: fname,
+                    lname: lname,
                     alp_id: 2,
                     ageBucket: 1,
                     email: email,
