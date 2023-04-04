@@ -5,7 +5,6 @@ import getVolunteerAccountModel from "../models/volunteerAccounts";
 function DashVolunteer(props) {
   // parse stringified json
   let drives = JSON.parse(props.drives);
-  console.log(drives);
   return (
     <div>
       <Navbar></Navbar>
