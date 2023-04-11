@@ -14,11 +14,12 @@ export default function Navbar() {
                 '& .MuiDrawer-paper': {
                     alignContent: 'space-evenly',
                     justifyContent: 'center',
+                    width: '7vw',
                 }
             }}
             PaperProps={{
                 sx: {
-                    backgroundColor: 'orange',
+                    backgroundColor: '#EAEAEA',
                 }
             }}
             variant="permanent"
@@ -32,7 +33,7 @@ export default function Navbar() {
                         <ListItemButton component="a">
                             <ListItemIcon>
                                 <HomeIcon fontSize='large' sx={{
-                                    color: 'white',
+                                    color: '#9C9C9C',
                                 }}></HomeIcon>
                             </ListItemIcon>
                         </ListItemButton>
@@ -43,7 +44,7 @@ export default function Navbar() {
                         <ListItemButton>
                             <ListItemIcon>
                                 <Person2Icon fontSize='large' sx={{
-                                    color: 'white',
+                                    color: '#9C9C9C',
                                 }}></Person2Icon>
                             </ListItemIcon>
                         </ListItemButton>
@@ -54,7 +55,7 @@ export default function Navbar() {
                         <ListItemButton>
                             <ListItemIcon>
                                 <FlagIcon fontSize='large' sx={{
-                                    color: 'white',
+                                    color: '#9C9C9C',
                                 }}></FlagIcon>
                             </ListItemIcon>
                         </ListItemButton>
@@ -65,7 +66,7 @@ export default function Navbar() {
                         <ListItemButton>
                             <ListItemIcon>
                                 <ShareIcon fontSize='large' sx={{
-                                    color: 'white',
+                                    color: '#9C9C9C',
                                 }}></ShareIcon>
                             </ListItemIcon>
                         </ListItemButton>
@@ -76,7 +77,7 @@ export default function Navbar() {
                         <ListItemButton>
                             <ListItemIcon>
                                 <ChatBubbleIcon fontSize='large' sx={{
-                                    color: 'white',
+                                    color: '#9C9C9C',
                                 }}></ChatBubbleIcon>
                             </ListItemIcon>
                         </ListItemButton>
