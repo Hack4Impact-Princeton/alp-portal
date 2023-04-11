@@ -28,15 +28,11 @@ function DashVolunteer(props) {
             justifyContent="center"
             alignItems="center"
             container spacing={10}>
-              <DriveCard
-                drivename="Uganda Community College"
-              ></DriveCard>
-              <DriveCard></DriveCard>
-              <DriveCard></DriveCard>
-              <DriveCard></DriveCard>
+              {drives.map((drive) => (
+                <DriveCard drivename={drive.driveID} deadline={drive.fl.endDate}></DriveCard>
+              ))}
           </Stack>
         </Stack>
-     
     </Grid>
   );
 }
