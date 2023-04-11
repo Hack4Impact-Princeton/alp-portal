@@ -1,7 +1,6 @@
 import dbConnect from '../../../lib/dbConnect'
 import getVolunteerAccountModel from '../../../models/VolunteerAccount'
 
-
 // right now a lot of the data is hard-coded
 export default async function handler(req, res) {
     await dbConnect()
@@ -9,10 +8,10 @@ export default async function handler(req, res) {
     switch (req.method) {
         case 'POST':
             try {
-                const {email, password} = JSON.parse(req.body)
+                const {email, password, fname, lname} = JSON.parse(req.body)
                 const volunteerAccount = new VolunteerAccount({
-                    fname: "test_fname.2",
-                    lname: "test_lname.2",
+                    fname: fname,
+                    lname: lname,
                     alp_id: 2,
                     ageBucket: 1,
                     email: email,
@@ -23,7 +22,7 @@ export default async function handler(req, res) {
                     badges: 0
                 })
                 const account = await volunteerAccount.save()
-                res.status(200).json({success: true, data: account})  
+                res.status(200).json({success: true, data: account}) 
                 break
             } catch (error) {
                 res.status(400).json({ success: false, data: error })
