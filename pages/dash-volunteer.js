@@ -29,7 +29,7 @@ function DashVolunteer(props) {
             alignItems="center"
             container spacing={10}>
               {drives.map((drive) => (
-                <DriveCard drivename={drive.driveID} deadline={drive.fl.endDate}></DriveCard>
+                <DriveCard drivename={drive.driveName}></DriveCard>
               ))}
           </Stack>
         </Stack>
