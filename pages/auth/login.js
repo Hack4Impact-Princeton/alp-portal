@@ -192,7 +192,15 @@ function Login(props) {
             >
               Sign Up
             </Button>
-            <Button href="/dash-volunteer">Click here</Button>
+            <Button 
+                href="/dash-volunteer"
+                variant = "contained"
+                sx={{
+                    marginTop:3,
+                }}
+            >
+                Click here
+            </Button>
           </Box>
         </Box>
       </div>
