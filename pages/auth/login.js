@@ -11,6 +11,9 @@ import dbConnect from "../../lib/dbConnect";
 function Login(props) {
   let drives = JSON.parse(props.drives);
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   let [disabled, setDisabled] = useState(true);
 
   let emailsToPwhashs = {};
@@ -19,7 +22,7 @@ function Login(props) {
   }
 
   function verifyLogin() {
-    if (login in emailsToPwhashs && emailsToPwhashs[login] == pwd) {
+    if (email in emailsToPwhashs && emailsToPwhashs[email] == password) {
       console.log("Good login");
       setDisabled(false);
     } else {
@@ -27,14 +30,24 @@ function Login(props) {
     }
   }
 
-  const [login, setLogin] = useState("NA");
-  const changeLogin = (event) => {
-    setLogin(event.target.value);
+  const handleSetEmail = (emailText) => {
+    setEmail(emailText.target.value);
   };
 
-  const [pwd, setPwd] = useState("NA");
-  const changePwd = (event) => {
-    setPwd(event.target.value);
+  const handleSetPassword = (passwordText) => {
+    setPassword(passwordText.target.value);
+  };
+
+  const signUpHandler = async () => {
+    try {
+      const data = { email: email, password: password };
+      await fetch("/api/volunteeraccounts", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   if (disabled) {
@@ -62,24 +75,26 @@ function Login(props) {
             }}
           >
             <TextField
-              onChange={changeLogin}
+              onChange={handleSetEmail}
               fullWidth
               required
               id="email"
               label="Email"
               variant="outlined"
+              value={email}
               sx={{
                 mt: 2,
                 mb: 2,
               }}
             />
             <TextField
-              onChange={changePwd}
+              onChange={handleSetPassword}
               fullWidth
               required
               id="password"
               label="Password"
               variant="outlined"
+              value={password}
               sx={{
                 mt: 2,
                 mb: 2,
@@ -93,6 +108,16 @@ function Login(props) {
               }}
             >
               Login
+            </Button>
+            <Button
+              variant="contained"
+              onClick={signUpHandler}
+              sx={{
+                marginTop: 3,
+                marginLeft: 3,
+              }}
+            >
+              Sign Up
             </Button>
           </Box>
         </Box>
@@ -123,24 +148,26 @@ function Login(props) {
             }}
           >
             <TextField
-              onChange={changeLogin}
+              onChange={handleSetEmail}
               fullWidth
               required
               id="email"
               label="Email"
               variant="outlined"
+              value={email}
               sx={{
                 mt: 2,
                 mb: 2,
               }}
             />
             <TextField
-              onChange={changePwd}
+              onChange={handleSetPassword}
               fullWidth
               required
               id="password"
               label="Password"
               variant="outlined"
+              value={password}
               sx={{
                 mt: 2,
                 mb: 2,
@@ -155,7 +182,16 @@ function Login(props) {
             >
               Login
             </Button>
-
+            <Button
+              variant="contained"
+              onClick={signUpHandler}
+              sx={{
+                marginTop: 3,
+                marginLeft: 3,
+              }}
+            >
+              Sign Up
+            </Button>
             <Button href="/dash-volunteer">Click here</Button>
           </Box>
         </Box>
