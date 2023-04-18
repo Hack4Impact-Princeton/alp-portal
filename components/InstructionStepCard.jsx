@@ -4,30 +4,37 @@ export default function InstructionStepCard({
   heading,
   subHeading,
   submitBtn,
-  stepNum
+  stepNum,
+  numBooksCollected,
 }) {
+  let HEADER_NUM;
+  switch (stepNum) {
+    case 1:
+      HEADER_NUM = numBooksCollected
+        ? numBooksCollected
+        : "Must pass numBooksCollected!";
+      break;
+    case 2:
+      HEADER_NUM = "($250)";
+      break;
+    case 3:
+      HEADER_NUM = "($350-400)";
+      break;
+    default:
+      HEADER_NUM = null;
+  }
+
   return (
     <Grid
       sx={{
         border: "2px solid black;",
-        paddingLeft: "0.7em;",
-        paddingRight: "0.7em;",
       }}
       container
-      spacing={2}
+      spacing={4}
     >
       <Grid item xs={12}>
         <Typography variant="h4">
-          <span
-            style={{
-              fontStyle: "italic",
-              backgroundColor: "orange",
-              paddingLeft: "5px",
-              paddingRight: "1em",
-            }}
-          >
-            {heading}
-          </span>
+          <span>{heading}</span> <span>{HEADER_NUM}</span>
         </Typography>
       </Grid>
       <Grid item xs={12}>
@@ -45,9 +52,9 @@ export default function InstructionStepCard({
           '7': <StepSevenInstructions />,
         }[{stepNum}]
       */}
-      <span>{submitBtn}</span>
-
+      <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <span className="float-end">{submitBtn}</span>
+      </Grid>
     </Grid>
-
   );
 }

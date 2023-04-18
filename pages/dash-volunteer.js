@@ -13,9 +13,11 @@ function DashVolunteer() {
       </Box>
       <div style={{ "margin-top": "10px" }}></div>
       <InstructionStepCard
-        heading="International Shipping Fee ($250)"
+        heading="Current Number of Books Collected: "
         subHeading="Send to ALP team — more info"
         submitBtn={submitBtn}
+        stepNum={5}
+        numBooksCollected={200}
       />
     </div>
   );
