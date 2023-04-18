@@ -16,17 +16,24 @@ function DashVolunteer(props) {
     <Grid>
       <Grid><Navbar></Navbar></Grid>
         <Stack direction="column"
-          justifyContent="center"
-          alignItems="center"
+          justifyContent="flex-start"
+          alignItems="stretch"
           spacing={5}>
-            <div style={{marginTop: '2vh'}}>
-              <div style={{fontSize: '35px', textAlign:'center'}}>Welcome to ALP Portal!</div>
-              <div style={{fontSize: '25px', textAlign:'center', marginTop: '2vh'}}>Active Drives</div>
+            <div style={{marginTop: '5vh'}}>
+              <Grid container spacing={2}>
+                <Grid item xs={11}>
+                  <div style={{fontSize: '45px', textAlign:'left', fontWeight:'bold'}}>HOME</div>
+                  <div style={{fontSize: '25px', textAlign:'left', marginTop: '2vh'}}>Active Drives</div>
+                </Grid>
+                <Grid item xs = {1}><img src="https://upload.wikimedia.org/wikipedia/en/d/de/AfricanLibraryProjectLogo.png" style={{width: '5vw'}}/></Grid>
+              </Grid>
+              
+              
             </div>  
           <Stack
             direction="column"
-            justifyContent="center"
-            alignItems="center"
+            justifyContent="flex-start"
+            //alignItems="stretch"
             container spacing={10}>
               {drives.map((drive) => (
                 <DriveCard drivename={drive.driveName}></DriveCard>
