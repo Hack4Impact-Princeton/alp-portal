@@ -7,14 +7,18 @@ import TextField from "@mui/material/TextField";
 import { ClientRequest } from "http";
 import getVolunteerAccountModel from "../../models/VolunteerAccount";
 import dbConnect from "../../lib/dbConnect";
+import { useRouter } from "next/router";
 
 function Login(props) {
   let drives = JSON.parse(props.drives);
 
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  let [disabled, setDisabled] = useState(true);
+  let [disabled, setDisabled] = useState(false);
+  let [success, setSuccess] = useState(false);
 
   let emailsToPwhashs = {};
   for (let i = 0; i < drives.length; i++) {
@@ -24,9 +28,12 @@ function Login(props) {
   function verifyLogin() {
     if (email in emailsToPwhashs && emailsToPwhashs[email] == password) {
       console.log("Good login");
-      setDisabled(false);
+      //setDisabled(false);
+      router.push("/dash-volunteer");
+      setSuccess(true)
     } else {
       console.log("Bad login");
+      setDisabled(true);
     }
   }
 
@@ -50,162 +57,80 @@ function Login(props) {
     }
   };
 
-  if (disabled) {
-    return (
-      <div>
-        {/* TODO: <img src="" alt="ALP-logo"/> */}
-        <h2> ALP Volunteer Portal Login </h2>
+  return (
+    <div>
+      {/* TODO: <img src="" alt="ALP-logo"/> */}
+      <h2> ALP Volunteer Portal Login </h2>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        sx={{
+          width: 400,
+          height: 400,
+          backgroundColor: "white",
+          border: 3,
+          borderColor: "orange",
+        }}
+      >
         <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
+          textAlign="center"
           sx={{
-            width: 400,
-            height: 400,
-            backgroundColor: "white",
-            border: 3,
-            borderColor: "orange",
+            width: 300,
+            height: 300,
           }}
         >
-          <Box
-            textAlign="center"
+          <TextField
+            onChange={handleSetEmail}
+            fullWidth
+            required
+            id="email"
+            label="Email"
+            variant="outlined"
+            value={email}
             sx={{
-              width: 300,
-              height: 300,
+              mt: 2,
+              mb: 2,
+            }}
+          />
+          <TextField
+            onChange={handleSetPassword}
+            fullWidth
+            required
+            id="password"
+            label="Password"
+            variant="outlined"
+            value={password}
+            sx={{
+              mt: 2,
+              mb: 2,
+            }}
+          />
+          <Button
+            onClick={verifyLogin}
+            variant="contained"
+            sx={{
+              marginTop: 3,
             }}
           >
-            <TextField
-              onChange={handleSetEmail}
-              fullWidth
-              required
-              id="email"
-              label="Email"
-              variant="outlined"
-              value={email}
-              sx={{
-                mt: 2,
-                mb: 2,
-              }}
-            />
-            <TextField
-              onChange={handleSetPassword}
-              fullWidth
-              required
-              id="password"
-              label="Password"
-              variant="outlined"
-              value={password}
-              sx={{
-                mt: 2,
-                mb: 2,
-              }}
-            />
-            <Button
-              onClick={verifyLogin}
-              variant="contained"
-              sx={{
-                marginTop: 3,
-              }}
-            >
-              Login
-            </Button>
-            <Button
-              variant="contained"
-              onClick={signUpHandler}
-              sx={{
-                marginTop: 3,
-                marginLeft: 3,
-              }}
-            >
-              Sign Up
-            </Button>
-          </Box>
-        </Box>
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        {/* TODO: <img src="" alt="ALP-logo"/> */}
-        <h2> ALP Volunteer Portal Login </h2>
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          sx={{
-            width: 400,
-            height: 400,
-            backgroundColor: "white",
-            border: 3,
-            borderColor: "orange",
-          }}
-        >
-          <Box
-            textAlign="center"
+            Login
+          </Button>
+          <Button
+            variant="contained"
+            onClick={signUpHandler}
             sx={{
-              width: 300,
-              height: 300,
+              marginTop: 3,
+              marginLeft: 3,
             }}
           >
-            <TextField
-              onChange={handleSetEmail}
-              fullWidth
-              required
-              id="email"
-              label="Email"
-              variant="outlined"
-              value={email}
-              sx={{
-                mt: 2,
-                mb: 2,
-              }}
-            />
-            <TextField
-              onChange={handleSetPassword}
-              fullWidth
-              required
-              id="password"
-              label="Password"
-              variant="outlined"
-              value={password}
-              sx={{
-                mt: 2,
-                mb: 2,
-              }}
-            />
-            <Button
-              onClick={verifyLogin}
-              variant="contained"
-              sx={{
-                marginTop: 3,
-              }}
-            >
-              Login
-            </Button>
-            <Button
-              variant="contained"
-              onClick={signUpHandler}
-              sx={{
-                marginTop: 3,
-                marginLeft: 3,
-              }}
-            >
-              Sign Up
-            </Button>
-            <Button
-              href="/dash-volunteer"
-              variant="contained"
-              sx={{
-                marginTop: 3,
-              }}
-            >
-              Click here
-            </Button>
-          </Box>
+            Sign Up
+          </Button>
+          {disabled && <div> Error in login </div>}
+          {success && <div> Successful Login, please wait to be redirected</div>}
         </Box>
-      </div>
-    );
-  }
+      </Box>
+    </div>
+  );
 }
 
 /* Keep example code here, nothing should be dynamic on the home page */
