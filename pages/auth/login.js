@@ -28,7 +28,6 @@ function Login(props) {
   function verifyLogin() {
     if (email in emailsToPwhashs && emailsToPwhashs[email] == password) {
       console.log("Good login");
-      //setDisabled(false);
       router.push("/dash-volunteer");
       setSuccess(true)
     } else {
