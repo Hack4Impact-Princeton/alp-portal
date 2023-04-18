@@ -29,7 +29,8 @@ function Login(props) {
     if (email in emailsToPwhashs && emailsToPwhashs[email] == password) {
       console.log("Good login");
       router.push("/dash-volunteer");
-      setSuccess(true)
+      setSuccess(true);
+      setDisabled(false);
     } else {
       console.log("Bad login");
       setDisabled(true);
@@ -125,7 +126,9 @@ function Login(props) {
             Sign Up
           </Button>
           {disabled && <div> Error in login </div>}
-          {success && <div> Successful Login, please wait to be redirected</div>}
+          {success && (
+            <div> Successful Login, please wait to be redirected</div>
+          )}
         </Box>
       </Box>
     </div>
