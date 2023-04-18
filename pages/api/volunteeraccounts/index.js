@@ -1,3 +1,4 @@
+import { FlashAuto, FlashOnOutlined } from '@mui/icons-material'
 import dbConnect from '../../../lib/dbConnect'
 import getVolunteerAccountModel from '../../../models/VolunteerAccount'
 
@@ -8,11 +9,16 @@ export default async function handler(req, res) {
     switch (req.method) {
         case 'POST':
             try {
+                var maxAlpId
+                await VolunteerAccount.findOne().sort('-alp_id').then(account => {
+                    maxAlpId = account.alp_id
+                })
+                console.log(maxAlpId)
                 const {email, password, fname, lname} = JSON.parse(req.body)
-                const volunteerAccount = new VolunteerAccount({
+                const newVolunteerAccount = new VolunteerAccount({
                     fname: fname,
                     lname: lname,
-                    alp_id: 2,
+                    alp_id: maxAlpId+1,
                     ageBucket: 1,
                     email: email,
                     pwhash: password,
@@ -21,14 +27,47 @@ export default async function handler(req, res) {
                     allDrives: 0,
                     badges: 0
                 })
-                const account = await volunteerAccount.save()
+                const account = await newVolunteerAccount.save()
                 res.status(200).json({success: true, data: account}) 
                 break
             } catch (error) {
                 res.status(400).json({ success: false, data: error })
                 break
             }
-            
+        case 'PATCH':
+            try {
+               const {alp_id, email, password, fname, lname} = JSON.parse(req.body)
+               const account = await VolunteerAccount.findOneAndUpdate(
+                {alp_id: alp_id}, 
+                {fname: fname, lname: lname, email: email, pwhash: password}
+                )
+               const modifiedVolunteerAccount = await account.save()
+               res.status(200).json({success: true, data: modifiedVolunteerAccount}) 
+               break
+            } catch (error) {
+                res.status(400).json({success: false, data: error})
+                break
+            }
+        case 'DELETE':
+            try {
+                const {alp_id} = JSON.parse(req.body)
+                const account = await VolunteerAccount.delete({alp_id: alp_id})
+                const deletedVolunteerAccount = await account.save()
+                res.status(200).json({success: true, data: deletedVolunteerAccount})
+                break
+            } catch (error) {
+                res.status(400).json({success: false, data: error})
+                break
+            }
+        case 'GET':
+            try {
+                const {alp_id} = JSON.parse(req.body)
+                const volunteerAccount = await VolunteerAccount.find({alp_id: alp_id})
+                res.status(200).json({success: true, data: volunteerAccount})
+                break
+            } catch (error) {
+                res.status(400).json({success: false, data: error})
+            }
     }
 
 }
