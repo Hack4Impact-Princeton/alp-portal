@@ -1,7 +1,8 @@
 import mongoose from 'mongoose'
+const {Schema} = mongoose
 
 /* PetSchema will correspond to a collection in your MongoDB database. */
-const PetSchema = new mongoose.Schema({
+const PetSchema = new Schema({
   name: {
     /* The name of this pet */
 
@@ -56,4 +57,9 @@ const PetSchema = new mongoose.Schema({
   },
 })
 
-export default mongoose.models.Pet || mongoose.model('Pet', PetSchema)
+function getPetModel(){
+  if ('Pet' in mongoose.models)
+    return mongoose.models.Pet;
+  return mongoose.model("Pet", PetSchema);
+}
+export default getPetModel;

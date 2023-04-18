@@ -26,7 +26,7 @@ export default function Navbar() {
             anchor="left"
         >
             <List>
-                <Link href="/dash-volunteer" passHref>
+                <Link href="/dash-volunteer">
                     <ListItem key="Home" sx={{
                         alignItems: 'center',
                     }}>
@@ -39,7 +39,7 @@ export default function Navbar() {
                         </ListItemButton>
                     </ListItem>
                 </Link>
-                <Link href="/dash-volunteer" passHref>
+                <Link href="/dash-volunteer">
                     <ListItem key="Organizer Checklist">
                         <ListItemButton>
                             <ListItemIcon>
@@ -50,7 +50,7 @@ export default function Navbar() {
                         </ListItemButton>
                     </ListItem>
                 </Link>
-                <Link href="/leaderboard" passHref>
+                <Link href="/leaderboard">
                     <ListItem key="Milestones">
                         <ListItemButton>
                             <ListItemIcon>
@@ -61,7 +61,7 @@ export default function Navbar() {
                         </ListItemButton>
                     </ListItem>
                 </Link>
-                <Link href="/h4i-team" passHref>
+                <Link href="/h4i-team">
                     <ListItem key="Contact Us">
                         <ListItemButton>
                             <ListItemIcon>
@@ -72,7 +72,7 @@ export default function Navbar() {
                         </ListItemButton>
                     </ListItem>
                 </Link>
-                <Link href="/forum" passHref>
+                <Link href="/forum">
                     <ListItem key="Forum">
                         <ListItemButton>
                             <ListItemIcon>
