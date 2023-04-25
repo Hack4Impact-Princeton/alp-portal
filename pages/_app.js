@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import Logo from '../components/Logo'
 import { useEffect, useState } from 'react'
-import useContentful from './useContentful'
+import useContentful from '../lib/useContentful'
 
 function MyApp({ Component, pageProps }) {
   /* Hooks for Contentful logos */
