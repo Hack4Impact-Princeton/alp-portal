@@ -50,7 +50,11 @@ function Login(props) {
 
   const signUpHandler = async () => {
     try {
-      const data = { email: email, password: password };
+      var bcrypt = require("bcryptjs");
+      var salt = bcrypt.genSaltSync(10);
+      var hashedPwd = bcrypt.hashSync(password, salt);
+
+      const data = { email: email, password: hashedPwd };
       await fetch("/api/volunteeraccounts", {
         method: "POST",
         body: JSON.stringify(data),
