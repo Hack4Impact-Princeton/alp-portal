@@ -1,4 +1,4 @@
-import useContentful from './useContentful'
+import useContentful from '../lib/useContentful'
 import Button from '@mui/material/Button';
 
 function LandingPage() {
