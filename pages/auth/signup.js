@@ -27,10 +27,11 @@ const Signup = () => {
 
   const signUpHandler = async () => {
     try {
+      
       var bcrypt = require("bcryptjs");
       var salt = bcrypt.genSaltSync(10);
       var hashedPwd = bcrypt.hashSync(password, salt);
-
+      
       const data = {
         fname: fname,
         lname: lname,

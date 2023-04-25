@@ -20,23 +20,18 @@ function Login(props) {
   let [disabled, setDisabled] = useState(false);
   let [success, setSuccess] = useState(false);
 
-  let emailsToPwhashs = {};
-  for (let i = 0; i < drives.length; i++) {
-    emailsToPwhashs[drives[i]["email"]] = drives[i]["pwhash"];
-  }
-
   function verifyLogin() {
-    /*
     var bcrypt = require("bcryptjs");
-
-    var salt = bcrypt.genSaltSync(10);
-    console.log("Harbin", salt);
-
-    var salt = bcrypt.genSaltSync(10)
-    console.log("Harbin", salt);
-    */
-
-    if (email in emailsToPwhashs && emailsToPwhashs[email] == password) {
+    
+    let emailsToPwhashs = {};
+    for (let i = 0; i < drives.length; i++) {
+      emailsToPwhashs[drives[i]["email"]] = drives[i]["pwhash"];
+    }
+    
+    if (
+      email in emailsToPwhashs &&
+      bcrypt.compare(password, emailsToPwhashs[email])
+    ) {
       router.push("/dash-volunteer");
       setSuccess(true);
       setDisabled(false);
