@@ -1,4 +1,4 @@
-import { Typography, Grid } from "@mui/material";
+import { Typography, Grid, TextField } from "@mui/material";
 
 export default function InstructionStepCard({
   heading,
@@ -30,7 +30,9 @@ export default function InstructionStepCard({
         border: "2px solid black;",
       }}
       container
-      spacing={4}
+      direction="row"
+      spacing={3}
+      maxWidth={"70%"}
     >
       <Grid item xs={12}>
         <Typography variant="h4">
@@ -40,6 +42,8 @@ export default function InstructionStepCard({
       <Grid item xs={12}>
         <Typography variant="h5">{subHeading}</Typography>
       </Grid>
+
+      <StepOneInstructions />
 
       {/*
         {
@@ -52,9 +56,32 @@ export default function InstructionStepCard({
           '7': <StepSevenInstructions />,
         }[{stepNum}]
       */}
-      <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <span className="float-end">{submitBtn}</span>
+      <div>{submitBtn}</div>
+    </Grid>
+  );
+}
+
+function StepOneInstructions() {
+  return (
+    <Grid container alignItems="center" sx={{ p: 5 }}>
+      <Grid item xs={4} sx={{ pb: 5 }}>
+        <span>Update Books Collected</span>
+      </Grid>
+      <Grid item xs={8} sx={{ pb: 5 }}>
+        <TextField size="small" fullWidth id="books-collected" variant="outlined" />
+      </Grid>
+      <Grid item xs={12}>
+        <span>Please update every X weeks. Last updated 00/00/0000</span>
       </Grid>
     </Grid>
+
+    /* <Grid container alignItems="center" sx={{ border: "2px solid red" }}>
+      <Grid item xs={4}>
+        <span>Update Books Collected</span>
+      </Grid>
+      <Grid item xs={8}>
+        <TextField id="books-collected" variant="outlined" />
+      </Grid>
+    </Grid> */
   );
 }

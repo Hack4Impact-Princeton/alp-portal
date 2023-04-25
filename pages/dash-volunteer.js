@@ -7,18 +7,17 @@ function DashVolunteer() {
   const submitBtn = <button>test</button>;
   return (
     <div>
-      <Navbar></Navbar>
       <Box component="main">
         <div>Welcome to ALP Portal!</div>
+        <div style={{ "margin-top": "10px" }}></div>
+        <InstructionStepCard
+          heading="Current Number of Books Collected: "
+          subHeading="Send to ALP team — more info"
+          submitBtn={submitBtn}
+          stepNum={5}
+          numBooksCollected={200}
+        />
       </Box>
-      <div style={{ "margin-top": "10px" }}></div>
-      <InstructionStepCard
-        heading="Current Number of Books Collected: "
-        subHeading="Send to ALP team — more info"
-        submitBtn={submitBtn}
-        stepNum={5}
-        numBooksCollected={200}
-      />
     </div>
   );
 }
