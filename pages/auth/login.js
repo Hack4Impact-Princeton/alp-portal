@@ -26,13 +26,21 @@ function Login(props) {
   }
 
   function verifyLogin() {
+    /*
+    var bcrypt = require("bcryptjs");
+
+    var salt = bcrypt.genSaltSync(10);
+    console.log("Harbin", salt);
+
+    var salt = bcrypt.genSaltSync(10)
+    console.log("Harbin", salt);
+    */
+
     if (email in emailsToPwhashs && emailsToPwhashs[email] == password) {
-      console.log("Good login");
       router.push("/dash-volunteer");
       setSuccess(true);
       setDisabled(false);
     } else {
-      console.log("Bad login");
       setDisabled(true);
     }
   }
