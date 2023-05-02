@@ -32,9 +32,12 @@ const Login = () => {
     }
 
     return (
-        <Grid2 container spacing={12} justifyContent="center" textAlign="center">
+        <Grid2 container spacing={12} className="auth-bg" justifyContent="center" textAlign="center"
+            sx={{
+                height: 100,
+            }}>
             <Grid2 xs={12} display="flex" justifyContent="center" alignItems="center">
-                
+            
             </Grid2>
                 <Grid2 xs={12} spacing={10}>
                     <Image className="auth-logo" src="/logo-long.png" width={956*0.3} height={295*0.3} alt="ALP-logo" sx={{
@@ -46,7 +49,6 @@ const Login = () => {
                     sx={{   
                         width: 400,
                         height: 300,
-                        backgroundColor: 'white',
                     }}>
                     <Grid2 xs={12} display="flex" justifyContent="center" alignItems="center">
                         <Box
