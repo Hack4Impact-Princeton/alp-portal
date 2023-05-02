@@ -27,12 +27,14 @@ export default function InstructionStepCard({
   return (
     <Grid
       sx={{
-        border: "2px solid black;",
+        border: "3px solid black;",
+        borderRadius: "5px"
       }}
       container
       direction="row"
       spacing={3}
-      maxWidth={"70%"}
+      minWidth={"50%"}
+      backgroundColor="#F5F5F5"
     >
       <Grid item xs={12}>
         <Typography variant="h4">

@@ -10,7 +10,7 @@ import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import { Typography } from '@mui/material';
 import Grid from "@mui/material/Unstable_Grid2";
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
-// import InstructionStepCard from './InstructionStepCard';
+import InstructionStepCard from './InstructionStepCard';
 
 
 /*const ExpandMore = styled((props: (expand:boolean)) => {
@@ -28,13 +28,13 @@ export default function InstructionGroupCard(props) {
     const [expanded, setExpanded] = React.useState(!props.completed);
     
     let visible = (props.completed) ? "visible" : "hidden";
-
+    
     const handleExpandClick = () => {
       setExpanded(!expanded);
     };
     return (
       <Grid>
-        <Grid container paddingTop={2} spacing={2} xs={12} sx={{minWidth:"65vw", backgroundColor:"gray"}}>
+        <Grid container paddingTop={2} spacing={2} xs={12} sx={{width:"65vw", backgroundColor:"gray"}}>
             <Grid container spacing={1} item xs={9} sx={{color:"#FE9834"}} direction="row">
               <Grid>
                 <h1 onClick = {handleExpandClick}>
@@ -42,7 +42,11 @@ export default function InstructionGroupCard(props) {
                 </h1>
               </Grid>
               <Grid>
-                <ExpandMoreIcon sx={{visibility:visible}} onClick = {handleExpandClick}/>
+                <ExpandMoreIcon sx={{
+                  visibility:visible,
+                  transform: !expanded ? 'rotate(0deg)' : 'rotate(180deg)',
+                  }}
+                   onClick = {handleExpandClick}/>
               </Grid>
             </Grid>
             <Grid container paddingTop={1} item xs={3}>
@@ -55,9 +59,12 @@ export default function InstructionGroupCard(props) {
                 <DoneRoundedIcon fontSize="medium" sx={{visibility:visible}}></DoneRoundedIcon>
               </Grid>
             </Grid>
-            <Grid>
+            <Grid container item xs={12} alignItems={"center"} justifyContent={"center"}>
               <Collapse in={expanded} timeout="auto" unmountOnExit>
-                  <p>expanded</p>
+                  <Grid paddingTop={3} paddingLeft={4}>
+                    <InstructionStepCard paddingTop={3}></InstructionStepCard>
+                  </Grid>
+                  
               </Collapse>
             </Grid>
         </Grid>
