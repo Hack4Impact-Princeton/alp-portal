@@ -1,7 +1,7 @@
 import { Drawer, Link, List, ListItem, ListItemButton, ListItemIcon } from '@mui/material';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import FlagIcon from '@mui/icons-material/Flag';
-import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
+import Person2Icon from '@mui/icons-material/Person2';
 import HomeIcon from '@mui/icons-material/Home';
 import ShareIcon from '@mui/icons-material/Share';
 
@@ -14,66 +14,75 @@ export default function Navbar() {
                 '& .MuiDrawer-paper': {
                     alignContent: 'space-evenly',
                     justifyContent: 'center',
+                    width: '7vw',
                 }
             }}
             PaperProps={{
                 sx: {
-                    backgroundColor: 'orange',
+                    backgroundColor: '#EAEAEA',
                 }
             }}
             variant="permanent"
             anchor="left"
         >
             <List>
-                <Link href="https://www.google.com" passHref>
+                <Link href="/dash-volunteer">
                     <ListItem key="Home" sx={{
                         alignItems: 'center',
                     }}>
                         <ListItemButton>
                             <ListItemIcon>
                                 <HomeIcon fontSize='large' sx={{
-                                    color: 'white',
+                                    color: '#9C9C9C',
                                 }}></HomeIcon>
                             </ListItemIcon>
                         </ListItemButton>
                     </ListItem>
                 </Link>
-                <ListItem key="Organizer Checklist">
-                    <ListItemButton component = "a" href="https://www.google.com">
-                        <ListItemIcon>
-                            <FormatListNumberedIcon fontSize='large' sx={{
-                                color: 'white',
-                            }}></FormatListNumberedIcon>
-                        </ListItemIcon>
-                    </ListItemButton>
-                </ListItem>
-                <ListItem key="Milestones">
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <FlagIcon fontSize='large' sx={{
-                                color: 'white',
-                            }}></FlagIcon>
-                        </ListItemIcon>
-                    </ListItemButton>
-                </ListItem>
-                <ListItem key="Contact Us">
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <ShareIcon fontSize='large' sx={{
-                                color: 'white',
-                            }}></ShareIcon>
-                        </ListItemIcon>
-                    </ListItemButton>
-                </ListItem>
-                <ListItem key="Forum">
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <ChatBubbleIcon fontSize='large' sx={{
-                                color: 'white',
-                            }}></ChatBubbleIcon>
-                        </ListItemIcon>
-                    </ListItemButton>
-                </ListItem>
+                <Link href="/dash-volunteer">
+                    <ListItem key="Organizer Checklist">
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <Person2Icon fontSize='large' sx={{
+                                    color: '#9C9C9C',
+                                }}></Person2Icon>
+                            </ListItemIcon>
+                        </ListItemButton>
+                    </ListItem>
+                </Link>
+                <Link href="/leaderboard">
+                    <ListItem key="Milestones">
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <FlagIcon fontSize='large' sx={{
+                                    color: '#9C9C9C',
+                                }}></FlagIcon>
+                            </ListItemIcon>
+                        </ListItemButton>
+                    </ListItem>
+                </Link>
+                <Link href="/h4i-team">
+                    <ListItem key="Contact Us">
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <ShareIcon fontSize='large' sx={{
+                                    color: '#9C9C9C',
+                                }}></ShareIcon>
+                            </ListItemIcon>
+                        </ListItemButton>
+                    </ListItem>
+                </Link>
+                <Link href="/forum">
+                    <ListItem key="Forum">
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <ChatBubbleIcon fontSize='large' sx={{
+                                    color: '#9C9C9C',
+                                }}></ChatBubbleIcon>
+                            </ListItemIcon>
+                        </ListItemButton>
+                    </ListItem>
+                </Link>
             </List>
         </Drawer>
     );

@@ -1,41 +1,59 @@
-import Box from "@mui/material/Box";
-import Navbar from "../components/Navbar";
-import InstructionStepCard from "../components/InstructionStepCard";
-// import dbConnect from '../lib/dbConnect'
+import Box from '@mui/material/Box';
+import Navbar from '../components/Navbar'
+import DriveCard from '../components/DriveCard'
+import Grid from '@mui/material/Grid'; // Grid version 1
+import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
+import Drawer from '@mui/material';
+import Stack from '@mui/material/Stack';
+import dbConnect from '../lib/dbConnect'
+import getBookDriveModel from '../models/BookDrive';
 
-function DashVolunteer() {
-  const submitBtn = <button>test</button>;
+function DashVolunteer(props) {
+  // parse stringified json
+  let drives = JSON.parse(props.drives)
+  console.log(drives)
   return (
-    <div>
-      <Box component="main">
-        <div>Welcome to ALP Portal!</div>
-        <div style={{ "margin-top": "10px" }}></div>
-        <InstructionStepCard
-          heading="Current Number of Books Collected: "
-          subHeading="Send to ALP team — more info"
-          submitBtn={submitBtn}
-          stepNum={5}
-          numBooksCollected={200}
-        />
-      </Box>
-    </div>
+    <Grid>
+      <Grid><Navbar></Navbar></Grid>
+        <Stack direction="column"
+          justifyContent="flex-start"
+          alignItems="stretch"
+          spacing={5}>
+            <div style={{marginTop: '5vh'}}>
+              <Grid container spacing={2}>
+                <Grid item xs={11}>
+                  <div style={{fontSize: '45px', textAlign:'left', fontWeight:'bold'}}>HOME</div>
+                  <div style={{fontSize: '25px', textAlign:'left', marginTop: '2vh'}}>Active Drives</div>
+                </Grid>
+                <Grid item xs = {1}><img src="https://upload.wikimedia.org/wikipedia/en/d/de/AfricanLibraryProjectLogo.png" style={{width: '5vw'}}/></Grid>
+              </Grid>
+              
+              
+            </div>  
+          <Stack
+            direction="column"
+            justifyContent="flex-start"
+            //alignItems="stretch"
+            container spacing={10}>
+              {drives.map((drive) => (
+                <DriveCard drivename={drive.driveName}></DriveCard>
+              ))}
+          </Stack>
+        </Stack>
+    </Grid>
   );
 }
+  
+export async function getServerSideProps() {
+  await dbConnect()
+  const BookDrive = getBookDriveModel();
+  /* find all the data in our database */
+  const drives = await BookDrive.find({})
+  // stringify data before sending
+  return { props: { drives: JSON.stringify(drives) } }
+}
 
-/* Keep example code here, nothing should be dynamic on the home page */
-//   export async function getServerSideProps() {
-//     await dbConnect()
 
-//     /* find all the data in our database */
-//     const result = await Pet.find({})
-//     const pets = result.map((doc) => {
-//       const pet = doc.toObject()
-//       pet._id = pet._id.toString()
-//       return pet
-//     })
 
-//     return { props: { pets: pets } }
-//   }
-/* end example pet code */
 
-export default DashVolunteer;
+export default DashVolunteer
