@@ -6,7 +6,6 @@ import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import { ClientRequest } from 'http';
 import {useState } from 'react';
 import Image from 'next/image';
-import { alpha, styled } from '@mui/material/styles';
 
 const Login = () => {
 
@@ -33,7 +32,6 @@ const Login = () => {
     }
 
     return (
-        // className="auth-bg" 
         <Grid2 container className="auth-bg" justifyContent="center" textAlign="center" direction="column"
             sx={{
                 width: '100vw',
