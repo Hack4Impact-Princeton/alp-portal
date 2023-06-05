@@ -9,8 +9,7 @@ Create a local environment file:
 ```bash
 cp .env.local.example .env.local
 ```
-
-The MONGODB_URI connection string should be: "mongodb+srv://<username>:<password>@alp-portal.hh41pen.mongodb.net/?retryWrites=true&w=majority"
+Get the MONGODB_URI connection string from your MongoDB Compass account.
 
 ## Contributing to the Repository
 Create a new, local branch to make changes
