@@ -6,6 +6,7 @@ import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import { ClientRequest } from 'http';
 import {useState } from 'react';
 import Image from 'next/image';
+import { alpha, styled } from '@mui/material/styles';
 
 const Login = () => {
 
@@ -32,60 +33,57 @@ const Login = () => {
     }
 
     return (
-        <Grid2 container spacing={12} className="auth-bg" justifyContent="center" textAlign="center"
+        // className="auth-bg" 
+        <Grid2 container className="auth-bg" justifyContent="center" textAlign="center" direction="column"
             sx={{
-                height: 100,
+                width: '100vw',
+                height: '100vh',
             }}>
-            <Grid2 xs={12} display="flex" justifyContent="center" alignItems="center">
-            
-            </Grid2>
-                <Grid2 xs={12} spacing={10}>
-                    <Image className="auth-logo" src="/logo-long.png" width={956*0.3} height={295*0.3} alt="ALP-logo" sx={{
+            <Grid2 sx={{
+                marginTop: '25px',
+                width: '100%',
+                height: '25%',
+            }}>
+                <Image className="auth-logo" src="/logo-long.png" width={956*0.3} height={295*0.3} alt="ALP-logo" sx={{
                         marginBottom: "10 !important",
-                    }}/>
-                    <h2 className='auth-heading'> Volunteer Portal Login </h2></Grid2>
-                <Grid2 xs={12}
-                    display="flex"
-                    sx={{   
-                        width: 400,
-                        height: 300,
-                    }}>
-                    <Grid2 xs={12} display="flex" justifyContent="center" alignItems="center">
-                        <Box
-                            textAlign="center"
+                }}/>
+                <h2 className='auth-heading'> Volunteer Portal Login </h2>
+            </Grid2>
+            <Grid2>
+                <Grid2 xs display="flex" justifyContent="center">
+                    <Box
+                        sx={{
+                            width: 300,
+                            height: 300,
+                        }}>
+                        <TextField fullWidth required id="email" label="Email" variant="outlined" 
+                            value={email}
+                            onChange={handleSetEmail}
                             sx={{
-                                width: 300,
-                                height: 300,
-                            }}
-                            >
-                            <TextField fullWidth required id="email" label="Email" variant="outlined" 
-                                value={email}
-                                onChange={handleSetEmail}
-                                sx={{
-                                    mt: 2,
-                                    mb: 2
-                                }}/>
-                            <TextField fullWidth 
-                                required id="password" label="Password" variant="outlined" 
-                                value={password} onChange={handleSetPassword}
-                                sx={{
-                                    mt: 2,
-                                    mb: 2
-                                }}/>
-                            <Button variant="contained"
-                                sx={{
-                                    marginTop: 3,
-                                }}>Login</Button>
-                            <Button variant="contained"
-                                onClick={signUpHandler}
-                                sx={{
-                                    marginTop: 3,
-                                    marginLeft: 3,
-                                }}>Sign Up</Button>
-                        </Box>
-                    </Grid2>
+                                mt: 2,
+                                mb: 2
+                            }}/>
+                        <TextField fullWidth 
+                            required id="password" label="Password" variant="outlined" 
+                            value={password} onChange={handleSetPassword}
+                            sx={{
+                                mt: 2,
+                                mb: 2
+                            }}/>
+                        <Button variant="contained"
+                            sx={{
+                                marginTop: 3,
+                            }}>Login</Button>
+                        <Button variant="contained"
+                            onClick={signUpHandler}
+                            sx={{
+                                marginTop: 3,
+                                marginLeft: 3,
+                            }}>Sign Up</Button>
+                    </Box>
                 </Grid2>
-                </Grid2>
+            </Grid2>
+        </Grid2>
     )
 }
 

@@ -23,10 +23,7 @@ function MyApp({ Component, pageProps }) {
       <Head>
         <title>African Library Project Portal</title>
       </Head>
-
-      <div className="grid wrapper">
         <Component {...pageProps} />
-      </div>
     </>
   )
 }
