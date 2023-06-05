@@ -217,7 +217,7 @@ const EditVolunteerAccount = (props) => {
         setEmail(event.target.value)
     }
     const handleLocationChange = (event) => {
-        setLocation(event.target.value+1)
+        setLocation(event.target.value)
     }
     const editVolunteerAccount = async() => {
         try {

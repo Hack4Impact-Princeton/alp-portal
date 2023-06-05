@@ -230,7 +230,7 @@ const Signup = () => {
         setPassword(passwordText.target.value)
     }
     const handleSetLocation = (event) => {
-        setLocation(event.target.value+1)
+        setLocation(event.target.value);
     }
 
     const signUpHandler = async () => {
