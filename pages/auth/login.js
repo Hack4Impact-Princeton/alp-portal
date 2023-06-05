@@ -7,29 +7,53 @@ import { ClientRequest } from 'http';
 import {useState } from 'react';
 import Image from 'next/image';
 
-const Login = () => {
+function Login(props) {
+  let drives = JSON.parse(props.drives);
 
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+  const router = useRouter();
 
-    const handleSetEmail = (emailText) => {
-        setEmail(emailText.target.value)
-    }
-    const handleSetPassword = (passwordText) => {
-        setPassword(passwordText.target.value)
-    }
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    const signUpHandler = async () => {
-        try {
-            const data = {email: email, password: password}
-            await fetch('/api/volunteeraccounts', {
-                method: "POST",
-                body: JSON.stringify(data),
-            });
-        } catch (e) {
-            console.error(e)
-        }
+  let [disabled, setDisabled] = useState(false);
+  let [success, setSuccess] = useState(false);
+
+  let emailsToPwhashs = {};
+  for (let i = 0; i < drives.length; i++) {
+    emailsToPwhashs[drives[i]["email"]] = drives[i]["pwhash"];
+  }
+
+  function verifyLogin() {
+    if (email in emailsToPwhashs && emailsToPwhashs[email] == password) {
+      console.log("Good login");
+      router.push("/dash-volunteer");
+      setSuccess(true);
+      setDisabled(false);
+    } else {
+      console.log("Bad login");
+      setDisabled(true);
     }
+  }
+//
+  const handleSetEmail = (emailText) => {
+    setEmail(emailText.target.value);
+  };
+
+  const handleSetPassword = (passwordText) => {
+    setPassword(passwordText.target.value);
+  };
+
+  const signUpHandler = async () => {
+    try {
+      const data = { email: email, password: password };
+      await fetch("/api/volunteeraccounts", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
     return (
         <Grid2 container className="auth-bg" justifyContent="center" textAlign="center" direction="column"
@@ -83,6 +107,5 @@ const Login = () => {
             </Grid2>
         </Grid2>
     )
-}
 
-export default Login
+export default Login;
