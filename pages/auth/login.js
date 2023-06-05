@@ -6,9 +6,12 @@ import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import { ClientRequest } from 'http';
 import {useState } from 'react';
 import Image from 'next/image';
+import dbConnect from "../../lib/dbConnect";
+import getVolunteerAccountModel from "../../models/VolunteerAccount";
+import { useRouter } from "next/router";
 
 function Login(props) {
-  let drives = JSON.parse(props.drives);
+  let accounts = JSON.parse(props.accounts);
 
   const router = useRouter();
 
@@ -19,8 +22,8 @@ function Login(props) {
   let [success, setSuccess] = useState(false);
 
   let emailsToPwhashs = {};
-  for (let i = 0; i < drives.length; i++) {
-    emailsToPwhashs[drives[i]["email"]] = drives[i]["pwhash"];
+  for (let i = 0; i < accounts.length; i++) {
+    emailsToPwhashs[accounts[i]["email"]] = accounts[i]["pwhash"];
   }
 
   function verifyLogin() {
@@ -107,5 +110,13 @@ function Login(props) {
             </Grid2>
         </Grid2>
     )
+}
+export async function getServerSideProps() {
+  await dbConnect();
+  const volunteerAccount = getVolunteerAccountModel();
+  /* find all the data in our database */
+  const accounts = await volunteerAccount.find({});
+  // stringify data before sending
+  return { props: { accounts: JSON.stringify(accounts) } };
 }
 export default Login;
