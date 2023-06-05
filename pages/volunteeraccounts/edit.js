@@ -1,12 +1,8 @@
-import React from 'react'
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import { useState } from 'react'
-import Link from 'next/link';
-import Router from 'next/router'
-
-const Signup = () => {
+import dbConnect from "../../lib/dbConnect"
+import getVolunteerAccountModel from "../../models/VolunteerAccount"
+import {useState} from 'react'
+import { Button } from "@mui/material"
+const EditVolunteerAccount = (props) => {
     const states = [
         {
             name: "Alabama",
@@ -209,93 +205,47 @@ const Signup = () => {
             index: 50,
         }
     ]
+    const error = props.error
+    const alp_id = props.alp_id
+    const volunteerAccount = JSON.parse(props.account)
 
+    const [email, setEmail] = useState(volunteerAccount.email)
+    const [location, setLocation] = useState(volunteerAccount.location)
+    const [isEdited, setIsEdited] = useState(false)
     
-    const [fname, setFName] = useState("")
-    const [lname, setLName] = useState("")
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [location, setLocation] = useState(1)
-
-    const handleSetFName = (fName) => {
-        setFName(fName.target.value)
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value)
     }
-    const handleSetLName = (lName) => {
-        setLName(lName.target.value)
-    }
-    const handleSetEmail = (emailText) => {
-        setEmail(emailText.target.value)
-    }
-    const handleSetPassword = (passwordText) => {
-        setPassword(passwordText.target.value)
-    }
-    const handleSetLocation = (event) => {
+    const handleLocationChange = (event) => {
         setLocation(event.target.value+1)
     }
-
-    const signUpHandler = async () => {
+    const editVolunteerAccount = async() => {
         try {
-            const data = { fname: fname, lname: lname, email: email, password: password, location: location }
-            const res = await fetch('../api/volunteeraccounts', {
-                method: "POST",
+            const data = {
+                alp_id: alp_id,
+                email: email,
+                location: location,
+            }
+            const resJson = await fetch("/api/volunteeraccounts", {
+                method: "PATCH",
                 body: JSON.stringify(data),
-            })
-            const resJson = await res.json()
-            if (res.status == 200) {
-                const href=`/dash-volunteer?alp_id=${resJson.alp_id}`
-                Router.push(href)
-            } throw new Error(`error with status ${res.status}`)
+            }).then(res => res.json())
+            if (resJson.success) setIsEdited(true)
+            else alert(`something went wrong`)
         } catch (e) {
             console.error(e)
         }
     }
-    return (
-        <div>
-            {/* TODO: <img src="" alt="ALP-logo"/> */}
-            <h2> Sign up to volunteer with African Library Project! </h2>
-            <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                sx={{
-                    width: 400,
-                    height: 400,
-                    backgroundColor: 'white',
-                    border: 3,
-                    borderColor: 'orange',
-                }}>
-                <Box
-                    textAlign="center"
-                    sx={{
-                        width: 300,
-                        height: 300,
-                    }}
-                >
-                    <TextField fullWidth required id="fname" label="First Name" variant="outlined"
-                        value={fname} onChange={handleSetFName}
-                        sx={{
-                            mt: 2,
-                            mb: 2
-                        }} />
-                    <TextField fullWidth required id="lname" label="Last Name" variant="outlined"
-                        value={lname} onChange={handleSetLName}
-                        sx={{
-                            mt: 2,
-                            mb: 2
-                        }} />
-                    <TextField fullWidth required id="email" label="Email" variant="outlined"
-                        value={email} onChange={handleSetEmail}
-                        sx={{
-                            mt: 2,
-                            mb: 2
-                        }} />
-                    <TextField fullWidth required id="password" label="Password" variant="outlined"
-                        value={password} onChange={handleSetPassword}
-                        sx={{
-                            mt: 2,
-                            mb: 2
-                        }} />
-                    <select onChange={handleSetLocation}>
+    if (!isEdited)
+        return (
+            <div>
+                {volunteerAccount &&
+                <div>
+                    <p>Update your email</p>
+                    <input type="text" value={email} onChange={handleEmailChange}/>
+                    <br></br>
+                    <p>Update your location</p>
+                    <select onChange={handleLocationChange} value={location}>
                         {
                             states.map((state) => (
                                <option key={state.index} value={state.index}>{state.name}</option> 
@@ -303,15 +253,41 @@ const Signup = () => {
                         }
                     </select>
                     <br></br>
-                    <Button variant="contained"
-                        onClick={signUpHandler}
-                        sx={{
-                            marginTop: 3,
-                        }}>Signup</Button>
-                </Box>
-            </Box>
+                    <Button onClick={editVolunteerAccount}>Click here to submit changes</Button>
+                </div>
+                }
+                {error &&
+                <p>
+                    something went wrong - we cannot find the account with id {alp_id} : {error}
+                </p>
+                }
+                <Button href={`/volunteeraccounts/profile?alp_id=${alp_id}`}>Click here to go back</Button>
+            </div>
+        )
+    else return (
+        <div>
+            <p>Updated Information:</p>
+            <br></br>
+            <p>Email: {email}</p>
+            <br></br>
+            <p>location: {states[location-1].name}</p>
+            <br></br>
+            <Button href={`/volunteeraccounts/profile?alp_id=${alp_id}`}>Click here to see your profile</Button>
         </div>
     )
 }
 
-export default Signup
+export const getServerSideProps = async(context) => {
+    try {
+        await dbConnect()
+        const alp_id = context.query.alp_id
+        const VolunteerAccount = getVolunteerAccountModel()
+        const volunteerAccount = await VolunteerAccount.findOne({alp_id: alp_id})
+        return {props: {account: JSON.stringify(volunteerAccount), alp_id: alp_id, error: null}}
+    } catch (e) {
+        console.error(e)
+        const strError = `${e}`
+        return {props: {account: null, alp_id: null, error: strError}}
+    }
+}
+export default EditVolunteerAccount

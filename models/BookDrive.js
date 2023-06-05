@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 const {Schema} = mongoose
 
 const BookDriveSchema = new Schema ({
-    driveID: {type: String},
+    driveCode: {type: String},
     organizer: {type: String},
     startDate: {type: String},
     completedDate: {type: String},

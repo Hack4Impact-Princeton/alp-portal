@@ -40,6 +40,10 @@ const VolunteerAccountSchema = new Schema({
         type: Number,
         required: true
     },
+    driveIds: {
+        type: Array,
+        required: true
+    },
     badges: {
         type: Number,
         required: true

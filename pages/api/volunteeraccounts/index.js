@@ -14,7 +14,7 @@ export default async function handler(req, res) {
                     maxAlpId = account.alp_id
                 })
                 console.log(maxAlpId)
-                const {email, password, fname, lname} = JSON.parse(req.body)
+                const {email, password, fname, lname, location} = JSON.parse(req.body)
                 const newVolunteerAccount = new VolunteerAccount({
                     fname: fname,
                     lname: lname,
@@ -22,13 +22,13 @@ export default async function handler(req, res) {
                     ageBucket: 1,
                     email: email,
                     pwhash: password,
-                    location: 5,
+                    location: location,
                     dateJoined: Date.now(),
                     allDrives: 0,
                     badges: 0
                 })
                 const account = await newVolunteerAccount.save()
-                res.status(200).json({success: true, data: account}) 
+                res.status(200).json({success: true, data: account, alp_id: newVolunteerAccount.alp_id}) 
                 break
             } catch (error) {
                 res.status(400).json({ success: false, data: error })
@@ -36,15 +36,17 @@ export default async function handler(req, res) {
             }
         case 'PATCH':
             try {
-               const {alp_id, email, password, fname, lname} = JSON.parse(req.body)
-               const account = await VolunteerAccount.findOneAndUpdate(
+               const {alp_id, email, location} = JSON.parse(req.body)
+               const modifiedVolunteerAccount = await VolunteerAccount.findOneAndUpdate(
                 {alp_id: alp_id}, 
-                {fname: fname, lname: lname, email: email, pwhash: password}
+                {email: email, location: location}, {
+                    new: true,
+                }
                 )
-               const modifiedVolunteerAccount = await account.save()
                res.status(200).json({success: true, data: modifiedVolunteerAccount}) 
                break
             } catch (error) {
+                console.log(error)
                 res.status(400).json({success: false, data: error})
                 break
             }
