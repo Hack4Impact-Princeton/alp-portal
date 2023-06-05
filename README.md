@@ -9,8 +9,7 @@ Create a local environment file:
 ```bash
 cp .env.local.example .env.local
 ```
-
-Get the MONGODB_URI connection string from your MongoDB Compass.
+Get the MONGODB_URI connection string from your MongoDB Compass account.
 
 ## Contributing to the Repository
 Create a new, local branch to make changes
