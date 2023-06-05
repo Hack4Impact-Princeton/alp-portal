@@ -1,14 +1,13 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-const BookDriveSchema = new Schema(
-  {
-    driveID: { type: String },
-    organizer: { type: String },
-    startDate: { type: String },
-    completedDate: { type: String },
-    status: { type: Number },
-    booksGoal: { type: Number },
+const BookDriveSchema = new Schema ({
+    driveCode: {type: String},
+    organizer: {type: String},
+    startDate: {type: String},
+    completedDate: {type: String},
+    status: {type: Number},
+    booksGoal: {type: Number},
     gs: {
       fundraise: { type: String },
       terms: { type: Boolean },

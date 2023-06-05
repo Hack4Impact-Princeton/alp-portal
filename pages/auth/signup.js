@@ -9,10 +9,215 @@ import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Image from 'next/image';
 
 const Signup = () => {
+    const states = [
+        {
+            name: "Alabama",
+            index: 1,
+        },
+        {
+            name: "Alaska",
+            index: 2,
+        },
+        {
+            name: "Arizona",
+            index: 3,
+        },
+        {
+            name: "Arkansas",
+            index: 4,
+        },
+        {
+            name: "California",
+            index: 5,
+        },
+        {
+            name: "Colorado",
+            index: 6,
+        },
+        {
+            name: "Connecticut",
+            index: 7,
+        },
+        {
+            name: "Delaware",
+            index: 8,
+        },
+        {
+            name: "Florida",
+            index: 9,
+        },
+        {
+            name: "Georgia",
+            index: 10,
+        },
+        {
+            name: "Hawaii",
+            index: 11,
+        },
+        {
+            name: "Idaho",
+            index: 12,
+        },
+        {
+            name: "Illinois",
+            index: 13,
+        },
+        {
+            name: "Indiana",
+            index: 14,
+        },
+        {
+            name: "Iowa",
+            index: 15,
+        },
+        {
+            name: "Kansas",
+            index: 16,
+        },
+        {
+            name: "Kentucky",
+            index: 17,
+        },
+        {
+            name: "Louisiana",
+            index: 18,
+        },
+        {
+            name: "Maine",
+            index: 19,
+        },
+        {
+            name: "Maryland",
+            index: 20,
+        },
+        {
+            name: "Massachusetts",
+            index: 21,
+        },
+        {
+            name: "Michigan",
+            index: 22,
+        },
+        {
+            name: "Minnesota",
+            index: 23,
+        },
+        {
+            name: "Mississippi",
+            index: 24,
+        },
+        {
+            name: "Missouri",
+            index: 25,
+        },
+        {
+            name: "Montana",
+            index: 26,
+        },
+        {
+            name: "Nebraska",
+            index: 27,
+        },
+        {
+            name: "Nevada",
+            index: 28,
+        },
+        {
+            name: "New Hampshire",
+            index: 29,
+        },
+        {
+            name: "New Jersey",
+            index: 30,
+        },
+        {
+            name: "New Mexico",
+            index: 31,
+        },
+        {
+            name: "New York",
+            index: 32,
+        },
+        {
+            name: "North Carolina",
+            index: 33,
+        },
+        {
+            name: "North Dakota",
+            index: 34,
+        },
+        {
+            name: "Ohio",
+            index: 35,
+        },
+        {
+            name: "Oklahoma",
+            index: 36,
+        },
+        {
+            name: "Oregon",
+            index: 37,
+        },
+        {
+            name: "Pennslyvania",
+            index: 38,
+        },
+        {
+            name: "Rhode Island",
+            index: 39,
+        },
+        {
+            name: "South Carolina",
+            index: 40,
+        },
+        {
+            name: "South Dakota",
+            index: 41,
+        },
+        {
+            name: "Tennessee",
+            index: 42,
+        },
+        {
+            name: "Texas",
+            index: 43,
+        },
+        {
+            name: "Utah",
+            index: 44,
+        },
+        {
+            name: "Vermont",
+            index: 45,
+        },
+        {
+            name: "Virginia",
+            index: 46,
+        },
+        {
+            name: "Washington",
+            index: 47,
+        },
+        {
+            name: "West Virginia",
+            index: 48,
+        },
+        {
+            name: "Wisconsin",
+            index: 49,
+        },
+        {
+            name: "Wyoming",
+            index: 50,
+        }
+    ]
+
+    
     const [fname, setFName] = useState("")
     const [lname, setLName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [location, setLocation] = useState(1)
 
     const handleSetFName = (fName) => {
         setFName(fName.target.value)
@@ -26,15 +231,22 @@ const Signup = () => {
     const handleSetPassword = (passwordText) => {
         setPassword(passwordText.target.value)
     }
+    const handleSetLocation = (event) => {
+        setLocation(event.target.value);
+    }
 
     const signUpHandler = async () => {
         try {
-            const data = { fname: fname, lname: lname, email: email, password: password }
+            const data = { fname: fname, lname: lname, email: email, password: password, location: location }
             const res = await fetch('../api/volunteeraccounts', {
                 method: "POST",
                 body: JSON.stringify(data),
-            });
-            if (res.status == 200) Router.push('/dash-volunteer')
+            })
+            const resJson = await res.json()
+            if (res.status == 200) {
+                const href=`/dash-volunteer?alp_id=${resJson.alp_id}`
+                Router.push(href)
+            } throw new Error(`error with status ${res.status}`)
         } catch (e) {
             console.error(e)
         }
@@ -86,7 +298,15 @@ const Signup = () => {
                                     mt: 2,
                                     mb: 2
                                 }} />
-                            <Button variant="contained"
+                            <select onChange={handleSetLocation}>
+                        {
+                            states.map((state) => (
+                               <option key={state.index} value={state.index}>{state.name}</option> 
+                            ))
+                        }
+                    </select>
+                    <br></br>
+                    <Button variant="contained"
                                 onClick={signUpHandler}
                                 sx={{
                                     marginTop: 3,

@@ -7,11 +7,16 @@ import Drawer from '@mui/material';
 import Stack from '@mui/material/Stack';
 import dbConnect from '../lib/dbConnect'
 import getBookDriveModel from '../models/BookDrive';
-
+import Link from 'next/link'
+import getVolunteerAccountModel from '../models/VolunteerAccount';
 function DashVolunteer(props) {
-  // parse stringified json
-  let drives = JSON.parse(props.drives)
-  console.log(drives)
+  let drives = null;
+  let volunteer = null;
+  let error = null;
+  if (props.volunteer)  volunteer = JSON.parse(props.volunteer)
+  if (props.drives) drives = JSON.parse(props.drives)
+  if (props.error) error = JSON.parse(props.error)
+
   return (
     <Grid>
       <Grid><Navbar></Navbar></Grid>
@@ -27,10 +32,11 @@ function DashVolunteer(props) {
                 </Grid>
                 <Grid item xs = {1}><img src="https://upload.wikimedia.org/wikipedia/en/d/de/AfricanLibraryProjectLogo.png" style={{width: '5vw'}}/></Grid>
               </Grid>
-              
-              
             </div>  
-          <Stack
+          <Link href={{pathname: "volunteeraccounts/profile",
+           query: {alp_id: volunteer.alp_id}}}> Click here to go to your profile
+          </Link>
+          {drives && <Stack
             direction="column"
             justifyContent="flex-start"
             //alignItems="stretch"
@@ -38,19 +44,29 @@ function DashVolunteer(props) {
               {drives.map((drive) => (
                 <DriveCard drivename={drive.driveName}></DriveCard>
               ))}
-          </Stack>
+          </Stack>}
         </Stack>
     </Grid>
   );
 }
   
-export async function getServerSideProps() {
-  await dbConnect()
-  const BookDrive = getBookDriveModel();
-  /* find all the data in our database */
-  const drives = await BookDrive.find({})
-  // stringify data before sending
-  return { props: { drives: JSON.stringify(drives) } }
+export async function getServerSideProps(context) {
+  try {
+    await dbConnect()
+    const alp_id = context.query.alp_id
+    const VolunteerAccount = getVolunteerAccountModel()
+    const BookDrive = getBookDriveModel();
+    const volunteerAccount = await VolunteerAccount.findOne({alp_id: alp_id})
+    const driveList = volunteerAccount.driveIds
+    // finds all bookdrives that correspond to the volunteerAccount
+    const promises = driveList.map(driveId => BookDrive.find({driveCode: driveId}));
+    const drives = await Promise.all(promises);
+    return { props: { drives: JSON.stringify(drives), volunteer: JSON.stringify(volunteerAccount) } }
+  } catch (error) {
+    console.log(error)
+    return {props: {error: JSON.stringify(error)}}
+  }
+  
 }
 
 
