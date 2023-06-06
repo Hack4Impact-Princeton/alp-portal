@@ -27,6 +27,7 @@ function Login(props) {
   }
 
   function verifyLogin() {
+    console.log("Verifying credentials");
     if (email in emailsToPwhashs && emailsToPwhashs[email] == password) {
       console.log("Good login");
       router.push("/dash-volunteer");
@@ -96,6 +97,7 @@ function Login(props) {
                                 mb: 2
                             }}/>
                         <Button variant="contained"
+                            onclick={verifyLogin}
                             sx={{
                                 marginTop: 3,
                             }}>Login</Button>
