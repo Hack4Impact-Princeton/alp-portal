@@ -1,13 +1,13 @@
 import json
 import requests
-import time
 
 
+BASE = "http://localhost:3000/"
 data = {
   "driveID": "YOYOYOYOYOYO",
   "organizer": "Derek Geng",
   "startDate": "2/30/23",
-  "completedDate": "6/31/23",
+  "completedDate": "6/31/24",
   "status": 0,
   "booksGoal": 500,
   "gs": {
@@ -39,5 +39,21 @@ data = {
   }
 }
 
-requests.post()
+# test get
+ret = requests.get(BASE + '/api/bookDrive/Hello-World-Code')
+retData = json.loads(ret.content.decode())['data'] #turn into json
+print(ret.status_code)
+retData['organizer'] = 'YMH'
+retData['driveCode'] = 'Hello-World-Code'
+# test put
+ret = requests.put(BASE + '/api/bookDrive/Hello-World-Code', data = {'driveName': 'YMH'})
+print(ret.status_code)
+retData.pop('_id')
+# test post
+# ret = requests.post(BASE + '/api/bookDrive/Hello-World-Code2', json=json.dumps(retData))
+# print(ret.status_code)
+# # test del
+# ret = requests.delete(BASE + '/api/bookDrive/Hello-World-Code3')
+# print(ret.status_code)
+
 
