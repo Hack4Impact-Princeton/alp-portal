@@ -41,19 +41,24 @@ data = {
 
 # test get
 ret = requests.get(BASE + '/api/bookDrive/Hello-World-Code')
-retData = json.loads(ret.content.decode())['data'] #turn into json
-print(ret.status_code)
-retData['organizer'] = 'YMH'
-retData['driveCode'] = 'Hello-World-Code'
+retData = json.loads(ret.content.decode())['data'] # turn into json
+print(retData) 
+print(ret.status_code) # ret 200
+
 # test put
 ret = requests.put(BASE + '/api/bookDrive/Hello-World-Code', data = {'driveName': 'YMH'})
-print(ret.status_code)
+print(ret.status_code) # ret 200
 retData.pop('_id')
+retData['driveCode'] = "Hello-World-Code2"
+
 # test post
-# ret = requests.post(BASE + '/api/bookDrive/Hello-World-Code2', json=json.dumps(retData))
-# print(ret.status_code)
-# # test del
-# ret = requests.delete(BASE + '/api/bookDrive/Hello-World-Code3')
-# print(ret.status_code)
+ret = requests.post(BASE + '/api/bookDrive/Hello-World-Code2', json=json.dumps(retData))
+print(ret.status_code) # ret 200
+ret = requests.post(BASE + '/api/bookDrive/Hello-World-Code2', json=json.dumps(retData))
+print(ret.status_code) # ret 400 (duplicate drive)
+
+# test del
+ret = requests.delete(BASE + '/api/bookDrive/Hello-World-Code2')
+print(ret.status_code) # ret 200
 
 

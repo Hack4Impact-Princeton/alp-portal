@@ -41,7 +41,16 @@ export default async function handler(req, res) {
       break
     case 'POST': /* Create new Drive */
         try {
-          const newDrive = new BookDrive(JSON.parse(req.body))
+          if (await BookDrive.exists({driveCode : code})) {
+              console.log("drive already exists")
+              return res.status(400).json({ success: false })
+          }
+          const parsedData = JSON.parse(req.body);
+          if (code != parsedData.driveCode){
+            console.log("api code and driveCode do not match")
+            return res.status(400).json({ success: false })
+          }
+          const newDrive = new BookDrive(parsedData);
           if (!newDrive) 
             return res.status(400).json({ success: false })
           newDrive.save(function (err, drive) {
