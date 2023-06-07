@@ -27,17 +27,20 @@ function Login(props) {
   }
 
   function verifyLogin() {
-    console.log("Verifying credentials");
-    if (email in emailsToPwhashs && emailsToPwhashs[email] == password) {
-      console.log("Good login");
+    var bcrypt = require("bcryptjs");
+
+    if (
+      email in emailsToPwhashs &&
+      bcrypt.compare(password, emailsToPwhashs[email])
+    ) {
       router.push("/dash-volunteer");
       setSuccess(true);
       setDisabled(false);
     } else {
-      console.log("Bad login");
       setDisabled(true);
     }
   }
+
 //
   const handleSetEmail = (emailText) => {
     setEmail(emailText.target.value);
@@ -47,16 +50,9 @@ function Login(props) {
     setPassword(passwordText.target.value);
   };
 
+  // need to change to go to sign up page
   const signUpHandler = async () => {
-    try {
-      const data = { email: email, password: password };
-      await fetch("/api/volunteeraccounts", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
-    } catch (e) {
-      console.error(e);
-    }
+    router.push("/auth/signup")
   };
 
     return (
@@ -97,7 +93,7 @@ function Login(props) {
                                 mb: 2
                             }}/>
                         <Button variant="contained"
-                            onclick={verifyLogin}
+                            onClick={verifyLogin}
                             sx={{
                                 marginTop: 3,
                             }}>Login</Button>

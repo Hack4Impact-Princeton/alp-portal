@@ -237,7 +237,11 @@ const Signup = () => {
 
     const signUpHandler = async () => {
         try {
-            const data = { fname: fname, lname: lname, email: email, password: password, location: location }
+            var bcrypt = require("bcryptjs");
+            var salt = bcrypt.genSaltSync(10);
+            var hashedPwd = bcrypt.hashSync(password, salt);
+
+            const data = { fname: fname, lname: lname, email: email, password: hashedPwd, location: location }
             const res = await fetch('../api/volunteeraccounts', {
                 method: "POST",
                 body: JSON.stringify(data),
