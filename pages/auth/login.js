@@ -27,7 +27,7 @@ function Login(props) {
   }
 
   function verifyLogin() {
-    var bcrypt = require("bcryptjs");
+    const bcrypt = require("bcryptjs");
 
     if (
       email in emailsToPwhashs &&

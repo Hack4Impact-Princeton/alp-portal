@@ -10,6 +10,7 @@
     "@emotion/styled": "^11.10.4",
     "@mui/icons-material": "^5.10.14",
     "@mui/material": "^5.10.5",
+    "bcryptjs": "^2.4.3",
     "contentful": "^9.2.5",
     "graphql-tools": "^8.3.6",
     "mongodb": "^4.8.1",
