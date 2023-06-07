@@ -1,4 +1,5 @@
 import InstructionGroupCard from "../components/InstructionGroup";
+import InstructionStepCard from "../components/InstructionStepCard";
 import * as React from 'react';
 import Grid from "@mui/material/Unstable_Grid2";
 

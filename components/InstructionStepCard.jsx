@@ -67,7 +67,7 @@ function StepOneInstructions() {
   return (
     <Grid container alignItems="center" sx={{ p: 5 }}>
       <Grid item xs={4} sx={{ pb: 5 }}>
-        <span>Update Books Collected</span>
+        <span>Number of New Books Collected</span>
       </Grid>
       <Grid item xs={8} sx={{ pb: 5 }}>
         <TextField size="small" fullWidth id="books-collected" variant="outlined" />

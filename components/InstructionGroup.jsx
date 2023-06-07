@@ -11,6 +11,7 @@ import { Typography } from '@mui/material';
 import Grid from "@mui/material/Unstable_Grid2";
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import InstructionStepCard from './InstructionStepCard';
+import CollectBooksCard from './CollectBooksCard';
 
 
 /*const ExpandMore = styled((props: (expand:boolean)) => {
@@ -62,7 +63,7 @@ export default function InstructionGroupCard(props) {
             <Grid container item xs={12} alignItems={"center"} justifyContent={"center"}>
               <Collapse in={expanded} timeout="auto" unmountOnExit>
                   <Grid paddingTop={3} paddingLeft={4}>
-                    <InstructionStepCard paddingTop={3}></InstructionStepCard>
+                    <CollectBooksCard paddingTop={3} stepNum={1} numBooksCollected={500} heading={"Current Number of Books Collected:"}></CollectBooksCard>
                   </Grid>
                   
               </Collapse>
