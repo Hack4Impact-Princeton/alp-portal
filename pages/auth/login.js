@@ -28,8 +28,14 @@ function Login(props) {
   }
 
   function verifyLogin() {
+
+    var bcrypt = require("bcryptjs");
     console.log("Verifying credentials");
-    if (email in emailsToPwhashs && emailsToPwhashs[email] == password) {
+
+    if (
+      email in emailsToPwhashs &&
+      bcrypt.compare(password, emailsToPwhashs[email])
+    ) {
       console.log("Good login");
       router.push("/dash-volunteer");
       setSuccess(true);
