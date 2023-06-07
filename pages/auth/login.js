@@ -10,6 +10,7 @@ import dbConnect from "../../lib/dbConnect";
 import getVolunteerAccountModel from "../../models/VolunteerAccount";
 import { useRouter } from "next/router";
 
+
 function Login(props) {
   let accounts = JSON.parse(props.accounts);
 
@@ -27,12 +28,9 @@ function Login(props) {
   }
 
   function verifyLogin() {
-    const bcrypt = require("bcryptjs");
-
-    if (
-      email in emailsToPwhashs &&
-      bcrypt.compare(password, emailsToPwhashs[email])
-    ) {
+    console.log("Verifying credentials");
+    if (email in emailsToPwhashs && emailsToPwhashs[email] == password) {
+      console.log("Good login");
       router.push("/dash-volunteer");
       setSuccess(true);
       setDisabled(false);
@@ -111,9 +109,9 @@ function Login(props) {
 }
 export async function getServerSideProps() {
   await dbConnect();
-  const volunteerAccount = getVolunteerAccountModel();
+  const VolunteerAccount = getVolunteerAccountModel();
   /* find all the data in our database */
-  const accounts = await volunteerAccount.find({});
+  const accounts = await VolunteerAccount.find({});
   // stringify data before sending
   return { props: { accounts: JSON.stringify(accounts) } };
 }
