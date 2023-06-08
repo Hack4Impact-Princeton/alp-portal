@@ -62,8 +62,14 @@ export default function InstructionGroupCard(props) {
             </Grid>
             <Grid container item xs={12} alignItems={"center"} justifyContent={"center"}>
               <Collapse in={expanded} timeout="auto" unmountOnExit>
-                  <Grid paddingTop={3} paddingLeft={4}>
-                    <CollectBooksCard paddingTop={3} stepNum={1} numBooksCollected={500} heading={"Current Number of Books Collected:"}></CollectBooksCard>
+                  <Grid padding={4}>
+                    <CollectBooksCard paddingTop={3} cardNum={1} numBooksCollected={500}></CollectBooksCard>
+                  </Grid>
+                  <Grid padding={4}>
+                    <CollectBooksCard paddingTop={3} cardNum={2} numFunds={200}></CollectBooksCard>
+                  </Grid>
+                  <Grid padding={4}>
+                    <CollectBooksCard paddingTop={3} cardNum={3} numFunds={300}></CollectBooksCard>
                   </Grid>
                   
               </Collapse>
