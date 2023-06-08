@@ -28,24 +28,30 @@ function Login(props) {
   }
 
   function verifyLogin() {
+
+    var bcrypt = require("bcryptjs");
     console.log("Verifying credentials");
-    if (email in emailsToPwhashs && emailsToPwhashs[email] == password) {
+
+    if (
+      email in emailsToPwhashs &&
+      bcrypt.compare(password, emailsToPwhashs[email])
+    ) {
       console.log("Good login");
-      let alp_id
+      let alp_id;
       for (let i = 0; i < accounts.length; i++) {
         if (accounts[i].email == email) {
-          alp_id = accounts[i].alp_id
-          break
+          alp_id = accounts[i].alp_id;
+          break;
         }
       }
       router.push(`../dash-volunteer?alp_id=${alp_id}`);
       setSuccess(true);
       setDisabled(false);
     } else {
-      console.log("Bad login");
       setDisabled(true);
     }
   }
+
 //
   const handleSetEmail = (emailText) => {
     setEmail(emailText.target.value);
@@ -55,16 +61,9 @@ function Login(props) {
     setPassword(passwordText.target.value);
   };
 
+  // need to change to go to sign up page
   const signUpHandler = async () => {
-    try {
-      const data = { email: email, password: password };
-      await fetch("/api/volunteeraccounts", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
-    } catch (e) {
-      console.error(e);
-    }
+    router.push("/auth/signup")
   };
 
     return (
