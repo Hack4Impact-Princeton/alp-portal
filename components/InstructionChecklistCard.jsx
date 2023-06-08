@@ -38,8 +38,9 @@ export default function InstructionChecklistCard(props) {
 
 // 1: Read Collection Guidelines
 function StepOneCard(props) {
-    const currState = props.info.terms; 
+    const [currState, setCurrState] = useState(props.info.terms)
     console.log("CURR STATE: ", currState);
+    console.log(props.driveCode)
 
     const handleTermsCheck = async () => {
         console.log("click");
@@ -50,10 +51,12 @@ function StepOneCard(props) {
                     terms: !currState,}
             }
             console.log("data: ", JSON.stringify(data));
-            await fetch('/api/bookDrive/'+props.driveCode, {
+            await fetch(`/api/bookDrive/${props.driveCode}`, {
                 method: "PUT",
                 body: JSON.stringify(data),
             });
+            setCurrState(()=> !currState)
+            console.log(currState)
             console.log("done");
             } catch (e) {
             console.error(e)
