@@ -3,13 +3,12 @@ import { Typography, Checkbox, FormControlLabel } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 
 // A generic type of card that would go within an InstructionGroup
-export default function InstructionChecklistCard({
-    driveCode,
-    heading,
-    stepNum
-}) {
+export default function InstructionChecklistCard(props) {
+    console.log(props.driveStatus);
+
+
     let cardContent = <></>;
-    switch (stepNum) {
+    switch (props.stepNum) {
         case 1: 
             // read drive.gs.terms to pass in the completion state
             // default to false for now
@@ -34,7 +33,8 @@ export default function InstructionChecklistCard({
         >
         <Grid item xs={12}>
             <Typography variant="h4">
-              <span>{heading}</span>
+              <span>{props.heading}</span>
+              <span>{props.driveStatus.gettingStarted}</span>
             </Typography>
         </Grid>
         {cardContent}

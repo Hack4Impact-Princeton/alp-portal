@@ -9,6 +9,7 @@ import dbConnect from '../lib/dbConnect'
 import getBookDriveModel from '../models/BookDrive';
 import Link from 'next/link'
 import getVolunteerAccountModel from '../models/VolunteerAccount';
+
 function DashVolunteer(props) {
   let drives = null;
   let volunteer = null;
@@ -66,7 +67,6 @@ export async function getServerSideProps(context) {
     console.log(error)
     return {props: {error: JSON.stringify(error)}}
   }
-  
 }
 
 
