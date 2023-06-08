@@ -5,7 +5,7 @@ import Person2Icon from '@mui/icons-material/Person2';
 import HomeIcon from '@mui/icons-material/Home';
 import ShareIcon from '@mui/icons-material/Share';
 
-const drawerWidth = 80;
+const drawerWidth: number = 80;
 
 export default function Navbar() {
     return(
