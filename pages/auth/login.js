@@ -10,6 +10,7 @@ import dbConnect from "../../lib/dbConnect";
 import getVolunteerAccountModel from "../../models/VolunteerAccount";
 import { useRouter } from "next/router";
 
+
 function Login(props) {
   let accounts = JSON.parse(props.accounts);
 
@@ -27,9 +28,17 @@ function Login(props) {
   }
 
   function verifyLogin() {
+    console.log("Verifying credentials");
     if (email in emailsToPwhashs && emailsToPwhashs[email] == password) {
       console.log("Good login");
-      router.push("/dash-volunteer");
+      let alp_id
+      for (let i = 0; i < accounts.length; i++) {
+        if (accounts[i].email == email) {
+          alp_id = accounts[i].alp_id
+          break
+        }
+      }
+      router.push(`../dash-volunteer?alp_id=${alp_id}`);
       setSuccess(true);
       setDisabled(false);
     } else {
@@ -96,6 +105,7 @@ function Login(props) {
                                 mb: 2
                             }}/>
                         <Button variant="contained"
+                            onClick={verifyLogin}
                             sx={{
                                 marginTop: 3,
                             }}>Login</Button>
@@ -113,9 +123,9 @@ function Login(props) {
 }
 export async function getServerSideProps() {
   await dbConnect();
-  const volunteerAccount = getVolunteerAccountModel();
+  const VolunteerAccount = getVolunteerAccountModel();
   /* find all the data in our database */
-  const accounts = await volunteerAccount.find({});
+  const accounts = await VolunteerAccount.find({});
   // stringify data before sending
   return { props: { accounts: JSON.stringify(accounts) } };
 }
