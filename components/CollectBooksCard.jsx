@@ -32,8 +32,6 @@ export default function CollectBooksCard({
       </Grid>
 
       <CardBody />
-
-      
     </Grid>
   );
 }

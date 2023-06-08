@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Typography } from '@mui/material';
+import { Typography, Checkbox, FormControlLabel } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 
+// A generic type of card that would go within an InstructionGroup
 export default function InstructionChecklistCard({
     driveCode,
     heading,
@@ -33,17 +34,23 @@ export default function InstructionChecklistCard({
         >
         <Grid item xs={12}>
             <Typography variant="h4">
-              <span>{heading}</span> <span>{stepNum}</span>
+              <span>{heading}</span>
             </Typography>
-        </Grid>
-        <Grid item xs={12}>
-            <Typography variant="h5">{"subheading"}</Typography>
         </Grid>
         {cardContent}
     </Grid>)
 }
 
 function StepOneCard() {
-    return(<h1>HERE</h1>)
+    return(
+        <Grid container alignItems="center" sx={{ p: 5 }}>
+            <Grid item sx={{ pb: 5 }}>
+                <span>Click here to view the guidelines.</span>
+            </Grid>
+            <Grid item xs={8}>
+                <FormControlLabel control={<Checkbox />} label="I have read and understood the collection guidelines." />
+            </Grid> 
+        </Grid>
+    )
 }
 
