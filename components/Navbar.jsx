@@ -30,7 +30,7 @@ export default function Navbar() {
                     <ListItem key="Home" sx={{
                         alignItems: 'center',
                     }}>
-                        <ListItemButton component="a">
+                        <ListItemButton>
                             <ListItemIcon>
                                 <HomeIcon fontSize='large' sx={{
                                     color: '#9C9C9C',
