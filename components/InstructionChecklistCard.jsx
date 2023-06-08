@@ -4,16 +4,12 @@ import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 
 // A generic type of card that would go within an InstructionGroup
 export default function InstructionChecklistCard(props) {
-    console.log(props.driveStatus);
-
-
     let cardContent = <></>;
     switch (props.stepNum) {
         case 1: 
-            // read drive.gs.terms to pass in the completion state
-            // default to false for now
             cardContent = <StepOneCard
-                checked={false}> 
+                driveCode={props.driveCode}
+                info={props.driveStatus.gettingStarted}> 
                 </StepOneCard>;
         case 5: 
             // read drive.pts.materials to pass in bools
@@ -34,21 +30,46 @@ export default function InstructionChecklistCard(props) {
         <Grid item xs={12}>
             <Typography variant="h4">
               <span>{props.heading}</span>
-              <span>{props.driveStatus.gettingStarted}</span>
             </Typography>
         </Grid>
         {cardContent}
     </Grid>)
 }
 
-function StepOneCard() {
+// 1: Read Collection Guidelines
+function StepOneCard(props) {
+    const currState = props.info.terms; 
+    console.log("CURR STATE: ", currState);
+
+    const handleTermsCheck = async () => {
+        console.log("click");
+        try {
+            const data = {
+                gs: {
+                    fundraise: props.info.fundraise,
+                    terms: !currState,}
+            }
+            console.log("data: ", JSON.stringify(data));
+            await fetch('/api/bookDrive/'+props.driveCode, {
+                method: "PUT",
+                body: JSON.stringify(data),
+            });
+            console.log("done");
+            } catch (e) {
+            console.error(e)
+        }
+    }
     return(
         <Grid container alignItems="center" sx={{ p: 5 }}>
             <Grid item sx={{ pb: 5 }}>
                 <span>Click here to view the guidelines.</span>
             </Grid>
             <Grid item xs={8}>
-                <FormControlLabel control={<Checkbox />} label="I have read and understood the collection guidelines." />
+                {currState      // default render checked or not
+                ? <FormControlLabel control={<Checkbox defaultChecked/>} onChange={handleTermsCheck} label="I have read and understood the collection guidelines." />
+                : <FormControlLabel control={<Checkbox />} onChange={handleTermsCheck} label="I have read and understood the collection guidelines." />
+                }
+                
             </Grid> 
         </Grid>
     )

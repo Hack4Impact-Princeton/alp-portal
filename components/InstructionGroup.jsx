@@ -39,7 +39,7 @@ export default function InstructionGroupCard(props) {
     let content = <CollectBooksCard paddingTop={3} stepNum={1} numBooksCollected={500} heading={"Current Number of Books Collected:"}></CollectBooksCard>
     switch (props.groupNum) {
       case 0: 
-        content = <InstructionChecklistCard heading={"Read the Book Collection Guidelines"} stepNum={1}></InstructionChecklistCard>;
+        content = <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Read the Book Collection Guidelines"} stepNum={1}></InstructionChecklistCard>;
     }
     return (
       <Grid>
