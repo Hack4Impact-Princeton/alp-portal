@@ -37,7 +37,14 @@ function Login(props) {
       bcrypt.compare(password, emailsToPwhashs[email])
     ) {
       console.log("Good login");
-      router.push("/dash-volunteer");
+      let alp_id;
+      for (let i = 0; i < accounts.length; i++) {
+        if (accounts[i].email == email) {
+          alp_id = accounts[i].alp_id;
+          break;
+        }
+      }
+      router.push(`../dash-volunteer?alp_id=${alp_id}`);
       setSuccess(true);
       setDisabled(false);
     } else {
