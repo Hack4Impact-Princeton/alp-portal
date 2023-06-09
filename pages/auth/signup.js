@@ -86,25 +86,25 @@ const Signup = () => {
                             height: 300,
                         }}>
                             <TextField fullWidth required error={submit && fname==''} id="fname" label="First Name" variant="outlined" 
-                            value={fname} onChange={handleSetFName}
+                            value={fname} onChange={handleSetFName} 
                             sx={{
                                 mt: 2,
                                 mb: 2
                             }} />
                             <TextField fullWidth required error={submit && lname==''} id="lname" label="Last Name" variant="outlined"
-                                value={lname} onChange={handleSetLName}
+                                value={lname} onChange={handleSetLName} 
                                 sx={{
                                     mt: 2,
                                     mb: 2
                                 }}/>
                             <TextField fullWidth required error={submit && email==''} id="email" label="Email" variant="outlined"
-                                value={email} onChange={handleSetEmail}
+                                value={email} onChange={handleSetEmail} 
                                 sx={{
                                     mt: 2,
                                     mb: 2
                                 }} />
                             <TextField fullWidth required error={submit && password==''} id="password" label="Password" variant="outlined"
-                                value={password} onChange={handleSetPassword}
+                                value={password} onChange={handleSetPassword} 
                                 sx={{
                                     mt: 2,
                                     mb: 2
