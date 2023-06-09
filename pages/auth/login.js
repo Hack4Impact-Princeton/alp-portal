@@ -1,16 +1,18 @@
-// import '../css/style.css'
-// import '../css/form.css'
-import React, { useState } from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import { ClientRequest } from "http";
-import getVolunteerAccountModel from "../../models/VolunteerAccount";
+import React from 'react'
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
+import { ClientRequest } from 'http';
+import {useState } from 'react';
+import Image from 'next/image';
 import dbConnect from "../../lib/dbConnect";
+import getVolunteerAccountModel from "../../models/VolunteerAccount";
 import { useRouter } from "next/router";
 
+
 function Login(props) {
-  let drives = JSON.parse(props.drives);
+  let accounts = JSON.parse(props.accounts);
 
   const router = useRouter();
 
@@ -21,21 +23,35 @@ function Login(props) {
   let [success, setSuccess] = useState(false);
 
   let emailsToPwhashs = {};
-  for (let i = 0; i < drives.length; i++) {
-    emailsToPwhashs[drives[i]["email"]] = drives[i]["pwhash"];
+  for (let i = 0; i < accounts.length; i++) {
+    emailsToPwhashs[accounts[i]["email"]] = accounts[i]["pwhash"];
   }
 
   function verifyLogin() {
-    if (email in emailsToPwhashs && emailsToPwhashs[email] == password) {
+
+    var bcrypt = require("bcryptjs");
+    console.log("Verifying credentials");
+
+    if (
+      email in emailsToPwhashs &&
+      bcrypt.compare(password, emailsToPwhashs[email])
+    ) {
       console.log("Good login");
-      router.push("/dash-volunteer");
+      let alp_id;
+      for (let i = 0; i < accounts.length; i++) {
+        if (accounts[i].email == email) {
+          alp_id = accounts[i].alp_id;
+          break;
+        }
+      }
+      router.push(`../dash-volunteer?alp_id=${alp_id}`);
       setSuccess(true);
       setDisabled(false);
     } else {
-      console.log("Bad login");
       setDisabled(true);
     }
   }
+
 //
   const handleSetEmail = (emailText) => {
     setEmail(emailText.target.value);
@@ -45,105 +61,71 @@ function Login(props) {
     setPassword(passwordText.target.value);
   };
 
+  // need to change to go to sign up page
   const signUpHandler = async () => {
-    try {
-      const data = { email: email, password: password };
-      await fetch("/api/volunteeraccounts", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
-    } catch (e) {
-      console.error(e);
-    }
+    router.push("/auth/signup")
   };
 
-  return (
-    <div>
-      {/* TODO: <img src="" alt="ALP-logo"/> */}
-      <h2> ALP Volunteer Portal Login </h2>
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        sx={{
-          width: 400,
-          height: 400,
-          backgroundColor: "white",
-          border: 3,
-          borderColor: "orange",
-        }}
-      >
-        <Box
-          textAlign="center"
-          sx={{
-            width: 300,
-            height: 300,
-          }}
-        >
-          <TextField
-            onChange={handleSetEmail}
-            fullWidth
-            required
-            id="email"
-            label="Email"
-            variant="outlined"
-            value={email}
+    return (
+        <Grid2 container className="auth-bg" justifyContent="center" textAlign="center" direction="column"
             sx={{
-              mt: 2,
-              mb: 2,
-            }}
-          />
-          <TextField
-            onChange={handleSetPassword}
-            fullWidth
-            required
-            id="password"
-            label="Password"
-            variant="outlined"
-            value={password}
-            sx={{
-              mt: 2,
-              mb: 2,
-            }}
-          />
-          <Button
-            onClick={verifyLogin}
-            variant="contained"
-            sx={{
-              marginTop: 3,
-            }}
-          >
-            Login
-          </Button>
-          <Button
-            variant="contained"
-            onClick={signUpHandler}
-            sx={{
-              marginTop: 3,
-              marginLeft: 3,
-            }}
-          >
-            Sign Up
-          </Button>
-          {disabled && <div> Error in login </div>}
-          {success && (
-            <div> Successful Login, please wait to be redirected</div>
-          )}
-        </Box>
-      </Box>
-    </div>
-  );
+                width: '100vw',
+                height: '100vh',
+            }}>
+            <Grid2 sx={{
+                marginTop: '25px',
+                width: '100%',
+                height: '25%',
+            }}>
+                <Image className="auth-logo" src="/logo-long.png" width={956*0.3} height={295*0.3} alt="ALP-logo" sx={{
+                        marginBottom: "10 !important",
+                }}/>
+                <h2 className='auth-heading'> Volunteer Portal Login </h2>
+            </Grid2>
+            <Grid2>
+                <Grid2 xs display="flex" justifyContent="center">
+                    <Box
+                        sx={{
+                            width: 300,
+                            height: 300,
+                        }}>
+                        <TextField fullWidth required id="email" label="Email" variant="outlined" 
+                            value={email}
+                            onChange={handleSetEmail}
+                            sx={{
+                                mt: 2,
+                                mb: 2
+                            }}/>
+                        <TextField fullWidth 
+                            required id="password" label="Password" variant="outlined" 
+                            value={password} onChange={handleSetPassword}
+                            sx={{
+                                mt: 2,
+                                mb: 2
+                            }}/>
+                        <Button variant="contained"
+                            onClick={verifyLogin}
+                            sx={{
+                                marginTop: 3,
+                            }}>Login</Button>
+                        <Button variant="contained"
+                            onClick={signUpHandler}
+                            sx={{
+                                marginTop: 3,
+                                marginLeft: 3,
+                            }}>Sign Up</Button>
+                    </Box>
+                </Grid2>
+            </Grid2>
+        </Grid2>
+    )
 }
-
-/* Keep example code here, nothing should be dynamic on the home page */
 export async function getServerSideProps() {
   await dbConnect();
-  const volunteerAccount = getVolunteerAccountModel();
+  const VolunteerAccount = getVolunteerAccountModel();
   /* find all the data in our database */
-  const drives = await volunteerAccount.find({});
+  const accounts = await VolunteerAccount.find({});
   // stringify data before sending
-  return { props: { drives: JSON.stringify(drives) } };
+  return { props: { accounts: JSON.stringify(accounts) } };
 }
-/* end example pet code */
-
 export default Login;
