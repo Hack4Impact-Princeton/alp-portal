@@ -19,4 +19,5 @@ export default function TeamMember(props) {
             </CardActionArea>
         </Card>
     )
+
 }

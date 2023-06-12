@@ -102,29 +102,24 @@ function Login(props) {
                                 mt: 2,
                                 mb: 2
                             }}/>
-                     <TextField
-              fullWidth
-              required
-              id="password"
-              label="Password"
-              variant="outlined"
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={handleSetPassword}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleTogglePassword}>
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                mt: 2,
-                mb: 2,
-              }}
-            />
+                     <TextField fullWidth required id="password" label="Password" variant="outlined"
+                          type={showPassword ? 'text' : 'password'}
+                          value={password}
+                          onChange={handleSetPassword}
+                          InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={handleTogglePassword}>
+                                         {showPassword ? <VisibilityOff /> : <Visibility />}
+                                   </IconButton>
+                               </InputAdornment>
+                              ),
+                           }}
+                          sx={{
+                          mt: 2,
+                         mb: 2,
+                          }}
+                        />
                         <Button variant="contained"
                             onClick={verifyLogin}
                             sx={{
