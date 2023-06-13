@@ -1,20 +1,20 @@
 import getVolunteerAccountModel from "../../models/VolunteerAccount"
 import dbConnect from '../../lib/dbConnect'
-import Router from 'next/router'
-import {getStates} from '../../lib/enums'
-
 import Grid2 from "@mui/material/Unstable_Grid2"
 import Box from '@mui/material/Box';
-import { Grid, dividerClasses } from "@mui/material";
 import Navbar from "../../components/Navbar";
-import AlpLogo from "../"
 import {useState} from 'react'
+import MapComponent from '../../components/MapComponent'
 import Link from 'next/link'
+import getBookDriveModel from "../../models/BookDrive"
+
 const Profile = (props) => {
-  const states = getStates()
   const [isHovered, setIsHovered] = useState(false)
 
   let account = JSON.parse(props.account)
+  // drives will be passed as props to the mapComponent
+  let drives = JSON.parse(props.completedDrives)
+ 
   
   return (
     <Grid2>
@@ -26,7 +26,7 @@ const Profile = (props) => {
           <button style={{borderRadius: "20%", height: 'auto', justifyContent: 'flex-end', backgroundColor: isHovered ? "darkgray": "white"}} onMouseEnter={() => setIsHovered(true)}
   onMouseLeave={() => setIsHovered(false)}>Edit Profile</button>
         </Link>
-        <img display="flex" justifyContent="flex-end" src="/alp-logo.png" alt="alp-logo" height="55px"></img>
+        <img display="flex" style={{justifyContent: "flex-end"}} src="/alp-logo.png" alt="alp-logo" height="55px"></img>
       </Box>
       <Grid2 container display="flex" padding={5} sx={{ pl: 20 }} rowSpacing={2}>
         <Grid2 item xs={12} sm={7} display="flex" flexDirection="column" >
@@ -77,19 +77,20 @@ const Profile = (props) => {
             </div>
           </Box>
         </Grid2>
-        <Grid2 item xs={12} sm={5}>
+        <Grid2 item xs={12} sm={5} height={"450px"} >
           <Box
             sx={{
-              width: "180px",
-              height: "300px",
+              width: "100%",
+              height: "100%",
               border: "1.5px solid black",
               '@media (min-width: 600px)': {
                 display: 'inline-block',
-                width: '70%',
+                width: '100%',
+                height: '100%'
               },
-              maxWidth: "200px",
+              maxWidth: "450px",
             }}>
-            <p style={{ textAlign: "left" }}>Placeholder</p>
+            <MapComponent  drives={drives}/>
           </Box>
         </Grid2>
       </Grid2>
@@ -101,9 +102,14 @@ const Profile = (props) => {
 export const getServerSideProps = async (context) => {
   await dbConnect()
   const VolunteerAccount = getVolunteerAccountModel()
+  const BookDrive = getBookDriveModel()
   const alp_id = context.query.alp_id
   const volunteerAccount = await VolunteerAccount.findOne({ alp_id: alp_id })
-  return { props: { account: JSON.stringify(volunteerAccount) } }
+  const driveList = volunteerAccount.driveIds
+    // finds all completed bookDrives that correspond to the volunteer account
+  const promises = driveList.map(driveId => BookDrive.find({driveCode: driveId, status: 1}));
+  const completedDrives = await Promise.all(promises);
+  return { props: { account: JSON.stringify(volunteerAccount), completedDrives: JSON.stringify(completedDrives) } }
 }
 
 export default Profile

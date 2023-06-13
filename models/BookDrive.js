@@ -5,6 +5,7 @@ const BookDriveSchema = new Schema ({
     driveName: {type: String},
     driveCode: {type: String},
     organizer: {type: String},
+    country: {type: String},
     startDate: {type: String},
     completedDate: {type: String},
     status: {type: Number},
