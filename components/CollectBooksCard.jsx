@@ -30,13 +30,26 @@ export default function CollectBooksCard({
           <span>Current Number of Books Collected:</span> <span>{HEADER_NUM}</span>
         </Typography>
       </Grid>
-
-      <CardBody />
+      
+      <CardBody driveCode={props.driveCode} />
     </Grid>
   );
 }
 
-function CardBody() {
+function CardBody(props) {
+  const handleSubmitButton = async () => {
+    console.log("submit clicked");
+    try {
+      // what is driveCode
+      await fetch(`/api/bookDrive/${props.driveCode}`,{
+        method: "PUT",
+        body: JSON.stringify(data), // textfield information
+      });
+      console.log("submitted to DB");
+    } catch (e) {
+      console.error(e);
+    }
+  }
   return (
     <Grid container alignItems="center" sx={{ p: 5 }}>
       <Grid item xs={4} sx={{ pb: 5 }}>
@@ -48,9 +61,10 @@ function CardBody() {
 
       <Grid item xs={11}>
         <span>Please update every X weeks. Last updated 00/00/0000</span>
-        
       </Grid>
-      <Grid item xs={1}><Button variant="contained" size="medium">Submit</Button></Grid>
+      <Grid item xs={1}>
+        <Button variant="contained" size="medium" onClick={handleSubmitButton}>Submit</Button>
+      </Grid>
     </Grid>
 
     
