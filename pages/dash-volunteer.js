@@ -27,8 +27,7 @@ function DashVolunteer(props) {
         pt: 5, 
         pr: 5, 
         width: '100%', 
-        justifyContent: "space-between",
-        backgroundColor: 'yellow' }} >
+        justifyContent: "space-between"}} >
         <h1 style={{ textAlign: "left", fontSize: "90px", paddingRight: 10 }}>Home</h1>
         <div style={{fontSize: '25px', textAlign:'left', marginTop: '2vh'}}>Active Drives</div>
         <Link href={{pathname: "volunteeraccounts/profile",
