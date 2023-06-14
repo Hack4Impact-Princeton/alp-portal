@@ -11,7 +11,7 @@ import { Typography } from '@mui/material';
 import Grid from "@mui/material/Unstable_Grid2";
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import InstructionStepCard from './InstructionStepCard';
-import CollectBooksCard from './CollectBooksCard';
+import InstructionCollectCard from './InstructionCollectCard';
 import InstructionChecklistCard from './InstructionChecklistCard';
 
 
@@ -36,7 +36,7 @@ export default function InstructionGroupCard(props) {
       setExpanded(!expanded);
     };
 
-    let content = <CollectBooksCard paddingTop={3} stepNum={1} numBooksCollected={500} heading={"Current Number of Books Collected:"}></CollectBooksCard>
+    let content = <InstructionCollectCard paddingTop={3} stepNum={1} driveStatus={props.driveStatus} numBooksCollected={500} heading={"Current Number of Books Collected:"} driveCode={props.driveCode}></InstructionCollectCard>
     switch (props.groupNum) {
       case 0: 
         content = <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Read the Book Collection Guidelines"} stepNum={1}></InstructionChecklistCard>;

@@ -1,4 +1,5 @@
 import { Typography, Grid, TextField, Button } from "@mui/material";
+import React, {useState} from "react";
 
 export default function CollectBooksCard({
   heading,
@@ -6,6 +7,8 @@ export default function CollectBooksCard({
   submitBtn,
   stepNum,
   numBooksCollected,
+  driveCode,
+  driveStatus
 }) {
   let HEADER_NUM;
 
@@ -31,16 +34,35 @@ export default function CollectBooksCard({
         </Typography>
       </Grid>
       
-      <CardBody driveCode={props.driveCode} />
+      <CardBody currBooks={numBooksCollected} driveCode={driveCode} info={driveStatus.collectingBooks} />
     </Grid>
   );
 }
 
 function CardBody(props) {
+  const [bookState, setBookState] = useState("");
+
+  const handleInput = e => {
+
+    setBookState(e.target.value);
+    console.log(bookState);
+  }
+
   const handleSubmitButton = async () => {
     console.log("submit clicked");
+    
+    console.log(bookState);
+    console.log(typeof(bookState));
+    console.log(typeof(props.currBooks));
     try {
-      // what is driveCode
+
+      const data = {
+        cb: {
+          booksCurrent: parseInt(props.currBooks) + parseInt(bookState),
+          updateFreq: props.info.updateFreq++,
+          lastUpdate: "6/14/23"  // implement datetime
+        }
+      }
       await fetch(`/api/bookDrive/${props.driveCode}`,{
         method: "PUT",
         body: JSON.stringify(data), // textfield information
@@ -49,6 +71,7 @@ function CardBody(props) {
     } catch (e) {
       console.error(e);
     }
+    setBookState("");
   }
   return (
     <Grid container alignItems="center" sx={{ p: 5 }}>
@@ -56,7 +79,7 @@ function CardBody(props) {
         <span>Number of New Books Collected:</span>
       </Grid>
       <Grid item xs={8} sx={{ pb: 5 }}>
-        <TextField size="small" fullWidth id="books-collected" variant="outlined" />
+        <TextField size="small" fullWidth id="books-collected" variant="outlined" value={bookState} onChange={handleInput}/>
       </Grid>
 
       <Grid item xs={11}>
