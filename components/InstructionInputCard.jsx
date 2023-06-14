@@ -1,74 +1,89 @@
-import * as React from 'react';
-import Collapse from '@mui/material/Collapse';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import IconButton, { IconButtonProps } from '@mui/material/IconButton';
-import { Typography } from '@mui/material';
-import Grid from "@mui/material/Unstable_Grid2";
-import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
-import InstructionStepCard from './InstructionStepCard';
-import CollectBooksCard from './CollectBooksCard';
+import { Typography, Grid, TextField } from "@mui/material";
 
+export default function InstructionStepCard({
+  heading,
+  subHeading,
+  submitBtn,
+  stepNum,
+  numBooksCollected,
+}) {
+  let HEADER_NUM;
+  switch (stepNum) {
+    case 1:
+      HEADER_NUM = numBooksCollected
+        ? numBooksCollected
+        : "Must pass numBooksCollected!";
+      break;
+    case 2:
+      HEADER_NUM = "($250)";
+      break;
+    case 3:
+      HEADER_NUM = "($350-400)";
+      break;
+    default:
+      HEADER_NUM = null;
+  }
 
-/*const ExpandMore = styled((props: (expand:boolean)) => {
-    const { expand, ...other } = props;
-    return <IconButton {...other} />;
-  })(({ theme, expand }) => ({
-    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  }));*/
-
-export default function InstructionGroupCard(props) {
-    const [expanded, setExpanded] = React.useState(!props.completed);
-    
-    let visible = (props.completed) ? "visible" : "hidden";
-    
-    const handleExpandClick = () => {
-      setExpanded(!expanded);
-    };
-    return (
-      <Grid>
-        <Grid container paddingTop={2} spacing={2} xs={12} sx={{width:"65vw", backgroundColor:"gray"}}>
-            <Grid container spacing={1} item xs={9} sx={{color:"#FE9834"}} direction="row">
-              <Grid>
-                <h1 onClick = {handleExpandClick}>
-                  {props.header}
-                </h1>
-              </Grid>
-              <Grid>
-                <ExpandMoreIcon sx={{
-                  visibility:visible,
-                  transform: !expanded ? 'rotate(0deg)' : 'rotate(180deg)',
-                  }}
-                   onClick = {handleExpandClick}/>
-              </Grid>
-            </Grid>
-            <Grid container paddingTop={1} item xs={3}>
-              <Grid paddingTop={1.5} sx={{visibility:visible}}>
-                <h3 >
-                  Completed
-                </h3>
-              </Grid>
-              <Grid>
-                <DoneRoundedIcon fontSize="medium" sx={{visibility:visible}}></DoneRoundedIcon>
-              </Grid>
-            </Grid>
-            <Grid container item xs={12} alignItems={"center"} justifyContent={"center"}>
-              <Collapse in={expanded} timeout="auto" unmountOnExit>
-                  <Grid paddingTop={3} paddingLeft={4}>
-                    <CollectBooksCard paddingTop={3} stepNum={1} numBooksCollected={500} heading={"Current Number of Books Collected:"}></CollectBooksCard>
-                  </Grid>
-                  
-              </Collapse>
-            </Grid>
-        </Grid>
+  return (
+    <Grid
+      sx={{
+        border: "3px solid black;",
+        borderRadius: "5px"
+      }}
+      container
+      direction="row"
+      spacing={3}
+      minWidth={"50%"}
+      backgroundColor="#F5F5F5"
+    >
+      <Grid item xs={12}>
+        <Typography variant="h4">
+          <span>{heading}</span> <span>{HEADER_NUM}</span>
+        </Typography>
       </Grid>
-    );
+      <Grid item xs={12}>
+        <Typography variant="h5">{subHeading}</Typography>
+      </Grid>
+
+      <StepOneInstructions />
+
+      {/*
+        {
+          '1': <StepOneInstructions />,
+          '2': <StepTwoInstructions />,
+          '3': <StepThreeInstructions />,
+          '4': <StepFourInstructions />,
+          '5': <StepFiveInstructions />,
+          '6': <StepSixInstructions />,
+          '7': <StepSevenInstructions />,
+        }[{stepNum}]
+      */}
+      <div>{submitBtn}</div>
+    </Grid>
+  );
+}
+
+function StepOneInstructions() {
+  return (
+    <Grid container alignItems="center" sx={{ p: 5 }}>
+      <Grid item xs={4} sx={{ pb: 5 }}>
+        <span>Number of New Books Collected</span>
+      </Grid>
+      <Grid item xs={8} sx={{ pb: 5 }}>
+        <TextField size="small" fullWidth id="books-collected" variant="outlined" />
+      </Grid>
+      <Grid item xs={12}>
+        <span>Please update every X weeks. Last updated 00/00/0000</span>
+      </Grid>
+    </Grid>
+
+    /* <Grid container alignItems="center" sx={{ border: "2px solid red" }}>
+      <Grid item xs={4}>
+        <span>Update Books Collected</span>
+      </Grid>
+      <Grid item xs={8}>
+        <TextField id="books-collected" variant="outlined" />
+      </Grid>
+    </Grid> */
+  );
 }
