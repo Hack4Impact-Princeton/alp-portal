@@ -4,10 +4,13 @@ import FlagIcon from '@mui/icons-material/Flag';
 import Person2Icon from '@mui/icons-material/Person2';
 import HomeIcon from '@mui/icons-material/Home';
 import ShareIcon from '@mui/icons-material/Share';
-
+import { useState } from 'react';
 const drawerWidth: number = 80;
 
-export default function Navbar() {
+type NavbarProps = {
+    active: "dash-volunteer" | "profile" | "leaderboard" | "h4i-team" | "forum";
+}
+const Navbar: React.FC<NavbarProps> = ({active}) => {
     return(
         <Drawer
             sx={{
@@ -33,7 +36,7 @@ export default function Navbar() {
                         <ListItemButton>
                             <ListItemIcon>
                                 <HomeIcon fontSize='large' sx={{
-                                    color: '#9C9C9C',
+                                    color: active === 'dash-volunteer' ? 'orange' : '#9C9C9C',
                                 }}></HomeIcon>
                             </ListItemIcon>
                         </ListItemButton>
@@ -44,7 +47,7 @@ export default function Navbar() {
                         <ListItemButton>
                             <ListItemIcon>
                                 <Person2Icon fontSize='large' sx={{
-                                    color: '#9C9C9C',
+                                    color: active === 'profile' ? 'orange' : '#9C9C9C',
                                 }}></Person2Icon>
                             </ListItemIcon>
                         </ListItemButton>
@@ -55,7 +58,7 @@ export default function Navbar() {
                         <ListItemButton>
                             <ListItemIcon>
                                 <FlagIcon fontSize='large' sx={{
-                                    color: '#9C9C9C',
+                                    color: active === 'leaderboard' ? 'orange' : '#9C9C9C',
                                 }}></FlagIcon>
                             </ListItemIcon>
                         </ListItemButton>
@@ -66,7 +69,7 @@ export default function Navbar() {
                         <ListItemButton>
                             <ListItemIcon>
                                 <ShareIcon fontSize='large' sx={{
-                                    color: '#9C9C9C',
+                                    color: active === 'h4i-team' ? 'orange' : '#9C9C9C',
                                 }}></ShareIcon>
                             </ListItemIcon>
                         </ListItemButton>
@@ -77,7 +80,7 @@ export default function Navbar() {
                         <ListItemButton>
                             <ListItemIcon>
                                 <ChatBubbleIcon fontSize='large' sx={{
-                                    color: '#9C9C9C',
+                                    color: active === 'forum' ? 'orange' : '#9C9C9C',
                                 }}></ChatBubbleIcon>
                             </ListItemIcon>
                         </ListItemButton>
@@ -87,3 +90,4 @@ export default function Navbar() {
         </Drawer>
     );
 }
+export default Navbar

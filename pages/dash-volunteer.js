@@ -20,7 +20,7 @@ function DashVolunteer(props) {
 
   return (
     <Grid2>
-      <Grid2><Navbar/></Grid2>
+      <Grid2><Navbar active="dash-volunteer"/></Grid2>
 
       <Box display="flex" flexDirection="column" sx={{ 
         pl: 20, 

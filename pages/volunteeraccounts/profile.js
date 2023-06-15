@@ -18,7 +18,7 @@ const Profile = (props) => {
   
   return (
     <Grid2>
-      <Grid2><Navbar /></Grid2>
+      <Grid2><Navbar active="profile"/></Grid2>
       
       <Box display="flex" sx={{ pl: 20, pt: 5, pr: 5, width: '100%', justifyContent: "space-between" }} >
         <h1 style={{ textAlign: "left", fontSize: "90px", paddingRight: 10 }}>Profile </h1>
