@@ -120,8 +120,8 @@ export async function getServerSideProps(context) {
     const drives = await Promise.all(promises);
 
     return { props: { drives: JSON.stringify(drives), volunteer: JSON.stringify(volunteerAccount) } }
-  } catch (error) {
-    console.log(error)
+  } catch (e) {
+    console.log(e)
     let strError = e.message === "Cannot read properties of null (reading 'user')" ? "You must login before accessing this page" : `${e}`
     return { props: { error: strError } }
   }

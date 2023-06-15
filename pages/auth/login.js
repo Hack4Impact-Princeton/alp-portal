@@ -3,56 +3,15 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
-import { ClientRequest } from 'http';
 import {useState } from 'react';
 import Image from 'next/image';
-import dbConnect from "../../lib/dbConnect";
-import getVolunteerAccountModel from "../../models/VolunteerAccount";
-import { useRouter } from "next/router";
 import { signIn } from 'next-auth/react'
 import Router from 'next/router';
 
 
-function Login(props) {
-  let accounts = JSON.parse(props.accounts);
-
-  const router = useRouter();
-
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  let [disabled, setDisabled] = useState(false);
-  let [success, setSuccess] = useState(false);
-
-  let emailsToPwhashs = {};
-  for (let i = 0; i < accounts.length; i++) {
-    emailsToPwhashs[accounts[i]["email"]] = accounts[i]["pwhash"];
-  }
-
-  function verifyLogin() {
-
-    var bcrypt = require("bcryptjs");
-    console.log("Verifying credentials");
-
-    if (
-      email in emailsToPwhashs &&
-      bcrypt.compare(password, emailsToPwhashs[email])
-    ) {
-      console.log("Good login");
-      let alp_id;
-      for (let i = 0; i < accounts.length; i++) {
-        if (accounts[i].email == email) {
-          alp_id = accounts[i].alp_id;
-          break;
-        }
-      }
-      router.push(`../dash-volunteer?alp_id=${alp_id}`);
-      setSuccess(true);
-      setDisabled(false);
-    } else {
-      setDisabled(true);
-    }
-  }
 
 //
   const handleSetEmail = (emailText) => {
@@ -65,7 +24,7 @@ function Login(props) {
 
   // need to change to go to sign up page
   const signUpHandler = async () => {
-    router.push("/auth/signup")
+    Router.push("/auth/signup")
   };
 
   const handleSubmit = async(e) => {
@@ -138,12 +97,5 @@ function Login(props) {
         </Grid2>
     )
 }
-export async function getServerSideProps() {
-  await dbConnect();
-  const VolunteerAccount = getVolunteerAccountModel();
-  /* find all the data in our database */
-  const accounts = await VolunteerAccount.find({});
-  // stringify data before sending
-  return { props: { accounts: JSON.stringify(accounts) } };
-}
+
 export default Login;

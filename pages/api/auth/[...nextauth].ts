@@ -14,23 +14,20 @@ export const authOptions: NextAuthOptions = {
             credentials: {},
             async authorize(credentials, req) {
                 const { email, password } = credentials as { email: string, password: string }
-                // goes through all accounts to see if the credentials are correct
-                const accounts: VolunteerAccount[] = await getAllAccounts()
-                let emailsToPwhashs: { [key: string]: string } = {};
-                for (let i = 0; i < accounts.length; i++) {
-                    emailsToPwhashs[accounts[i]["email"]] = accounts[i]["pwhash"];
-                }
+                // looks for an account whose email matches
+                await dbConnect()
+                const VolunteerAccount: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel();
+                const account: VolunteerAccount | null = await VolunteerAccount.findOne({email: email})
+                // if none exists then invalid credentials
+                if (!account) throw new Error("Invalid Credentials")
                 const bcrypt = require("bcryptjs");
                 console.log("Verifying credentials");
-                if (
-                    email in emailsToPwhashs &&
-                    bcrypt.compare(password, emailsToPwhashs[email])
-                ) {
+                if (bcrypt.compare(password, account.pwhash)) {
                     console.log("Good login");
                     return { email: email, name: "Test", id: email }
-                }
-                throw new Error("Invalid credentials")
-
+                }   
+                // if hashed passwords don't match, invalid credentials
+                throw new Error("Invalid Credentials")
             }
         }),
     ],
@@ -41,10 +38,4 @@ export const authOptions: NextAuthOptions = {
     }
 }
 
-const getAllAccounts = async (): Promise<VolunteerAccount[]> => {
-    await dbConnect()
-    const VolunteerAccount: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel();
-    const volunteerAccounts: VolunteerAccount[] = await VolunteerAccount.find({})
-    return volunteerAccounts
-}
 export default NextAuth(authOptions)
