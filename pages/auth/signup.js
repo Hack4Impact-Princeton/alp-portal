@@ -108,12 +108,32 @@ const Signup = () => {
                                     mt: 2,
                                     mb: 2
                                 }} />
+                            <TextField fullWidth required id="email" label="Email" variant="outlined"
+                                value={email} onChange={handleSetEmail}
                             <TextField fullWidth required error={submit && password==''} id="password" label="Password" variant="outlined"
                                 value={password} onChange={handleSetPassword} 
                                 sx={{
                                     mt: 2,
                                     mb: 2
                                 }} />
+                              <TextField fullWidth required id="password" label="Password" variant="outlined"
+                          type={showPassword ? 'text' : 'password'}
+                          value={password}
+                          onChange={handleSetPassword}
+                          InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={handleTogglePassword}>
+                                         {showPassword ? <VisibilityOff /> : <Visibility />}
+                                   </IconButton>
+                               </InputAdornment>
+                              ),
+                           }}
+                          sx={{
+                          mt: 2,
+                         mb: 2,
+                          }}
+                        />
                             <select onChange={handleSetLocation}>
                         {
                             states.map((state) => (
