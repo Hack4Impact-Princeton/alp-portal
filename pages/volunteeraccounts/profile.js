@@ -13,7 +13,8 @@ import { getSession } from "next-auth/react"
 const Profile = (props) => {
   let account = props.account ? JSON.parse(props.account) : null
   let error = props.error ? props.error : null
-  
+
+  // if the user is not logged in take them back to the login page
   const { status } = useSession()
   useEffect(() => {
     if (status === 'unauthenticated') Router.replace('/auth/login')
@@ -23,16 +24,32 @@ const Profile = (props) => {
   const [signOutIsHovered, setSignOutIsHovered] = useState(false)
 
   if (status === 'loading') return <div>Loading...</div>
+  // if the account is not null, that means that everything is working
+  // otherwise render the error message page
   if (account) {
     return (
       <Grid2>
         <Grid2><Navbar /></Grid2>
         <Box display="flex" sx={{ pl: 20, pt: 5, pr: 5, width: '100%', justifyContent: "space-between" }} >
-          <h1 style={{ textAlign: "left", fontSize: "90px", paddingRight: 10 }}>Profile </h1>
-          <button onClick={() => signOut({ callbackUrl: "/" })} style={{ borderRadius: "20%", width: "100px", height: 'auto', justifyContent: 'flex-end', backgroundColor: signOutIsHovered ? "darkgray" : "white" }} onMouseEnter={() => setSignOutIsHovered(true)}
-            onMouseLeave={() => setSignOutIsHovered(false)}>Sign Out</button>
+          <h1 style={{ textAlign: "left", fontSize: "90px", paddingRight: 10 }}>Profile</h1>
+          <button onClick={() => signOut({ callbackUrl: "/" })}
+            style={{
+              borderRadius: "20%",
+              width: "100px",
+              height: 'auto',
+              justifyContent: 'flex-end',
+              backgroundColor: signOutIsHovered ? "darkgray" : "white"
+            }}
+            onMouseEnter={() => setSignOutIsHovered(true)}
+            onMouseLeave={() => setSignOutIsHovered(false)}
+          >Sign Out</button>
           <Link href={`/volunteeraccounts/edit`}>
-            <button style={{ borderRadius: "20%", height: 'auto', width: "100px", justifyContent: 'flex-end', backgroundColor: editIsHovered ? "darkgray" : "white" }} onMouseEnter={() => setEditIsHovered(true)}
+            <button style={{
+              borderRadius: "20%", height: 'auto', width: "100px",
+              justifyContent: 'flex-end',
+              backgroundColor: editIsHovered ? "darkgray" : "white"
+            }}
+              onMouseEnter={() => setEditIsHovered(true)}
               onMouseLeave={() => setEditIsHovered(false)}>Edit Profile</button>
           </Link>
           <img display="flex" justifyContent="flex-end" src="/alp-logo.png" alt="alp-logo" height="55px"></img>
@@ -105,9 +122,15 @@ const Profile = (props) => {
       </Grid2>
     )
   }
-  else return (<div style={{display: "flex", justifyContent: "center", alignItems: "center", padding: "100px"}}>
-    <h1>{error}</h1>
-  </div>
+  else return (
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px", flexDirection: "column"}}>
+      <h1>{error}</h1>
+      {// when the error is not an auth error give them the button to go back
+      error !== "You must login before accessing this page" && 
+      <Link href="/dash-volunteer">
+          <button width="50px" height="50px" borderRadius="20%">Volunteer Dashboard</button>
+      </Link>}
+    </div>
   )
 }
 

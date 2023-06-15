@@ -1,9 +1,7 @@
 import Box from '@mui/material/Box';
 import Navbar from '../components/Navbar'
 import DriveCard from '../components/DriveCard'
-import Grid from '@mui/material/Grid'; // Grid version 1
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
-import Drawer from '@mui/material';
 import Stack from '@mui/material/Stack';
 import dbConnect from '../lib/dbConnect'
 import getBookDriveModel from '../models/BookDrive';
@@ -11,7 +9,7 @@ import Link from 'next/link'
 import getVolunteerAccountModel from '../models/VolunteerAccount';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 import { getSession } from 'next-auth/react';
 
 function DashVolunteer(props) {
@@ -19,13 +17,10 @@ function DashVolunteer(props) {
   let volunteer = props.volunteer ? JSON.parse(props.volunteer): null;
   let error = props.error ? props.error : null
   
-  const { status, data } = useSession()
-  const { asPath } = useRouter()
-  const router = useRouter()
+  // if the user is not authenticated take them back to the login page
+  const { status } = useSession()
   useEffect(() => {
-    if (status === 'unauthenticated') router.replace('/auth/login')
-    else if (status === 'authenticated' && data.user.email != volunteer.email)
-      router.replace(`/auth/unauthorized?url=${asPath}}`)
+    if (status === 'unauthenticated') Router.replace('/auth/login')
   }, [status])
 
   if (status === 'loading') return <div>Loading...</div>

@@ -1,27 +1,26 @@
 import dbConnect from "../../lib/dbConnect"
 import getVolunteerAccountModel from "../../models/VolunteerAccount"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from "@mui/material"
 import { getStates } from "../../lib/enums"
 import { getSession, useSession } from "next-auth/react"
-import { useEffect } from 'react'
-import { useRouter } from "next/router"
+import Router from 'next/router'
+import Link from "next/link"
+
 const EditVolunteerAccount = (props) => {
-    const router = useRouter()
-    const { asPath } = useRouter()
+    const volunteerAccount = props.account ? JSON.parse(props.account): null
+    const error = props.error ? props.error: null
     const states = getStates()
-    const error = props.error
-    const alp_id = props.alp_id
-    const volunteerAccount = JSON.parse(props.account)
-    const { status, data } = useSession()
+    
+    console.log(volunteerAccount)
+    // if the user is not authenticated take them back to the login page
+    const { status } = useSession()
     useEffect(() => {
-        if (status === 'unauthenticated') router.replace('/auth/login')
-        else if (status === 'authenticated' && data.user.email != volunteerAccount.email)
-            router.replace(`/auth/unauthorized?name=${data.user.name}&url=${asPath}`)
+        if (status === 'unauthenticated') Router.replace('/auth/login')
     }, [status])
 
-    const [email, setEmail] = useState(volunteerAccount ? volunteerAccount.email: null)
-    const [location, setLocation] = useState(volunteerAccount ? volunteerAccount.location: null)
+    const [email, setEmail] = useState(volunteerAccount ? volunteerAccount.email : null)
+    const [location, setLocation] = useState(volunteerAccount ? volunteerAccount.location : null)
     const [isEdited, setIsEdited] = useState(false)
 
     const handleEmailChange = (event) => {
@@ -69,11 +68,15 @@ const EditVolunteerAccount = (props) => {
                     </div>
                 }
                 {error &&
-                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px" }}>
+                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px", flexDirection: "column" }}>
                         <h1>{error}</h1>
+                        {// when the error is not auth error, give them the option to go back
+                        error !== "You must login before accessing this page" &&
+                            <Link href="/dash-volunteer">
+                                <button width="50px" height="50px" borderRadius="20%">Volunteer Dashboard</button>
+                            </Link>}
                     </div>
                 }
-                
             </div>
         )
     else return (
@@ -84,7 +87,7 @@ const EditVolunteerAccount = (props) => {
             <br></br>
             <p>location: {states[location - 1].name}</p>
             <br></br>
-            <Button href={`/volunteeraccounts/profile?alp_id=${alp_id}`}>Click here to see your profile</Button>
+            <Button href={`/volunteeraccounts/profile`}>Click here to see your profile</Button>
         </div>
     )
 }
@@ -94,9 +97,10 @@ export const getServerSideProps = async (context) => {
         await dbConnect()
         const session = await getSession(context)
         const email = session.user.email
+        console.log(session.user)
         const VolunteerAccount = getVolunteerAccountModel()
         const volunteerAccount = await VolunteerAccount.findOne({ email: email })
-        return { props: { account: JSON.stringify(volunteerAccount), alp_id: volunteerAccount.alp_id, error: null } }
+        return { props: { account: JSON.stringify(volunteerAccount), error: null } }
     } catch (e) {
         console.error(e)
         let strError = e.message === "Cannot read properties of null (reading 'user')" ? "You must login before accessing this page" : `${e}`
