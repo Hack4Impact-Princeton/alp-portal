@@ -9,6 +9,8 @@ import Image from 'next/image';
 import dbConnect from "../../lib/dbConnect";
 import getVolunteerAccountModel from "../../models/VolunteerAccount";
 import { useRouter } from "next/router";
+import { signIn } from 'next-auth/react'
+import Router from 'next/router';
 
 
 function Login(props) {
@@ -66,6 +68,22 @@ function Login(props) {
     router.push("/auth/signup")
   };
 
+  const handleSubmit = async(e) => {
+    // validate user information
+    e.preventDefault()
+    const res = await signIn('credentials', {
+      email: email,
+      password: password,
+      redirect: false,
+    })
+    if (res.ok) Router.push(`../dash-volunteer`)
+    else {
+      alert("Email or password is incorrect. Please try again")
+      console.log(`something went wrong: ${res.error}`)
+    }
+
+  }
+
     return (
         <Grid2 container className="auth-bg" justifyContent="center" textAlign="center" direction="column"
             sx={{
@@ -104,7 +122,7 @@ function Login(props) {
                                 mb: 2
                             }}/>
                         <Button variant="contained"
-                            onClick={verifyLogin}
+                            onClick={handleSubmit}
                             sx={{
                                 marginTop: 3,
                             }}>Login</Button>

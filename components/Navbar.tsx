@@ -4,7 +4,7 @@ import FlagIcon from '@mui/icons-material/Flag';
 import Person2Icon from '@mui/icons-material/Person2';
 import HomeIcon from '@mui/icons-material/Home';
 import ShareIcon from '@mui/icons-material/Share';
-
+import { useSession } from 'next-auth/react';
 const drawerWidth: number = 80;
 
 export default function Navbar() {
