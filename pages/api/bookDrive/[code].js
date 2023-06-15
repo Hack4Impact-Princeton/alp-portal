@@ -25,7 +25,8 @@ export default async function handler(req, res) {
     case 'PUT' /* Edit a model by its code */:
       try {
         /* get code and update */
-        const bookDrive = await BookDrive.findOneAndUpdate({driveCode : code}, req.body, { 
+        const update = JSON.parse(req.body)
+        const bookDrive = await BookDrive.findOneAndUpdate({driveCode : code}, update, { 
           new: true,
           runValidators: true,
         })

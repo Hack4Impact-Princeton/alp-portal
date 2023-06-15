@@ -12,6 +12,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import InstructionStepCard from './InstructionStepCard';
 import CollectBooksCard from './CollectBooksCard';
+import InstructionChecklistCard from './InstructionChecklistCard';
 
 
 /*const ExpandMore = styled((props: (expand:boolean)) => {
@@ -26,6 +27,7 @@ import CollectBooksCard from './CollectBooksCard';
   }));*/
 
 export default function InstructionGroupCard(props) {
+  // needs a prop for which group it is: 0, 1, 2, 3; this will determine what cards are created
     const [expanded, setExpanded] = React.useState(!props.completed);
     
     let visible = (props.completed) ? "visible" : "hidden";
@@ -33,6 +35,12 @@ export default function InstructionGroupCard(props) {
     const handleExpandClick = () => {
       setExpanded(!expanded);
     };
+
+    let content = <CollectBooksCard paddingTop={3} stepNum={1} numBooksCollected={500} heading={"Current Number of Books Collected:"}></CollectBooksCard>
+    switch (props.groupNum) {
+      case 0: 
+        content = <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Read the Book Collection Guidelines"} stepNum={1}></InstructionChecklistCard>;
+    }
     return (
       <Grid>
         <Grid container paddingTop={2} spacing={2} xs={12} sx={{width:"65vw", backgroundColor:"gray"}}>
@@ -63,9 +71,8 @@ export default function InstructionGroupCard(props) {
             <Grid container item xs={12} alignItems={"center"} justifyContent={"center"}>
               <Collapse in={expanded} timeout="auto" unmountOnExit>
                   <Grid paddingTop={3} paddingLeft={4}>
-                    <CollectBooksCard paddingTop={3} stepNum={1} numBooksCollected={500} heading={"Current Number of Books Collected:"}></CollectBooksCard>
+                    {content}
                   </Grid>
-                  
               </Collapse>
             </Grid>
         </Grid>

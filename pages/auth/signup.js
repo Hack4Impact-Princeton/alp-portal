@@ -13,7 +13,7 @@ import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 const Signup = () => {
     const states = getStates()
-        
+    const [submit, setSubmit] = useState(false)
     const [fname, setFName] = useState("")
     const [lname, setLName] = useState("")
     const [email, setEmail] = useState("")
@@ -41,11 +41,19 @@ const Signup = () => {
     
     const signUpHandler = async () => {
         try {
+            // set timeout for reseting error fields
+            setSubmit(true)
+            setTimeout(() => {
+                setSubmit(false)
+              }, "4000");
+
             const bcrypt = require("bcryptjs");
             const salt = bcrypt.genSaltSync(10);
-            const hashedPwd = bcrypt.hashSync(password, salt);
-
+            const hashedPwd = (password == '')?'':bcrypt.hashSync(password, salt);
             const data = { fname: fname, lname: lname, email: email, password: hashedPwd, location: location }
+            // return if empty field
+            for (let entry in data) 
+                if (data[entry] == '') return;
             const res = await fetch('../api/volunteeraccounts', {
                 method: "POST",
                 body: JSON.stringify(data),
@@ -82,42 +90,30 @@ const Signup = () => {
                             width: 300,
                             height: 300,
                         }}>
-                            <TextField fullWidth required id="fname" label="First Name" variant="outlined"
-                            value={fname} onChange={handleSetFName}
+                            <TextField fullWidth required error={submit && fname==''} id="fname" label="First Name" variant="outlined" 
+                            value={fname} onChange={handleSetFName} 
                             sx={{
                                 mt: 2,
                                 mb: 2
                             }} />
-                            <TextField fullWidth required id="lname" label="Last Name" variant="outlined"
-                                value={lname} onChange={handleSetLName}
+                            <TextField fullWidth required error={submit && lname==''} id="lname" label="Last Name" variant="outlined"
+                                value={lname} onChange={handleSetLName} 
+                                sx={{
+                                    mt: 2,
+                                    mb: 2
+                                }}/>
+                            <TextField fullWidth required error={submit && email==''} id="email" label="Email" variant="outlined"
+                                value={email} onChange={handleSetEmail} 
                                 sx={{
                                     mt: 2,
                                     mb: 2
                                 }} />
-                            <TextField fullWidth required id="email" label="Email" variant="outlined"
-                                value={email} onChange={handleSetEmail}
+                            <TextField fullWidth required error={submit && password==''} id="password" label="Password" variant="outlined"
+                                value={password} onChange={handleSetPassword} 
                                 sx={{
                                     mt: 2,
                                     mb: 2
                                 }} />
-                              <TextField fullWidth required id="password" label="Password" variant="outlined"
-                          type={showPassword ? 'text' : 'password'}
-                          value={password}
-                          onChange={handleSetPassword}
-                          InputProps={{
-                              endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={handleTogglePassword}>
-                                         {showPassword ? <VisibilityOff /> : <Visibility />}
-                                   </IconButton>
-                               </InputAdornment>
-                              ),
-                           }}
-                          sx={{
-                          mt: 2,
-                         mb: 2,
-                          }}
-                        />
                             <select onChange={handleSetLocation}>
                         {
                             states.map((state) => (
