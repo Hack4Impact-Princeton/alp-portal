@@ -3,6 +3,7 @@ import * as React from 'react';
 import Grid from "@mui/material/Unstable_Grid2";
 import dbConnect from '../lib/dbConnect'
 import getBookDriveModel from "../models/BookDrive";
+import InstructionInputCard from "../components/InstructionInputCard";
 
 function Test(props) {
     const driveStatus = JSON.parse(props.driveStatus);
@@ -14,6 +15,7 @@ function Test(props) {
         <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={1} header={"Collecting Books"}></InstructionGroupCard>
         <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={2} header={"Preparing To Ship"}></InstructionGroupCard>
         <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={3} header={"The Finish Line"}></InstructionGroupCard>
+        <InstructionInputCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={3} header={"ME WNAT TO TEST WITH INSTURCTION CARD!"}></InstructionInputCard>
         </Grid>
     );
 }

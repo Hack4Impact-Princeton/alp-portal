@@ -9,7 +9,9 @@ import Image from 'next/image';
 import dbConnect from "../../lib/dbConnect";
 import getVolunteerAccountModel from "../../models/VolunteerAccount";
 import { useRouter } from "next/router";
-
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 function Login(props) {
   let accounts = JSON.parse(props.accounts);
@@ -18,7 +20,7 @@ function Login(props) {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [showPassword, setShowPassword] = useState(false);
   let [disabled, setDisabled] = useState(false);
   let [success, setSuccess] = useState(false);
 
@@ -61,6 +63,10 @@ function Login(props) {
     setPassword(passwordText.target.value);
   };
 
+  const handleTogglePassword = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
   // need to change to go to sign up page
   const signUpHandler = async () => {
     router.push("/auth/signup")
@@ -96,13 +102,24 @@ function Login(props) {
                                 mt: 2,
                                 mb: 2
                             }}/>
-                        <TextField fullWidth 
-                            required id="password" label="Password" variant="outlined" 
-                            value={password} onChange={handleSetPassword}
-                            sx={{
-                                mt: 2,
-                                mb: 2
-                            }}/>
+                     <TextField fullWidth required id="password" label="Password" variant="outlined"
+                          type={showPassword ? 'text' : 'password'}
+                          value={password}
+                          onChange={handleSetPassword}
+                          InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={handleTogglePassword}>
+                                         {showPassword ? <VisibilityOff /> : <Visibility />}
+                                   </IconButton>
+                               </InputAdornment>
+                              ),
+                           }}
+                          sx={{
+                          mt: 2,
+                         mb: 2,
+                          }}
+                        />
                         <Button variant="contained"
                             onClick={verifyLogin}
                             sx={{
