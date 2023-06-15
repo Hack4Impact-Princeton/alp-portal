@@ -8,6 +8,9 @@ import Router from 'next/router'
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Image from 'next/image';
 import {getStates} from '../../lib/enums'
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 const Signup = () => {
     const states = getStates()
@@ -17,6 +20,7 @@ const Signup = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [location, setLocation] = useState(1)
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleSetFName = (fName) => {
         setFName(fName.target.value)
@@ -33,6 +37,10 @@ const Signup = () => {
     const handleSetLocation = (event) => {
         setLocation(event.target.value);
     }
+    const handleTogglePassword = () => {
+        setShowPassword((prevShowPassword) => !prevShowPassword);
+      };
+    
 
     const signUpHandler = async () => {
         try {
@@ -103,12 +111,24 @@ const Signup = () => {
                                     mt: 2,
                                     mb: 2
                                 }} />
-                            <TextField fullWidth required error={submit && password==''} id="password" label="Password" variant="outlined"
-                                value={password} onChange={handleSetPassword} 
-                                sx={{
-                                    mt: 2,
-                                    mb: 2
-                                }} />
+                             <TextField fullWidth required id="password" label="Password" variant="outlined"
+                          type={showPassword ? 'text' : 'password'}
+                          value={password}
+                          onChange={handleSetPassword}
+                          InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={handleTogglePassword}>
+                                         {showPassword ? <VisibilityOff /> : <Visibility />}
+                                   </IconButton>
+                               </InputAdornment>
+                              ),
+                           }}
+                          sx={{
+                          mt: 2,
+                         mb: 2,
+                          }}
+                        />
                             <select onChange={handleSetLocation}>
                         {
                             states.map((state) => (
