@@ -39,7 +39,7 @@ export default function Navbar() {
                         </ListItemButton>
                     </ListItem>
                 </Link>
-                <Link href="/dash-volunteer">
+                <Link href="/volunteeraccounts/profile">
                     <ListItem key="Organizer Checklist">
                         <ListItemButton>
                             <ListItemIcon>

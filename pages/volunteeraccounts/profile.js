@@ -1,33 +1,26 @@
 import getVolunteerAccountModel from "../../models/VolunteerAccount"
 import dbConnect from '../../lib/dbConnect'
-import { useRouter } from 'next/router'
-import { getStates } from '../../lib/enums'
+import Router from 'next/router'
 import { useSession } from "next-auth/react"
 import Grid2 from "@mui/material/Unstable_Grid2"
 import Box from '@mui/material/Box';
-import { Grid, dividerClasses } from "@mui/material";
 import Navbar from "../../components/Navbar";
-import AlpLogo from "../"
 import { useState, useEffect } from 'react'
 import { signOut } from "next-auth/react"
 import Link from 'next/link'
-import { redirect } from "next/dist/server/api-utils"
 import { getSession } from "next-auth/react"
 
 const Profile = (props) => {
+  let account = props.account ? JSON.parse(props.account) : null
   let error = props.error ? props.error : null
-  const states = getStates()
+  
+  const { status } = useSession()
+  useEffect(() => {
+    if (status === 'unauthenticated') Router.replace('/auth/login')
+  }, [status])
+
   const [editIsHovered, setEditIsHovered] = useState(false)
   const [signOutIsHovered, setSignOutIsHovered] = useState(false)
-  let account = props.account ? JSON.parse(props.account) : null
-  const { status, data } = useSession()
-  const router = useRouter()
-  const { asPath } = useRouter()
-  useEffect(() => {
-    if (status === 'unauthenticated') router.replace('/auth/login')
-    else if (status === 'authenticated' && data.user.email != account.email)
-      router.replace(`/auth/unauthorized?name=${data.user.name}&url=${asPath}`)
-  }, [status])
 
   if (status === 'loading') return <div>Loading...</div>
   if (account) {
@@ -36,7 +29,7 @@ const Profile = (props) => {
         <Grid2><Navbar /></Grid2>
         <Box display="flex" sx={{ pl: 20, pt: 5, pr: 5, width: '100%', justifyContent: "space-between" }} >
           <h1 style={{ textAlign: "left", fontSize: "90px", paddingRight: 10 }}>Profile </h1>
-          <button onClick={() => signOut({ callbackUrl: "/auth/login" })} style={{ borderRadius: "20%", width: "100px", height: 'auto', justifyContent: 'flex-end', backgroundColor: signOutIsHovered ? "darkgray" : "white" }} onMouseEnter={() => setSignOutIsHovered(true)}
+          <button onClick={() => signOut({ callbackUrl: "/" })} style={{ borderRadius: "20%", width: "100px", height: 'auto', justifyContent: 'flex-end', backgroundColor: signOutIsHovered ? "darkgray" : "white" }} onMouseEnter={() => setSignOutIsHovered(true)}
             onMouseLeave={() => setSignOutIsHovered(false)}>Sign Out</button>
           <Link href={`/volunteeraccounts/edit`}>
             <button style={{ borderRadius: "20%", height: 'auto', width: "100px", justifyContent: 'flex-end', backgroundColor: editIsHovered ? "darkgray" : "white" }} onMouseEnter={() => setEditIsHovered(true)}
@@ -120,16 +113,16 @@ const Profile = (props) => {
 
 export const getServerSideProps = async (context) => {
   try {
+    // get current session and email --> account of current user
+    const session = await getSession(context)
+    const email = session.user.email
     await dbConnect()
     const VolunteerAccount = getVolunteerAccountModel()
-    const session = await getSession(context)
-    // need to figure out what happens when there is no session or 
-    // it is the session of someone else
-    const email = session.user.email
     const volunteerAccount = await VolunteerAccount.findOne({ email: email })
     return { props: { account: JSON.stringify(volunteerAccount), error: null } }
   } catch (e) {
     console.error(e)
+    // if the specific error message occurs it's because the user has not logged in
     let strError = e.message === "Cannot read properties of null (reading 'user')" ? "You must login before accessing this page" : `${e}`
 
     return { props: { error: strError, account: null } }
