@@ -7,11 +7,15 @@ import Box from '@mui/material/Box';
 import Navbar from "../../components/Navbar";
 import { useState, useEffect } from 'react'
 import { signOut } from "next-auth/react"
+import MapComponent from '../../components/MapComponent'
 import Link from 'next/link'
 import { getSession } from "next-auth/react"
 
+import getBookDriveModel from "../../models/BookDrive"
+
 const Profile = (props) => {
   let account = props.account ? JSON.parse(props.account) : null
+  let drives = props.completedDrives ? JSON.parse(props.completedDrives) : null
   let error = props.error ? props.error : null
 
   // if the user is not logged in take them back to the login page
@@ -29,7 +33,7 @@ const Profile = (props) => {
   if (account) {
     return (
       <Grid2>
-        <Grid2><Navbar /></Grid2>
+        <Grid2><Navbar active="profile" /></Grid2>
         <Box display="flex" sx={{ pl: 20, pt: 5, pr: 5, width: '100%', justifyContent: "space-between" }} >
           <h1 style={{ textAlign: "left", fontSize: "90px", paddingRight: 10 }}>Profile</h1>
           <button onClick={() => signOut({ callbackUrl: "/" })}
@@ -103,19 +107,20 @@ const Profile = (props) => {
               </div>
             </Box>
           </Grid2>
-          <Grid2 item xs={12} sm={5}>
+          <Grid2 item xs={12} sm={5} height={"450px"}>
             <Box
               sx={{
-                width: "180px",
-                height: "300px",
+                width: "100%",
+                height: "100%",
                 border: "1.5px solid black",
                 '@media (min-width: 600px)': {
                   display: 'inline-block',
-                  width: '70%',
+                  width: '100%',
+                  height: '100%',
                 },
-                maxWidth: "200px",
+                maxWidth: "450px",
               }}>
-              <p style={{ textAlign: "left" }}>Placeholder</p>
+              <MapComponent drives={drives}/>
             </Box>
           </Grid2>
         </Grid2>
@@ -141,8 +146,13 @@ export const getServerSideProps = async (context) => {
     const email = session.user.email
     await dbConnect()
     const VolunteerAccount = getVolunteerAccountModel()
+  const BookDrive = getBookDriveModel()
     const volunteerAccount = await VolunteerAccount.findOne({ email: email })
-    return { props: { account: JSON.stringify(volunteerAccount), error: null } }
+    const driveList = volunteerAccount.driveIds
+    // finds all completed bookDrives that correspond to the volunteer account
+  const promises = driveList.map(driveId => BookDrive.find({driveCode: driveId, status: 1}));
+  const completedDrives = await Promise.all(promises);
+  return { props: { account: JSON.stringify(volunteerAccount), completedDrives: JSON.stringify(completedDrives), error: null } }
   } catch (e) {
     console.error(e)
     // if the specific error message occurs it's because the user has not logged in
