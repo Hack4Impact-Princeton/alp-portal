@@ -4,7 +4,7 @@ import FlagIcon from '@mui/icons-material/Flag';
 import Person2Icon from '@mui/icons-material/Person2';
 import HomeIcon from '@mui/icons-material/Home';
 import ShareIcon from '@mui/icons-material/Share';
-import { useState } from 'react';
+
 const drawerWidth: number = 80;
 
 type NavbarProps = {
@@ -42,7 +42,7 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                         </ListItemButton>
                     </ListItem>
                 </Link>
-                <Link href="/dash-volunteer">
+                <Link href="/volunteeraccounts/profile">
                     <ListItem key="Organizer Checklist">
                         <ListItemButton>
                             <ListItemIcon>
