@@ -218,7 +218,7 @@ export const africanCountries: string[] = [
     'Chad',
     'Comoros',
     'Democratic Republic of the Congo',
-    'Republic of the Congo',
+    'Republic of Congo',
     'Djibouti',
     'Egypt',
     'Equatorial Guinea',
