@@ -7,7 +7,7 @@ import {useState } from 'react';
 import Image from 'next/image';
 import { signIn } from 'next-auth/react'
 import Router from 'next/router';
-
+import Link from 'next/link';
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -92,7 +92,10 @@ function Login() {
                                 marginLeft: 3,
                             }}>Sign Up</Button>
                     </Box>
+
                 </Grid2>
+                <Link href='resetpassword'>Forgot Password?</Link>
+
             </Grid2>
         </Grid2>
     )

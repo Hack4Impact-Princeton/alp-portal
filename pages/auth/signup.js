@@ -8,8 +8,13 @@ import Router from 'next/router'
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Image from 'next/image';
 import {getStates} from '../../lib/enums'
+import { signIn } from 'next-auth/react'
+import dbConnect from '../../lib/dbConnect'
+import getVolunteerAccountModel from '../../models/VolunteerAccount'
 
-const Signup = () => {
+const Signup = (props) => {
+    // const error = props.error ? props.error : null
+    // const accounts = props.account ? JSON.parse(props.accounts) : null
     const states = getStates()
     const [submit, setSubmit] = useState(false)
     const [fname, setFName] = useState("")
@@ -49,15 +54,26 @@ const Signup = () => {
             // return if empty field
             for (let entry in data) 
                 if (data[entry] == '') return;
+            const dupAccount = await fetch(`../api/volunteeraccounts?email=${encodeURIComponent(email)}`).then(res => res.json())
+            if (dupAccount.data) {
+                console.log(dupAccount)
+                console.log('duplicate account')
+                alert("An account with this email already exists.")
+                return
+            }
+            console.log('not duplicate account')
             const res = await fetch('../api/volunteeraccounts', {
                 method: "POST",
                 body: JSON.stringify(data),
             })
-            const resJson = await res.json()
-            if (res.status == 200) {
-                const href=`/dash-volunteer?alp_id=${resJson.alp_id}`
-                Router.push(href)
-            } throw new Error(`error with status ${res.status}`)
+            if (res.status != 200) throw new Error(`error with status ${res.status}`)
+            const signInRes = await signIn('credentials', {
+                email: email,
+                password: password,
+                redirect: false,
+              })
+              if (signInRes.ok) Router.push(`../dash-volunteer`)
+            console.log("success")
         } catch (e) {
             console.error(e)
         }
@@ -129,4 +145,17 @@ const Signup = () => {
     )
 }
 
+
+// export const getServerSideProps = async() => {
+//     try {
+//         await dbConnect()
+//         const VolunteerAccount = getVolunteerAccountModel()
+//         const accounts = await VolunteerAccount.find({})
+//         return {props: {accounts: JSON.stringify(accounts), error: null}}
+//     } catch (e) {
+//         console.log(e)
+//         const err = `${e}`
+//         return {props: {error: err, accounts: null}}
+//     } 
+//}
 export default Signup

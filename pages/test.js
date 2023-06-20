@@ -7,6 +7,7 @@ import getBookDriveModel from "../models/BookDrive";
 function Test(props) {
     const driveStatus = JSON.parse(props.driveStatus);
     const driveCode = JSON.parse(props.driveCode);
+    console.log(driveStatus)
 
     return (
         <Grid>
