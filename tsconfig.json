@@ -103,7 +103,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "components/MapComponent.tsx", "pages/maptest.js"  ],
   "exclude": [
     "node_modules"
   ]
