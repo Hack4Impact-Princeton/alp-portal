@@ -13,7 +13,7 @@ import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { signIn } from 'next-auth/react'
 import Router from 'next/router';
-
+import Link from 'next/link';
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -113,7 +113,10 @@ function Login() {
                                 marginLeft: 3,
                             }}>Sign Up</Button>
                     </Box>
+
                 </Grid2>
+                <Link href='resetpassword'>Forgot Password?</Link>
+
             </Grid2>
         </Grid2>
     )

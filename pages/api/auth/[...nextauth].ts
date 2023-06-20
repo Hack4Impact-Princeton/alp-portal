@@ -19,15 +19,23 @@ export const authOptions: NextAuthOptions = {
                 const VolunteerAccount: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel();
                 const account: VolunteerAccount | null = await VolunteerAccount.findOne({email: email})
                 // if none exists then invalid credentials
-                if (!account) throw new Error("Invalid Credentials")
+                if (!account) throw new Error("Invalid email")
                 const bcrypt = require("bcryptjs");
                 console.log("Verifying credentials");
-                if (bcrypt.compare(password, account.pwhash)) {
-                    console.log("Good login");
-                    return { email: email, name: "Test", id: email }
-                }   
+                const salt = bcrypt.genSaltSync(10);
+                const hashedPwd = (password == '')?'':bcrypt.hashSync(password, salt);
+                console.log(`hashed pwd: ${hashedPwd}`)
+                console.log(`account.pwhash: ${account.pwhash}`)
+                const result = await bcrypt.compare(password, account.pwhash);
+                if (result) {
+                    console.log("good login")
+                    return {email: email, name: "test", id: email}
+                }
                 // if hashed passwords don't match, invalid credentials
-                throw new Error("Invalid Credentials")
+
+                throw new Error("Invalid Password")
+
+            
             }
         }),
     ],
