@@ -120,7 +120,7 @@ const Profile = (props) => {
                 },
                 maxWidth: "450px",
               }}>
-              <MapComponent drives={drives}/>
+              <MapComponent drives={drives} />
             </Box>
           </Grid2>
         </Grid2>
@@ -128,13 +128,13 @@ const Profile = (props) => {
     )
   }
   else return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px", flexDirection: "column"}}>
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px", flexDirection: "column" }}>
       <h1>{error}</h1>
       {// when the error is not an auth error give them the button to go back
-      error !== "You must login before accessing this page" && 
-      <Link href="/dash-volunteer">
+        error !== "You must login before accessing this page" &&
+        <Link href="/dash-volunteer">
           <button width="50px" height="50px" borderRadius="20%">Volunteer Dashboard</button>
-      </Link>}
+        </Link>}
     </div>
   )
 }
@@ -146,13 +146,13 @@ export const getServerSideProps = async (context) => {
     const email = session.user.email
     await dbConnect()
     const VolunteerAccount = getVolunteerAccountModel()
-  const BookDrive = getBookDriveModel()
+    const BookDrive = getBookDriveModel()
     const volunteerAccount = await VolunteerAccount.findOne({ email: email })
     const driveList = volunteerAccount.driveIds
     // finds all completed bookDrives that correspond to the volunteer account
-  const promises = driveList.map(driveId => BookDrive.find({driveCode: driveId, status: 1}));
-  const completedDrives = await Promise.all(promises);
-  return { props: { account: JSON.stringify(volunteerAccount), completedDrives: JSON.stringify(completedDrives), error: null } }
+    const promises = driveList.map(driveId => BookDrive.find({ driveCode: driveId, status: 1 }));
+    const completedDrives = await Promise.all(promises);
+    return { props: { account: JSON.stringify(volunteerAccount), completedDrives: JSON.stringify(completedDrives), error: null } }
   } catch (e) {
     console.error(e)
     // if the specific error message occurs it's because the user has not logged in

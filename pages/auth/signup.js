@@ -3,14 +3,12 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import { useState } from 'react'
-import Link from 'next/link';
 import Router from 'next/router'
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Image from 'next/image';
 import {getStates} from '../../lib/enums'
 import { signIn } from 'next-auth/react'
-import dbConnect from '../../lib/dbConnect'
-import getVolunteerAccountModel from '../../models/VolunteerAccount'
+
 
 const Signup = (props) => {
     // const error = props.error ? props.error : null
@@ -56,12 +54,9 @@ const Signup = (props) => {
                 if (data[entry] == '') return;
             const dupAccount = await fetch(`../api/volunteeraccounts?email=${encodeURIComponent(email)}`).then(res => res.json())
             if (dupAccount.data) {
-                console.log(dupAccount)
-                console.log('duplicate account')
                 alert("An account with this email already exists.")
                 return
             }
-            console.log('not duplicate account')
             const res = await fetch('../api/volunteeraccounts', {
                 method: "POST",
                 body: JSON.stringify(data),

@@ -1,4 +1,3 @@
-import { FlashAuto, FlashOnOutlined } from '@mui/icons-material'
 import dbConnect from '../../../lib/dbConnect'
 import getVolunteerAccountModel from '../../../models/VolunteerAccount'
 

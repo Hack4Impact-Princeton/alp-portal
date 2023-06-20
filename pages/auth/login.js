@@ -40,7 +40,6 @@ function Login() {
       alert("Email or password is incorrect. Please try again")
       console.log(`something went wrong: ${res.error}`)
     }
-
   }
 
     return (
@@ -95,7 +94,6 @@ function Login() {
 
                 </Grid2>
                 <Link href='resetpassword'>Forgot Password?</Link>
-
             </Grid2>
         </Grid2>
     )

@@ -21,21 +21,11 @@ export const authOptions: NextAuthOptions = {
                 // if none exists then invalid credentials
                 if (!account) throw new Error("Invalid email")
                 const bcrypt = require("bcryptjs");
-                console.log("Verifying credentials");
-                const salt = bcrypt.genSaltSync(10);
-                const hashedPwd = (password == '')?'':bcrypt.hashSync(password, salt);
-                console.log(`hashed pwd: ${hashedPwd}`)
-                console.log(`account.pwhash: ${account.pwhash}`)
+                // compare passwords
                 const result = await bcrypt.compare(password, account.pwhash);
-                if (result) {
-                    console.log("good login")
-                    return {email: email, name: "test", id: email}
-                }
+                if (result) return {email: email, name: "test", id: email}
                 // if hashed passwords don't match, invalid credentials
-
                 throw new Error("Invalid Password")
-
-            
             }
         }),
     ],
