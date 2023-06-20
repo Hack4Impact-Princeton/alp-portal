@@ -1,20 +1,31 @@
 import { Typography, Grid, TextField, Button } from "@mui/material";
 import React, {useState} from "react";
 
-export default function CollectBooksCard({
-  heading,
-  subHeading,
-  submitBtn,
+export default function InstructionCollectCard({
   stepNum,
-  numBooksCollected,
   driveCode,
   driveStatus
 }) {
-  let HEADER_NUM;
+  let cardContent = <></>;
+  let CURR_BOOKS;
+  let HEADING;
 
-    HEADER_NUM = numBooksCollected
-    ? numBooksCollected
-    : "Must pass numBooksCollected!";
+  switch(stepNum) {
+    case 1: // check what number this should be
+      cardContent = <CollectBooksCard
+        driveCode = {driveCode}
+        info = {driveStatus.collectingBooks}>
+        </CollectBooksCard>;
+      CURR_BOOKS = driveStatus.collectingBooks.booksCurrent;
+      HEADING = "Current Number of Books Collected:";
+      break; // do we need to break?
+    case 3:
+      // collect international shipping fee
+    case 4:
+      // collect domestic 
+    default:
+      // return error ?
+  }
       
   return (
     <Grid
@@ -30,16 +41,15 @@ export default function CollectBooksCard({
     >
       <Grid item xs={12}>
         <Typography variant="h4">
-          <span>Current Number of Books Collected:</span> <span>{HEADER_NUM}</span>
+          <span>{HEADING}</span> <span>{CURR_BOOKS}</span>
         </Typography>
       </Grid>
-      
-      <CardBody currBooks={numBooksCollected} driveCode={driveCode} info={driveStatus.collectingBooks} />
+      {cardContent}      
     </Grid>
   );
 }
 
-function CardBody(props) {
+function CollectBooksCard(props) {
   const [bookState, setBookState] = useState("");
   const [currBooks, setCurrBooks] = useState(props.currBooks);
 
@@ -92,6 +102,5 @@ function CardBody(props) {
       </Grid>
     </Grid>
 
-    
   );
 }
