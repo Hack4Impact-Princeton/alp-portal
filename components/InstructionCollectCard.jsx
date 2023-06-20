@@ -41,6 +41,7 @@ export default function CollectBooksCard({
 
 function CardBody(props) {
   const [bookState, setBookState] = useState("");
+  const [currBooks, setCurrBooks] = useState(props.currBooks);
 
   const handleInput = e => {
 
@@ -58,7 +59,7 @@ function CardBody(props) {
 
       const data = {
         cb: {
-          booksCurrent: parseInt(props.currBooks) + parseInt(bookState),
+          booksCurrent: parseInt(currBooks) + parseInt(bookState),
           updateFreq: props.info.updateFreq++,
           lastUpdate: "6/14/23"  // implement datetime
         }
@@ -71,6 +72,7 @@ function CardBody(props) {
     } catch (e) {
       console.error(e);
     }
+    setCurrBooks(parseInt(currBooks)+parseInt(bookState));
     setBookState("");
   }
   return (
