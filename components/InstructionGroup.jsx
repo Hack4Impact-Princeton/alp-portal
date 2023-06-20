@@ -36,7 +36,7 @@ export default function InstructionGroupCard(props) {
       setExpanded(!expanded);
     };
 
-    let content = <InstructionCollectCard paddingTop={3} stepNum={1} driveStatus={props.driveStatus} driveCode={props.driveCode}></InstructionCollectCard>
+    let content = <InstructionCollectCard paddingTop={3} stepNum={2} driveStatus={props.driveStatus} driveCode={props.driveCode}></InstructionCollectCard>
     switch (props.groupNum) {
       case 0: 
         content = <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Read the Book Collection Guidelines"} stepNum={1}></InstructionChecklistCard>;

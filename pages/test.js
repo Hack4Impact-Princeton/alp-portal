@@ -24,8 +24,8 @@ export async function getServerSideProps(context) {
         await dbConnect()
         const driveCode = "SA3-32";  // constant for now
         const BookDrive = getBookDriveModel();
-        const drive = await BookDrive.findOne({driveCode: driveCode})
-        const currDrive = await Promise.resolve(drive)
+        const currDrive = await BookDrive.findOne({driveCode: driveCode})
+        //const currDrive = await Promise.resolve(drive)
         console.log(currDrive)
         const driveStatus = {
             gettingStarted: currDrive.gs,

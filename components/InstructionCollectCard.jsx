@@ -11,7 +11,7 @@ export default function InstructionCollectCard({
   let HEADING;
 
   switch(stepNum) {
-    case 1: // check what number this should be
+    case 2: // check what number this should be
       cardContent = <CollectBooksCard
         driveCode = {driveCode}
         info = {driveStatus.collectingBooks}>
@@ -39,11 +39,6 @@ export default function InstructionCollectCard({
       minWidth={"50%"}
       backgroundColor="#F5F5F5"
     >
-      <Grid item xs={12}>
-        <Typography variant="h4">
-          <span>{HEADING}</span> <span>{CURR_BOOKS}</span>
-        </Typography>
-      </Grid>
       {cardContent}      
     </Grid>
   );
@@ -51,7 +46,7 @@ export default function InstructionCollectCard({
 
 function CollectBooksCard(props) {
   const [bookState, setBookState] = useState("");
-  const [currBooks, setCurrBooks] = useState(props.currBooks);
+  const [currBooks, setCurrBooks] = useState(props.info.booksCurrent);
 
   const handleInput = e => {
 
@@ -64,14 +59,14 @@ function CollectBooksCard(props) {
     
     console.log(bookState);
     console.log(typeof(bookState));
-    console.log(typeof(props.currBooks));
+    console.log(typeof(currBooks));
     try {
 
       const data = {
         cb: {
           booksCurrent: parseInt(currBooks) + parseInt(bookState),
           updateFreq: props.info.updateFreq++,
-          lastUpdate: "6/14/23"  // implement datetime
+          lastUpdate: "6/20/23"  // implement datetime
         }
       }
       await fetch(`/api/bookDrive/${props.driveCode}`,{
@@ -87,6 +82,11 @@ function CollectBooksCard(props) {
   }
   return (
     <Grid container alignItems="center" sx={{ p: 5 }}>
+      <Grid item xs={12}>
+        <Typography variant="h4">
+          <span>Current Number of Books Collected:</span> <span>{currBooks}</span>
+        </Typography>
+      </Grid>
       <Grid item xs={4} sx={{ pb: 5 }}>
         <span>Number of New Books Collected:</span>
       </Grid>
