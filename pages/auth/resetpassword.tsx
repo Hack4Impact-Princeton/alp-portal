@@ -26,7 +26,8 @@ const ResetPassword: NextPage = () => {
     const [randNum, setRandNum] = useState(1000001)
 
     const [showPasswordText, setShowPasswordText] = useState(false)
-
+    // records what time the code was last sent so someone can't use an expired code
+    const [codeSentTime, setCodeSentTime] = useState<number>(Date.now())
     // if true, render the resend code button
     const [showResendCode, setShowResendCode] = useState(false)
 
@@ -61,6 +62,7 @@ const ResetPassword: NextPage = () => {
             if (res.status == 200) {
                 // console.log(res)
                 // console.log(resJson.randNum)
+                setCodeSentTime(Date.now())
                 setShowEmail(false)
                 setShowCode(true)
                 setShowResendCode(false)
@@ -72,8 +74,8 @@ const ResetPassword: NextPage = () => {
         }
     }
     const verifyCode = () => {
-        // console.log(`randomNum: ${randNum}: code: ${code}`)
         if (randNum != code) alert("Incorrect code")
+        else if (Date.now() - codeSentTime >= 600000) alert("Code has expired. Please resend code and try again")
         else {
             // if the code is correct, update ui
             // console.log(code)
