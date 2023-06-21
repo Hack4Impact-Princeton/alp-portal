@@ -69,7 +69,7 @@ export type VolunteerAccount = {
     email: string,
     pwhash: string,
     location: number,
-    dateJoined: Date,
+    startDate: String,
     allDrives: number,
     driveIds: Types.Array<string>,
     badges: number,
@@ -106,8 +106,8 @@ const VolunteerAccountSchema = new Schema<VolunteerAccount>({
         type: Number,
         required: true
     },
-    dateJoined: {
-        type: Date,
+    startDate: {
+        type: String,
         required: true
     },
     allDrives: {
