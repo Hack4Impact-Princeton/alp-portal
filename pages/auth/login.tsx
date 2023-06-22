@@ -20,14 +20,9 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import getVolunteerAccountModel from "../../models/VolunteerAccount";
 import { VolunteerAccount } from '../../models/VolunteerAccount';
 
-function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-
-  type LoginProps = {
-    accounts: VolunteerAccount[];
-  }
+type LoginProps = {
+  accounts: VolunteerAccount[];
+}
 
 const Login: NextPage<LoginProps> = ({accounts}) => {
   // let accounts = JSON.parse(props.accounts);
@@ -36,6 +31,7 @@ const Login: NextPage<LoginProps> = ({accounts}) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   let [disabled, setDisabled] = useState(false);
   let [success, setSuccess] = useState(false);
@@ -103,7 +99,7 @@ const Login: NextPage<LoginProps> = ({accounts}) => {
 
   }
 
-    return (
+  return (
         <Grid2 container className="auth-bg" justifyContent="center" textAlign="center" direction="column"
             sx={{
                 width: '100vw',
@@ -170,7 +166,6 @@ const Login: NextPage<LoginProps> = ({accounts}) => {
             </Grid2>
         </Grid2>
     )
-  }
 }
 
 export async function getServerSideProps() {
