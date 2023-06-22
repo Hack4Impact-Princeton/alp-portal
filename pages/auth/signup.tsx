@@ -27,20 +27,20 @@ const Signup = (props) => {
     const [location, setLocation] = useState(1)
     const [showPassword, setShowPassword] = useState(false);
 
-    const handleSetFName = (fName) => {
+    const handleSetFName = (fName: React.ChangeEvent<HTMLInputElement>) => {
         setFName(fName.target.value)
     }
-    const handleSetLName = (lName) => {
+    const handleSetLName = (lName: React.ChangeEvent<HTMLInputElement>) => {
         setLName(lName.target.value)
     }
-    const handleSetEmail = (emailText) => {
+    const handleSetEmail = (emailText: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(emailText.target.value)
     }
-    const handleSetPassword = (passwordText) => {
+    const handleSetPassword = (passwordText: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(passwordText.target.value)
     }
-    const handleSetLocation = (event) => {
-        setLocation(event.target.value);
+    const handleSetLocation = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setLocation(Number(event.target.value));
     }
     const handleTogglePassword = () => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -96,7 +96,7 @@ const Signup = (props) => {
                 width: '100%',
                 height: '25%',
             }}>
-                <Image className="auth-logo" src="/logo-long.png" width={956*0.3} height={295*0.3} alt="ALP-logo" sx={{
+                <Image className="auth-logo" src="/logo-long.png" width={956*0.3} height={295*0.3} alt="ALP-logo" style={{
                         marginBottom: "10 !important",
                 }}/>
                 <h2 className='auth-heading'>Sign up to volunteer with the African Library Project!</h2>
