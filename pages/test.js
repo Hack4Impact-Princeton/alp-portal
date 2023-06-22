@@ -26,7 +26,7 @@ export async function getServerSideProps(context) {
         const BookDrive = getBookDriveModel();
         const currDrive = await BookDrive.findOne({driveCode: driveCode})
         //const currDrive = await Promise.resolve(drive)
-        console.log(currDrive)
+        console.log(currDrive.pts)
         const driveStatus = {
             gettingStarted: currDrive.gs,
             collectingBooks: currDrive.cb,

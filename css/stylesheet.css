@@ -81,3 +81,7 @@ html, body {
     font-family: 'Epilogue', sans-serif;
     margin-right: 3vw;
 }
+
+.submit-btn {
+    color: #FE9834;
+}

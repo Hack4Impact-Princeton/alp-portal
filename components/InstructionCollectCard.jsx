@@ -7,8 +7,7 @@ export default function InstructionCollectCard({
   driveStatus
 }) {
   let cardContent = <></>;
-  let CURR_BOOKS;
-  let HEADING;
+
 
   switch(stepNum) {
     case 2: // check what number this should be
@@ -16,13 +15,20 @@ export default function InstructionCollectCard({
         driveCode = {driveCode}
         info = {driveStatus.collectingBooks}>
         </CollectBooksCard>;
-      CURR_BOOKS = driveStatus.collectingBooks.booksCurrent;
-      HEADING = "Current Number of Books Collected:";
-      break; // do we need to break?
+      
+      break; 
     case 3:
-      // collect international shipping fee
+      cardContent = <CollectIntFeeCard
+        driveCode = {driveCode}
+        info = {driveStatus.prepareToShip}>
+        </CollectIntFeeCard>;
+      break; 
     case 4:
-      // collect domestic 
+      cardContent = <CollectDomFeeCard
+        driveCode = {driveCode}
+        info = {driveStatus.prepareToShip}>
+      </CollectDomFeeCard>;
+    break; 
     default:
       // return error ?
   }
@@ -45,8 +51,15 @@ export default function InstructionCollectCard({
 }
 
 function CollectBooksCard(props) {
+  const styles = {
+    btn: {
+      backgroundColor: "#FE9834",
+      width: "5vw"
+    },
+  }
   const [bookState, setBookState] = useState("");
   const [currBooks, setCurrBooks] = useState(props.info.booksCurrent);
+  console.log(currBooks);
 
   const handleInput = e => {
 
@@ -57,9 +70,6 @@ function CollectBooksCard(props) {
   const handleSubmitButton = async () => {
     console.log("submit clicked");
     
-    console.log(bookState);
-    console.log(typeof(bookState));
-    console.log(typeof(currBooks));
     try {
 
       const data = {
@@ -82,23 +92,148 @@ function CollectBooksCard(props) {
   }
   return (
     <Grid container alignItems="center" sx={{ p: 5 }}>
-      <Grid item xs={12}>
+      <Grid item xs={12} sx ={{ pb: 4 }}>
         <Typography variant="h4">
           <span>Current Number of Books Collected:</span> <span>{currBooks}</span>
         </Typography>
       </Grid>
-      <Grid item xs={4} sx={{ pb: 5 }}>
-        <span>Number of New Books Collected:</span>
+      <Grid item xs={4} sx={{ pb: 2 }}>
+        <Typography variant="h5">Update Books Collected:</Typography>
       </Grid>
-      <Grid item xs={8} sx={{ pb: 5 }}>
+      <Grid item xs={8} sx={{ pb: 2 }}>
         <TextField size="small" fullWidth id="books-collected" variant="outlined" value={bookState} onChange={handleInput}/>
       </Grid>
 
       <Grid item xs={11}>
-        <span>Please update every X weeks. Last updated 00/00/0000</span>
       </Grid>
-      <Grid item xs={1}>
-        <Button variant="contained" size="medium" onClick={handleSubmitButton}>Submit</Button>
+      <Grid item xs={1} sx={{pb:4}}>
+        <Button style={styles.btn} variant="contained" size="large" onClick={handleSubmitButton}>Submit</Button>
+      </Grid>
+    </Grid>
+
+  );
+}
+
+function CollectIntFeeCard(props) {
+  const styles = {
+    btn: {
+      backgroundColor: "#FE9834",
+      width: "5vw"
+    },
+  }
+  const [fundState, setFundState] = useState("");
+  const [currFunds, setCurrFunds] = useState(props.info.intFee);
+  console.log(currFunds);
+  const handleInput = e => {
+
+    setFundState(e.target.value);
+    console.log(fundState);
+  }
+
+  const handleSubmitButton = async () => {
+    console.log("submit clicked");
+    
+    try {
+
+      const data = {
+        pts: {
+          intFee: parseInt(currFunds) + parseInt(fundState),
+          domFee: props.info.domFee,
+          materials: props.info.materials
+        }
+      }
+      await fetch(`/api/bookDrive/${props.driveCode}`,{
+        method: "PUT",
+        body: JSON.stringify(data), // textfield information
+      });
+      console.log("submitted to DB");
+    } catch (e) {
+      console.error(e);
+    }
+    setCurrFunds(parseInt(currFunds) + parseInt(fundState));
+    setFundState("");
+  }
+  return (
+    <Grid container alignItems="center" sx={{ p: 5 }}>
+      <Grid item xs={12} sx ={{ pb: 4 }}>
+        <Typography variant="h4">
+          <span>International Shipping Fees Collected:</span> <span>$ {currFunds}</span>
+        </Typography>
+      </Grid>
+      <Grid item xs={4} sx={{ pb: 2 }}>
+        <Typography variant="h5">Update Funds Collected:</Typography>
+      </Grid>
+      <Grid item xs={8} sx={{ pb: 2 }}>
+        <TextField size="small" fullWidth id="books-collected" variant="outlined" value={fundState} onChange={handleInput}/>
+      </Grid>
+
+      <Grid item xs={11}>
+      </Grid>
+      <Grid item xs={1} sx={{pb:4}}>
+        <Button style={styles.btn} variant="contained" size="large" onClick={handleSubmitButton}>Submit</Button>
+      </Grid>
+    </Grid>
+
+  );
+}
+
+function CollectDomFeeCard(props) {
+  const styles = {
+    btn: {
+      backgroundColor: "#FE9834",
+      width: "5vw"
+    },
+  }
+  const [fundState, setFundState] = useState("");
+  const [currFunds, setCurrFunds] = useState(props.info.intFee);
+
+  const handleInput = e => {
+
+    setFundState(e.target.value);
+    console.log(fundState);
+  }
+
+  const handleSubmitButton = async () => {
+    console.log("submit clicked");
+    
+    try {
+
+      const data = {
+        pts: {
+          intFee: props.info.intFee,
+          domFee: parseInt(currFunds) + parseInt(fundState),
+          materials: props.info.materials
+        }
+      }
+      await fetch(`/api/bookDrive/${props.driveCode}`,{
+        method: "PUT",
+        body: JSON.stringify(data), // textfield information
+      });
+      console.log("submitted to DB");
+    } catch (e) {
+      console.error(e);
+    }
+    setCurrFunds(parseInt(currFunds) + parseInt(fundState));
+    setFundState("");
+  }
+  return (
+    <Grid container alignItems="center" sx={{ p: 5 }}>
+      <Grid item xs={12} sx={{ pb: 4 }}>
+        <Typography variant="h4">
+          <span>Domestic Shipping Fees Collected:</span> <span>$ {currFunds}</span>
+        </Typography>
+      </Grid>
+      <Grid item xs={4} sx={{ pb: 2 }}>
+        <Typography variant="h5">Update Books Collected:</Typography>
+      </Grid>
+      <Grid item xs={8} sx={{ pb: 2 }}>
+        <TextField size="small" fullWidth id="books-collected" variant="outlined" value={fundState} onChange={handleInput}/>
+      </Grid>
+
+      <Grid item xs={11}>
+      </Grid>
+      <Grid item xs={1} sx={{pb:4}}>
+        <Button style={styles.btn} variant="contained" size="large" onClick={handleSubmitButton}>Submit</Button>
       </Grid>
     </Grid>
 

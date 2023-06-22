@@ -20,8 +20,8 @@ const BookDriveSchema = new Schema ({
       lastUpdate: { type: String },
     },
     pts: {
-      intFee: { type: Boolean },
-      domFee: { type: Boolean },
+      intFee: { type: Number },
+      domFee: { type: Number },
       materials: {
         boxes: { type: Boolean },
         extraCardboard: { type: Boolean },

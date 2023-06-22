@@ -36,10 +36,34 @@ export default function InstructionGroupCard(props) {
       setExpanded(!expanded);
     };
 
-    let content = <InstructionCollectCard paddingTop={3} stepNum={2} driveStatus={props.driveStatus} driveCode={props.driveCode}></InstructionCollectCard>
+    let content = <></>
     switch (props.groupNum) {
       case 0: 
-        content = <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Read the Book Collection Guidelines"} stepNum={1}></InstructionChecklistCard>;
+        content = <Grid container direction="column">
+          <Grid paddingTop={2}>
+            <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Read the Book Collection Guidelines"} stepNum={1}></InstructionChecklistCard>;
+          </Grid>
+          </Grid>
+        break;
+      case 1: 
+        content = <Grid container direction="column">
+          <Grid paddingTop={2}>
+            <InstructionCollectCard driveCode={props.driveCode} driveStatus={props.driveStatus} stepNum={2}></InstructionCollectCard>;
+          </Grid>
+        </Grid>
+        break;
+      case 2:
+        content = <Grid container direction="column">
+          <Grid paddingTop={2}>
+            <InstructionCollectCard driveCode={props.driveCode} driveStatus={props.driveStatus} stepNum={3}></InstructionCollectCard>;
+          </Grid>
+          <Grid paddingTop={2}>
+            <InstructionCollectCard driveCode={props.driveCode} driveStatus={props.driveStatus} stepNum={4}></InstructionCollectCard>;
+          </Grid>
+        </Grid>
+        break;
+      case 4:
+         // finish line
     }
     return (
       <Grid>
