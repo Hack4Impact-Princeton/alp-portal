@@ -1,9 +1,11 @@
 import TeamMember from '../components/TeamMember'
 import Grid from '@mui/material/Unstable_Grid2';
-
-function TeamPage () {
+import { NextPage } from 'next';
+import Navbar from '../components/Navbar';
+const TeamPage: NextPage = () => {
     return(
         <div className='teampage'>
+            <Navbar active="h4i-team" />
             <h1>The Hack4Impact Team</h1>
             <h2>Spring 2023</h2>
             <h2>Fall 2022</h2>
