@@ -15,7 +15,6 @@ function Test(props) {
         <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={1} header={"Collecting Books"}></InstructionGroupCard>
         <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={2} header={"Preparing To Ship"}></InstructionGroupCard>
         <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={3} header={"The Finish Line"}></InstructionGroupCard>
-        <InstructionInputCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={3} header={"ME WNAT TO TEST WITH INSTURCTION CARD!"}></InstructionInputCard>
         </Grid>
     );
 }
