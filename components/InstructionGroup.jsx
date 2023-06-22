@@ -40,6 +40,8 @@ export default function InstructionGroupCard(props) {
     switch (props.groupNum) {
       case 0: 
         content = <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Read the Book Collection Guidelines"} stepNum={1}></InstructionChecklistCard>;
+      case 2:
+        content = <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Gather Shipping Materials"} stepNum={5}></InstructionChecklistCard>;
     }
     return (
       <Grid>

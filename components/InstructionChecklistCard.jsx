@@ -5,6 +5,7 @@ import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 // A generic type of card that would go within an InstructionGroup
 export default function InstructionChecklistCard(props) {
     let cardContent = <></>;
+    console.log("STEP NUMBER: ", props.stepNum);
     switch (props.stepNum) {
         case 1: 
             cardContent = <StepOneCard
@@ -12,7 +13,9 @@ export default function InstructionChecklistCard(props) {
                 info={props.driveStatus.gettingStarted}> 
                 </StepOneCard>;
         case 5: 
-            // read drive.pts.materials to pass in bools
+            cardContent = <StepFiveCard>
+
+            </StepFiveCard>
         default: 
     }
     return (
@@ -39,8 +42,6 @@ export default function InstructionChecklistCard(props) {
 // 1: Read Collection Guidelines
 function StepOneCard(props) {
     const [currState, setCurrState] = useState(props.info.terms)
-    console.log("CURR STATE: ", currState);
-    console.log(props.driveCode)
 
     const handleTermsCheck = async () => {
         console.log("click");
@@ -78,3 +79,23 @@ function StepOneCard(props) {
     )
 }
 
+// 5: Collect Packing Materials
+function StepFiveCard(props) {
+    const [collectedBoxes, setCollectedBoxes] = useState(true);
+    const [collectedTape, setCollectedTape] = useState(true);
+    const [collectedLabels, setCollectedLabels] = useState(true);
+    const [collectedPackingSlips, setCollectedPackingSlips] = useState(true);
+
+    const handleClick = async() => {
+
+    }
+
+    return(
+        <Grid container alignItems="center" flex-direction="column" sx={{ p: 5 }}>
+            <FormControlLabel control={<Checkbox></Checkbox>} onChange={handleClick} label="Cardboard boxes"></FormControlLabel>
+            <FormControlLabel control={<Checkbox></Checkbox>} onChange={handleClick} label="Cardboard boxes"></FormControlLabel>
+            <FormControlLabel control={<Checkbox></Checkbox>} onChange={handleClick} label="Cardboard boxes"></FormControlLabel>
+            <FormControlLabel control={<Checkbox></Checkbox>} onChange={handleClick} label="Cardboard boxes"></FormControlLabel>
+        </Grid>
+    )
+}
