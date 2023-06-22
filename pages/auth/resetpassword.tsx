@@ -6,6 +6,9 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Image from 'next/image'
 import { verify } from "crypto";
 import { VolunteerAccount } from "../../models/VolunteerAccount";
@@ -22,6 +25,9 @@ const ResetPassword: NextPage = () => {
     const [showPassword, setShowPassword] = useState(false)
     const [randNum, setRandNum] = useState(1000001)
 
+    const [showPasswordText, setShowPasswordText] = useState(false)
+    // records what time the code was last sent so someone can't use an expired code
+    const [codeSentTime, setCodeSentTime] = useState<number>(Date.now())
     // if true, render the resend code button
     const [showResendCode, setShowResendCode] = useState(false)
 
@@ -56,6 +62,7 @@ const ResetPassword: NextPage = () => {
             if (res.status == 200) {
                 // console.log(res)
                 // console.log(resJson.randNum)
+                setCodeSentTime(Date.now())
                 setShowEmail(false)
                 setShowCode(true)
                 setShowResendCode(false)
@@ -67,8 +74,8 @@ const ResetPassword: NextPage = () => {
         }
     }
     const verifyCode = () => {
-        // console.log(`randomNum: ${randNum}: code: ${code}`)
         if (randNum != code) alert("Incorrect code")
+        else if (Date.now() - codeSentTime >= 600000) alert("Code has expired. Please resend code and try again")
         else {
             // if the code is correct, update ui
             // console.log(code)
@@ -159,7 +166,17 @@ const ResetPassword: NextPage = () => {
                                 <label htmlFor="password">Please enter a new password</label>
                                 <TextField fullWidth
                                     required id="password" label="Password" variant="outlined"
+                                    type={showPasswordText ? "text" : "password"}
                                     value={password} onChange={(e) => setPassword(e.target.value)}
+                                    InputProps={{
+                                        endAdornment: (
+                                          <InputAdornment position="end">
+                                              <IconButton onClick={() => setShowPasswordText(!showPasswordText)}>
+                                                   {showPasswordText ? <VisibilityOff /> : <Visibility />}
+                                             </IconButton>
+                                         </InputAdornment>
+                                        ),
+                                     }}
                                     sx={{
                                         mt: 2,
                                         mb: 2
