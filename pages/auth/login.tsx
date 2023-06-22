@@ -9,10 +9,16 @@ import Image from 'next/image';
 import dbConnect from "../../lib/dbConnect";
 import getVolunteerAccountModel from "../../models/VolunteerAccount";
 import { useRouter } from "next/router";
+import { VolunteerAccount } from '../../models/VolunteerAccount';
+import { NextPage } from 'next';
+import mongoose from 'mongoose'
 
+type LoginProps = {
+  accounts: VolunteerAccount[];
+}
 
-function Login(props) {
-  let accounts = JSON.parse(props.accounts);
+const Login: NextPage<LoginProps> = ({accounts}) => {
+  // let accounts = JSON.parse(props.accounts);
 
   const router = useRouter();
 
@@ -22,49 +28,48 @@ function Login(props) {
   let [disabled, setDisabled] = useState(false);
   let [success, setSuccess] = useState(false);
 
-  let emailsToPwhashs = {};
+  let emailsToPwhashs: {[key: string]: string} = {};
   for (let i = 0; i < accounts.length; i++) {
     emailsToPwhashs[accounts[i]["email"]] = accounts[i]["pwhash"];
   }
 
   function verifyLogin() {
+
+    const bcrypt = require("bcryptjs");
     console.log("Verifying credentials");
-    if (email in emailsToPwhashs && emailsToPwhashs[email] == password) {
+
+    if (
+      email in emailsToPwhashs &&
+      bcrypt.compare(password, emailsToPwhashs[email])
+    ) {
       console.log("Good login");
-      let alp_id
+      let alp_id: number | null = null;
       for (let i = 0; i < accounts.length; i++) {
         if (accounts[i].email == email) {
-          alp_id = accounts[i].alp_id
-          break
+          alp_id = accounts[i].alp_id;
+          break;
         }
       }
       router.push(`../dash-volunteer?alp_id=${alp_id}`);
       setSuccess(true);
       setDisabled(false);
     } else {
-      console.log("Bad login");
       setDisabled(true);
     }
   }
+
 //
-  const handleSetEmail = (emailText) => {
+  const handleSetEmail = (emailText: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(emailText.target.value);
   };
 
-  const handleSetPassword = (passwordText) => {
+  const handleSetPassword = (passwordText: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(passwordText.target.value);
   };
 
+  // need to change to go to sign up page
   const signUpHandler = async () => {
-    try {
-      const data = { email: email, password: password };
-      await fetch("/api/volunteeraccounts", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
-    } catch (e) {
-      console.error(e);
-    }
+    router.push("/auth/signup")
   };
 
     return (
@@ -78,7 +83,7 @@ function Login(props) {
                 width: '100%',
                 height: '25%',
             }}>
-                <Image className="auth-logo" src="/logo-long.png" width={956*0.3} height={295*0.3} alt="ALP-logo" sx={{
+                <Image className="auth-logo" src="/logo-long.png" width={956*0.3} height={295*0.3} alt="ALP-logo" style={{
                         marginBottom: "10 !important",
                 }}/>
                 <h2 className='auth-heading'> Volunteer Portal Login </h2>
@@ -123,10 +128,10 @@ function Login(props) {
 }
 export async function getServerSideProps() {
   await dbConnect();
-  const VolunteerAccount = getVolunteerAccountModel();
-  /* find all the data in our database */
-  const accounts = await VolunteerAccount.find({});
+  const VolunteerAccount: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel();
+  /* find all the accounts in our database */
+  const accounts: VolunteerAccount[] = await VolunteerAccount.find({});
   // stringify data before sending
-  return { props: { accounts: JSON.stringify(accounts) } };
+  return { props: { accounts: JSON.parse(JSON.stringify(accounts)) } };
 }
 export default Login;

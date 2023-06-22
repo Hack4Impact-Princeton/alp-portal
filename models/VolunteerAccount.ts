@@ -1,7 +1,21 @@
 import mongoose from 'mongoose'
-const {Schema} = mongoose
+import {Schema, Types} from 'mongoose'
 
-const VolunteerAccountSchema = new Schema({
+export type VolunteerAccount = {
+    fname: string,
+    lname: string,
+    alp_id: number,
+    ageBucket: number,
+    email: string,
+    pwhash: string,
+    location: number,
+    dateJoined: Date,
+    allDrives: number,
+    driveIds: Types.Array<string>,
+    badges: number,
+}
+
+const VolunteerAccountSchema = new Schema<VolunteerAccount>({
     fname: {
         type: String,
         required: true,
@@ -40,10 +54,7 @@ const VolunteerAccountSchema = new Schema({
         type: Number,
         required: true
     },
-    driveIds: {
-        type: Array,
-        required: true
-    },
+    driveIds: [String],
     badges: {
         type: Number,
         required: true
