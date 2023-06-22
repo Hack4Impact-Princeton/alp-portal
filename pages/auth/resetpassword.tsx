@@ -43,7 +43,7 @@ const ResetPassword: NextPage = () => {
         try {
             const data = { email: email }
             // check to make sure that email is in our db
-            const dupAccount: { error: Error | null, data: VolunteerAccount | null } = await fetch(`../api/volunteeraccounts?email=${encodeURIComponent(email)}`).then(res => res.json())
+            const dupAccount: { error: Error | null, data: VolunteerAccount | null } = await fetch(`../api/volunteeraccounts/${encodeURIComponent(email)}`).then(res => res.json())
             if (!dupAccount.data) {
                 alert(`No account found with email ${email}`)
                 return

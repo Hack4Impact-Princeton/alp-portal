@@ -12,8 +12,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { signIn } from 'next-auth/react'
-import dbConnect from '../../lib/dbConnect'
-import getVolunteerAccountModel from '../../models/VolunteerAccount'
+
 
 const Signup = (props) => {
     // const error = props.error ? props.error : null
@@ -57,11 +56,11 @@ const Signup = (props) => {
             const bcrypt = require("bcryptjs");
             const salt = bcrypt.genSaltSync(10);
             const hashedPwd = (password == '')?'':bcrypt.hashSync(password, salt);
-            const data = { fname: fname, lname: lname, email: email, password: hashedPwd, location: location }
+            const data = { fname: fname, lname: lname, email: email, pwhash: hashedPwd, location: location }
             // return if empty field
             for (let entry in data) 
                 if (data[entry] == '') return;
-            const dupAccount = await fetch(`../api/volunteeraccounts?email=${encodeURIComponent(email)}`).then(res => res.json())
+            const dupAccount = await fetch(`../api/volunteeraccounts/${encodeURIComponent(email)}`).then(res => res.json())
             if (dupAccount.data) {
                 console.log(dupAccount)
                 console.log('duplicate account')
@@ -69,7 +68,7 @@ const Signup = (props) => {
                 return
             }
             console.log('not duplicate account')
-            const res = await fetch('../api/volunteeraccounts', {
+            const res = await fetch(`../api/volunteeraccounts/${email}`, {
                 method: "POST",
                 body: JSON.stringify(data),
             })
