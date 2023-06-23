@@ -146,12 +146,12 @@ export const getServerSideProps = async (context) => {
     const email = session.user.email
     await dbConnect()
     const VolunteerAccount = getVolunteerAccountModel()
-  const BookDrive = getBookDriveModel()
+    const BookDrive = getBookDriveModel()
     const volunteerAccount = await VolunteerAccount.findOne({ email: email })
     const driveList = volunteerAccount.driveIds
     // finds all completed bookDrives that correspond to the volunteer account
-  const promises = driveList.map(driveId => BookDrive.find({driveCode: driveId, status: 1}));
-  const completedDrives = await Promise.all(promises);
+    const promises = driveList.map(async (driveId) => await BookDrive.find({driveCode: driveId, status: 1}));
+    const completedDrives = await Promise.all(promises);
   return { props: { account: JSON.stringify(volunteerAccount), completedDrives: JSON.stringify(completedDrives), error: null } }
   } catch (e) {
     console.error(e)

@@ -32,11 +32,10 @@ const EditVolunteerAccount = (props) => {
     const editVolunteerAccount = async () => {
         try {
             const data = {
-                alp_id: alp_id,
                 email: email,
                 location: location,
             }
-            const resJson = await fetch("/api/volunteeraccounts", {
+            const resJson = await fetch(`/api/volunteeraccounts/${volunteerAccount.email}`, {
                 method: "PATCH",
                 body: JSON.stringify(data),
             }).then(res => res.json())
