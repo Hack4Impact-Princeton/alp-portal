@@ -98,6 +98,7 @@ function StepFiveCard(props) {
         try {
             // initialize data object with all unchaned fields
             let data = {
+                pts: {
                 intFee: 100,
                 domFee: 100,
                 materials: {
@@ -105,29 +106,35 @@ function StepFiveCard(props) {
                     tape: collectedTape, 
                     mailingLabels: collectedLabels, 
                     extraCardboard: collectedExtraBoard}
+                }
             }
             // whichever box was checked, change that field
             switch(boxNum) {
                 case 0: 
-                    data.materials.boxes = !collectedBoxes;
-                    setCollectedBoxes(!collectedBoxes);
+                    data.pts.materials.boxes = !collectedBoxes;
+                    setCollectedBoxes(() => !collectedBoxes);
+                    break;
                 case 1:
-                    data.materials.tape = !collectedTape;
-                    setCollectedTape(!collectedTape);
+                    data.pts.materials.tape = !collectedTape;
+                    setCollectedTape(() => !collectedTape);
+                    break;
                 case 2:
-                    data.materials.mailingLabels = !collectedLabels;
-                    setCollectedLabels(!collectedLabels);
+                    data.pts.materials.mailingLabels = !collectedLabels;
+                    setCollectedLabels(() => !collectedLabels);
+                    break;
                 case 3:
-                    data.materials.extracardBoard = !collectedExtraBoard;
-                    setCollectedExtraBoard(!collectedExtraBoard);
+                    data.pts.materials.extraCardboard = !collectedExtraBoard;
+                    setCollectedExtraBoard(() => !collectedExtraBoard);
+                    break;
             }
 
 
             console.log("data: ", JSON.stringify(data));
-            await fetch(`/api/bookDrive/${props.driveCode}`, {
+            const resJson = await fetch(`/api/bookDrive/${props.driveCode}`, {
                 method: "PUT",
                 body: JSON.stringify(data),
-            });
+            }).then(res => res.json());
+            console.log(resJson.data)
             console.log("done");
             } catch (e) {
             console.error(e)
