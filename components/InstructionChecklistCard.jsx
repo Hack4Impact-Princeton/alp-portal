@@ -89,6 +89,7 @@ function StepOneCard(props) {
 
 // 5: Collect Packing Materials
 function StepFiveCard(props) {
+    console.log("PROPS: ", props);
     const [collectedBoxes, setCollectedBoxes] = useState(props.info.materials.boxes);
     const [collectedTape, setCollectedTape] = useState(props.info.materials.tape);
     const [collectedLabels, setCollectedLabels] = useState(props.info.materials.mailingLabels);
@@ -107,19 +108,18 @@ function StepFiveCard(props) {
                     extraCardboard: collectedExtraBoard}
             }
             // whichever box was checked, change that field
-            switch(boxNum) {
-                case 0: 
-                    data.materials.boxes = !collectedBoxes;
-                    setCollectedBoxes(!collectedBoxes);
-                case 1:
-                    data.materials.tape = !collectedTape;
-                    setCollectedTape(!collectedTape);
-                case 2:
-                    data.materials.mailingLabels = !collectedLabels;
-                    setCollectedLabels(!collectedLabels);
-                case 3:
-                    data.materials.extracardBoard = !collectedExtraBoard;
-                    setCollectedExtraBoard(!collectedExtraBoard);
+            if (boxNum == 0) {
+                data.materials.boxes = !collectedBoxes;
+                setCollectedBoxes(!collectedBoxes);
+            } else if (boxNum == 1) {
+                data.materials.tape = !collectedTape;
+                setCollectedTape(!collectedTape);
+            } else if (boxNum == 2) {
+                data.materials.mailingLabels = !collectedLabels;
+                setCollectedLabels(!collectedLabels);
+            } else if (boxNum == 3) {
+                data.materials.extraCardboard = !collectedExtraBoard;
+                setCollectedExtraBoard(!collectedExtraBoard);
             }
 
 
