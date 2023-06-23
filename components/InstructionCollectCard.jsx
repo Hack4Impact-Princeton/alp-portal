@@ -62,33 +62,39 @@ function CollectBooksCard(props) {
   console.log(currBooks);
 
   const handleInput = e => {
-
     setBookState(e.target.value);
     console.log(bookState);
+    console.log(typeof(bookState))
   }
 
   const handleSubmitButton = async () => {
     console.log("submit clicked");
-    
-    try {
+    if(parseInt(bookState) > 0 && parseInt(bookState) < 500) {
+      try {
 
-      const data = {
-        cb: {
-          booksCurrent: parseInt(currBooks) + parseInt(bookState),
-          updateFreq: props.info.updateFreq++,
-          lastUpdate: "6/20/23"  // implement datetime
+        const data = {
+          cb: {
+            booksCurrent: parseInt(currBooks) + parseInt(bookState),
+            updateFreq: props.info.updateFreq++,
+            lastUpdate: "6/20/23"  // implement datetime
+          }
         }
+        await fetch(`/api/bookDrive/${props.driveCode}`,{
+          method: "PUT",
+          body: JSON.stringify(data), // textfield information
+        });
+        console.log("submitted to DB");
+      } catch (e) {
+        console.error(e);
       }
-      await fetch(`/api/bookDrive/${props.driveCode}`,{
-        method: "PUT",
-        body: JSON.stringify(data), // textfield information
-      });
-      console.log("submitted to DB");
-    } catch (e) {
-      console.error(e);
+      setCurrBooks(parseInt(currBooks)+parseInt(bookState));
+      setBookState("");
     }
-    setCurrBooks(parseInt(currBooks)+parseInt(bookState));
-    setBookState("");
+    else {
+      console.log("not valid")
+      setBookState("");
+    }
+    
   }
   return (
     <Grid container alignItems="center" sx={{ p: 5 }}>
@@ -125,33 +131,39 @@ function CollectIntFeeCard(props) {
   const [currFunds, setCurrFunds] = useState(props.info.intFee);
   console.log(currFunds);
   const handleInput = e => {
-
     setFundState(e.target.value);
     console.log(fundState);
   }
 
   const handleSubmitButton = async () => {
     console.log("submit clicked");
-    
-    try {
+    if (parseInt(fundState) > 0 && parseInt(fundState) < 500) {
+      try {
 
-      const data = {
-        pts: {
-          intFee: parseInt(currFunds) + parseInt(fundState),
-          domFee: props.info.domFee,
-          materials: props.info.materials
+        const data = {
+          pts: {
+            intFee: parseInt(currFunds) + parseInt(fundState),
+            domFee: props.info.domFee,
+            materials: props.info.materials
+          }
         }
+        await fetch(`/api/bookDrive/${props.driveCode}`,{
+          method: "PUT",
+          body: JSON.stringify(data), // textfield information
+        });
+        console.log("submitted to DB");
+      } catch (e) {
+        console.error(e);
       }
-      await fetch(`/api/bookDrive/${props.driveCode}`,{
-        method: "PUT",
-        body: JSON.stringify(data), // textfield information
-      });
-      console.log("submitted to DB");
-    } catch (e) {
-      console.error(e);
+      setCurrFunds(parseInt(currFunds) + parseInt(fundState));
+      setFundState("");
     }
-    setCurrFunds(parseInt(currFunds) + parseInt(fundState));
-    setFundState("");
+    else {
+      console.log("not valid")
+      setFundState("");
+    }
+    
+    
   }
   return (
     <Grid container alignItems="center" sx={{ p: 5 }}>
@@ -188,33 +200,37 @@ function CollectDomFeeCard(props) {
   const [currFunds, setCurrFunds] = useState(props.info.intFee);
 
   const handleInput = e => {
-
     setFundState(e.target.value);
     console.log(fundState);
   }
 
   const handleSubmitButton = async () => {
     console.log("submit clicked");
-    
-    try {
-
-      const data = {
-        pts: {
-          intFee: props.info.intFee,
-          domFee: parseInt(currFunds) + parseInt(fundState),
-          materials: props.info.materials
+    if (parseInt(fundState) > 0 && parseInt(fundState) < 500) {
+      try {
+        const data = {
+          pts: {
+            intFee: props.info.intFee,
+            domFee: parseInt(currFunds) + parseInt(fundState),
+            materials: props.info.materials
+          }
         }
+        await fetch(`/api/bookDrive/${props.driveCode}`,{
+          method: "PUT",
+          body: JSON.stringify(data), // textfield information
+        });
+        console.log("submitted to DB");
+      } catch (e) {
+        console.error(e);
       }
-      await fetch(`/api/bookDrive/${props.driveCode}`,{
-        method: "PUT",
-        body: JSON.stringify(data), // textfield information
-      });
-      console.log("submitted to DB");
-    } catch (e) {
-      console.error(e);
+      setCurrFunds(parseInt(currFunds) + parseInt(fundState));
+      setFundState("");
     }
-    setCurrFunds(parseInt(currFunds) + parseInt(fundState));
-    setFundState("");
+    else {
+      console.log("not valid")
+      setFundState("");
+    }
+    
   }
   return (
     <Grid container alignItems="center" sx={{ p: 5 }}>
