@@ -103,7 +103,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "components/MapComponent.tsx", "pages/maptest.js", "pages/api/email/email.js", "pages/api/email/updatepassword/index.js"  ],
+, "components/MapComponent.tsx", "pages/maptest.js", "pages/api/email/email.js", "pages/api/email/updatepassword/index.js", "pages/conversation.js"  ],
   "exclude": [
     "node_modules"
   ]
