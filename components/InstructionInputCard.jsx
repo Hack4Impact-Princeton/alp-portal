@@ -14,15 +14,22 @@ export default function InstructionInputCard({ heading, subHeading, submitBtn, s
       const data = {
         gs: {
           fundraise: value,
-          terms: true, // Assuming you want to set 'terms' to true
+          terms: true,
         },
       };
       console.log("data: ", JSON.stringify(data));
-      await fetch(`/api/bookDrive/${props.driveCode}`, {
+  
+      const response = await fetch(`/api/bookDrive/${props.driveCode}`, {
         method: "PUT",
         body: JSON.stringify(data),
       });
-      console.log("done");
+  
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log("Response from MongoDB:", responseData);
+      } else {
+        console.error("Error response from API:", response.status);
+      }
     } catch (error) {
       console.error(error);
     }
