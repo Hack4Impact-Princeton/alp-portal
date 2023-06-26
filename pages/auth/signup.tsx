@@ -22,9 +22,15 @@ const Signup = (props) => {
     const [fname, setFName] = useState("")
     const [lname, setLName] = useState("")
     const [email, setEmail] = useState("")
+    const [isValidEmail, setIsValidEmail] = useState(true);
     const [password, setPassword] = useState("")
     const [location, setLocation] = useState(1)
     const [showPassword, setShowPassword] = useState(false);
+
+    const validateEmail = (input) => {
+      const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+      return emailRegex.test(input);
+    };
 
     const handleSetFName = (fName: React.ChangeEvent<HTMLInputElement>) => {
         setFName(fName.target.value)
@@ -34,6 +40,7 @@ const Signup = (props) => {
     }
     const handleSetEmail = (emailText: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(emailText.target.value)
+        setIsValidEmail(validateEmail(emailText.target.value));
     }
     const handleSetPassword = (passwordText: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(passwordText.target.value)
@@ -61,6 +68,11 @@ const Signup = (props) => {
             for (let entry in data) 
                 if (data[entry] == '') return;
             const dupAccount = await fetch(`../api/volunteeraccounts/${encodeURIComponent(email)}`).then(res => res.json())
+            if (!isValidEmail) {
+                console.log("Invalid email address");
+                alert("Please enter a valid email");
+                return
+            }
             if (dupAccount.data) {
                 console.log(dupAccount)
                 console.log('duplicate account')
