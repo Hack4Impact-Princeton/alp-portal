@@ -229,7 +229,7 @@ export const Chat = ({user}:{user:User}) => {
     return (<MainContainer responsive>
         <Sidebar position="left" scrollable>
             <ConversationHeader style={{backgroundColor:"#fff"}}>
-                <Avatar src={user.avatar} />
+                <Avatar src={"https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug"} />
                 <ConversationHeader.Content>
                     {user.username}
                 </ConversationHeader.Content>
