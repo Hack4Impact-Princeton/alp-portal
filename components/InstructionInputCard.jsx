@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Typography, Grid, TextField, Button } from "@mui/material";
 
-export default function InstructionInputCard({ heading, subHeading, submitBtn, stepNum }) {
+export default function InstructionInputCard(props) {
+  console.log("Props", props);
   const [value, setValue] = useState("");
 
   const handleChange = (event) => {
@@ -49,12 +50,12 @@ export default function InstructionInputCard({ heading, subHeading, submitBtn, s
     >
       <Grid item xs={12}>
         <Typography variant="h4">
-          <span>How Will You Fundraise?</span>
+          <span>{props.heading}</span>
         </Typography>
         <Typography display="block"> </Typography>
           <span>See fundraising ideas here</span>
         <Typography variant="h6">
-          <span>{subHeading}</span>
+          <span></span>
         </Typography>
       </Grid>
 
