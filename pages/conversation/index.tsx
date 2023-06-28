@@ -3,7 +3,9 @@ const { nanoid } = require('nanoid')
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import { Col, Container, Row } from "react-bootstrap";
-import {users, user1Model, user2Model, user3Model, user4Model} from '../../data/data'
+import { users } from '../../data/data'
+import { getSession, useSession } from 'next-auth/react'
+import Router from "next/router";
 import {
     BasicStorage,
     ChatProvider,
@@ -20,163 +22,147 @@ import {
     ConversationRole,
     TypingUsersList,
     MessageContentType,
+    ParticipantParams
 } from "@chatscope/use-chat";
 import { Chat } from "../../components/Chat";
-import { ExampleChatService } from '../../lib/ExampleChatService'
-
+import { ChatService } from '../../lib/ChatService'
+import { useEffect, useState } from "react";
+import getVolunteerAccountModel, { VolunteerAccount } from "../../models/VolunteerAccount";
+import getExtendedConversationParamsModel, { ExtendedConversationParamsDocument } from "../../models/Conversation";
+import mongoose from "mongoose";
+import dbConnect from "../../lib/dbConnect";
+const avatarUrl = "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250"
 
 const messageIdGenerator = (message: ChatMessage<MessageContentType>) => nanoid();
 const groupIdGenerator = () => nanoid();
 
-const avatarUrl = "https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug"
 
-const user1 = new User({
-    id: "User1",
-    presence: new Presence({ status: UserStatus.Available, description: "" }),
-    firstName: "User1",
-    lastName: "User1",
-    username: "User1",
-    email: "user1@test.com",
-    bio: "user1 bio",
-    avatar: avatarUrl
-});
 const user2 = new User({
-    id: "User2",
+    id: "test1",
     presence: new Presence({ status: UserStatus.Available, description: "" }),
-    firstName: "User2",
-    lastName: "User2",
-    username: "User2",
-    email: "user2@test.com",
-    bio: "user2 bio",
+    firstName: "test1",
+    lastName: 'test1',
+    username: `test1`,
+    email: 'test1@test.com',
+    bio: '',
     avatar: avatarUrl
-});
-const user3 = new User({
-    id: "User3",
-    presence: new Presence({ status: UserStatus.Available, description: "" }),
-    firstName: "User3",
-    lastName: "User3",
-    username: "User3",
-    email: "user3@test.com",
-    bio: "user3 bio",
-    avatar: avatarUrl,
-});
-const user4 = new User({
-    id: "User4",
-    presence: new Presence({ status: UserStatus.Available, description: "" }),
-    firstName: "User4",
-    lastName: "User4",
-    username: "User4",
-    email: "user4@test.com",
-    bio: "user4 bio",
-    avatar: avatarUrl,
-});
+})
 
-
-const user1Storage = new BasicStorage({ groupIdGenerator, messageIdGenerator });
-const user2Storage = new BasicStorage({ groupIdGenerator, messageIdGenerator });
-const user3Storage = new BasicStorage({ groupIdGenerator, messageIdGenerator })
-const user4Storage = new BasicStorage({ groupIdGenerator, messageIdGenerator })
-
-const chats = [
-    { name: user1.firstName, storage: user1Storage },
-    { name: user2.firstName, storage: user2Storage },
-    { name: user3.firstName, storage: user3Storage },
-    { name: user4.firstName, storage: user4Storage },
-];
 
 // Create serviceFactory
 const serviceFactory = (storage: IStorage, updateState: UpdateState) => {
-    return new ExampleChatService(storage, updateState);
-};
+    return new ChatService(storage, updateState);
 
-// const chatStorage = new BasicStorage({ groupIdGenerator, messageIdGenerator });
-function createConversation(id: ConversationId, name: string): Conversation {
+};
+function createConversation(id: ConversationId, names: string[]): Conversation {
     return new Conversation({
         id,
-        participants: [
+        participants: names.map(name =>
             new Participant({
                 id: name,
                 role: new ConversationRole([])
             })
-        ],
+        ),
         unreadCounter: 0,
-        typingUsers: new TypingUsersList({items: []}),
+        typingUsers: new TypingUsersList({ items: [] }),
         draft: ""
     });
 }
 
-// Add users and conversations to the states
-chats.forEach(c => {
+type ChatWrapperProps = {
+    account: VolunteerAccount;
+    conversations: ExtendedConversationParamsDocument<any, MessageContentType>[]; // this is really the Conversation type from models/Conversation but it's a dupe type
+}
 
-    users.forEach(u => {
-        if (u.name !== c.name) {
-            c.storage.addUser(new User({
-                id: u.name,
-                presence: new Presence({status: UserStatus.Available, description: ""}),
-                firstName: "",
-                lastName: "",
-                username: u.name,
-                email: "",
-                avatar: avatarUrl,
-                bio: ""
-            }));
+const ChatWrapper: NextPage<ChatWrapperProps> = ({ account, conversations }) => {
+    //console.log(account)
+    //console.log(conversations)
+    const { status } = useSession()
+    useEffect(() => {
+        if (status === 'unauthenticated') Router.replace('/auth/login')
+    }, [status])
+    if (status == 'loading') return <p>loading...</p>
 
-            const conversationId = nanoid();
+    const user = new User({
+        id: `${account.alp_id}`,
+        presence: new Presence({ status: UserStatus.Available, description: "" }),
+        firstName: account.fname,
+        lastName: account.lname,
+        username: `${account.fname} ${account.lname}`,
+        email: account.email,
+        bio: '',
+        avatar: avatarUrl
+    });
 
-            const myConversation = c.storage.getState().conversations.find(cv => typeof cv.participants.find(p => p.id === u.name) !== "undefined");
-            if (!myConversation) {
+    const userStorage = new BasicStorage({ groupIdGenerator, messageIdGenerator })
+    conversations.forEach(conversation => {
+        const conversationId = conversation.id as ConversationId;
+        if (conversation.participants) {
+            const participants = conversation.participants.map(participant => {
+                return new Participant({
+                    id: participant.id as string,
+                    role: new ConversationRole([]),
+                });
+            });
+            participants.map(participant => userStorage.addUser(new User({ id: participant.id, presence: new Presence({ status: UserStatus.Available, description: "" }), firstName: "", lastName: "", username: participant.id, email: '', avatar: avatarUrl, bio: '' })))
 
-                c.storage.addConversation(createConversation(conversationId, u.name));
-
-                const chat = chats.find(chat => chat.name === u.name);
-
-                if (chat) {
-
-                    const hisConversation = chat.storage.getState().conversations.find(cv => typeof cv.participants.find(p => p.id === c.name) !== "undefined");
-                    if (!hisConversation) {
-                        chat.storage.addConversation(createConversation(conversationId, c.name));
-                    }
-
-                }
-
-            }
-
+            // Create a new conversation instance and add it to the user's storage
+            const newConversation = new Conversation({ id: conversationId, participants, unreadCounter: 0, typingUsers: new TypingUsersList({ items: [] }), draft: "" });
+            userStorage.addConversation(newConversation);
+            conversation.messages.forEach(message => {
+                userStorage.addMessage(message, conversationId)
+            })
         }
     });
 
-});
 
-
-const ChatWrapper: NextPage = () => {
     return (
         <div className="h-100 d-flex flex-column overflow-hidden">
             <Container fluid className="p-4 flex-grow-1 position-relative overflow-hidden">
                 <Row className="h-50 pb-2 flex-nowrap">
                     <Col>
-                        <ChatProvider serviceFactory={serviceFactory} storage={user1Storage} config={{
+                        <ChatProvider serviceFactory={serviceFactory} storage={userStorage} config={{
                             typingThrottleTime: 250,
                             typingDebounceTime: 900,
                             debounceTyping: true,
                             autoDraft: AutoDraft.Save | AutoDraft.Restore
                         }}>
-                            <Chat user={user1} />
-                        </ChatProvider>
-                    </Col>
-                    <Col>
-                        <ChatProvider serviceFactory={serviceFactory} storage={user2Storage} config={{
-                            typingThrottleTime: 250,
-                            typingDebounceTime: 900,
-                            debounceTyping: true,
-                            autoDraft: AutoDraft.Save | AutoDraft.Restore
-                        }}>
-                            <Chat user={user2} />
+                            <Chat user={user} />
                         </ChatProvider>
                     </Col>
                 </Row>
+
             </Container>
         </div>
     );
 };
+
+
+export async function getServerSideProps(context: any) {
+    try {
+        await dbConnect()
+        const session = await getSession(context)
+        const email = session!.user!.email
+        console.log("hi", email)
+        const VolunteerAccount: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel()
+        // const testConvo = createConversation("1", ["test1", "ec c"])
+        // console.log(testConvo)
+        const Conversation: mongoose.Model<ExtendedConversationParamsDocument<any, MessageContentType>> = getExtendedConversationParamsModel()
+        // const convo = await Conversation.create({...testConvo })
+        // console.log(convo)
+        const volunteerAccount = await VolunteerAccount.findOne({ email: email })
+        //console.log(volunteerAccount)
+        const conversationIds = volunteerAccount!.conversations
+        // finds all conversations that correspond to the volunteerAccount
+        const promises = conversationIds.map(convoId => Conversation.find({ id: convoId }));
+        const conversations = await Promise.all(promises);
+        return { props: { conversations: JSON.parse(JSON.stringify(conversations[0])), account: JSON.parse(JSON.stringify(volunteerAccount)) } }
+    } catch (e: any) {
+        console.log(e)
+        let strError = e.message === "Cannot read properties of null (reading 'user')" ? "You must login before accessing this page" : `${e}`
+        return { props: { error: strError } }
+    }
+}
 
 export default ChatWrapper;
 
