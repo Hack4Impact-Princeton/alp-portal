@@ -81,3 +81,6 @@ html, body {
     font-family: 'Epilogue', sans-serif;
     margin-right: 3vw;
 }
+#state-label{
+    text-align: left
+    }

@@ -11,8 +11,12 @@ import {getStates} from '../../lib/enums'
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { signIn } from 'next-auth/react';
-
+import { signIn } from 'next-auth/react'
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 const Signup = (prevShowPassword) => {
     // const error = props.error ? props.error : null
@@ -152,16 +156,22 @@ const Signup = (prevShowPassword) => {
                            }}
                           sx={{
                           mt: 2,
-                         mb: 2,
+                         mb: 4,
                           }}
                         />
-                            <select onChange={handleSetLocation}>
+                        <FormControl sx={{ width: 300}}>
+                        <InputLabel id="state-label">State</InputLabel>
+                            <Select 
+                            onChange={handleSetLocation}
+                            input={<OutlinedInput label="State" />}
+                           >
                         {
                             states.map((state) => (
-                               <option key={state.index} value={state.index}>{state.name}</option> 
+                               <MenuItem key={state.index} value={state.index} >{state.name}</MenuItem> 
                             ))
                         }
-                    </select>
+                    </Select>
+                    </FormControl>
                     <br></br>
                     <Button variant="contained"
                                 onClick={signUpHandler}
