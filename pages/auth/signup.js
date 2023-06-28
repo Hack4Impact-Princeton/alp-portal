@@ -8,6 +8,7 @@ import Router from 'next/router'
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Image from 'next/image';
 import {getStates} from '../../lib/enums'
+import createPost from '../api/posts/postHelper.js';
 
 const Signup = () => {
     const states = getStates()
@@ -35,6 +36,8 @@ const Signup = () => {
     }
 
     const signUpHandler = async () => {
+        const post0 = await PostHelper.createPost("id_1", "test post 0", "i really hope this works"); // make new post
+        
         try {
             // set timeout for reseting error fields
             setSubmit(true)
