@@ -25,7 +25,15 @@ const FriendsList: React.FC<FriendsListProps> = () => {
                         justifyContent: 'center'
                         
                     }}>
-                        Friends and Conversations
+                        <h3>Friends and Conversations</h3>
+                    </Box>
+                    <Box alignVerticalCenter sx={{
+                        backgroundColor: 'orange',
+                        height: '20px',
+                        justifyContent: 'center'
+                        
+                    }}>
+                        Add a friend
                     </Box>
                         <Grid>
                             <Search placeholder="Search your friends" />
