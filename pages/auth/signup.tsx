@@ -18,7 +18,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-const Signup = (props) => {
+const Signup = (prevShowPassword) => {
     // const error = props.error ? props.error : null
     // const accounts = props.account ? JSON.parse(props.accounts) : null
     const states = getStates()
