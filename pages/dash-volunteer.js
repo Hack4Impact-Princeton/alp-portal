@@ -60,49 +60,6 @@ function DashVolunteer(props) {
     )
 
   }
-
-  // return (
-  //   <Grid2 container>
-  //     <Grid2 sx={{
-  //       backgroundColor: "blue"
-  //     }}><Navbar></Navbar></Grid2>
-  //     <Grid2 sx={{
-  //       backgroundColor: "green"
-  //     }}>
-  //       <Stack direction="column"
-  //         justifyContent="flex-start"
-  //         alignItems="stretch"
-  //         spacing={5}
-  //         sx={{
-  //           backgroundColor: 'orange'
-  //         }}>
-  //           <div style={{marginTop: '5vh'}}>
-  //             <Grid2 container spacing={2}>
-  //               <Grid2 item xs={11} sx={{
-  //                 backgroundColor: "yellow"
-  //               }}>
-  //                 <div style={{fontSize: '45px', textAlign:'left', fontWeight:'bold'}}>HOME</div>
-  //                 <div style={{fontSize: '25px', textAlign:'left', marginTop: '2vh'}}>Active Drives</div>
-  //               </Grid2>
-  //               <Grid2 item xs = {1}><img src="https://upload.wikimedia.org/wikipedia/en/d/de/AfricanLibraryProjectLogo.png" style={{width: '5vw'}}/></Grid2>
-  //             </Grid2>
-  //           </div>  
-  //         <Link href={{pathname: "volunteeraccounts/profile",
-  //          query: {alp_id: volunteer.alp_id}}}> Click here to go to your profile
-  //         </Link>
-  //         {drives && <Stack
-  //           direction="column"
-  //           justifyContent="flex-start"
-  //           //alignItems="stretch"
-  //           container spacing={10}>
-  //             {drives.map((drive) => (
-  //               <DriveCard drivename={drive.driveName}></DriveCard>
-  //             ))}
-  //         </Stack>}
-  //       </Stack>
-  //     </Grid2>
-  //   </Grid2>
-  // );
 }
 
 export async function getServerSideProps(context) {
