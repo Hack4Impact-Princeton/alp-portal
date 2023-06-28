@@ -11,11 +11,10 @@ import {getStates} from '../../lib/enums'
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { signIn } from 'next-auth/react'
-import dbConnect from '../../lib/dbConnect'
-import getVolunteerAccountModel from '../../models/VolunteerAccount'
+import { signIn } from 'next-auth/react';
 
-const Signup = (props) => {
+
+const Signup = (prevShowPassword) => {
     // const error = props.error ? props.error : null
     // const accounts = props.account ? JSON.parse(props.accounts) : null
     const states = getStates()
@@ -23,24 +22,31 @@ const Signup = (props) => {
     const [fname, setFName] = useState("")
     const [lname, setLName] = useState("")
     const [email, setEmail] = useState("")
+    const [isValidEmail, setIsValidEmail] = useState(true);
     const [password, setPassword] = useState("")
     const [location, setLocation] = useState(1)
     const [showPassword, setShowPassword] = useState(false);
 
-    const handleSetFName = (fName) => {
+    const validateEmail = (input) => {
+      const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+      return emailRegex.test(input);
+    };
+
+    const handleSetFName = (fName: React.ChangeEvent<HTMLInputElement>) => {
         setFName(fName.target.value)
     }
-    const handleSetLName = (lName) => {
+    const handleSetLName = (lName: React.ChangeEvent<HTMLInputElement>) => {
         setLName(lName.target.value)
     }
-    const handleSetEmail = (emailText) => {
+    const handleSetEmail = (emailText: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(emailText.target.value)
+        setIsValidEmail(validateEmail(emailText.target.value));
     }
-    const handleSetPassword = (passwordText) => {
+    const handleSetPassword = (passwordText: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(passwordText.target.value)
     }
-    const handleSetLocation = (event) => {
-        setLocation(event.target.value);
+    const handleSetLocation = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setLocation(Number(event.target.value));
     }
     const handleTogglePassword = () => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -59,11 +65,16 @@ const Signup = (props) => {
             const bcrypt = require("bcryptjs");
             const salt = bcrypt.genSaltSync(10);
             const hashedPwd = (password == '')?'':bcrypt.hashSync(password, salt);
-            const data = { fname: fname, lname: lname, email: email, password: hashedPwd, location: location }
+            const data = { fname: fname, lname: lname, email: email, pwhash: hashedPwd, location: location }
             // return if empty field
             for (let entry in data) 
                 if (data[entry] == '') return;
-            const dupAccount = await fetch(`../api/volunteeraccounts?email=${encodeURIComponent(email)}`).then(res => res.json())
+            const dupAccount = await fetch(`../api/volunteeraccounts/${encodeURIComponent(email)}`).then(res => res.json())
+            if (!isValidEmail) {
+                console.log("Invalid email address");
+                alert("Please enter a valid email");
+                return
+            }
             if (dupAccount.data) {
                 console.log(dupAccount)
                 console.log('duplicate account')
@@ -71,7 +82,7 @@ const Signup = (props) => {
                 return
             }
             console.log('not duplicate account')
-            const res = await fetch('../api/volunteeraccounts', {
+            const res = await fetch(`../api/volunteeraccounts/${email}`, {
                 method: "POST",
                 body: JSON.stringify(data),
             })
@@ -98,7 +109,7 @@ const Signup = (props) => {
                 width: '100%',
                 height: '25%',
             }}>
-                <Image className="auth-logo" src="/logo-long.png" width={956*0.3} height={295*0.3} alt="ALP-logo" sx={{
+                <Image className="auth-logo" src="/logo-long.png" width={956*0.3} height={295*0.3} alt="ALP-logo" style={{
                         marginBottom: "10 !important",
                 }}/>
                 <h2 className='auth-heading'>Sign up to volunteer with the African Library Project!</h2>
