@@ -11,36 +11,46 @@ import {getStates} from '../../lib/enums'
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { signIn } from 'next-auth/react';
 
-const Signup = () => {
+
+const Signup = (prevShowPassword) => {
+    // const error = props.error ? props.error : null
+    // const accounts = props.account ? JSON.parse(props.accounts) : null
     const states = getStates()
     const [submit, setSubmit] = useState(false)
     const [fname, setFName] = useState("")
     const [lname, setLName] = useState("")
     const [email, setEmail] = useState("")
+    const [isValidEmail, setIsValidEmail] = useState(true);
     const [password, setPassword] = useState("")
     const [location, setLocation] = useState(1)
     const [showPassword, setShowPassword] = useState(false);
 
-    const handleSetFName = (fName) => {
+    const validateEmail = (input) => {
+      const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+      return emailRegex.test(input);
+    };
+
+    const handleSetFName = (fName: React.ChangeEvent<HTMLInputElement>) => {
         setFName(fName.target.value)
     }
-    const handleSetLName = (lName) => {
+    const handleSetLName = (lName: React.ChangeEvent<HTMLInputElement>) => {
         setLName(lName.target.value)
     }
-    const handleSetEmail = (emailText) => {
+    const handleSetEmail = (emailText: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(emailText.target.value)
+        setIsValidEmail(validateEmail(emailText.target.value));
     }
-    const handleSetPassword = (passwordText) => {
+    const handleSetPassword = (passwordText: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(passwordText.target.value)
     }
-    const handleSetLocation = (event) => {
-        setLocation(event.target.value);
+    const handleSetLocation = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setLocation(Number(event.target.value));
     }
     const handleTogglePassword = () => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
       };
-    
 
     const signUpHandler = async () => {
         try {
@@ -53,19 +63,35 @@ const Signup = () => {
             const bcrypt = require("bcryptjs");
             const salt = bcrypt.genSaltSync(10);
             const hashedPwd = (password == '')?'':bcrypt.hashSync(password, salt);
-            const data = { fname: fname, lname: lname, email: email, password: hashedPwd, location: location }
+            const data = { fname: fname, lname: lname, email: email, pwhash: hashedPwd, location: location }
             // return if empty field
             for (let entry in data) 
                 if (data[entry] == '') return;
-            const res = await fetch('../api/volunteeraccounts', {
+            const dupAccount = await fetch(`../api/volunteeraccounts/${encodeURIComponent(email)}`).then(res => res.json())
+            if (!isValidEmail) {
+                console.log("Invalid email address");
+                alert("Please enter a valid email");
+                return
+            }
+            if (dupAccount.data) {
+                console.log(dupAccount)
+                console.log('duplicate account')
+                alert("An account with this email already exists.")
+                return
+            }
+            console.log('not duplicate account')
+            const res = await fetch(`../api/volunteeraccounts/${email}`, {
                 method: "POST",
                 body: JSON.stringify(data),
             })
-            const resJson = await res.json()
-            if (res.status == 200) {
-                const href=`/dash-volunteer?alp_id=${resJson.alp_id}`
-                Router.push(href)
-            } throw new Error(`error with status ${res.status}`)
+            if (res.status != 200) throw new Error(`error with status ${res.status}`)
+            const signInRes = await signIn('credentials', {
+                email: email,
+                password: password,
+                redirect: false,
+              })
+              if (signInRes.ok) Router.push(`../dash-volunteer`)
+            console.log("success")
         } catch (e) {
             console.error(e)
         }
@@ -81,7 +107,7 @@ const Signup = () => {
                 width: '100%',
                 height: '25%',
             }}>
-                <Image className="auth-logo" src="/logo-long.png" width={956*0.3} height={295*0.3} alt="ALP-logo" sx={{
+                <Image className="auth-logo" src="/logo-long.png" width={956*0.3} height={295*0.3} alt="ALP-logo" style={{
                         marginBottom: "10 !important",
                 }}/>
                 <h2 className='auth-heading'>Sign up to volunteer with the African Library Project!</h2>
@@ -111,7 +137,7 @@ const Signup = () => {
                                     mt: 2,
                                     mb: 2
                                 }} />
-                             <TextField fullWidth required id="password" label="Password" variant="outlined"
+                            <TextField fullWidth required id="password" label="Password" variant="outlined"
                           type={showPassword ? 'text' : 'password'}
                           value={password}
                           onChange={handleSetPassword}
@@ -149,4 +175,17 @@ const Signup = () => {
     )
 }
 
+
+// export const getServerSideProps = async() => {
+//     try {
+//         await dbConnect()
+//         const VolunteerAccount = getVolunteerAccountModel()
+//         const accounts = await VolunteerAccount.find({})
+//         return {props: {accounts: JSON.stringify(accounts), error: null}}
+//     } catch (e) {
+//         console.log(e)
+//         const err = `${e}`
+//         return {props: {error: err, accounts: null}}
+//     } 
+//}
 export default Signup

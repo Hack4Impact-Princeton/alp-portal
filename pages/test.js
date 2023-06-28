@@ -8,6 +8,7 @@ import InstructionInputCard from "../components/InstructionInputCard";
 function Test(props) {
     const driveStatus = JSON.parse(props.driveStatus);
     const driveCode = JSON.parse(props.driveCode);
+    console.log(driveStatus)
 
     return (
         <Grid>
@@ -15,7 +16,7 @@ function Test(props) {
         <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={1} header={"Collecting Books"}></InstructionGroupCard>
         <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={2} header={"Preparing To Ship"}></InstructionGroupCard>
         <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={3} header={"The Finish Line"}></InstructionGroupCard>
-        </Grid>
+        </Grid> 
     );
 }
 export default Test
@@ -23,7 +24,7 @@ export default Test
 export async function getServerSideProps(context) {
     try {
         await dbConnect()
-        const driveCode = "SA3-32";  // constant for now
+        const driveCode = "M15-32";  // constant for now
         const BookDrive = getBookDriveModel();
         const currDrive = await BookDrive.findOne({driveCode: driveCode})
         const driveStatus = {

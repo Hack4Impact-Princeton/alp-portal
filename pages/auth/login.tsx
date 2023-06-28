@@ -1,37 +1,49 @@
 import React from 'react'
+import {useState } from 'react';
+import dbConnect from "../../lib/dbConnect";
+import mongoose from 'mongoose'
+import Image from 'next/image';
+import Link from 'next/link';
+import Router from 'next/router';
+import { useRouter } from "next/router";
+import { NextPage } from 'next';
+import { signIn } from 'next-auth/react'
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
-import { ClientRequest } from 'http';
-import {useState } from 'react';
-import Image from 'next/image';
-import dbConnect from "../../lib/dbConnect";
-import getVolunteerAccountModel from "../../models/VolunteerAccount";
-import { useRouter } from "next/router";
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-function Login(props) {
-  let accounts = JSON.parse(props.accounts);
+import getVolunteerAccountModel from "../../models/VolunteerAccount";
+import { VolunteerAccount } from '../../models/VolunteerAccount';
+
+type LoginProps = {
+  accounts: VolunteerAccount[];
+}
+
+const Login: NextPage<LoginProps> = ({accounts}) => {
+  // let accounts = JSON.parse(props.accounts);
 
   const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
   let [disabled, setDisabled] = useState(false);
   let [success, setSuccess] = useState(false);
 
-  let emailsToPwhashs = {};
+  let emailsToPwhashs: {[key: string]: string} = {};
   for (let i = 0; i < accounts.length; i++) {
     emailsToPwhashs[accounts[i]["email"]] = accounts[i]["pwhash"];
   }
 
   function verifyLogin() {
 
-    var bcrypt = require("bcryptjs");
+    const bcrypt = require("bcryptjs");
     console.log("Verifying credentials");
 
     if (
@@ -39,7 +51,7 @@ function Login(props) {
       bcrypt.compare(password, emailsToPwhashs[email])
     ) {
       console.log("Good login");
-      let alp_id;
+      let alp_id: number | null = null;
       for (let i = 0; i < accounts.length; i++) {
         if (accounts[i].email == email) {
           alp_id = accounts[i].alp_id;
@@ -55,24 +67,39 @@ function Login(props) {
   }
 
 //
-  const handleSetEmail = (emailText) => {
+  const handleSetEmail = (emailText: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(emailText.target.value);
   };
 
-  const handleSetPassword = (passwordText) => {
+  const handleSetPassword = (passwordText: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(passwordText.target.value);
   };
-
   const handleTogglePassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
   // need to change to go to sign up page
   const signUpHandler = async () => {
-    router.push("/auth/signup")
+    Router.push("/auth/signup")
   };
 
-    return (
+  const handleSubmit = async(e) => {
+    // validate user information
+    e.preventDefault()
+    const res = await signIn('credentials', {
+      email: email,
+      password: password,
+      redirect: false,
+    })
+    if (res.ok) Router.push(`../dash-volunteer`)
+    else {
+      alert("Email or password is incorrect. Please try again")
+      console.log(`something went wrong: ${res.error}`)
+    }
+
+  }
+
+  return (
         <Grid2 container className="auth-bg" justifyContent="center" textAlign="center" direction="column"
             sx={{
                 width: '100vw',
@@ -83,7 +110,7 @@ function Login(props) {
                 width: '100%',
                 height: '25%',
             }}>
-                <Image className="auth-logo" src="/logo-long.png" width={956*0.3} height={295*0.3} alt="ALP-logo" sx={{
+                <Image className="auth-logo" src="/logo-long.png" width={956*0.3} height={295*0.3} alt="ALP-logo" style={{
                         marginBottom: "10 !important",
                 }}/>
                 <h2 className='auth-heading'> Volunteer Portal Login </h2>
@@ -102,7 +129,7 @@ function Login(props) {
                                 mt: 2,
                                 mb: 2
                             }}/>
-                     <TextField fullWidth required id="password" label="Password" variant="outlined"
+                        <TextField fullWidth required id="password" label="Password" variant="outlined"
                           type={showPassword ? 'text' : 'password'}
                           value={password}
                           onChange={handleSetPassword}
@@ -121,7 +148,7 @@ function Login(props) {
                           }}
                         />
                         <Button variant="contained"
-                            onClick={verifyLogin}
+                            onClick={handleSubmit}
                             sx={{
                                 marginTop: 3,
                             }}>Login</Button>
@@ -132,17 +159,22 @@ function Login(props) {
                                 marginLeft: 3,
                             }}>Sign Up</Button>
                     </Box>
+
                 </Grid2>
+                <Link href='resetpassword'>Forgot Password?</Link>
+
             </Grid2>
         </Grid2>
     )
 }
+
 export async function getServerSideProps() {
   await dbConnect();
-  const VolunteerAccount = getVolunteerAccountModel();
-  /* find all the data in our database */
-  const accounts = await VolunteerAccount.find({});
+  const VolunteerAccount: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel();
+  /* find all the accounts in our database */
+  const accounts: VolunteerAccount[] = await VolunteerAccount.find({});
   // stringify data before sending
-  return { props: { accounts: JSON.stringify(accounts) } };
+  return { props: { accounts: JSON.parse(JSON.stringify(accounts)) } };
 }
+
 export default Login;

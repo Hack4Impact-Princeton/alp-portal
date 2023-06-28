@@ -39,14 +39,17 @@ export default function InstructionGroupCard(props) {
 
     let content = <CollectBooksCard paddingTop={3} stepNum={1} numBooksCollected={500} heading={"Current Number of Books Collected:"}></CollectBooksCard>
     switch (props.groupNum) {
-      case 0: 
-        
-        content =<><InstructionInputCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"How will you Fundraise?"} stepNum={0}> 
-        </InstructionInputCard>
-        <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Read the Book Collection Guidelines"} stepNum={1}>
-          </InstructionChecklistCard></>;
-
-
+        case 0: 
+          return <><InstructionInputCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"How will you Fundraise?"} stepNum={0}> 
+          </InstructionInputCard>
+          <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Read the Book Collection Guidelines"} stepNum={1}>
+            </InstructionChecklistCard></>
+        case 1:
+          return <CollectBooksCard paddingTop={3} stepNum={1} numBooksCollected={500} heading={"Current Number of Books Collected:"}></CollectBooksCard>
+          case 2: 
+          return <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Gather Shipping Materials"} stepNum={5}></InstructionChecklistCard>;
+          case 3: 
+          return <CollectBooksCard paddingTop={3} stepNum={1} numBooksCollected={500} heading={"Current Number of Books Collected:"}></CollectBooksCard>
     }
     return (
       <Grid>
@@ -78,7 +81,7 @@ export default function InstructionGroupCard(props) {
             <Grid container item xs={12} alignItems={"center"} justifyContent={"center"}>
               <Collapse in={expanded} timeout="auto" unmountOnExit>
                   <Grid paddingTop={3} paddingLeft={4}>
-                    {content}
+                  {_switchContent()}
                   </Grid>
               </Collapse>
             </Grid>
