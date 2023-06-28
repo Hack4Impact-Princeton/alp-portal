@@ -13,6 +13,7 @@ import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import InstructionStepCard from './InstructionStepCard';
 import CollectBooksCard from './CollectBooksCard';
 import InstructionChecklistCard from './InstructionChecklistCard';
+import InstructionInputCard from './InstructionInputCard';
 
 
 /*const ExpandMore = styled((props: (expand:boolean)) => {
@@ -36,19 +37,20 @@ export default function InstructionGroupCard(props) {
       setExpanded(!expanded);
     };
 
-    const _switchContent = () => {
-      switch (props.groupNum) {
+    let content = <CollectBooksCard paddingTop={3} stepNum={1} numBooksCollected={500} heading={"Current Number of Books Collected:"}></CollectBooksCard>
+    switch (props.groupNum) {
         case 0: 
-          return <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Read the Book Collection Guidelines"} stepNum={1}></InstructionChecklistCard>;
+          return <><InstructionInputCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"How will you Fundraise?"} stepNum={0}> 
+          </InstructionInputCard>
+          <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Read the Book Collection Guidelines"} stepNum={1}>
+            </InstructionChecklistCard></>
         case 1:
           return <CollectBooksCard paddingTop={3} stepNum={1} numBooksCollected={500} heading={"Current Number of Books Collected:"}></CollectBooksCard>
           case 2: 
           return <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Gather Shipping Materials"} stepNum={5}></InstructionChecklistCard>;
           case 3: 
           return <CollectBooksCard paddingTop={3} stepNum={1} numBooksCollected={500} heading={"Current Number of Books Collected:"}></CollectBooksCard>
-      }
-    };
-    
+    }
     return (
       <Grid>
         <Grid container paddingTop={2} spacing={2} xs={12} sx={{width:"65vw", backgroundColor:"gray"}}>
@@ -79,7 +81,7 @@ export default function InstructionGroupCard(props) {
             <Grid container item xs={12} alignItems={"center"} justifyContent={"center"}>
               <Collapse in={expanded} timeout="auto" unmountOnExit>
                   <Grid paddingTop={3} paddingLeft={4}>
-                    {_switchContent()}
+                  {_switchContent()}
                   </Grid>
               </Collapse>
             </Grid>

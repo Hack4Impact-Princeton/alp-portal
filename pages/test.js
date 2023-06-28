@@ -3,6 +3,7 @@ import * as React from 'react';
 import Grid from "@mui/material/Unstable_Grid2";
 import dbConnect from '../lib/dbConnect'
 import getBookDriveModel from "../models/BookDrive";
+import InstructionInputCard from "../components/InstructionInputCard";
 
 function Test(props) {
     const driveStatus = JSON.parse(props.driveStatus);

@@ -11,10 +11,10 @@ import {getStates} from '../../lib/enums'
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { signIn } from 'next-auth/react'
+import { signIn } from 'next-auth/react';
 
 
-const Signup = (props) => {
+const Signup = (prevShowPassword) => {
     // const error = props.error ? props.error : null
     // const accounts = props.account ? JSON.parse(props.accounts) : null
     const states = getStates()
