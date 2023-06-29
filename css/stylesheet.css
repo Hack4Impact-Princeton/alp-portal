@@ -85,3 +85,6 @@ html, body {
 .submit-btn {
     color: #FE9834;
 }
+#state-label{
+    text-align: left
+    }

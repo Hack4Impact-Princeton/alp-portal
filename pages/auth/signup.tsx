@@ -12,9 +12,13 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { signIn } from 'next-auth/react'
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
-
-const Signup = (props) => {
+const Signup = (prevShowPassword) => {
     // const error = props.error ? props.error : null
     // const accounts = props.account ? JSON.parse(props.accounts) : null
     const states = getStates()
@@ -22,9 +26,15 @@ const Signup = (props) => {
     const [fname, setFName] = useState("")
     const [lname, setLName] = useState("")
     const [email, setEmail] = useState("")
+    const [isValidEmail, setIsValidEmail] = useState(true);
     const [password, setPassword] = useState("")
     const [location, setLocation] = useState(1)
     const [showPassword, setShowPassword] = useState(false);
+
+    const validateEmail = (input) => {
+      const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+      return emailRegex.test(input);
+    };
 
     const handleSetFName = (fName: React.ChangeEvent<HTMLInputElement>) => {
         setFName(fName.target.value)
@@ -34,6 +44,7 @@ const Signup = (props) => {
     }
     const handleSetEmail = (emailText: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(emailText.target.value)
+        setIsValidEmail(validateEmail(emailText.target.value));
     }
     const handleSetPassword = (passwordText: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(passwordText.target.value)
@@ -61,6 +72,11 @@ const Signup = (props) => {
             for (let entry in data) 
                 if (data[entry] == '') return;
             const dupAccount = await fetch(`../api/volunteeraccounts/${encodeURIComponent(email)}`).then(res => res.json())
+            if (!isValidEmail) {
+                console.log("Invalid email address");
+                alert("Please enter a valid email");
+                return
+            }
             if (dupAccount.data) {
                 console.log(dupAccount)
                 console.log('duplicate account')
@@ -140,16 +156,22 @@ const Signup = (props) => {
                            }}
                           sx={{
                           mt: 2,
-                         mb: 2,
+                         mb: 4,
                           }}
                         />
-                            <select onChange={handleSetLocation}>
+                        <FormControl sx={{ width: 300}}>
+                        <InputLabel id="state-label">State</InputLabel>
+                            <Select 
+                            onChange={handleSetLocation}
+                            input={<OutlinedInput label="State" />}
+                           >
                         {
                             states.map((state) => (
-                               <option key={state.index} value={state.index}>{state.name}</option> 
+                               <MenuItem key={state.index} value={state.index} >{state.name}</MenuItem> 
                             ))
                         }
-                    </select>
+                    </Select>
+                    </FormControl>
                     <br></br>
                     <Button variant="contained"
                                 onClick={signUpHandler}
