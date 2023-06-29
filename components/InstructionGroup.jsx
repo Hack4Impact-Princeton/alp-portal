@@ -71,7 +71,7 @@ export default function InstructionGroupCard(props) {
         </Grid>
         break;
       case 3: 
-        content = <CollectBooksCard paddingTop={3} stepNum={1} numBooksCollected={500} heading={"Current Number of Books Collected:"}></CollectBooksCard>
+        content = <InstructionCollectCard paddingTop={3} stepNum={1} numBooksCollected={500} heading={"Current Number of Books Collected:"}></InstructionCollectCard>
     }
     return (
       <Grid>
@@ -103,7 +103,7 @@ export default function InstructionGroupCard(props) {
             <Grid container item xs={12} alignItems={"center"} justifyContent={"center"}>
               <Collapse in={expanded} timeout="auto" unmountOnExit>
                   <Grid paddingTop={3} paddingLeft={4}>
-                  {_switchContent()}
+                  {content}
                   </Grid>
               </Collapse>
             </Grid>
