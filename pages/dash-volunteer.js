@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import Navbar from '../components/Navbar'
+import PageContainer from '../components/PageContainer'
 import DriveCard from '../components/DriveCard'
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Stack from '@mui/material/Stack';
@@ -27,8 +28,7 @@ function DashVolunteer(props) {
   if (volunteer) {
     return (
       <Grid2>
-        <Grid2><Navbar active="dash-volunteer"/></Grid2>
-
+        {/* <PageContainer fName="Ivy"></PageContainer> */}
         <Box display="flex" flexDirection="column" sx={{
           pl: 20,
           pt: 5,
@@ -36,10 +36,7 @@ function DashVolunteer(props) {
           width: '100%',
           justifyContent: "space-between"
         }} >
-          <h1 style={{ textAlign: "left", fontSize: "90px", paddingRight: 10 }}>Home</h1>
           <div style={{ fontSize: '25px', textAlign: 'left', marginTop: '2vh' }}>Active Drives</div>
-          <Link href="volunteeraccounts/profile"> Click here to go to your profile
-          </Link>
           {drives && <Stack
             direction="column"
             justifyContent="flex-start"
@@ -60,49 +57,6 @@ function DashVolunteer(props) {
     )
 
   }
-
-  // return (
-  //   <Grid2 container>
-  //     <Grid2 sx={{
-  //       backgroundColor: "blue"
-  //     }}><Navbar></Navbar></Grid2>
-  //     <Grid2 sx={{
-  //       backgroundColor: "green"
-  //     }}>
-  //       <Stack direction="column"
-  //         justifyContent="flex-start"
-  //         alignItems="stretch"
-  //         spacing={5}
-  //         sx={{
-  //           backgroundColor: 'orange'
-  //         }}>
-  //           <div style={{marginTop: '5vh'}}>
-  //             <Grid2 container spacing={2}>
-  //               <Grid2 item xs={11} sx={{
-  //                 backgroundColor: "yellow"
-  //               }}>
-  //                 <div style={{fontSize: '45px', textAlign:'left', fontWeight:'bold'}}>HOME</div>
-  //                 <div style={{fontSize: '25px', textAlign:'left', marginTop: '2vh'}}>Active Drives</div>
-  //               </Grid2>
-  //               <Grid2 item xs = {1}><img src="https://upload.wikimedia.org/wikipedia/en/d/de/AfricanLibraryProjectLogo.png" style={{width: '5vw'}}/></Grid2>
-  //             </Grid2>
-  //           </div>  
-  //         <Link href={{pathname: "volunteeraccounts/profile",
-  //          query: {alp_id: volunteer.alp_id}}}> Click here to go to your profile
-  //         </Link>
-  //         {drives && <Stack
-  //           direction="column"
-  //           justifyContent="flex-start"
-  //           //alignItems="stretch"
-  //           container spacing={10}>
-  //             {drives.map((drive) => (
-  //               <DriveCard drivename={drive.driveName}></DriveCard>
-  //             ))}
-  //         </Stack>}
-  //       </Stack>
-  //     </Grid2>
-  //   </Grid2>
-  // );
 }
 
 export async function getServerSideProps(context) {
@@ -126,8 +80,5 @@ export async function getServerSideProps(context) {
     return { props: { error: strError } }
   }
 }
-
-
-
 
 export default DashVolunteer
