@@ -27,13 +27,16 @@ export async function getServerSideProps(context) {
         const driveCode = "M15-32";  // constant for now
         const BookDrive = getBookDriveModel();
         const currDrive = await BookDrive.findOne({driveCode: driveCode})
+        //const currDrive = await Promise.resolve(drive)
+        console.log(currDrive.pts)
         const driveStatus = {
             gettingStarted: currDrive.gs,
             collectingBooks: currDrive.cb,
             prepareToShip: currDrive.pts,
             finishLine: currDrive.fl,
         }
-        return { props: { driveCode: JSON.stringify(driveCode), driveStatus: JSON.stringify(driveStatus) } }
+        
+        return { props: { driveCode: JSON.stringify(currDrive.driveCode), driveStatus: JSON.stringify(driveStatus) } }
     } catch (error) {
       console.log(error)
       return {props: {error: JSON.stringify(error)}}
