@@ -5,19 +5,38 @@ export default function InstructionInputCard(props) {
   console.log("Props", props);
   const [value, setValue] = useState("");
 
+  const [dateSent, setDateSent] = useState("");
+
   const handleChange = (event) => {
     console.log(`Typed => ${event.target.value}`);
-    setValue(event.target.value);
+    if (props.stepNum == 0)
+      setValue(event.target.value);
+    else 
+      setDateSent(event.target.value)
   };
 
   const handleSubmit = async () => {
     try {
-      const data = {
-        gs: {
-          fundraise: value,
-          terms: true,
-        },
-      };
+      let data = {}
+      switch(props.stepNum) {
+      case 0:
+        data = {
+          gs: {
+            fundraise: value,
+            terms: true,
+          },
+        };
+        break;
+      case 6:
+        data = {
+          fl: {
+              dateSent: dateSent
+          }
+        }
+      break;
+
+    }
+
       console.log("data: ", JSON.stringify(data));
   
       const response = await fetch(`/api/bookDrive/${props.driveCode}`, {
@@ -59,20 +78,20 @@ export default function InstructionInputCard(props) {
         </Typography>
       </Grid>
 
-      <CardBody value={value} handleChange={handleChange} handleSubmit={handleSubmit} />
+      <CardBody stepNum={props.stepNum} value={value} handleChange={handleChange} handleSubmit={handleSubmit} />
     </Grid>
   );
 }
 
-function CardBody({ value, handleChange, handleSubmit }) {
+function CardBody({ stepNum, value, handleChange, handleSubmit }) {
   return (
     <Grid container alignItems="center" sx={{ p: 5 }}>
       <Grid item xs={12} sx={{ pb: 3 }}>
         <TextField
           value={value}
-          multiline
-          rows={5} // Adjust the number of rows to make the box taller
           fullWidth
+          multiline
+          rows={stepNum==0?5:1} // Adjust the number of rows to make the box taller
           id="books-collected"
           variant="outlined"
           onChange={handleChange}

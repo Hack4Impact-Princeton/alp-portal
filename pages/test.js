@@ -1,9 +1,9 @@
-import InstructionGroupCard from "../components/InstructionGroup";
+import InstructionGroupCard from "../components/steps/InstructionGroup"
 import * as React from 'react';
 import Grid from "@mui/material/Unstable_Grid2";
 import dbConnect from '../lib/dbConnect'
 import getBookDriveModel from "../models/BookDrive";
-import InstructionInputCard from "../components/InstructionInputCard";
+import InstructionInputCard from "../components/steps/InstructionInputCard";
 
 function Test(props) {
     const driveName = JSON.parse(props.driveName);
