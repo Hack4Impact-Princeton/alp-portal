@@ -28,7 +28,7 @@ function DashVolunteer(props) {
   if (volunteer) {
     return (
       <Grid2>
-        {/* <PageContainer fName="Ivy"></PageContainer> */}
+        <PageContainer fName="Ivy"></PageContainer>
         <Box display="flex" flexDirection="column" sx={{
           pl: 20,
           pt: 5,
@@ -63,7 +63,7 @@ export async function getServerSideProps(context) {
   try {
     await dbConnect()
     const session = await getSession(context)
-    console.log(session.user)
+    console.log("USER: ", session.user)
     const email = session.user.email
     const VolunteerAccount = getVolunteerAccountModel()
     const BookDrive = getBookDriveModel();
