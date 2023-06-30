@@ -31,6 +31,14 @@ import getVolunteerAccountModel, { VolunteerAccount } from "../../models/Volunte
 import getExtendedConversationParamsModel, { ExtendedConversationParamsDocument } from "../../models/Conversation";
 import mongoose from "mongoose";
 import dbConnect from "../../lib/dbConnect";
+import mongodb from '../../lib/mongodb'
+const io = require("socket.io-client");
+import http from 'http'
+import { Server } from 'socket.io'
+
+//https://www.mongodb.com/developer/products/mongodb/mongo-socket-chat-example/
+//https://socket.io/get-started/chat
+
 const avatarUrl = "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250"
 
 const messageIdGenerator = (message: ChatMessage<MessageContentType>) => nanoid();
@@ -73,15 +81,14 @@ type ChatWrapperProps = {
     account: VolunteerAccount;
     conversations: ExtendedConversationParamsDocument<any, MessageContentType>[]; // this is really the Conversation type from models/Conversation but it's a dupe type
 }
-
+let socket
 const ChatWrapper: NextPage<ChatWrapperProps> = ({ account, conversations }) => {
-    //console.log(account)
-    //console.log(conversations)
+    
     const { status } = useSession()
+    
     useEffect(() => {
         if (status === 'unauthenticated') Router.replace('/auth/login')
     }, [status])
-    if (status == 'loading') return <p>loading...</p>
 
     const user = new User({
         id: `${account.alp_id}`,
@@ -114,7 +121,23 @@ const ChatWrapper: NextPage<ChatWrapperProps> = ({ account, conversations }) => 
             })
         }
     });
+    // const socketInitializer = async () => {
 
+    //     await fetch('api/socket')
+    //     socket = io()
+    //     socket.on('connect', () => console.log("connected in the client"))
+    //     socket.on('message', (message: ChatMessage<MessageContentType>, conversationId: string) => {
+    //         console.log("message received")
+    //         console.log("message", message)
+    //         console.log("conversationId", conversationId)
+    //         userStorage.addMessage(message, conversationId)
+            
+    //     })
+    //     return null
+
+    // }
+    // useEffect(() => {socketInitializer()}, [])
+    if (status == 'loading') return <p>loading...</p>
 
     return (
         <div className="h-100 d-flex flex-column overflow-hidden">
@@ -127,7 +150,7 @@ const ChatWrapper: NextPage<ChatWrapperProps> = ({ account, conversations }) => 
                             debounceTyping: true,
                             autoDraft: AutoDraft.Save | AutoDraft.Restore
                         }}>
-                            <Chat user={user} />
+                            <Chat user={user} email={account.email} />
                         </ChatProvider>
                     </Col>
                 </Row>
@@ -141,6 +164,7 @@ const ChatWrapper: NextPage<ChatWrapperProps> = ({ account, conversations }) => 
 export async function getServerSideProps(context: any) {
     try {
         await dbConnect()
+    
         const session = await getSession(context)
         const email = session!.user!.email
         console.log("hi", email)
@@ -151,7 +175,6 @@ export async function getServerSideProps(context: any) {
         // const convo = await Conversation.create({...testConvo })
         // console.log(convo)
         const volunteerAccount = await VolunteerAccount.findOne({ email: email })
-        //console.log(volunteerAccount)
         const conversationIds = volunteerAccount!.conversations
         // finds all conversations that correspond to the volunteerAccount
         const promises = conversationIds.map(convoId => Conversation.find({ id: convoId }));

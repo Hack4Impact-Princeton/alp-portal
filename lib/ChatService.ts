@@ -13,7 +13,9 @@ import {
 import { IStorage } from "@chatscope/use-chat";
 import { ChatEvent, MessageEvent, UserTypingEvent } from "@chatscope/use-chat";
 import { ChatMessage } from "@chatscope/use-chat";
-
+import mongodb from '../lib/mongodb'
+const io = require('socket.io-client')
+import dbConnect from "./dbConnect";
 type EventHandlers = {
     onMessage: ChatEventHandler<
         ChatEventType.Message,
@@ -125,6 +127,13 @@ export class ChatService implements IChatService {
         // In a real application, instead of dispatching the event here,
         // you will implement sending messages to your chat server.
         const res = await fetch(`/api/conversations/${conversationId}`, { method: "PATCH", body: JSON.stringify({ message: message }) })
+        await fetch('/api/socket')
+        let socket = io()
+        socket.on('connect', () => console.log('connected to chat'))
+        // socket.on('message', (message: ChatMessage<MessageContentType>, conversationId: string) => console.log("message", message))
+        if (res.status == 200) {
+            socket.emit('message', message, conversationId)
+        }
         const messageEvent = new CustomEvent("chat-protocol", {
             detail: {
                 type: "message",
@@ -135,7 +144,6 @@ export class ChatService implements IChatService {
         });
 
         window.dispatchEvent(messageEvent);
-
         return message;
     }
 
