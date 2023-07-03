@@ -28,7 +28,7 @@ function DashVolunteer(props) {
   if (volunteer) {
     return (
       <Grid2>
-        <PageContainer fName="Ivy"></PageContainer>
+        <PageContainer fName={props.fName}></PageContainer>
         <Box display="flex" flexDirection="column" sx={{
           pl: 20,
           pt: 5,
@@ -62,18 +62,19 @@ function DashVolunteer(props) {
 export async function getServerSideProps(context) {
   try {
     await dbConnect()
-    const session = await getSession(context)
-    console.log("USER: ", session.user)
-    const email = session.user.email
-    const VolunteerAccount = getVolunteerAccountModel()
+    const session = await getSession(context);
+    console.log("USER: ", session.user);
+    const email = session.user.email;
+    const fName = session.user.fName;
+    const VolunteerAccount = getVolunteerAccountModel();
     const BookDrive = getBookDriveModel();
-    const volunteerAccount = await VolunteerAccount.findOne({ email: email })
-    const driveList = volunteerAccount.driveIds
+    const volunteerAccount = await VolunteerAccount.findOne({ email: email });
+    const driveList = volunteerAccount.driveIds;
     // finds all bookdrives that correspond to the volunteerAccount
     const promises = driveList.map(driveId => BookDrive.find({ driveCode: driveId }));
     const drives = await Promise.all(promises);
 
-    return { props: { drives: JSON.stringify(drives), volunteer: JSON.stringify(volunteerAccount) } }
+    return { props: { fName: fName, drives: JSON.stringify(drives), volunteer: JSON.stringify(volunteerAccount) } }
   } catch (e) {
     console.log(e)
     let strError = e.message === "Cannot read properties of null (reading 'user')" ? "You must login before accessing this page" : `${e}`
