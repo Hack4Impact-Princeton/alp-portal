@@ -19,15 +19,9 @@ const Profile = (props) => {
   let error = props.error ? props.error : null
 
   // if the user is not logged in take them back to the login page
-  const { status } = useSession()
-  useEffect(() => {
-    if (status === 'unauthenticated') Router.replace('/auth/login')
-  }, [status])
-
   const [editIsHovered, setEditIsHovered] = useState(false)
   const [signOutIsHovered, setSignOutIsHovered] = useState(false)
 
-  if (status === 'loading') return <div>Loading...</div>
   // if the account is not null, that means that everything is working
   // otherwise render the error message page
   if (account) {
@@ -143,6 +137,15 @@ export const getServerSideProps = async (context) => {
   try {
     // get current session and email --> account of current user
     const session = await getSession(context)
+    // if (session) console.log("hiiii")
+    if (!session) {
+      return {
+        redirect: {
+          destination: "/auth/login",
+          permanent: false
+        }
+      }
+    }
     const email = session.user.email
     await dbConnect()
     const VolunteerAccount = getVolunteerAccountModel()
