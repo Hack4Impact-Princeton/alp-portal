@@ -15,6 +15,7 @@ import { getSession } from 'next-auth/react';
 import { NextPage } from 'next';
 import { CustomSession, VolunteerUser } from '../types/NextauthUser';
 import getAdminAccountModel, { AdminAccount } from '../models/AdminAccount';
+
 type DashVolunteerProps = {
   drives: BookDrive[] | null;
   account: VolunteerAccount | AdminAccount | null;
@@ -61,7 +62,6 @@ const DashVolunteer: NextPage<DashVolunteerProps> = ({drives, account, error, is
         <h1>{error}</h1>
       </div>
     )
-
   }
 }
 
@@ -103,8 +103,6 @@ export async function getServerSideProps(context: any) {
     return { props: { error: strError } }
   }
 }
-
-
 
 
 export default DashVolunteer
