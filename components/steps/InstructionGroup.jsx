@@ -10,7 +10,6 @@ import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import { Typography } from '@mui/material';
 import Grid from "@mui/material/Unstable_Grid2";
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
-import InstructionStepCard from './InstructionStepCard';
 import InstructionCollectCard from './InstructionCollectCard';
 import InstructionChecklistCard from './InstructionChecklistCard';
 import InstructionInputCard from './InstructionInputCard';
