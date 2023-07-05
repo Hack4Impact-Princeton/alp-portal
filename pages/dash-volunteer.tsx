@@ -40,15 +40,15 @@ const DashVolunteer: NextPage<DashVolunteerProps> = ({drives, account, error, is
           justifyContent: "space-between"
         }} >
           <h1 style={{ textAlign: "left", fontSize: "90px", paddingRight: 10 }}>Home</h1>
-          <div style={{ fontSize: '25px', textAlign: 'left', marginTop: '2vh' }}>Active Drives</div>
-          <Link href="volunteeraccounts/profile"> Click here to go to your profile
-          </Link>
+          <div style={{ fontSize: '25px', textAlign: 'left', marginTop: '2vh', paddingBottom: 10 }}>Active Drives</div>
+          {/* <Link href="volunteeraccounts/profile"> Click here to go to your profile
+          </Link> */}
           {drives && <Stack
             direction="column"
-            justifyContent="flex-start"
+            justifyContent="center"
             spacing={10}>
             {drives.map((drive) => (
-              <DriveCard drivename={drive.driveName}></DriveCard>
+              <DriveCard drive={drive}></DriveCard>
             ))}
           </Stack>}
         </Box>
