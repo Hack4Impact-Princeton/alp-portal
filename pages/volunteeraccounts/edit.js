@@ -14,10 +14,7 @@ const EditVolunteerAccount = (props) => {
     
     console.log(volunteerAccount)
     // if the user is not authenticated take them back to the login page
-    const { status } = useSession()
-    useEffect(() => {
-        if (status === 'unauthenticated') Router.replace('/auth/login')
-    }, [status])
+    
 
     const [email, setEmail] = useState(volunteerAccount ? volunteerAccount.email : null)
     const [location, setLocation] = useState(volunteerAccount ? volunteerAccount.location : null)
@@ -32,11 +29,10 @@ const EditVolunteerAccount = (props) => {
     const editVolunteerAccount = async () => {
         try {
             const data = {
-                alp_id: alp_id,
                 email: email,
                 location: location,
             }
-            const resJson = await fetch("/api/volunteeraccounts", {
+            const resJson = await fetch(`/api/volunteeraccounts/${volunteerAccount.email}`, {
                 method: "PATCH",
                 body: JSON.stringify(data),
             }).then(res => res.json())
@@ -96,6 +92,14 @@ export const getServerSideProps = async (context) => {
     try {
         await dbConnect()
         const session = await getSession(context)
+        if (!session) {
+            return {
+                redirect: {
+                    destination: 'auth/login',
+                    permanent: false,
+                }
+            }
+        }
         const email = session.user.email
         console.log(session.user)
         const VolunteerAccount = getVolunteerAccountModel()

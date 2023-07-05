@@ -60,7 +60,7 @@ const userMarkers: UserMarkerDict<UserMarker> = {
   "Central African Republic": { name: 'Central\n African\n Republic', longitude: 20.9394, latitude: 6.6111, booksSent: 0, xLabelOffset: 0, yLabelOffset: 4 },
   "Chad": { name: 'Chad', longitude: 18.7322, latitude: 15.4542, booksSent: 0, xLabelOffset: 0, yLabelOffset: 5 },
   "Comoros": { name: 'Comoros', longitude: 43.8722, latitude: -11.6455, booksSent: 0, xLabelOffset: 0, yLabelOffset: -3 },
-  "Republic of the Congo": { name: 'Republic of the Congo', longitude: 15.2663, latitude: -3, booksSent: 0, xLabelOffset: -19, yLabelOffset: 1 },
+  "Republic of Congo": { name: 'Republic of Congo', longitude: 15.2663, latitude: -3, booksSent: 0, xLabelOffset: -19, yLabelOffset: 1 },
   "Democratic Republic of the Congo": { name: 'Democratic Republic\n of the Congo', longitude: 23.3222, latitude: .3222, booksSent: 0, xLabelOffset: 0, yLabelOffset: -4 },
   "Ivory Coast": { name: "Ivory Coast", longitude: -5.5471, latitude: 7.5400, booksSent: 0, xLabelOffset: 0, yLabelOffset: -3 },
   "Djibouti": { name: 'Djibouti', longitude: 43.1456, latitude: 11.5806, booksSent: 0, xLabelOffset: 10, yLabelOffset: 1 },
@@ -124,6 +124,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ drives }) => {
   }
 
   const getColor = (value: number): string => {
+    if (value == 0) return `rgb(255, 250, 250)`
     // Calculate the color based on the value (number of books sent)
     const percentage = value / maxVal;
     const colorValue = Math.round(250 - 250 * percentage);

@@ -11,8 +11,9 @@ import { Typography } from '@mui/material';
 import Grid from "@mui/material/Unstable_Grid2";
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import InstructionStepCard from './InstructionStepCard';
-import CollectBooksCard from './CollectBooksCard';
+import InstructionCollectCard from './InstructionCollectCard';
 import InstructionChecklistCard from './InstructionChecklistCard';
+import InstructionInputCard from './InstructionInputCard';
 
 
 /*const ExpandMore = styled((props: (expand:boolean)) => {
@@ -36,10 +37,41 @@ export default function InstructionGroupCard(props) {
       setExpanded(!expanded);
     };
 
-    let content = <CollectBooksCard paddingTop={3} stepNum={1} numBooksCollected={500} heading={"Current Number of Books Collected:"}></CollectBooksCard>
+    let content = <></>
     switch (props.groupNum) {
       case 0: 
-        content = <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Read the Book Collection Guidelines"} stepNum={1}></InstructionChecklistCard>;
+        content = 
+        <Grid container direction="column">
+          <Grid paddingTop={2}>
+            <InstructionInputCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"How will you Fundraise?"} stepNum={0}> 
+            </InstructionInputCard>
+            <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Read the Book Collection Guidelines"} stepNum={1}></InstructionChecklistCard>;
+          </Grid>
+        </Grid>
+        break;
+      case 1: 
+        content = 
+        <Grid container direction="column">
+          <Grid paddingTop={2}>
+            <InstructionCollectCard driveCode={props.driveCode} driveStatus={props.driveStatus} stepNum={2}></InstructionCollectCard>;
+          </Grid>
+        </Grid>
+        break;
+      case 2:
+        content = <Grid container direction="column">
+          <Grid paddingTop={2}>
+            <InstructionCollectCard driveCode={props.driveCode} driveStatus={props.driveStatus} stepNum={3}></InstructionCollectCard>;
+          </Grid>
+          <Grid paddingTop={2}>
+            <InstructionCollectCard driveCode={props.driveCode} driveStatus={props.driveStatus} stepNum={4}></InstructionCollectCard>;
+          </Grid>
+          <Grid paddingTop={2}>
+            <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Gather Shipping Materials"} stepNum={5}></InstructionChecklistCard>;
+          </Grid>
+        </Grid>
+        break;
+      case 3: 
+        content = <InstructionCollectCard paddingTop={3} stepNum={1} numBooksCollected={500} heading={"Current Number of Books Collected:"}></InstructionCollectCard>
     }
     return (
       <Grid>
@@ -71,7 +103,7 @@ export default function InstructionGroupCard(props) {
             <Grid container item xs={12} alignItems={"center"} justifyContent={"center"}>
               <Collapse in={expanded} timeout="auto" unmountOnExit>
                   <Grid paddingTop={3} paddingLeft={4}>
-                    {content}
+                  {content}
                   </Grid>
               </Collapse>
             </Grid>
