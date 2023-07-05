@@ -4,7 +4,7 @@ import FlagIcon from '@mui/icons-material/Flag';
 import Person2Icon from '@mui/icons-material/Person2';
 import HomeIcon from '@mui/icons-material/Home';
 import ShareIcon from '@mui/icons-material/Share';
-import ForumIcon from '@mui/icons-material/Forum';
+import FilterFramesIcon from '@mui/icons-material/FilterFrames';
 
 const drawerWidth: number = 80;
 
@@ -80,14 +80,9 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                     <ListItem key="Forum">
                         <ListItemButton>
                             <ListItemIcon>
-<<<<<<< HEAD:components/Navbar.jsx
-                                <ForumIcon fontSize = 'large' sx={{
-                                    color: '#9C9C9C',}}></ForumIcon> 
-=======
-                                <ChatBubbleIcon fontSize='large' sx={{
-                                    color: active === 'forum' ? 'orange' : '#9C9C9C',
-                                }}></ChatBubbleIcon>
->>>>>>> d81a80439a8a6df039c7301368a86100a8a17179:components/Navbar.tsx
+                                <FilterFramesIcon fontSize = 'large' sx={{
+                                    color: '#9C9C9C',}}></FilterFramesIcon> 
+                                
                             </ListItemIcon>
                         </ListItemButton>
                     </ListItem>
