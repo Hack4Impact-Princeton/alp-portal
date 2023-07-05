@@ -4,6 +4,7 @@ import FlagIcon from '@mui/icons-material/Flag';
 import Person2Icon from '@mui/icons-material/Person2';
 import HomeIcon from '@mui/icons-material/Home';
 import ShareIcon from '@mui/icons-material/Share';
+import ForumIcon from '@mui/icons-material/Forum';
 
 const drawerWidth = 80;
 
@@ -76,13 +77,23 @@ export default function Navbar() {
                     <ListItem key="Forum">
                         <ListItemButton>
                             <ListItemIcon>
-                                <ChatBubbleIcon fontSize='large' sx={{
-                                    color: '#9C9C9C',
-                                }}></ChatBubbleIcon>
+                                <ForumIcon fontSize = 'large' sx={{
+                                    color: '#9C9C9C',}}></ForumIcon> 
                             </ListItemIcon>
                         </ListItemButton>
                     </ListItem>
                 </Link>
+            <Link href = "/conversations">
+                <ListItem key = "Conversations">
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <ChatBubbleIcon fontSize = 'large' sx = {{color:
+                            '#9C9C9C',}}>
+                            </ChatBubbleIcon>
+                        </ListItemIcon>
+                    </ListItemButton>
+                </ListItem>
+            </Link>
             </List>
         </Drawer>
     );
