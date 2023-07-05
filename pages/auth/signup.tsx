@@ -3,7 +3,6 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import { useState } from 'react'
-import Link from 'next/link';
 import Router from 'next/router'
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Image from 'next/image';
@@ -12,11 +11,15 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { signIn } from 'next-auth/react'
+<<<<<<< HEAD:pages/auth/signup.js
+
+=======
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+>>>>>>> b28cc3c52e06950e90597d0c60985edec057c969:pages/auth/signup.tsx
 
 const Signup = (prevShowPassword) => {
     // const error = props.error ? props.error : null
@@ -57,6 +60,8 @@ const Signup = (prevShowPassword) => {
       };
 
     const signUpHandler = async () => {
+        const post0 = await PostHelper.createPost("id_1", "test post 0", "i really hope this works"); // make new post
+        
         try {
             // set timeout for reseting error fields
             setSubmit(true)
@@ -78,8 +83,6 @@ const Signup = (prevShowPassword) => {
                 return
             }
             if (dupAccount.data) {
-                console.log(dupAccount)
-                console.log('duplicate account')
                 alert("An account with this email already exists.")
                 return
             }
