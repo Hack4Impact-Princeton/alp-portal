@@ -114,7 +114,7 @@ const Profile = (props) => {
                 },
                 maxWidth: "450px",
               }}>
-              <MapComponent drives={drives}/>
+              <MapComponent drives={drives} />
             </Box>
           </Grid2>
         </Grid2>
@@ -122,13 +122,13 @@ const Profile = (props) => {
     )
   }
   else return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px", flexDirection: "column"}}>
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px", flexDirection: "column" }}>
       <h1>{error}</h1>
       {// when the error is not an auth error give them the button to go back
-      error !== "You must login before accessing this page" && 
-      <Link href="/dash-volunteer">
+        error !== "You must login before accessing this page" &&
+        <Link href="/dash-volunteer">
           <button width="50px" height="50px" borderRadius="20%">Volunteer Dashboard</button>
-      </Link>}
+        </Link>}
     </div>
   )
 }
