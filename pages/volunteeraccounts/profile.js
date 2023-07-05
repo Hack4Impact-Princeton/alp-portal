@@ -10,7 +10,7 @@ import { signOut } from "next-auth/react"
 import MapComponent from '../../components/MapComponent'
 import Link from 'next/link'
 import { getSession } from "next-auth/react"
-
+import { BookDriveStatus } from "../../lib/enums"
 import getBookDriveModel from "../../models/BookDrive"
 
 const Profile = (props) => {
@@ -97,7 +97,7 @@ const Profile = (props) => {
               >
                 <p>{`${account.fname} ${account.lname}`}</p>
                 <p>{account.email}</p>
-                <p>{`# of Bookdrives completed: ${account.allDrives}`}</p>
+                <p>{`# of Bookdrives completed: ${drives.length}`}</p>
               </div>
             </Box>
           </Grid2>
@@ -114,7 +114,7 @@ const Profile = (props) => {
                 },
                 maxWidth: "450px",
               }}>
-              <MapComponent drives={drives}/>
+              <MapComponent drives={drives} />
             </Box>
           </Grid2>
         </Grid2>
@@ -122,13 +122,13 @@ const Profile = (props) => {
     )
   }
   else return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px", flexDirection: "column"}}>
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px", flexDirection: "column" }}>
       <h1>{error}</h1>
       {// when the error is not an auth error give them the button to go back
-      error !== "You must login before accessing this page" && 
-      <Link href="/dash-volunteer">
+        error !== "You must login before accessing this page" &&
+        <Link href="/dash-volunteer">
           <button width="50px" height="50px" borderRadius="20%">Volunteer Dashboard</button>
-      </Link>}
+        </Link>}
     </div>
   )
 }
@@ -153,8 +153,12 @@ export const getServerSideProps = async (context) => {
     const volunteerAccount = await VolunteerAccount.findOne({ email: email })
     const driveList = volunteerAccount.driveIds
     // finds all completed bookDrives that correspond to the volunteer account
-    const promises = driveList.map(async (driveId) => await BookDrive.find({driveCode: driveId, status: 1}));
-    const completedDrives = await Promise.all(promises);
+    const promises = await driveList.map(async (driveId) => await BookDrive.find({driveCode: driveId, status: BookDriveStatus.Completed}));
+    // you have to resolve these promises before continuing
+    const resolvedPromises = await Promise.all(promises);
+    // you have to flatten the array otherwise it will have a weird shape.
+    const completedDrives = resolvedPromises.flat()
+    
   return { props: { account: JSON.stringify(volunteerAccount), completedDrives: JSON.stringify(completedDrives), error: null } }
   } catch (e) {
     console.error(e)
