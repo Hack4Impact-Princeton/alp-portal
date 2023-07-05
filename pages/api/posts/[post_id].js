@@ -1,73 +1,73 @@
 import dbConnect from '../../../lib/dbConnect'
-import getBookDriveModel from '../../../models/BookDrive'
+import getPostModel from '../../../models/Post'
 
 export default async function handler(req, res) {
   const {
-    query: { code },
+    query: { post_id },
     method,
   } = req
 
   await dbConnect()
-  const BookDrive = getBookDriveModel();
+  const Post = getPostModel();
   switch (method) {
-    case 'GET' /* Get a model by its code */:
+    case 'GET' /* Get a model by its post_id */:
       try {
-        const bookDrive = await BookDrive.findOne({driveCode : code}).exec();
-        if (!bookDrive) {
+        const post = await Post.findOne({post_id : post_id}).exec();
+        if (!post) {
           return res.status(400).json({ success: false })
         }
-        res.status(200).json({ success: true, data: bookDrive })
+        res.status(200).json({ success: true, data: post })
       } catch (error) {
         res.status(400).json({ success: false })
       }
       break
 
-    case 'PUT' /* Edit a model by its code */:
+    case 'PUT' /* Edit a model by its post_id */:
       try {
-        /* get code and update */
+        /* get post_id and update */
         const update = JSON.parse(req.body)
-        const bookDrive = await BookDrive.findOneAndUpdate({driveCode : code}, update, { 
+        const post = await Post.findOneAndUpdate({post_id : post_id}, update, { 
           new: true,
           runValidators: true,
         })
         console.log(req.body)
-        console.log(bookDrive)
-        if (!bookDrive) {
+        console.log(post)
+        if (!post) {
           return res.status(400).json({ success: false })
         }
-        res.status(200).json({ success: true, data: bookDrive })
+        res.status(200).json({ success: true, data: post })
       } catch (error) {
         res.status(400).json({ success: false })
       }
       break
     case 'POST': /* Create new Drive */
         try {
-          if (await BookDrive.exists({driveCode : code})) {
-              console.log("drive already exists")
+          if (await Post.exists({post_id : post_id})) {
+              console.log("post already exists")
               return res.status(400).json({ success: false })
           }
           const parsedData = JSON.parse(req.body);
-          if (code != parsedData.driveCode){
-            console.log("api code and driveCode do not match")
+          if (post_id != parsedData.post_id){
+            console.log("api post_id and post_id do not match")
             return res.status(400).json({ success: false })
           }
-          const newDrive = new BookDrive(parsedData);
-          if (!newDrive) 
+          const newPost = new Post(parsedData);
+          if (!newPost) 
             return res.status(400).json({ success: false })
-          newDrive.save(function (err, drive) {
+          newPost.save(function (err, post) {
             if (err) return console.error(err);
-            console.log(drive.name + " saved to bookstore collection.");
+            console.log(post.post_id + " saved to post collection.");
           });
-          res.status(200).json({ success: true, data: newDrive })
+          res.status(200).json({ success: true, data: newPost })
         } catch (error) {
           console.log(error)
           res.status(400).json({ success: false })
         }
         break
-    case 'DELETE' /* Delete a model by its code */:
+    case 'DELETE' /* Delete a model by its post_id */:
       try {
-        const deletedBookDrive = await BookDrive.findOneAndDelete({driveCode : code});
-        if (!deletedBookDrive) {
+        const deletedPost = await Post.findOneAndDelete({post_id : post_id});
+        if (!deletedPost) {
           return res.status(400).json({ success: false })
         }
         res.status(200).json({ success: true, data: {} })

@@ -1,4 +1,3 @@
-import { FlashAuto, FlashOnOutlined } from '@mui/icons-material'
 import dbConnect from '../../../lib/dbConnect'
 import getVolunteerAccountModel from '../../../models/VolunteerAccount'
 
@@ -63,8 +62,10 @@ export default async function handler(req, res) {
             }
         case 'GET':
             try {
-                const {alp_id} = JSON.parse(req.body)
-                const volunteerAccount = await VolunteerAccount.find({alp_id: alp_id})
+                const email = req.query.email
+                const volunteerAccount = await VolunteerAccount.findOne({email: email})
+                console.log(volunteerAccount)
+                if (volunteerAccount == []) console.log("COME ON")
                 res.status(200).json({success: true, data: volunteerAccount})
                 break
             } catch (error) {
