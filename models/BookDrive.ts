@@ -18,7 +18,7 @@ export type BookDrive = {
   fl: { startDate: string, endDate: string, dateSent: string, numBoxes: number, numBooks: number, shipFee: number },
 }
 
-const BookDriveSchema = new Schema<BookDrive>({
+export const BookDriveSchema = new Schema<BookDrive>({
   driveName: { type: String },
   driveCode: { type: String },
   organizer: { type: String },
