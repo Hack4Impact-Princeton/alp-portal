@@ -30,24 +30,11 @@ export default function InstructionCollectCard({
       </CollectDomFeeCard>;
       break;
     case 6:
-      cardContent = <CollectDate
+      cardContent = <CollectFinishLine
       driveCode = {driveCode}
       info = {driveStatus.finishLine}>
-    </CollectDate>;
+    </CollectFinishLine>;
       break;
-    case 7:
-      cardContent = <CollectNumBooks
-        driveCode = {driveCode}
-        info = {driveStatus.finishLine}>
-      </CollectNumBooks>;
-      break;
-    case 8:
-      cardContent = <CollectNumBoxes
-        driveCode = {driveCode}
-        info = {driveStatus.finishLine}>
-      </CollectNumBoxes>;
-      break;
-    break; 
     default:
       // return error ?
   }
@@ -275,27 +262,41 @@ function CollectDomFeeCard(props) {
   );
 }
 
-function CollectNumBooks(props){
+function CollectFinishLine(props){
   const styles = {
     btn: {
       backgroundColor: "#FE9834",
       width: "5vw"
     },
   }
+  const [date, setDate] = useState(props.info.dateSent);
   const [books, setBooks] = useState(props.info.numBooks);
+  const [boxes, setBoxes] = useState(props.info.numBoxes);
 
-  const handleInput = e => {
+  const handleInputDate = e => {
+    setDate(e.target.value);
+    console.log(date);
+  }
+
+
+  const handleInputBooks = e => {
     setBooks(e.target.value);
     console.log(books);
   }
+
+  const handleInputBoxes = e => {
+    setBoxes(e.target.value);
+    console.log(boxes);
+  }
+
 
   const handleSubmitButton = async () => {
     console.log("submit clicked");
       try {
         const data = {
           fl: {
-            dateSent: props.info.dateSent,
-            numBoxes: props.info.numBoxes,
+            dateSent: date,
+            numBoxes: boxes,
             numBooks: books
           }
         }
@@ -310,134 +311,37 @@ function CollectNumBooks(props){
     }
     return (
       <Grid container alignItems="center" sx={{ p: 5 }}>
-        <Grid item xs={12} sx={{ pb: 4 }}>
-          <Typography variant="h4">
-            <span>Number of Books Collected:</span> <span>{books}</span>
-          </Typography>
-        </Grid>
         <Grid item xs={4} sx={{ pb: 2 }}>
-          <Typography variant="h5">Update Books Collected:</Typography>
+          <Typography variant="h5">Date Sent:</Typography>
         </Grid>
-        <Grid item xs={8} sx={{ pb: 2 }}>
-          <TextField size="small" fullWidth id="books-collected" variant="outlined" value={books} onChange={handleInput}/>
+        <Grid item xs={8} sx={{pb: 2 }} s>
+          <TextField size="small" fullWidth={false} id="date-sent" variant="outlined"  value={date} onChange={handleInputDate} sx={{pr:5}}/>
+          <Button style={styles.btn} variant="contained" size="large" onClick={handleSubmitButton}>Submit</Button>
         </Grid>
 
         <Grid item xs={11}>
         </Grid>
-        <Grid item xs={1} sx={{pb:4}}>
-          <Button style={styles.btn} variant="contained" size="large" onClick={handleSubmitButton}>Submit</Button>
-        </Grid>
-      </Grid>
-    )
-}
 
-function CollectNumBoxes(props){
-  const styles = {
-    btn: {
-      backgroundColor: "#FE9834",
-      width: "5vw"
-    },
-  }
-  const [boxes, setBoxes] = useState(props.info.numBoxes);
-
-  const handleInput = e => {
-    setBoxes(e.target.value);
-    console.log(boxes);
-  }
-
-  const handleSubmitButton = async () => {
-    console.log("submit clicked");
-      try {
-        const data = {
-          fl: {
-            dateSent: props.info.dateSent,
-            numBoxes: boxes,
-            numBooks: props.info.numBooks
-          }
-        }
-        await fetch(`/api/bookDrive/${props.driveCode}`,{
-          method: "PUT",
-          body: JSON.stringify(data), // textfield information
-        });
-        console.log("submitted to DB");
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    return (
-      <Grid container alignItems="center" sx={{ p: 5 }}>
-        <Grid item xs={12} sx={{ pb: 4 }}>
-          <Typography variant="h4">
-            <span>Number of Boxes Collected:</span> <span>{boxes}</span>
-          </Typography>
-        </Grid>
         <Grid item xs={4} sx={{ pb: 2 }}>
-          <Typography variant="h5">Update Boxes Collected:</Typography>
+          <Typography variant="h5">Books Collected:</Typography>
         </Grid>
         <Grid item xs={8} sx={{ pb: 2 }}>
-          <TextField size="small" fullWidth id="boxes-collected" variant="outlined" value={boxes} onChange={handleInput}/>
+          <TextField size="small" id="books-collected" variant="outlined" value={books} onChange={handleInputBooks} sx={{pr:5}}/>
+          <Button style={styles.btn} variant="contained" size="large" onClick={handleSubmitButton}>Submit</Button>
         </Grid>
 
         <Grid item xs={11}>
         </Grid>
-        <Grid item xs={1} sx={{pb:4}}>
-          <Button style={styles.btn} variant="contained" size="large" onClick={handleSubmitButton}>Submit</Button>
-        </Grid>
-      </Grid>
-    )
-}
-
-function CollectDate(props){
-  const styles = {
-    btn: {
-      backgroundColor: "#FE9834",
-      width: "5vw"
-    },
-  }
-  const [date, setDate] = useState(props.info.dateSent);
-
-  const handleInput = e => {
-    setDate(e.target.value);
-    console.log(date);
-  }
-
-  const handleSubmitButton = async () => {
-    console.log("submit clicked");
-      try {
-        const data = {
-          fl: {
-            dateSent: date,
-            numBoxes: props.info.numBoxes,
-            numBooks: props.info.numBooks
-          }
-        }
-        await fetch(`/api/bookDrive/${props.driveCode}`,{
-          method: "PUT",
-          body: JSON.stringify(data), // textfield information
-        });
-        console.log("submitted to DB");
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    return (
-      <Grid container alignItems="center" sx={{ p: 5 }}>
-        <Grid item xs={12} sx={{ pb: 4 }}>
-          <Typography variant="h4">
-            <span>Date Sent:</span> <span>{date}</span>
-          </Typography>
-        </Grid>
+      
         <Grid item xs={4} sx={{ pb: 2 }}>
-          <Typography variant="h5">Update Date Sent:</Typography>
+          <Typography variant="h5">Boxes Collected:</Typography>
         </Grid>
         <Grid item xs={8} sx={{ pb: 2 }}>
-          <TextField size="small" fullWidth id="date-sent" variant="outlined" value={date} onChange={handleInput}/>
+          <TextField size="small" id="boxes-collected" variant="outlined" value={boxes} onChange={handleInputBoxes} sx={{pr:5}}/>
+          <Button style={styles.btn} variant="contained" size="large" onClick={handleSubmitButton}>Submit</Button>
         </Grid>
 
         <Grid item xs={11}>
-        </Grid>
-        <Grid item xs={1} sx={{pb:4}}>
-          <Button style={styles.btn} variant="contained" size="large" onClick={handleSubmitButton}>Submit</Button>
         </Grid>
       </Grid>
     )

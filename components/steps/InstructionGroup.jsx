@@ -72,15 +72,7 @@ export default function InstructionGroupCard(props) {
       case 3: 
       content = <Grid container direction="column">
       <Grid paddingTop={2}>
-            <InstructionCollectCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Date Sent"} stepNum={6}> 
-            </InstructionCollectCard>
-      </Grid>
-      <Grid paddingTop={2}>
-            <InstructionCollectCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Date Sent"} stepNum={7}> 
-            </InstructionCollectCard>
-      </Grid>
-      <Grid paddingTop={2}>
-            <InstructionCollectCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Date Sent"} stepNum={8}> 
+            <InstructionCollectCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Finish Line"} stepNum={6}> 
             </InstructionCollectCard>
       </Grid>
     </Grid>
