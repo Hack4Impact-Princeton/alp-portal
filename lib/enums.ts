@@ -263,3 +263,9 @@ export const africanCountries: string[] = [
   ];
   
 
+  export enum BookDriveStatus {
+    Active = 0,
+    Verifying = 1,
+    Completed = 2,
+    Concelled = 3,
+}
