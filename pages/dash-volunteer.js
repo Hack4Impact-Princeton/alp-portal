@@ -19,8 +19,11 @@ function DashVolunteer(props) {
   if (props.error) error = JSON.parse(props.error)
 
   return (
-    <Grid>
-      <Grid><Navbar></Navbar></Grid>
+    <Grid container>
+      <Grid item xs={2}>
+        <Navbar></Navbar>
+      </Grid>
+      <Grid item xs={10}>
         <Stack direction="column"
           justifyContent="flex-start"
           alignItems="stretch"
@@ -47,6 +50,7 @@ function DashVolunteer(props) {
               ))}
           </Stack>}
         </Stack>
+        </Grid>
     </Grid>
   );
 }
