@@ -70,7 +70,13 @@ export default function InstructionGroupCard(props) {
         </Grid>
         break;
       case 3: 
-        content = <InstructionCollectCard paddingTop={3} stepNum={1} numBooksCollected={500} heading={"Current Number of Books Collected:"}></InstructionCollectCard>
+      content = <Grid container direction="column">
+      <Grid paddingTop={2}>
+            <InstructionCollectCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Finish Line"} stepNum={6}> 
+            </InstructionCollectCard>
+      </Grid>
+    </Grid>
+        break;
     }
     return (
       <Grid>
