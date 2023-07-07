@@ -120,7 +120,7 @@ const Login: NextPage = () => {
         <Grid2 xs display="flex" justifyContent="center">
           <Box
             sx={{
-              width: 300,
+              width: 400,
               height: 300,
             }}>
             <TextField fullWidth required id="email" label="Email" variant="outlined"
@@ -148,26 +148,32 @@ const Login: NextPage = () => {
                 mb: 2,
               }}
             />
+
             <Button variant="contained"
               onClick={() => handleSubmit(false)}
               sx={{
-                marginTop: 3,
-              }}>Login</Button>
+                marginTop: 2,
+                
+              
+              }}>Volunteer Login</Button>
             <Button variant="contained"
               onClick={() => handleSubmit(true)}
               sx={{
-                marginTop: 3,
+                marginTop: 2,
                 marginLeft: 1,
-              }}>Admin</Button>
+                
+              }}>Admin Login</Button>
             <Button variant="contained"
               onClick={signUpHandler}
               sx={{
                 marginTop: 3,
-                marginLeft: 1,
-              }}>Sign Up</Button>
+                marginLeft: 0,
+              }}>Create An Account</Button>
+             
           </Box>
 
         </Grid2>
+        
         <Link href='resetpassword'>Forgot Password?</Link>
 
       </Grid2>
