@@ -37,7 +37,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     startDate: new Date().toLocaleDateString(),
                     allDrives: 0,
                     badges: 0,
-                    driveIds: []
+                    driveIds: [],
+                    broadcasts: [],
                 })
                 console.log(newVolunteerAccount.startDate)
                 const account = await newVolunteerAccount.save()
