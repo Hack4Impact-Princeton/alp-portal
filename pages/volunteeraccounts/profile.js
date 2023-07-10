@@ -4,7 +4,7 @@ import Router from 'next/router'
 import { useSession } from "next-auth/react"
 import Grid2 from "@mui/material/Unstable_Grid2"
 import Box from '@mui/material/Box';
-import Navbar from "../../components/Navbar";
+import PageContainer from "../../components/PageContainer";
 import { useState, useEffect } from 'react'
 import { signOut } from "next-auth/react"
 import MapComponent from '../../components/MapComponent'
@@ -25,11 +25,11 @@ const Profile = (props) => {
   // if the account is not null, that means that everything is working
   // otherwise render the error message page
   if (account) {
+    console.log("ACCOUNT: ", account);
     return (
       <Grid2>
-        <Grid2><Navbar active="profile" /></Grid2>
+        <PageContainer fName={account.fname} currPage="profile"></PageContainer>
         <Box display="flex" sx={{ pl: 20, pt: 5, pr: 5, width: '100%', justifyContent: "space-between" }} >
-          <h1 style={{ textAlign: "left", fontSize: "90px", paddingRight: 10 }}>Profile</h1>
           <button onClick={() => signOut({ callbackUrl: "/" })}
             style={{
               borderRadius: "20%",
