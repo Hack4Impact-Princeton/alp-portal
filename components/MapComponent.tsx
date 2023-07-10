@@ -13,7 +13,7 @@ import { CountryPopup } from './CountryPopup'
 // for some reason drives was returned as a 2d array and I tried messing
 // around with it but I think we just have to cope with this.
 interface MapComponentProps {
-  drives: BookDrive[][];
+  drives: BookDrive[];
 }
 
 // dictionary where key is the country name (as a string) and the value
@@ -106,6 +106,7 @@ const userMarkers: UserMarkerDict<UserMarker> = {
 };
 
 const MapComponent: React.FC<MapComponentProps> = ({ drives }) => {
+  console.log(drives)
   let countryData: CountryData[] = africanCountries.map(() => ({ country: "", value: 0 }))
   // drives refers to the completed bookDrives
   // refers to number of books sent to country with most number of books
@@ -114,10 +115,10 @@ const MapComponent: React.FC<MapComponentProps> = ({ drives }) => {
     // sets the country field to the corresponding african country name
     countryData[i].country = africanCountries[i]
     // finds all drives whose country corresponds to the current country
-    const matchingDrives: BookDrive[][] | undefined = drives.filter((drive) => drive[0].country === africanCountries[i])
+    const matchingDrives: BookDrive[] | undefined = drives ? drives.filter((drive) => drive.country === africanCountries[i]) : undefined
     // adds numBooks of each matching drive to the numbooks value of the
     // current country
-    matchingDrives.forEach((drive) => countryData[i].value += drive[0].fl.numBooks)
+    if (matchingDrives) matchingDrives.forEach((drive) => countryData[i].value += drive.fl.numBooks)
     if (countryData[i].value > maxVal) maxVal = countryData[i].value
     // sets the booksSent value for the map markers
     userMarkers[africanCountries[i]].booksSent = countryData[i].value

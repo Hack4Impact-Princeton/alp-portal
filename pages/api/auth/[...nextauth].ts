@@ -29,10 +29,12 @@ export const authOptions: NextAuthOptions = {
                 // if none exists then invalid credentials
                 if (!account) throw new Error("Invalid email")
                 const bcrypt = require("bcryptjs");
+
+                // compare passwords
                 const result = await bcrypt.compare(password, account.pwhash);
                 if (result) {
                     // name actually contains a string representation of whether the user is an admin or not
-                    return {id: email, email: email, name: `${isAdministrator}`}
+                    return {id: email, email: email, name: `${isAdministrator}`, fName: account.fname}
                 }
                 // if hashed passwords don't match, invalid credentials
                 throw new Error("Invalid Password")
