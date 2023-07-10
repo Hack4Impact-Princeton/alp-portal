@@ -29,9 +29,9 @@ const DashVolunteer: NextPage<DashVolunteerProps> = ({drives, account, error, is
     if (account && isAdmin) return <div>I am an admin user</div>
     if (account && !isAdmin) {
     return (
-      <Grid2>
-        <Grid2><Navbar active="dash-volunteer"/></Grid2>
-
+      <Grid2 container>
+        <Grid2 xs={2}><Navbar active="dash-volunteer"/></Grid2>
+        <Grid2 xs={10}>
         <Box display="flex" flexDirection="column" sx={{
           pl: 20,
           pt: 5,
@@ -52,6 +52,7 @@ const DashVolunteer: NextPage<DashVolunteerProps> = ({drives, account, error, is
             ))}
           </Stack>}
         </Box>
+        </Grid2>
       </Grid2>
     )
   }
