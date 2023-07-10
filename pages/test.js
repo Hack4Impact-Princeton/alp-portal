@@ -13,7 +13,7 @@ function Test(props) {
 
     return (
         <Grid>
-            <PageContainer name="Ivy" currPage="test"></PageContainer>
+            <PageContainer fName="Ivy" currPage="test"></PageContainer>
             <Box display="flex" flexDirection="column" sx={{
                 pl: 20,
                 pt: 5,

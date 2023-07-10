@@ -28,7 +28,7 @@ const Profile = (props) => {
     console.log("ACCOUNT: ", account);
     return (
       <Grid2>
-        <PageContainer name={account.fname} currPage="profile"></PageContainer>
+        <PageContainer fName={account.fname} currPage="profile"></PageContainer>
         <Box display="flex" sx={{ pl: 20, pt: 5, pr: 5, width: '100%', justifyContent: "space-between" }} >
           <button onClick={() => signOut({ callbackUrl: "/" })}
             style={{
