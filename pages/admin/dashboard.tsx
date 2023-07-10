@@ -33,8 +33,10 @@ export const getServerSideProps = async (context: any) => {
         const session = await getSession(context)
         if (!session || session.user?.name != 'true') {
             return {
-                redirect: 'auth/login',
-                permanent: 'false'
+                redirect: {
+                    destination: '../auth/login',
+                    permanent: false
+                }
             }
         }
         const AdminAccount: mongoose.Model<AdminAccount> = getAdminAccountModel()
