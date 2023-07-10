@@ -28,7 +28,13 @@ export default function InstructionCollectCard({
         driveCode = {driveCode}
         info = {driveStatus.prepareToShip}>
       </CollectDomFeeCard>;
-    break; 
+      break;
+    case 6:
+      cardContent = <CollectFinishLine
+      driveCode = {driveCode}
+      info = {driveStatus.finishLine}>
+    </CollectFinishLine>;
+      break;
     default:
       // return error ?
   }
@@ -254,4 +260,89 @@ function CollectDomFeeCard(props) {
     </Grid>
 
   );
+}
+
+function CollectFinishLine(props){
+  const styles = {
+    btn: {
+      backgroundColor: "#FE9834",
+      width: "5vw"
+    },
+  }
+  const [date, setDate] = useState(props.info.dateSent);
+  const [books, setBooks] = useState(props.info.numBooks);
+  const [boxes, setBoxes] = useState(props.info.numBoxes);
+
+  const handleInputDate = e => {
+    setDate(e.target.value);
+    console.log(date);
+  }
+
+
+  const handleInputBooks = e => {
+    setBooks(e.target.value);
+    console.log(books);
+  }
+
+  const handleInputBoxes = e => {
+    setBoxes(e.target.value);
+    console.log(boxes);
+  }
+
+
+  const handleSubmitButton = async () => {
+    console.log("submit clicked");
+      try {
+        const data = {
+          fl: {
+            dateSent: date,
+            numBoxes: boxes,
+            numBooks: books
+          }
+        }
+        await fetch(`/api/bookDrive/${props.driveCode}`,{
+          method: "PUT",
+          body: JSON.stringify(data), // textfield information
+        });
+        console.log("submitted to DB");
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return (
+      <Grid container alignItems="center" sx={{ p: 5 }}>
+        <Grid item xs={4} sx={{ pb: 2 }}>
+          <Typography variant="h5">Date Sent:</Typography>
+        </Grid>
+        <Grid item xs={8} sx={{pb: 2 }} s>
+          <TextField size="small" fullWidth={false} id="date-sent" variant="outlined"  value={date} onChange={handleInputDate} sx={{pr:5}}/>
+          <Button style={styles.btn} variant="contained" size="large" onClick={handleSubmitButton}>Submit</Button>
+        </Grid>
+
+        <Grid item xs={11}>
+        </Grid>
+
+        <Grid item xs={4} sx={{ pb: 2 }}>
+          <Typography variant="h5">Books Collected:</Typography>
+        </Grid>
+        <Grid item xs={8} sx={{ pb: 2 }}>
+          <TextField size="small" id="books-collected" variant="outlined" value={books} onChange={handleInputBooks} sx={{pr:5}}/>
+          <Button style={styles.btn} variant="contained" size="large" onClick={handleSubmitButton}>Submit</Button>
+        </Grid>
+
+        <Grid item xs={11}>
+        </Grid>
+      
+        <Grid item xs={4} sx={{ pb: 2 }}>
+          <Typography variant="h5">Boxes Collected:</Typography>
+        </Grid>
+        <Grid item xs={8} sx={{ pb: 2 }}>
+          <TextField size="small" id="boxes-collected" variant="outlined" value={boxes} onChange={handleInputBoxes} sx={{pr:5}}/>
+          <Button style={styles.btn} variant="contained" size="large" onClick={handleSubmitButton}>Submit</Button>
+        </Grid>
+
+        <Grid item xs={11}>
+        </Grid>
+      </Grid>
+    )
 }

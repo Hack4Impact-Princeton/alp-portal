@@ -15,7 +15,7 @@ export type VolunteerAccount = {
     badges: number,
 }
 
-const VolunteerAccountSchema = new Schema<VolunteerAccount>({
+export const VolunteerAccountSchema = new Schema<VolunteerAccount>({
     fname: {
         type: String,
         required: true,
