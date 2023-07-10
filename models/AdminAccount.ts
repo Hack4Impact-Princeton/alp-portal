@@ -1,7 +1,5 @@
 import mongoose from 'mongoose'
 import {Schema, Document, Types} from 'mongoose'
-import { VolunteerAccount, VolunteerAccountSchema } from './VolunteerAccount'
-import {BookDrive, BookDriveSchema} from './BookDrive'
 
 export interface AdminAccount extends Document {
     fname: string,

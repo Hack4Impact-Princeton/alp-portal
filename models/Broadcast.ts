@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-export interface Broadcast {
+export type Broadcast = {
     id: string, // id of the broadcast
     senderEmail: string, // email of sender
     receiverEmails: string[], // emails of receivers

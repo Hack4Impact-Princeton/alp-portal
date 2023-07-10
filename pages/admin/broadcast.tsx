@@ -7,7 +7,7 @@ import { getSession } from 'next-auth/react'
 import BroadcastForm from '../../components/BroadcastForm'
 import getBroadcastModel, { Broadcast } from '../../models/Broadcast'
 import { Grid } from '@mui/material'
-import BroadcastMessage from '../../components/Broadcast'
+import BroadcastMessage from '../../components/BroadcastMessage'
 type BroadcastPageProps = {
     account: AdminAccount,
     volunteers: VolunteerAccount[],

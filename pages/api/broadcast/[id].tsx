@@ -56,6 +56,32 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             } catch (e: Error | any) {
                 return res.status(500).json({ success: false, data: e })
             }
+
+        case 'PUT':
+            try {
+                // possible scenarios: if somone indicates that a message is read/unread
+                const {email, bool} = JSON.parse(req.body)
+                const broadcast = await Broadcast.findOne({id: id})
+                if (!broadcast) return res.status(404).json({data: `no broadcast found with id: ${id}`})
+                const updatedBroadcast = await Broadcast.updateOne({id: id}, {$set: {[`read.${broadcast.receiverEmails.indexOf(email)}`]: bool}}, {new: true})
+                if (!updatedBroadcast) return res.status(500).json({data: "something went wrong on our end"})
+                console.log("updated broadcast", updatedBroadcast)
+                return res.status(200).json({data: updatedBroadcast})
+            } catch (e: Error | any) {
+                return res.status(500).json({ data: e })
+            }
+        // this needs to be updated to remove the ids from the sender and the receiver accounts
+        case 'DELETE':
+            try {
+                const broadcast = await Broadcast.findOne({ id: id })
+                if (!broadcast) return res.status(400).json({ data: `no broadcast found with id ${id}` })
+                for (const recipientEmail in broadcast!.receiverEmails) {
+                    console.log("hi")
+                }
+                return res.status(200).json({ data: broadcast })
+            } catch (e: Error | any) {
+                return res.status(500).json({ data: e })
+            }
     }
 }
 
