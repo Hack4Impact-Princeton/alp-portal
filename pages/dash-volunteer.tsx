@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import Box from '@mui/material/Box';
-import Navbar from '../components/Navbar'
+import Navbar from '../components/Navbar';
+import PageContainer from '../components/PageContainer';
 import DriveCard from '../components/DriveCard'
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Stack from '@mui/material/Stack';
@@ -26,16 +27,15 @@ const DashVolunteer: NextPage<DashVolunteerProps> = ({ drives, account, error })
   if (account) {
     return (
       <Grid2>
-        <Grid2><Navbar active="dash-volunteer" /></Grid2>
-
+        <PageContainer fName={account.fname} currPage="dash-volunteer"></PageContainer>
+        {/* Necessary box for padding the page body, no overlap with Navbar */}
         <Box display="flex" flexDirection="column" sx={{
           pl: 20,
           pt: 5,
           pr: 5,
           width: '100%',
           justifyContent: "space-between"
-        }} >
-          <h1 style={{ textAlign: "left", fontSize: "90px", paddingRight: 10 }}>Home</h1>
+        }}>
           <div style={{ fontSize: '25px', textAlign: 'left', marginTop: '2vh' }}>Active Drives</div>
           <Link href="volunteeraccounts/profile"> Click here to go to your profile
           </Link>
@@ -64,7 +64,7 @@ export async function getServerSideProps(context: any) {
   try {
     await dbConnect()
     const session = await getSession(context)
-    console.log(typeof session)
+    console.log("SESSION OBJ: ", session);
     if (!session) {
       return {
         redirect: {

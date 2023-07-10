@@ -9,7 +9,7 @@ import FilterFramesIcon from '@mui/icons-material/FilterFrames';
 const drawerWidth: number = 80;
 
 type NavbarProps = {
-    active: "dash-volunteer" | "profile" | "leaderboard" | "h4i-team" | "forum";
+    active: "dash-volunteer" | "profile" | "leaderboard" | "h4i-team" | "forum" | null;
 }
 const Navbar: React.FC<NavbarProps> = ({active}) => {
     return(
