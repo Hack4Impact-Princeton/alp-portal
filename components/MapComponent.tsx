@@ -6,7 +6,7 @@ import {
   Marker,
   ZoomableGroup,
 } from "react-simple-maps";
-import { BookDrive } from '../types/BookDrive';
+import { BookDrive } from '../models/BookDrive';
 import { africanCountries } from '../lib/enums';
 import { CountryPopup } from './CountryPopup'
 
