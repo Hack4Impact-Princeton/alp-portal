@@ -90,7 +90,7 @@ const DashVolunteer: NextPage<DashVolunteerProps> = ({ drives, account, error, b
                 <Box style={{ margin: 15, padding: 10, width: "350px", position: 'absolute', top: 0, right: 0, height: "35%", zIndex: 200, overflowY: "auto", backgroundColor: "#FFFFFF", border: "1.5px solid black" }}>
                   <button style={{ cursor: "pointer" }} onClick={() => setExpandInbox(false)}>Minimize</button>
                   {broadcasts?.map((broadcast) => <BroadcastMessage key={broadcast.id} onRead={markAsRead} isRead={isReadMap.myMap.get(broadcast.id)} broadcast={broadcast} />)}
-                  {unreadCounter == 0 && <p style={{padding: 10,  margin: 10, textAlign: "center"}}>No unread messages</p>}
+                  {unreadCounter == 0 && <p style={{padding: 10,  margin: 10, textAlign: "center"}}>No broadcasts</p>}
                 </Box>
                 :
                 <Box onClick={() => setExpandInbox(true)} sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "fit-content", height: "fit-content", padding: 1, border: '1.5px solid gray', cursor: "pointer" }}>
