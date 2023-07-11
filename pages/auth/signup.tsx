@@ -60,7 +60,7 @@ const Signup = (prevShowPassword) => {
       };
 
     const signUpHandler = async () => {
-        const post0 = await PostHelper.createPost("id_1", "test post 0", "i really hope this works"); // make new post
+       // const post0 = await PostHelper.createPost("id_1", "test post 0", "i really hope this works"); // make new post
         
         try {
             // set timeout for reseting error fields
