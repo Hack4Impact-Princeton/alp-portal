@@ -13,21 +13,109 @@ import { getSession } from "next-auth/react"
 import { BookDriveStatus } from "../../lib/enums"
 import getBookDriveModel from "../../models/BookDrive"
 
+const BadgeInfo = ({ isEarned, level, name, description }) => {
+  const unlockedBadgeStyle = {
+    width: '40px',
+    height: '40px',
+    marginBottom: '5px',
+  };
+
+  const lockedBadgeStyle = {
+    width: '40px',
+    height: '40px',
+    marginBottom: '5px',
+    filter: 'grayscale(100%)',
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '10px' }}>
+      {isEarned ? (
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/1435/1435715.png"
+          alt="Unlocked Badge"
+          style={unlockedBadgeStyle}
+        />
+      ) : (
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/1435/1435722.png"
+          alt="Locked Badge"
+          style={lockedBadgeStyle}
+        />
+      )}
+      <div style={{ textAlign: 'center' }}>
+        <p style={{ margin: 0, fontWeight: 'bold' }}>{name}</p>
+        <p style={{ margin: 0, fontSize: '12px' }}>{description}</p>
+      </div>
+    </div>
+  );
+};
+
+
+
+const BadgeDisplayCase = () => {
+  const badges = [
+    {
+      isEarned: true,
+      level: 1,
+      name: 'Ivy',
+      description: 'ivy being nice for once',
+    },
+    {
+      isEarned: false,
+      level: 2,
+      name: 'ivy',
+      description: 'ivy saving us!',
+    },
+    // Add more badges here
+  ];
+
+  return (
+    <div style={{ border: '1.5px solid black', padding: '10px', marginBottom: '10px' }}>
+      <h2 style={{ textAlign: 'left', marginBottom: '10px' }}>Badges</h2>
+      <div style={{ display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap', paddingLeft: '10px' }}>
+        {badges.map((badge, index) => (
+          <BadgeInfo key={index} {...badge} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const BookDrivesCompletedGraph = () => {
+  // Sample data for the graph
+  const graphData = [
+    { month: 'Jan', completed: 5 },
+    { month: 'Feb', completed: 8 },
+    { month: 'Mar', completed: 10 },
+    // Add more data points here
+  ];
+
+  return (
+    <div style={{ border: '1.5px solid black', padding: '10px', marginBottom: '10px' }}>
+      <h2 style={{ textAlign: 'left', marginBottom: '10px', paddingRight: '10px' }}>Book Drives Completed</h2>
+      {/* Render your graph component using the graphData */}
+    </div>
+  );
+};
+
+
 const Profile = (props) => {
-  let account = props.account ? JSON.parse(props.account) : null
-  let drives = props.completedDrives ? JSON.parse(props.completedDrives) : null
-  let error = props.error ? props.error : null
+  let account = props.account ? JSON.parse(props.account) : null;
+  let drives = props.completedDrives ? JSON.parse(props.completedDrives) : null;
+  let error = props.error ? props.error : null;
 
   // if the user is not logged in take them back to the login page
-  const [editIsHovered, setEditIsHovered] = useState(false)
-  const [signOutIsHovered, setSignOutIsHovered] = useState(false)
+  const [editIsHovered, setEditIsHovered] = useState(false);
+  const [signOutIsHovered, setSignOutIsHovered] = useState(false);
 
   // if the account is not null, that means that everything is working
   // otherwise render the error message page
   if (account) {
     return (
       <Grid2>
-        <Grid2><Navbar active="profile" /></Grid2>
+        <Grid2>
+          <Navbar active="profile" />
+        </Grid2>
         <Box display="flex" sx={{ pl: 20, pt: 5, pr: 5, width: '100%', justifyContent: "space-between" }} >
           <h1 style={{ textAlign: "left", fontSize: "90px", paddingRight: 10 }}>Profile</h1>
           <button onClick={() => signOut({ callbackUrl: "/" })}
@@ -54,6 +142,7 @@ const Profile = (props) => {
         </Box>
         <Grid2 container display="flex" padding={5} sx={{ pl: 20 }} rowSpacing={2}>
           <Grid2 item xs={12} sm={7} display="flex" flexDirection="column" >
+            
             <Box
               sx={{
                 width: "100%",
@@ -100,9 +189,11 @@ const Profile = (props) => {
                 <p>{`# of Bookdrives completed: ${drives.length}`}</p>
               </div>
             </Box>
+            <BookDrivesCompletedGraph />
+            <BadgeDisplayCase />
           </Grid2>
           <Grid2 item xs={12} sm={5} height={"450px"}>
-            <Box
+            {/* <Box
               sx={{
                 width: "100%",
                 height: "100%",
@@ -115,23 +206,26 @@ const Profile = (props) => {
                 maxWidth: "450px",
               }}>
               <MapComponent drives={drives} />
-            </Box>
+            </Box> */}
           </Grid2>
         </Grid2>
+  
       </Grid2>
-    )
+      
+    );
+  } else {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px", flexDirection: "column" }}>
+        <h1>{error}</h1>
+        {// when the error is not an auth error give them the button to go back
+          error !== "You must login before accessing this page" &&
+          <Link href="/dash-volunteer">
+            <button width="50px" height="50px" borderRadius="20%">Volunteer Dashboard</button>
+          </Link>}
+      </div>
+    );
   }
-  else return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px", flexDirection: "column" }}>
-      <h1>{error}</h1>
-      {// when the error is not an auth error give them the button to go back
-        error !== "You must login before accessing this page" &&
-        <Link href="/dash-volunteer">
-          <button width="50px" height="50px" borderRadius="20%">Volunteer Dashboard</button>
-        </Link>}
-    </div>
-  )
-}
+};
 
 export const getServerSideProps = async (context) => {
   try {
@@ -170,4 +264,4 @@ export const getServerSideProps = async (context) => {
 
 }
 
-export default Profile
+export default Profile;
