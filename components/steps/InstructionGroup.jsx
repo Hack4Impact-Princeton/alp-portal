@@ -13,7 +13,7 @@ import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import InstructionCollectCard from './InstructionCollectCard';
 import InstructionChecklistCard from './InstructionChecklistCard';
 import InstructionInputCard from './InstructionInputCard';
-
+import {useState, useEffect} from 'react'
 
 /*const ExpandMore = styled((props: (expand:boolean)) => {
     const { expand, ...other } = props;
@@ -29,7 +29,20 @@ import InstructionInputCard from './InstructionInputCard';
 export default function InstructionGroupCard(props) {
   // needs a prop for which group it is: 0, 1, 2, 3; this will determine what cards are created
     const [expanded, setExpanded] = React.useState(!props.completed);
-    
+    const [isCompleted, setCompleted] = React.useState(new Array(7).fill(false))
+    const updateCompleted = (index, value) => {
+      setCompleted((prevState) => {
+        const newState = prevState;
+        newState[index] = value
+        return newState
+      })
+      // console.log(isCompleted)
+    }
+    useEffect(() => {
+      if (props.driveStatus.gettingStarted.terms) updateCompleted(1, true)
+      const {mailingLabels, boxes, extraCardboard, tape} = props.driveStatus.prepareToShip.materials
+      if (mailingLabels && boxes && extraCardboard && tape) updateCompleted(5, true)
+    }, [])
     let visible = (props.completed) ? "visible" : "hidden";
     
     const handleExpandClick = () => {
@@ -44,7 +57,7 @@ export default function InstructionGroupCard(props) {
           <Grid paddingTop={2}>
             <InstructionInputCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"How will you Fundraise?"} stepNum={0}> 
             </InstructionInputCard>
-            <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Read the Book Collection Guidelines"} stepNum={1}></InstructionChecklistCard>;
+            <InstructionChecklistCard updateCompleted={updateCompleted} driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Read the Book Collection Guidelines"} stepNum={1}></InstructionChecklistCard>;
           </Grid>
         </Grid>
         break;
@@ -65,7 +78,7 @@ export default function InstructionGroupCard(props) {
             <InstructionCollectCard driveCode={props.driveCode} driveStatus={props.driveStatus} stepNum={4}></InstructionCollectCard>;
           </Grid>
           <Grid paddingTop={2}>
-            <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Gather Shipping Materials"} stepNum={5}></InstructionChecklistCard>;
+            <InstructionChecklistCard updateCompleted={updateCompleted} driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Gather Shipping Materials"} stepNum={5}></InstructionChecklistCard>;
           </Grid>
         </Grid>
         break;
