@@ -9,6 +9,7 @@ export type BookDrive = {
   country: string,
   completedDate: string,
   status: number,
+  country: string,
   booksGoal: number,
   gs: { fundraise: String, terms: boolean },
   cb: { booksCurrent: number, updateFreq: number, lastUpdate: string },

@@ -106,7 +106,7 @@ const userMarkers: UserMarkerDict<UserMarker> = {
 };
 
 const MapComponent: React.FC<MapComponentProps> = ({ drives }) => {
-  console.log(drives)
+  //console.log(drives)
   let countryData: CountryData[] = africanCountries.map(() => ({ country: "", value: 0 }))
   // drives refers to the completed bookDrives
   // refers to number of books sent to country with most number of books
@@ -135,7 +135,6 @@ const MapComponent: React.FC<MapComponentProps> = ({ drives }) => {
 
   // code from https://codesandbox.io/s/zoom-controls-iwo3f?from-embed=&file=/src/MapChart.js
   const [position, setPosition] = useState({ coordinates: [0, 0], zoom: 1 });
-
   function handleZoomIn() {
     if (position.zoom >= 4) return;
     setPosition((pos) => ({ ...pos, zoom: pos.zoom * 2 }));
@@ -225,7 +224,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ drives }) => {
         <ComposableMap projection="geoMercator" style={{height: "100%", width: "100%"}} viewBox={"320 165 250 250"}>
           <ZoomableGroup zoom={position.zoom}
             center={[position.coordinates[0], position.coordinates[1]]}
-            onMoveEnd={handleMoveEnd}>
+            onMoveEnd={() => setPosition(position)}>
             <Geographies geography={geoUrl}>
               {({ geographies }) =>
                 geographies.map((geo) => {
