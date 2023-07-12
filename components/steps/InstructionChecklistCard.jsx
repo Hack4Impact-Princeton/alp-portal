@@ -5,13 +5,15 @@ import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 
 // A generic type of card that would go within an InstructionGroup
 export default function InstructionChecklistCard(props) {
-    // console.log(props)
     const _switchContent = () => {
         switch (props.stepNum) {
             case 1:
                 return (
                     <>
                         <StepOneCard
+                            terms={props.terms}
+                            setTerms={props.setTerms}
+                            fundraise={props.fundraise}
                             updateCompleted={props.updateCompleted}
                             driveCode={props.driveCode}
                             info={props.driveStatus.gettingStarted}>
@@ -21,6 +23,10 @@ export default function InstructionChecklistCard(props) {
                 return (
                     <>
                         <StepFiveCard
+                        domFee={props.domFee}
+                        intFee={props.intFee}
+                        materials={props.materials}
+                        setMaterials={props.setMaterials}
                             updateCompleted={props.updateCompleted}
                             driveCode={props.driveCode}
                             info={props.driveStatus.prepareToShip}>
@@ -52,20 +58,14 @@ export default function InstructionChecklistCard(props) {
 
 // 1: Read Collection Guidelines
 function StepOneCard(props) {
-    // console.log(props)
-    const [currState, setCurrState] = useState(props.info.terms)
-    useEffect(() => {
-        props.updateCompleted(1, currState)
-        // console.log("step 1 registering as ", currState)
-        
-    }, [currState])
+    const [currState, setCurrState] = useState(props.terms)
 
     const handleTermsCheck = async () => {
         console.log("click");
         try {
             const data = {
                 gs: {
-                    fundraise: props.info.fundraise,
+                    fundraise: props.fundraise,
                     terms: !currState,
                 }
             }
@@ -75,6 +75,8 @@ function StepOneCard(props) {
                 body: JSON.stringify(data),
             });
             setCurrState(() => !currState)
+            props.setTerms(data.gs.terms)
+            props.updateCompleted(data.gs.terms)
             console.log(currState)
             console.log("done");
         } catch (e) {
@@ -99,16 +101,13 @@ function StepOneCard(props) {
 
 // 5: Collect Packing Materials
 function StepFiveCard(props) {
-    // console.log("PROPS: ", props);
-    const [collectedBoxes, setCollectedBoxes] = useState(props.info.materials.boxes);
-    const [collectedTape, setCollectedTape] = useState(props.info.materials.tape);
-    const [collectedLabels, setCollectedLabels] = useState(props.info.materials.mailingLabels);
-    const [collectedExtraBoard, setCollectedExtraBoard] = useState(props.info.materials.extraCardboard);
+    const [collectedBoxes, setCollectedBoxes] = useState(props.materials.boxes);
+    const [collectedTape, setCollectedTape] = useState(props.materials.tape);
+    const [collectedLabels, setCollectedLabels] = useState(props.materials.mailingLabels);
+    const [collectedExtraBoard, setCollectedExtraBoard] = useState(props.materials.extraCardboard);
     useEffect(() => {
         const res = collectedBoxes && collectedTape && collectedLabels && collectedExtraBoard
-        // console.log(res)    
         props.updateCompleted(5, res)
-        // console.log("step five registers as ", res)
         
     }, [collectedBoxes, collectedExtraBoard, collectedLabels, collectedTape])
     const handleClick = async (boxNum) => {
@@ -116,8 +115,8 @@ function StepFiveCard(props) {
             // initialize data object with all unchaned fields
             let data = {
                 pts: {
-                    intFee: 100,
-                    domFee: 100,
+                    intFee: props.intFee,
+                    domFee: props.domFee,
                     materials: {
                         boxes: collectedBoxes,
                         tape: collectedTape,
@@ -147,13 +146,11 @@ function StepFiveCard(props) {
             }
 
 
-            // console.log("data: ", JSON.stringify(data));
             const resJson = await fetch(`/api/bookDrive/${props.driveCode}`, {
                 method: "PUT",
                 body: JSON.stringify(data),
             }).then(res => res.json());
-            // console.log(resJson.data)
-            // console.log("done");
+            props.setMaterials({boxes: collectedBoxes, tape: collectedTape, mailingLabels: collectedLabels, extraCardboard: collectedExtraBoard})
         } catch (e) {
             console.error(e)
         }

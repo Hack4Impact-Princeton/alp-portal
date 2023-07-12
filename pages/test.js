@@ -10,6 +10,7 @@ function Test(props) {
     const driveName = JSON.parse(props.driveName);
     const driveStatus = JSON.parse(props.driveStatus);
     const driveCode = JSON.parse(props.driveCode);
+    const booksGoal = JSON.parse(props.booksGoal)
 
     return (
         <Grid>
@@ -22,10 +23,10 @@ function Test(props) {
                 justifyContent: "space-between"
                 }}>
                 <Grid>
-                <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={true} groupNum={0} header={"Getting Started"}></InstructionGroupCard>
-                <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={1} header={"Collecting Books"}></InstructionGroupCard>
-                <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={2} header={"Preparing To Ship"}></InstructionGroupCard>
-                <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={3} header={"The Finish Line"}></InstructionGroupCard>
+                <InstructionGroupCard booksgoal={booksGoal} driveCode={driveCode} driveStatus={driveStatus} completed={true} groupNum={0} header={"Getting Started"}></InstructionGroupCard>
+                <InstructionGroupCard booksGoal={booksGoal} driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={1} header={"Collecting Books"}></InstructionGroupCard>
+                <InstructionGroupCard booksGoal={booksGoal} driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={2} header={"Preparing To Ship"}></InstructionGroupCard>
+                <InstructionGroupCard booksGoal={booksGoal} driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={3} header={"The Finish Line"}></InstructionGroupCard>
             </Grid>
         </Box>
         </Grid> 
@@ -47,7 +48,8 @@ export async function getServerSideProps(context) {
             prepareToShip: currDrive.pts,
             finishLine: currDrive.fl,
         }
-        return { props: { driveName: JSON.stringify(driveName), driveCode: JSON.stringify(driveCode), driveStatus: JSON.stringify(driveStatus) } }
+
+        return { props: { driveName: JSON.stringify(driveName), driveCode: JSON.stringify(driveCode), driveStatus: JSON.stringify(driveStatus), booksGoal: JSON.stringify(currDrive.booksGoal) } }
     } catch (error) {
       console.log(error)
       return {props: {error: JSON.stringify(error)}}

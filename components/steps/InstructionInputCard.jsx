@@ -1,52 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Typography, Grid, TextField, Button } from "@mui/material";
 
 export default function InstructionInputCard(props) {
   console.log("Props", props);
   const [value, setValue] = useState("");
 
-  const [dateSent, setDateSent] = useState("");
+  const [dateSent, setDateSent] = useState(props.dateSent);
 
   const handleChange = (event) => {
     console.log(`Typed => ${event.target.value}`);
     if (props.stepNum == 0)
       setValue(event.target.value);
-    else 
+    else
       setDateSent(event.target.value)
   };
 
   const handleSubmit = async () => {
     try {
       let data = {}
-      switch(props.stepNum) {
-      case 0:
-        data = {
-          gs: {
-            fundraise: value,
-            terms: true,
-          },
-        };
-        break;
-      case 6:
-        data = {
-          fl: {
-              dateSent: dateSent
+      switch (props.stepNum) {
+        case 0:
+          data = {
+            gs: {
+              fundraise: value,
+              terms: props.terms,
+            },
+          };
+          break;
+        case 6:
+          data = {
+            fl: {
+              dateSent: dateSent,
+              numBooks: props.numBooks,
+              numBoxes: props.driveStatus.finishLine.numBoxes,
+            }
           }
-        }
-      break;
+          break;
 
-    }
+      }
 
       console.log("data: ", JSON.stringify(data));
-  
+
       const response = await fetch(`/api/bookDrive/${props.driveCode}`, {
         method: "PUT",
         body: JSON.stringify(data),
       });
-  
+
       if (response.ok) {
         const responseData = await response.json();
         console.log("Response from MongoDB:", responseData);
+        data.gs ? props.setFundraise(value) : props.updateDateSent(dateSent)
+        if (data.gs) props.updateCompleted(0, true)
+        else if (props.numBooks >= props.booksGoal && data.fl.numBoxes > 0) props.updateCompleted(6, true)
       } else {
         console.error("Error response from API:", response.status);
       }
@@ -72,7 +77,7 @@ export default function InstructionInputCard(props) {
           <span>{props.heading}</span>
         </Typography>
         <Typography display="block"> </Typography>
-          <span>See fundraising ideas here</span>
+        <span>See fundraising ideas here</span>
         <Typography variant="h6">
           <span></span>
         </Typography>
@@ -91,7 +96,7 @@ function CardBody({ stepNum, value, handleChange, handleSubmit }) {
           value={value}
           fullWidth
           multiline
-          rows={stepNum==0?5:1} // Adjust the number of rows to make the box taller
+          rows={stepNum == 0 ? 5 : 1} // Adjust the number of rows to make the box taller
           id="books-collected"
           variant="outlined"
           onChange={handleChange}
