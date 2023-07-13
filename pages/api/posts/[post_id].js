@@ -40,7 +40,7 @@ export default async function handler(req, res) {
         res.status(400).json({ success: false })
       }
       break
-    case 'POST': /* Create new Drive */
+    case 'POST': /* Create new Post */
         try {
           if (await Post.exists({post_id : post_id})) {
               console.log("post already exists")
