@@ -70,7 +70,8 @@ const BadgeDisplayCase = () => {
   ];
 
   return (
-    <div style={{ border: '1.5px solid black', padding: '10px', marginBottom: '10px' }}>
+    <div style={{ border: '1.5px solid black', padding: '10px', marginBottom: '10px' , display: 'flex',
+    width: '95%',}}>
       <h2 style={{ textAlign: 'left', marginBottom: '10px' }}>Badges</h2>
       <div style={{ display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap', paddingLeft: '10px' }}>
         {badges.map((badge, index) => (
@@ -91,7 +92,8 @@ const BookDrivesCompletedGraph = () => {
   ];
 
   return (
-    <div style={{ border: '1.5px solid black', padding: '10px', marginBottom: '10px' }}>
+    <div style={{ border: '1.5px solid black', padding: '10px', marginBottom: '10px', display: 'flex',
+    width: '95%', }}>
       <h2 style={{ textAlign: 'left', marginBottom: '10px', paddingRight: '10px' }}>Book Drives Completed</h2>
       {/* Render your graph component using the graphData */}
     </div>
@@ -193,7 +195,7 @@ const Profile = (props) => {
             <BadgeDisplayCase />
           </Grid2>
           <Grid2 item xs={12} sm={5} height={"450px"}>
-            {/* <Box
+            { <Box
               sx={{
                 width: "100%",
                 height: "100%",
@@ -206,7 +208,7 @@ const Profile = (props) => {
                 maxWidth: "450px",
               }}>
               <MapComponent drives={drives} />
-            </Box> */}
+            </Box> }
           </Grid2>
         </Grid2>
   
