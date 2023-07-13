@@ -29,7 +29,6 @@ import { useState, useEffect } from 'react'
 export default function InstructionGroupCard(props) {
   // needs a prop for which group it is: 0, 1, 2, 3; this will determine what cards are created
   const [expanded, setExpanded] = React.useState(!props.completed);
-  const [isCompleted, setCompleted] = React.useState(new Array(7).fill(false))
   const [domFee, setDomFee] = useState(props.driveStatus.prepareToShip.domFee)
   const [intFee, setIntFee] = useState(props.driveStatus.prepareToShip.intFee)
   const [materials, setMaterials] = useState(props.driveStatus.prepareToShip.materials)
@@ -69,25 +68,9 @@ export default function InstructionGroupCard(props) {
       return newState
     })
   }
-  useEffect(() => {
-    if (fundraise != "") updateCompleted(0, true)
-    if (terms) updateCompleted(1, true)
-    if (numBooks >= props.booksGoal) updateCompleted(2, true)
-    if (intFee >= 250) updateCompleted(3, true)
-    if (domFee >= 400) updateCompleted(4, true)
-    const { mailingLabels, boxes, extraCardboard, tape } = materials
-    if (mailingLabels && boxes && extraCardboard && tape) updateCompleted(5, true)
-    if (numBooks >= props.booksGoal && dateSent && props.driveStatus.finishLine.numBoxes != 0) updateCompleted(6, true)
-    // if (props.driveStatus.collectingBooks.booksCurrent >= props.driveStatus.)
-    // 
-  }, [])
-  let visible = (props.completed) ? "visible" : "hidden";
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
 
   let content = <></>
+  const [isCompleted, setCompleted] = React.useState([]);
   switch (props.groupNum) {
     case 0:
       content =
@@ -129,10 +112,38 @@ export default function InstructionGroupCard(props) {
       </Grid>
       break;
   }
+
+  useEffect(() => {
+    if (fundraise != "") updateCompleted(0, true)
+    if (terms) updateCompleted(1, true)
+    if (numBooks >= props.booksGoal) updateCompleted(2, true)
+    if (intFee >= 250) updateCompleted(3, true)
+    if (domFee >= 400) updateCompleted(4, true)
+    const { mailingLabels, boxes, extraCardboard, tape } = materials
+    if (mailingLabels && boxes && extraCardboard && tape) updateCompleted(5, true)
+    if (numBooks >= props.booksGoal && dateSent && props.driveStatus.finishLine.numBoxes != 0) updateCompleted(6, true)
+    // if (props.driveStatus.collectingBooks.booksCurrent >= props.driveStatus.)
+    // 
+  }, [])
+  let visible = (isCompleted[0] == true && isCompleted[0] == isCompleted[1] == isCompleted[2] == isCompleted[3] == isCompleted[4] == isCompleted[5] == isCompleted[6]) 
+    ? "visible" : "hidden";
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
+
   return (
     <Grid>
       <Grid container paddingTop={2} spacing={2} xs={12} sx={{ width: "65vw", backgroundColor: "gray" }}>
         <Grid container spacing={1} item xs={9} sx={{ color: "#FE9834" }} direction="row">
+        <Grid paddingTop={1.5} sx={{ visibility: visible }}>
+            <h3>
+              Completed
+            </h3>
+          </Grid>
+          <Grid>
+            <DoneRoundedIcon fontSize="medium" sx={{ visibility: visible }}></DoneRoundedIcon>
+          </Grid>
           <Grid>
             <h1 onClick={handleExpandClick}>
               {props.header}
@@ -145,16 +156,9 @@ export default function InstructionGroupCard(props) {
             }}
               onClick={handleExpandClick} />
           </Grid>
+          
         </Grid>
         <Grid container paddingTop={1} item xs={3}>
-          <Grid paddingTop={1.5} sx={{ visibility: visible }}>
-            <h3 >
-              Completed
-            </h3>
-          </Grid>
-          <Grid>
-            <DoneRoundedIcon fontSize="medium" sx={{ visibility: visible }}></DoneRoundedIcon>
-          </Grid>
         </Grid>
         <Grid container item xs={12} alignItems={"center"} justifyContent={"center"}>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
