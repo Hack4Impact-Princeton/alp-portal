@@ -23,10 +23,10 @@ function Test(props) {
                 justifyContent: "space-between"
                 }}>
                 <Grid>
-                <InstructionGroupCard booksgoal={booksGoal} driveCode={driveCode} driveStatus={driveStatus} completed={true} groupNum={0} header={"Getting Started"}></InstructionGroupCard>
-                <InstructionGroupCard booksGoal={booksGoal} driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={1} header={"Collecting Books"}></InstructionGroupCard>
-                <InstructionGroupCard booksGoal={booksGoal} driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={2} header={"Preparing To Ship"}></InstructionGroupCard>
-                <InstructionGroupCard booksGoal={booksGoal} driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={3} header={"The Finish Line"}></InstructionGroupCard>
+                <InstructionGroupCard booksgoal={booksGoal} driveCode={driveCode} driveStatus={driveStatus} groupNum={0} header={"Getting Started"}></InstructionGroupCard>
+                <InstructionGroupCard booksGoal={booksGoal} driveCode={driveCode} driveStatus={driveStatus} groupNum={1} header={"Collecting Books"}></InstructionGroupCard>
+                <InstructionGroupCard booksGoal={booksGoal} driveCode={driveCode} driveStatus={driveStatus} groupNum={2} header={"Preparing To Ship"}></InstructionGroupCard>
+                <InstructionGroupCard booksGoal={booksGoal} driveCode={driveCode} driveStatus={driveStatus} groupNum={3} header={"The Finish Line"}></InstructionGroupCard>
             </Grid>
         </Box>
         </Grid> 

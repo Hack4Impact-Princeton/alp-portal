@@ -275,7 +275,7 @@ function CollectDomFeeCard(props) {
         </Typography>
       </Grid>
       <Grid item xs={4} sx={{ pb: 2 }}>
-        <Typography variant="h5">Update Books Collected:</Typography>
+        <Typography variant="h5">Update Funds Collected:</Typography>
       </Grid>
       <Grid item xs={8} sx={{ pb: 2 }}>
         <TextField size="small" fullWidth id="books-collected" variant="outlined" value={fundState} onChange={handleInput} />
