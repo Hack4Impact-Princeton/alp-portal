@@ -1,25 +1,52 @@
 import { NextPage } from 'next'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import getAdminAccountModel, { AdminAccount } from '../../models/AdminAccount'
 import getVolunteerAccountModel, { VolunteerAccount } from '../../models/VolunteerAccount'
 import mongoose from 'mongoose'
 import { getSession } from 'next-auth/react'
 import BroadcastForm from '../../components/BroadcastForm'
 import getBroadcastModel, { Broadcast } from '../../models/Broadcast'
-import { Grid } from '@mui/material'
+import { Grid, Box } from '@mui/material'
 import BroadcastMessage from '../../components/BroadcastMessage'
+import { stringify } from 'querystring'
 type BroadcastPageProps = {
     account: AdminAccount,
     volunteers: VolunteerAccount[],
     broadcasts: Broadcast[],
     error: Error | string
 }
+interface isReadMapArray {
+    myMap: Map<string, { volunteerEmail: string, isRead: boolean }[]>
+}
 const BroadcastPage: NextPage<BroadcastPageProps> = ({ account, volunteers, error, broadcasts }) => {
+    console.log(broadcasts)
     const [newBroadcasts, setNewBroadcasts] = useState<Broadcast[]>([])
     const [acctBroadcasts, setAcctBroadcasts] = useState<Broadcast[]>(broadcasts)
     const addBroadcast = (broadcast: Broadcast) => {
-        if (!acctBroadcasts.includes(broadcast)) setAcctBroadcasts(prevBroadcasts => { return [broadcast, ...prevBroadcasts]})
-        if (!newBroadcasts.includes(broadcast)) setNewBroadcasts(prevBroadcasts => {return [broadcast, ...prevBroadcasts]})
+        if (!acctBroadcasts.includes(broadcast)) setAcctBroadcasts(prevBroadcasts => { return [broadcast, ...prevBroadcasts] })
+        if (!newBroadcasts.includes(broadcast)) setNewBroadcasts(prevBroadcasts => { return [broadcast, ...prevBroadcasts] })
+    }
+    const [isReadMap, setIsReadMap] = useState<isReadMapArray>({ myMap: new Map<string, { volunteerEmail: string, isRead: boolean }[]>() })
+    useEffect(() => {
+        broadcasts?.forEach((broadcast) => {
+            for (let i = 0; i < broadcast.receiverEmails.length; i++) {
+                const { id, read, receiverEmails } = broadcast
+                updateIsReadMap(id, receiverEmails[i], read[i])
+            }
+        })
+    }, [])
+    const updateIsReadMap = (broadcastId: string, email: string, isRead: boolean,) => {
+        // if (isRead == true) console.log("adding isRead to " + broadcastId)
+        setIsReadMap(prevMap => {
+            const updatedMap = new Map(prevMap.myMap)
+            const existingArr = prevMap.myMap.get(broadcastId)
+            let updatedArray: {volunteerEmail: string, isRead: boolean}[]
+            if (existingArr) updatedArray = existingArr.map((pair: { volunteerEmail: string, isRead: boolean }) => {return pair})
+            else updatedArray = []
+            updatedArray.push({ volunteerEmail: email, isRead: isRead })
+            updatedMap.set(broadcastId, updatedArray)
+            return { myMap: updatedMap }
+        })
     }
     // console.log("broadcasts", broadcasts)
     return (
@@ -32,13 +59,27 @@ const BroadcastPage: NextPage<BroadcastPageProps> = ({ account, volunteers, erro
                 {newBroadcasts &&
                     newBroadcasts.map(broadcast => {
                         return (
-                            <BroadcastMessage broadcast={broadcast} />)
+                            <Grid key={broadcast.id} sx={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                                <BroadcastMessage isVolunteer={false} broadcast={broadcast} />
+                                <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-evenly", alignItems: "center", height: "fit-content", width: "fit-content", border: "1.5px solid black" }}>
+                                    {isReadMap?.myMap?.get(broadcast.id)?.map((pair: { volunteerEmail: string, isRead: boolean }) => <p key={pair.volunteerEmail}>{`${pair.volunteerEmail}: ${pair.isRead ? "read" : "unread"}`}</p>)}
+                                    <p>hi</p>
+                                </Box>
+                            </Grid>
+                        )
                     })}
-                <h1 style={{padding: 10}}>All broadcasts:</h1>
+                <h1 style={{ padding: 10 }}>All broadcasts:</h1>
                 {acctBroadcasts &&
-                acctBroadcasts.map((broadcast) => {
-                    return (<BroadcastMessage broadcast={broadcast} />)
-                })}
+                    acctBroadcasts.map((broadcast) => {
+                        return (
+                        <Grid key={broadcast.id} sx={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                            <BroadcastMessage isVolunteer={false} broadcast={broadcast} />
+                            <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-evenly", alignItems: "flex-start" }}>
+                                <h2 style={{textAlign: "left"}}>Recipient Read Status</h2>
+                                {isReadMap?.myMap?.get(broadcast.id)?.map((pair: { volunteerEmail: string, isRead: boolean }) => {return (<p key={pair.volunteerEmail}>{`${pair.volunteerEmail}: ${pair.isRead ? "read" : "unread"}`}</p>)})}
+                            </Box>
+                        </Grid>)
+                    })}
             </Grid>
 
             <div>
