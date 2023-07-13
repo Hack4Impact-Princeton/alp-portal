@@ -3,6 +3,7 @@ import DriveCardFront from "./DriveCardFront"
 
 
 export default function DriveCard(props) {
+  console.log(props)
   if (!props.back) {
     return (
       <div className="DashviewDriveCard" style={{width: "65vw"}}>

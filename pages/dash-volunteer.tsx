@@ -41,13 +41,14 @@ const DashVolunteer: NextPage<DashVolunteerProps> = ({ drives, account, error })
           </Link>
           {drives && <Stack
             direction="column"
-            justifyContent="flex-start"
+            justifyContent="center"
             spacing={10}>
             {drives.map((drive) => (
-              <DriveCard drivename={drive.driveName}></DriveCard>
+              <DriveCard drive={drive}></DriveCard>
             ))}
           </Stack>}
         </Box>
+        </Grid2>
       </Grid2>
     )
   }
