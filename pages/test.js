@@ -1,4 +1,5 @@
 import InstructionGroupCard from "../components/steps/InstructionGroup";
+import InstructionShipmentCard from "../components/steps/InstructionShipmentCard";
 import PageContainer from "../components/PageContainer";
 import * as React from 'react';
 import Grid from "@mui/material/Unstable_Grid2";
@@ -26,6 +27,7 @@ function Test(props) {
                 <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={1} header={"Collecting Books"}></InstructionGroupCard>
                 <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={2} header={"Preparing To Ship"}></InstructionGroupCard>
                 <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={3} header={"The Finish Line"}></InstructionGroupCard>
+                <InstructionShipmentCard driveCode={driveCode} driveStatus={driveStatus} cardState={0}></InstructionShipmentCard>
             </Grid>
         </Box>
         </Grid> 

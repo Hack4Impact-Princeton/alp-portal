@@ -8,7 +8,9 @@ export type Shipment = {
     driveCode: string,
     trackingCode: string,
     numBoxes: number,
-    numBooks: number
+    numBooks: number,
+    isFinal: boolean,
+    received: boolean,
 }
 
 export const ShipmentSchema = new Schema<Shipment>({
@@ -19,6 +21,8 @@ export const ShipmentSchema = new Schema<Shipment>({
     trackingCode: {type: String},
     numBoxes: {type: Number},
     numBooks: {type: Number},
+    isFinal: {type: Boolean},
+    received: {type: Boolean},
 }, 
     { collection : "shipments"}
 );
