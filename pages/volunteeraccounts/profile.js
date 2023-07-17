@@ -168,7 +168,7 @@ const Profile = (props) => {
               >
                 <img
                   src="https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug"
-                  alt="Pofile Image"
+                  alt="Profile Image"
                   style={{
                     borderRadius: '50%',
                     width: '70%',
