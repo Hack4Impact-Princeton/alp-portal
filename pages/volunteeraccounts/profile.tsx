@@ -19,8 +19,6 @@ type ProfileProps = {
   drives: BookDrive[] | null;
 }
 
-const Profile: NextPage<ProfileProps> = ({error, account, drives}) => {
-
 const BadgeInfo = ({ isEarned, level, name, description }) => {
   const unlockedBadgeStyle = {
     width: '40px',
@@ -58,8 +56,6 @@ const BadgeInfo = ({ isEarned, level, name, description }) => {
   );
 };
 
-
-
 const BadgeDisplayCase = () => {
   const badges = [
     {
@@ -78,15 +74,15 @@ const BadgeDisplayCase = () => {
   ];
 
   return (
-    <div style={{ border: '1.5px solid black', padding: '10px', marginBottom: '10px' , display: 'flex',
+    <Grid container style={{ border: '1.5px solid black', padding: '10px', marginBottom: '10px' , display: 'flex',
     width: '95%',}}>
-      <h2 style={{ textAlign: 'left', marginBottom: '10px' }}>Badges</h2>
-      <div style={{ display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap', paddingLeft: '10px' }}>
+      <Grid xs={12} ><h2 style={{ textAlign: 'left', marginBottom: '10px'}}>Badges</h2></Grid>
+      <Grid container xs={12} style={{ display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap', paddingLeft: '10px'}}>
         {badges.map((badge, index) => (
           <BadgeInfo key={index} {...badge} />
         ))}
-      </div>
-    </div>
+      </Grid>
+    </Grid>
   );
 };
 
@@ -108,11 +104,11 @@ const BookDrivesCompletedGraph = () => {
   );
 };
 
-
-const Profile = (props) => {
-  let account = props.account ? JSON.parse(props.account) : null;
-  let drives = props.completedDrives ? JSON.parse(props.completedDrives) : null;
-  let error = props.error ? props.error : null;
+const Profile: NextPage<ProfileProps> = ({error, account, drives}) => {
+  console.log("Profile Page");
+  account = account ? JSON.parse(account) : null;
+  drives = drives ? JSON.parse(drives) : null;
+  error = error ? error : null;
 
   // if the user is not logged in take them back to the login page
   const [editIsHovered, setEditIsHovered] = useState(false);
@@ -228,7 +224,8 @@ const Profile = (props) => {
       </Grid>
     )
   }
-  else return (
+  else { 
+    return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px", flexDirection: "column" }}>
       <h1>{error}</h1>
       {// when the error is not an auth error give them the button to go back
@@ -237,8 +234,7 @@ const Profile = (props) => {
           <button style = {{width:"50px", height:"50px", borderRadius:"20%"}}>Volunteer Dashboard</button>
         </Link>}
     </div>
-  )
-}
+  )}
 }
 
 export const getServerSideProps = async (context: any) => {
@@ -267,7 +263,7 @@ export const getServerSideProps = async (context: any) => {
     // you have to flatten the array otherwise it will have a weird shape.
     const drives: BookDrive[] | null = resolvedPromises.flat()
     
-  return { props: { account: JSON.parse(JSON.stringify(volunteerAccount)), drives: JSON.parse(JSON.stringify(drives)), error: null } }
+  return { props: { account: JSON.stringify(volunteerAccount), drives: JSON.stringify(drives), error: null } }
   } catch (e: Error|any) {
     console.error(e)
     // if the specific error message occurs it's because the user has not logged in
