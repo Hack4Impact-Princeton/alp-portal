@@ -49,7 +49,6 @@ const DashVolunteer: NextPage<DashVolunteerProps> = ({ drives, account, error })
           </Stack>}
         </Box>
         </Grid2>
-      </Grid2>
     )
   }
   else {
