@@ -11,15 +11,12 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { signIn } from 'next-auth/react'
-<<<<<<< HEAD:pages/auth/signup.js
 
-=======
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
->>>>>>> b28cc3c52e06950e90597d0c60985edec057c969:pages/auth/signup.tsx
 
 const Signup = (prevShowPassword) => {
     // const error = props.error ? props.error : null

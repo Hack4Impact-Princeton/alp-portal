@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Logo from '../components/Logo'
 import { useEffect, useState } from 'react'
 import { SessionProvider } from 'next-auth/react'
+import PageContainer from '../components/PageContainer'
 
 function MyApp({ Component, pageProps }) {
   // /* Hooks for Contentful logos */
@@ -24,7 +25,7 @@ function MyApp({ Component, pageProps }) {
         <Head>
           <title>African Library Project Portal</title>
         </Head>
-        <Component {...pageProps} />
+        <Component {...pageProps}/>
       </SessionProvider>
     </>
   )

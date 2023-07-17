@@ -15,6 +15,8 @@ import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { styled } from "@mui/material/styles";
+import MuiButton from "@mui/material/Button";
 
 import getVolunteerAccountModel from "../../models/VolunteerAccount";
 import { VolunteerAccount } from '../../models/VolunteerAccount';
@@ -120,8 +122,8 @@ const Login: NextPage = () => {
         <Grid2 xs display="flex" justifyContent="center">
           <Box
             sx={{
-              width: 300,
-              height: 300,
+              width: 400,
+              height: 225,
             }}>
             <TextField fullWidth required id="email" label="Email" variant="outlined"
               value={email}
@@ -148,26 +150,35 @@ const Login: NextPage = () => {
                 mb: 2,
               }}
             />
+
             <Button variant="contained"
               onClick={() => handleSubmit(false)}
-              sx={{
-                marginTop: 3,
-              }}>Login</Button>
+              style={{
+                backgroundColor: '#3b1e1e',
+                marginTop: 2,
+                
+              
+              }}>Volunteer Login</Button>
             <Button variant="contained"
               onClick={() => handleSubmit(true)}
-              sx={{
-                marginTop: 3,
-                marginLeft: 1,
-              }}>Admin</Button>
-            <Button variant="contained"
-              onClick={signUpHandler}
-              sx={{
-                marginTop: 3,
-                marginLeft: 1,
-              }}>Sign Up</Button>
+              style={{
+                backgroundColor: '#3b1e1e',
+                marginTop: 2,
+                marginLeft: 10,
+                
+              }}>Admin Login</Button>
+            
+            
+            
           </Box>
 
         </Grid2>
+
+        <Link href='signup'>Create An Account?</Link>
+        <Box sx={{
+          marginTop: 1,
+        }}></Box>
+        
         <Link href='resetpassword'>Forgot Password?</Link>
 
       </Grid2>

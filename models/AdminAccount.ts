@@ -9,6 +9,7 @@ export interface AdminAccount extends Document {
     email: string,
     pwhash: string,
     alp_id: string,
+    broadcasts: string[],
     volunteerIds: number[],
     driveIds: string[],
 }
@@ -36,6 +37,7 @@ const AdminAccountSchema = new Schema<AdminAccount>({
         type: String,
         required: true
     },
+    broadcasts: {type: [String]},
     volunteerIds: [Number], 
     driveIds: [String]
 }, {collection: 'adminAccounts'})

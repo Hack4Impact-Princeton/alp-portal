@@ -13,6 +13,7 @@ export type VolunteerAccount = {
     allDrives: number,
     driveIds: Types.Array<string>,
     badges: number,
+    broadcasts: string[],
 }
 
 export const VolunteerAccountSchema = new Schema<VolunteerAccount>({
@@ -59,6 +60,9 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>({
         type: Number,
         required: true
     },
+    broadcasts: {
+        type: [String],
+    }
 }, {collection: 'volunteerAccounts'})
 
 
