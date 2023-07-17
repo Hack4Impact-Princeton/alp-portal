@@ -5,12 +5,22 @@ import * as React from 'react';
 import Grid from "@mui/material/Unstable_Grid2";
 import Box from "@mui/material/Box";
 import dbConnect from '../lib/dbConnect'
+import getShipmentModel from "../models/Shipment.ts";
 import getBookDriveModel from "../models/BookDrive";
+import { PostAdd } from "@mui/icons-material";
 
 function Test(props) {
     const driveName = JSON.parse(props.driveName);
     const driveStatus = JSON.parse(props.driveStatus);
     const driveCode = JSON.parse(props.driveCode);
+
+    const saveShipment = (date, tracking, numBooks, numBoxes) => {
+        await dbConnect();
+        const Shipment = getShipmentModel();
+        const data = {
+            id: await Shipment.count(),
+        }
+    }
 
     return (
         <Grid>
@@ -27,7 +37,7 @@ function Test(props) {
                 <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={1} header={"Collecting Books"}></InstructionGroupCard>
                 <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={2} header={"Preparing To Ship"}></InstructionGroupCard>
                 <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={3} header={"The Finish Line"}></InstructionGroupCard>
-                <InstructionShipmentCard driveCode={driveCode} driveStatus={driveStatus} cardState={0}></InstructionShipmentCard>
+                <InstructionShipmentCard driveCode={driveCode} driveStatus={driveStatus} cardState={0} handleSaveShipment={saveShipment}></InstructionShipmentCard>
             </Grid>
         </Box>
         </Grid> 
