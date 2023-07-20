@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 import { Schema } from 'mongoose';
 
 export type Shipment = {
@@ -28,7 +28,10 @@ export const ShipmentSchema = new Schema<Shipment>({
 );
 
 function getShipmentModel() {
-    if ("Shipment" in mongoose.models) return mongoose.models.Shipment;
-        return mongoose.model("Shipment", ShipmentSchema);
-    }
+    console.log("models: ", mongoose.models);
+    if (mongoose.models != undefined && "Shipment" in mongoose.models) return mongoose.models.Shipment;
+    const model = mongoose.model("Shipment", ShipmentSchema);
+    console.log("Returning model: ", model);
+    return model;
+}
 export default getShipmentModel;

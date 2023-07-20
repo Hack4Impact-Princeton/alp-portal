@@ -3,10 +3,12 @@ import { Box, Button, Modal, TextField, Typography } from '@mui/material';
 import Grid from "@mui/material/Unstable_Grid2";
 
 type ShipmentInputFormProps = {
+    driveCode: string,
     isOpen: boolean,
+    handleSaveShipment: Function,
 }
 
-const ShipmentInputForm: React.FC<ShipmentInputFormProps> = ({isOpen}) => {
+const ShipmentInputForm: React.FC<ShipmentInputFormProps> = ({driveCode, isOpen, handleSaveShipment}) => {
     const [dateVal, setDate] = useState("");
     const [tracking, setTracking] = useState("");
     const [numBooks, setNumBooks] = useState(0);
@@ -55,10 +57,8 @@ const ShipmentInputForm: React.FC<ShipmentInputFormProps> = ({isOpen}) => {
         }
     }
 
-    const handleSubmit = async () => {
-        const data = {
-            
-        }
+    const handleSave = async () => {
+        handleSaveShipment(driveCode, dateVal, tracking, numBooks, numBoxes);
     }
 
     return(
@@ -82,7 +82,7 @@ const ShipmentInputForm: React.FC<ShipmentInputFormProps> = ({isOpen}) => {
                         <TextField size="small" id="boxes-collected" variant="outlined" onChange={boxesChange} sx={{pr:5}}/>
                     </Grid>
                     <Grid container xs={12} direction="row" spacing={2}>
-                        <Grid><Button style={styles.btn}>Save</Button></Grid>
+                        <Grid><Button style={styles.btn} onClick={handleSave}>Save</Button></Grid>
                         <Grid><Button style={styles.btn}>Cancel</Button></Grid>
                     </Grid>
                 </Grid>

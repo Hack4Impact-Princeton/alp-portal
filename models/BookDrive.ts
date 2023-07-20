@@ -11,7 +11,7 @@ export type BookDrive = {
   status: number,
   booksGoal: number,
   gs: { fundraise: String, terms: boolean },
-  cb: { booksCurrent: number, updateFreq: number, lastUpdate: string },
+  cb: { booksCurrent: number, updateFreq: number, lastUpdate: Date },
   pts: {
     intFee: number, domFee: number, materials:
       { boxes: boolean, extraCardboard: boolean, tape: boolean, mailingLabels: boolean }
@@ -38,7 +38,7 @@ export const BookDriveSchema = new Schema<BookDrive>({
   cb: {
     booksCurrent: { type: Number },
     updateFreq: { type: Number },
-    lastUpdate: { type: String },
+    lastUpdate: { type: Date },
   },
   pts: {
     intFee: { type: Number },

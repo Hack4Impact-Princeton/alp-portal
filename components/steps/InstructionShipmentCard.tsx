@@ -14,10 +14,11 @@ type ShipmentCardProps = {
     driveCode: string,
     driveStatus: string,
     cardState: number,
+    handleSaveShipment: Function,
 }
 
 // States 0-2: no shipments created, shipments created unfinalized, shipments created finalized
-const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, driveStatus, cardState }) => {
+const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, driveStatus, cardState, handleSaveShipment }) => {
     const [currState, setCurrState] = useState(cardState);
     const [openInputForm, setOpenInputForm] = useState(false);      // controls 
     const styles = {
@@ -58,7 +59,7 @@ const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, drive
             backgroundColor="#F5F5F5"
             >   
             <Button style={styles.btn} variant="contained" size="large" onClick={() => setOpenInputForm(true)}>Log New Shipment</Button>
-            <ShipmentInputForm isOpen={true}></ShipmentInputForm>
+            <ShipmentInputForm driveCode={driveCode} driveStatus={driveStatus} isOpen={true} handleSaveShipment={handleSaveShipment}></ShipmentInputForm>
         </Grid>
     );
 }
