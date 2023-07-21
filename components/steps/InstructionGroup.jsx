@@ -44,6 +44,8 @@ export default function InstructionGroupCard(props) {
           <Grid paddingTop={2}>
             <InstructionInputCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"How will you Fundraise?"} stepNum={0}> 
             </InstructionInputCard>
+          </Grid>
+          <Grid paddingTop={2}>
             <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Read the Book Collection Guidelines"} stepNum={1}></InstructionChecklistCard>;
           </Grid>
         </Grid>
