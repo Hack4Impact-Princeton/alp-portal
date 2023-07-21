@@ -1,10 +1,11 @@
-import { Drawer, Link, List, ListItem, ListItemButton, ListItemIcon } from '@mui/material';
+import { Drawer, Link, List, ListItem, ListItemButton, ListItemIcon, Tooltip } from '@mui/material';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import FlagIcon from '@mui/icons-material/Flag';
 import Person2Icon from '@mui/icons-material/Person2';
 import HomeIcon from '@mui/icons-material/Home';
 import ShareIcon from '@mui/icons-material/Share';
 import FilterFramesIcon from '@mui/icons-material/FilterFrames';
+
 
 const drawerWidth: number = 80;
 
@@ -34,6 +35,7 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                     <ListItem key="Home" sx={{
                         alignItems: 'center',
                     }}>
+                        <Tooltip title="Home" placement="right">
                         <ListItemButton>
                             <ListItemIcon>
                                 <HomeIcon fontSize='large' sx={{
@@ -41,10 +43,12 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                                 }}></HomeIcon>
                             </ListItemIcon>
                         </ListItemButton>
+                        </Tooltip>
                     </ListItem>
                 </Link>
                 <Link href="/volunteeraccounts/profile">
                     <ListItem key="Organizer Checklist">
+                        <Tooltip title="Profile" placement="right">
                         <ListItemButton>
                             <ListItemIcon>
                                 <Person2Icon fontSize='large' sx={{
@@ -52,10 +56,12 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                                 }}></Person2Icon>
                             </ListItemIcon>
                         </ListItemButton>
+                        </Tooltip>
                     </ListItem>
                 </Link>
                 <Link href="/leaderboard">
                     <ListItem key="Milestones">
+                        <Tooltip title="Leaderboard" placement="right">
                         <ListItemButton>
                             <ListItemIcon>
                                 <FlagIcon fontSize='large' sx={{
@@ -63,6 +69,7 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                                 }}></FlagIcon>
                             </ListItemIcon>
                         </ListItemButton>
+                        </Tooltip>
                     </ListItem>
                 </Link>
                 <Link href="/h4i-team">

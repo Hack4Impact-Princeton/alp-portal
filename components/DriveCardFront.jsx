@@ -26,7 +26,7 @@ export default function DriveCardFront(props) {
                         <ProgressBar {...props}></ProgressBar>
                     </Grid>
                     <Grid item xs={4}>
-                        <a href="https://www.youtube.com/watch?v=4gBlND7UjFw" style={{ fontSize: '2vh' }}>View/Update Your Progress</a>
+                        <a href="/test" style={{ fontSize: '2vh' }}>View/Update Your Progress</a>
                     </Grid>
                 </Grid>
 

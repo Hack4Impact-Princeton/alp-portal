@@ -80,7 +80,7 @@ export default function InstructionGroupCard(props) {
     }
     return (
       <Grid>
-        <Grid container paddingTop={2} spacing={2} xs={12} sx={{width:"65vw", backgroundColor:"gray"}}>
+        <Grid container paddingTop={2} spacing={2} xs={12} sx={{width:"65vw"}}>
             <Grid container spacing={1} item xs={9} sx={{color:"#FE9834"}} direction="row">
               <Grid>
                 <h1 onClick = {handleExpandClick}>
