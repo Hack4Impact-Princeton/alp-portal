@@ -13,7 +13,7 @@ type BroadcastPageProps = {
     account: AdminAccount,
     volunteers: VolunteerAccount[],
     broadcasts: Broadcast[],
-    error: Error | string
+    error: string | null
 }
 interface isReadMapArray {
     myMap: Map<string, { volunteerEmail: string, isRead: boolean }[]>

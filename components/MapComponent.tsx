@@ -5,8 +5,8 @@ import {
   Geography,
   Marker,
   ZoomableGroup,
-} from "react-simple-maps";
-import { BookDrive } from '../types/BookDrive';
+} from "react-simple-maps"
+import { BookDrive } from '../models/BookDrive';
 import { africanCountries } from '../lib/enums';
 import { CountryPopup } from './CountryPopup'
 
@@ -222,18 +222,18 @@ const MapComponent: React.FC<MapComponentProps> = ({ drives }) => {
         </button>
       </div>
       <div style={{ alignItems: "center", height: "90%", width: "100%"}}>
-        <ComposableMap projection="geoMercator" style={{height: "100%", width: "100%"}} viewBox={"320 165 250 250"}>
-          <ZoomableGroup zoom={position.zoom}
+        <><ComposableMap projection="geoMercator" style={{height: "100%", width: "100%"}} viewBox={"320 165 250 250"}>
+          <><ZoomableGroup zoom={position.zoom}
             center={[position.coordinates[0], position.coordinates[1]]}
-            onMoveEnd={handleMoveEnd}>
-            <Geographies geography={geoUrl}>
+            onMoveEnd={() => setPosition(position)}>
+            <><Geographies geography={geoUrl}>
               {({ geographies }) =>
                 geographies.map((geo) => {
                   // finds current country and its correspoding information
                   const country = geo.properties.geounit;
                   const countryInfo = countryData.find((data) => data.country === country);
                   return (
-                    <Geography style={{}}
+                    <><Geography style={{}}
                       key={geo.rsmKey}
                       geography={geo}
                       fill={countryInfo ? getColor(countryInfo.value) : '#FFFFFF'}
@@ -242,22 +242,22 @@ const MapComponent: React.FC<MapComponentProps> = ({ drives }) => {
                         // sets the state of the current country in popup box
                         setCountryPopupInfo(countryInfo)
                       }}
-                    />
+                    /></>
                   );
                 })
               }
-            </Geographies>
+            </Geographies></>
             {africanCountries.map((country, index) => (
-              <Marker key={index} coordinates={[userMarkers[country].longitude, userMarkers[country].latitude]}>
+              <><Marker key={index} coordinates={[userMarkers[country].longitude, userMarkers[country].latitude]}>
                 <circle r={1.3} fill="#000000" />
                 <text textAnchor="middle" y={userMarkers[country].yLabelOffset} x={userMarkers[country].xLabelOffset} style={{ fontFamily: 'system-ui', fill: '#5D5A6D', fontSize: 3 }}>
                   {`${userMarkers[country].name}: ${userMarkers[country].booksSent}`}
                 </text>
-              </Marker>
+              </Marker></>
             ))}
 
-          </ZoomableGroup>
-        </ComposableMap>
+          </ZoomableGroup></>
+        </ComposableMap></>
       </div>
       
       <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
