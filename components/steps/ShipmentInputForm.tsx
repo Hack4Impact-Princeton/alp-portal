@@ -8,9 +8,11 @@ type ShipmentInputFormProps = {
     handleOpen: Function,
     isOpen: boolean,
     handleSaveShipment: Function,
+    cardState: Array<Object>,
+    displayNewShipment: Function,
 }
 
-const ShipmentInputForm: React.FC<ShipmentInputFormProps> = ({driveCode, driveStatus, handleOpen, isOpen, handleSaveShipment}) => {
+const ShipmentInputForm: React.FC<ShipmentInputFormProps> = ({driveCode, driveStatus, handleOpen, isOpen, handleSaveShipment, cardState, displayNewShipment}) => {
     const [dateVal, setDate] = useState("");
     const [tracking, setTracking] = useState("");
     const [numBooks, setNumBooks] = useState(0);
@@ -61,6 +63,15 @@ const ShipmentInputForm: React.FC<ShipmentInputFormProps> = ({driveCode, driveSt
 
     const handleSave = async () => {
         handleSaveShipment(driveCode, driveStatus, dateVal, tracking, numBooks, numBoxes);
+        const obj = {
+            data: {
+                date: dateVal,
+                trackingCode: '654',
+                numBoxes: 1,
+                numBooks: 25,
+            }
+        }
+        displayNewShipment([...cardState, obj])
         handleOpen(false);
     }
 

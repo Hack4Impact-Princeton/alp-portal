@@ -20,6 +20,7 @@ type ShipmentCardProps = {
 
 
 const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, driveStatus, handleSaveShipment, shipmentData }) => {
+    const [displayData, setDisplayData] = useState(shipmentData);
     const [openInputForm, setOpenInputForm] = useState(false);      // controls 
     const styles = {
         btn: {
@@ -27,6 +28,8 @@ const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, drive
           width: "15vw"
         },
     }
+
+    console.log("Card render: ", displayData);
 
     return(
         <Grid
@@ -42,7 +45,7 @@ const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, drive
             >   
             {shipmentData.map((shipment) => <ShipmentInfo date={shipment.data.date} trackingCode={shipment.data.trackingCode} numBooks={shipment.data.numBooks} numBoxes={shipment.data.numBoxes}></ShipmentInfo>)}
             <Button style={styles.btn} variant="contained" size="large" onClick={() => setOpenInputForm(true)}>Log New Shipment</Button>
-            <ShipmentInputForm driveCode={driveCode} driveStatus={driveStatus} handleOpen={setOpenInputForm} isOpen={openInputForm} handleSaveShipment={handleSaveShipment}></ShipmentInputForm>
+            <ShipmentInputForm driveCode={driveCode} driveStatus={driveStatus} handleOpen={setOpenInputForm} isOpen={openInputForm} handleSaveShipment={handleSaveShipment} cardState={displayData} displayNewShipment={setDisplayData}></ShipmentInputForm>
         </Grid>
     );
 }
