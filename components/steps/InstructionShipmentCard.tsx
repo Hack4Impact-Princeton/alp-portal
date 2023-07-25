@@ -2,6 +2,7 @@ import { Typography, TextField, Button } from "@mui/material";
 import React, {useEffect, useState} from "react";
 import { getDisplayName } from "../../node_modules/next/dist/shared/lib/utils";
 import ShipmentInputForm from "./ShipmentInputForm";
+import ShipmentInfo from "./ShipmentInfo";
 import Grid from "@mui/material/Unstable_Grid2";
 
 // const driveStatus = {
@@ -39,7 +40,7 @@ const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, drive
             minWidth={"50%"}
             backgroundColor="#F5F5F5"
             >   
-            
+            {shipmentData.map((shipment) => <ShipmentInfo date={shipment.data.date} trackingCode={shipment.data.trackingCode} numBooks={shipment.data.numBooks} numBoxes={shipment.data.numBoxes}></ShipmentInfo>)}
             <Button style={styles.btn} variant="contained" size="large" onClick={() => setOpenInputForm(true)}>Log New Shipment</Button>
             <ShipmentInputForm driveCode={driveCode} driveStatus={driveStatus} handleOpen={setOpenInputForm} isOpen={openInputForm} handleSaveShipment={handleSaveShipment}></ShipmentInputForm>
         </Grid>

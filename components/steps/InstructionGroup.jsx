@@ -13,6 +13,7 @@ import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import InstructionCollectCard from './InstructionCollectCard';
 import InstructionChecklistCard from './InstructionChecklistCard';
 import InstructionInputCard from './InstructionInputCard';
+import InstructionShipmentCard from './InstructionShipmentCard';
 
 
 /*const ExpandMore = styled((props: (expand:boolean)) => {
@@ -72,8 +73,7 @@ export default function InstructionGroupCard(props) {
       case 3: 
       content = <Grid container direction="column">
       <Grid paddingTop={2}>
-            <InstructionCollectCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Finish Line"} stepNum={6}> 
-            </InstructionCollectCard>
+        <InstructionShipmentCard driveCode={props.driveCode} driveStatus={props.driveStatus} shipmentData={props.shipmentData} handleSaveShipment={props.handleSaveShipment}></InstructionShipmentCard>
       </Grid>
     </Grid>
         break;
