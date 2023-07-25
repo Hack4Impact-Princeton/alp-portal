@@ -7,7 +7,6 @@ import Link from 'next/link';
 import Router from 'next/router';
 import { NextPage } from 'next';
 import { signIn } from 'next-auth/react'
-import fetch from 'isomorphic-unfetch'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
