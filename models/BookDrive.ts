@@ -52,7 +52,7 @@ export const BookDriveSchema = new Schema<BookDrive>({
   },
   fl: {
     isFinalized: { type: Boolean },
-    shipments: { type: Array },
+    shipments: { type: [String] },
   },
 },
   { collection: "bookDrive" }

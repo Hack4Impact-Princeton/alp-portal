@@ -6,14 +6,16 @@ import Box from "@mui/material/Box";
 import dbConnect from '../lib/dbConnect'
 import getShipmentModel from "../models/Shipment.ts";
 import getBookDriveModel from "../models/BookDrive";
-import { PostAdd } from "@mui/icons-material";
+import { ConnectingAirportsOutlined, PostAdd } from "@mui/icons-material";
 import { saveNewShipment } from "../db_functions/manageShipments";
 
 function Test(props) {
     const driveName = JSON.parse(props.driveName);
     const driveStatus = JSON.parse(props.driveStatus);
     const driveCode = JSON.parse(props.driveCode);
-    const shipmentData = JSON.parse(props.shipmentData);
+    let shipmentData = JSON.parse(props.shipmentData);
+    shipmentData.forEach(shipment => shipment.data.date = new Date(shipment.data.date))
+
     console.log("Drive shipment data: ", shipmentData);     // what we want is the .data field from each entry in shipmentData
 
     return (
@@ -42,30 +44,31 @@ export default Test
 export async function getServerSideProps(context) {
     // write nother async function...
 
-    const getShipmentData = async (ids) => {
-        const BASE = "http://localhost:3000/";
-        let shipments = [];
-        ids.forEach(async (id) => {
-            fetch(BASE + `api/shipments/id/${id}`, {
-                method: "GET",
-            }).then(async (res) => {
-                console.log("Response Status: ", res.status);
-                const msg = await res.json();
-                console.log("jsonified msg: ", msg);
-                shipments.push(msg.data);
-            });
-        }).then(() => {
-            console.log("Within function: shipments = ", shipments);
-            return shipments;
-        });
+    // const getShipmentData = async (ids) => {
+    //     const BASE = "http://localhost:3000/";
+    //     let shipments = [];
+    //     ids.forEach(async (id) => {
+    //         fetch(BASE + `api/shipments/id/${id}`, {
+    //             method: "GET",
+    //         }).then(async (res) => {
+    //             console.log("Response Status: ", res.status);
+    //             const msg = await res.json();
+    //             console.log("jsonified msg: ", msg);
+    //             shipments.push(msg.data);
+    //         });
+    //     }).then(() => {
+    //         console.log("Within function: shipments = ", shipments);
+    //         return shipments;
+    //     });
 
-    }
+    // }
 
     try {
         await dbConnect()
         const driveCode = "M15-32";  // constant for now
         const BookDrive = getBookDriveModel();
         const currDrive = await BookDrive.findOne({driveCode: driveCode})
+        console.log(currDrive)
         const driveName = currDrive.driveName;
         const driveStatus = {
             gettingStarted: currDrive.gs,
@@ -73,7 +76,7 @@ export async function getServerSideProps(context) {
             prepareToShip: currDrive.pts,
             finishLine: currDrive.fl,
         }
-
+        console.log(driveStatus.finishLine)
         const ids = driveStatus.finishLine.shipments;
         const BASE = "http://localhost:3000/";
         console.log("Current FL: ", ids);
@@ -91,6 +94,12 @@ export async function getServerSideProps(context) {
             nextPromises.push(r.json());
         })
         const shipmentData = await Promise.all(nextPromises);
+        
+        // console.log("Intermediate Shipment Data: ", shipmentData);
+        // if (shipmentData.length > 0) {
+        //     shipmentData.forEach(shipment => shipment.data.date = new Date(shipment.data.date))
+        // }
+        // console.log(shipmentData[0].data.date)
         console.log("Final Shipment Data: ", shipmentData);
 
         return { props: { driveName: JSON.stringify(driveName), driveCode: JSON.stringify(driveCode), driveStatus: JSON.stringify(driveStatus), shipmentData: JSON.stringify(shipmentData) } }

@@ -118,7 +118,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ drives }) => {
     const matchingDrives: BookDrive[] | undefined = drives ? drives.filter((drive) => drive.country === africanCountries[i]) : undefined
     // adds numBooks of each matching drive to the numbooks value of the
     // current country
-    if (matchingDrives) matchingDrives.forEach((drive) => countryData[i].value += drive.fl.numBooks)
+    if (matchingDrives) matchingDrives.forEach((drive) => countryData[i].value += drive.cb.booksCurrent)
     if (countryData[i].value > maxVal) maxVal = countryData[i].value
     // sets the booksSent value for the map markers
     userMarkers[africanCountries[i]].booksSent = countryData[i].value

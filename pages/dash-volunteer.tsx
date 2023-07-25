@@ -54,7 +54,7 @@ const DashVolunteer: NextPage<DashVolunteerProps> = ({ drives, account, error })
   else {
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px" }}>
-        <h1>{error}</h1>
+        <h1>{error?.message}</h1>
       </div>
     )
   }

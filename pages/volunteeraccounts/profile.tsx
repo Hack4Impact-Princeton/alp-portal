@@ -18,8 +18,14 @@ type ProfileProps = {
   account: VolunteerAccount | null;
   drives: BookDrive[] | null;
 }
+type BadgeInfoProps = {
+  isEarned: boolean,
+  level: number, 
+  name: string,
+  description: string,
+}
 
-const BadgeInfo = ({ isEarned, level, name, description }) => {
+const BadgeInfo: React.FC<BadgeInfoProps> = ({ isEarned, level, name, description }) => {
   const unlockedBadgeStyle = {
     width: '40px',
     height: '40px',
@@ -106,9 +112,9 @@ const BookDrivesCompletedGraph = () => {
 
 const Profile: NextPage<ProfileProps> = ({error, account, drives}) => {
   console.log("Profile Page");
-  account = account ? JSON.parse(account) : null;
-  drives = drives ? JSON.parse(drives) : null;
-  error = error ? error : null;
+  // account = account ? JSON.parse(account) : null;
+  // drives = drives ? JSON.parse(drives) : null;
+  // error = error ? error : null;
 
   // if the user is not logged in take them back to the login page
   const [editIsHovered, setEditIsHovered] = useState(false);
@@ -263,7 +269,7 @@ export const getServerSideProps = async (context: any) => {
     // you have to flatten the array otherwise it will have a weird shape.
     const drives: BookDrive[] | null = resolvedPromises.flat()
     
-  return { props: { account: JSON.stringify(volunteerAccount), drives: JSON.stringify(drives), error: null } }
+  return { props: { account: JSON.parse(JSON.stringify(volunteerAccount)) as VolunteerAccount, drives: JSON.parse(JSON.stringify(drives)) as BookDrive, error: null } }
   } catch (e: Error|any) {
     console.error(e)
     // if the specific error message occurs it's because the user has not logged in
