@@ -30,10 +30,13 @@
     "ts-node": "^10.9.1"
   },
   "devDependencies": {
+    "@testing-library/cypress": "^9.0.0",
     "@types/mongodb": "^4.0.7",
     "@types/node": "^18.16.16",
     "@types/react": "^17.0.60",
     "@types/react-simple-maps": "^3.0.0",
+    "cypress": "^12.17.2",
+    "cypress-social-logins": "^1.14.1",
     "react-simple-maps": "^1.0.0",
     "typescript": "5.1.3"
   }
