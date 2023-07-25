@@ -84,6 +84,12 @@ export default function InstructionInputCard(props) {
 }
 
 function CardBody({ stepNum, value, handleChange, handleSubmit }) {
+  const styles = {
+    btn: {
+      backgroundColor: "#FE9834",
+      width: "5vw"
+    },
+  }
   return (
     <Grid container alignItems="center" sx={{ p: 5 }}>
       <Grid item xs={12} sx={{ pb: 3 }}>
@@ -99,7 +105,9 @@ function CardBody({ stepNum, value, handleChange, handleSubmit }) {
       </Grid>
 
       <Grid item xs={11}>
-        <Button variant="contained" size="medium" onClick={handleSubmit}>
+      </Grid>
+      <Grid item xs={1}>
+        <Button style={styles.btn} variant="contained" size="medium" onClick={handleSubmit}>
           Submit
         </Button>
       </Grid>
