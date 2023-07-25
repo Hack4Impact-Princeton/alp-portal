@@ -89,7 +89,6 @@ function StepOneCard(props) {
 
 // 5: Collect Packing Materials
 function StepFiveCard(props) {
-    console.log("PROPS: ", props);
     const [collectedBoxes, setCollectedBoxes] = useState(props.info.materials.boxes);
     const [collectedTape, setCollectedTape] = useState(props.info.materials.tape);
     const [collectedLabels, setCollectedLabels] = useState(props.info.materials.mailingLabels);
