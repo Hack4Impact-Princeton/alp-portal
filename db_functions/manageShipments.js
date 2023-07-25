@@ -6,10 +6,8 @@ import getShipmentModel from "../models/Shipment";
 const BASE = "http://localhost:3000/";
 
 export async function saveNewShipment(driveCode, driveStatus, date, tracking, numBooks, numBoxes) {
-    console.log("clicked--save shipment");
+    console.log("Drive Status: ", driveStatus);
     const Shipment = getShipmentModel();
-    console.log("Shipment Model: ", Shipment);
-    console.log(typeof Shipment);
     const shipmentData = {
         date: date,
         organizer: "placeholder@test.com",
@@ -20,7 +18,7 @@ export async function saveNewShipment(driveCode, driveStatus, date, tracking, nu
         isFinal: false,
         isReceived: false,
     } 
-    const res = await fetch(BASE + `api/shipments/id/${shipmentData.id}`, {
+    const res = await fetch(BASE + `api/shipments/id/${0}`, {   // nonsense id number
         method: "POST",
         body: JSON.stringify(shipmentData),
     })
@@ -31,8 +29,8 @@ export async function saveNewShipment(driveCode, driveStatus, date, tracking, nu
 
     const new_fl = {
         fl: {
-            isFinalized: driveStatus.fl.isFinalized,
-            shipments: [...driveStatus.fl.shipments, msg.id],
+            isFinalized: driveStatus.finishLine.isFinalized,
+            shipments: [...driveStatus.finishLine.shipments, msg.id],
         }
     }
     const second_res = await fetch(`/api/bookDrive/${driveCode}`, {

@@ -28,10 +28,8 @@ export const ShipmentSchema = new Schema<Shipment>({
 );
 
 function getShipmentModel() {
-    console.log("models: ", mongoose.models);
     if (mongoose.models != undefined && "Shipment" in mongoose.models) return mongoose.models.Shipment;
     const model = mongoose.model("Shipment", ShipmentSchema);
-    console.log("Returning model: ", model);
     return model;
 }
 export default getShipmentModel;

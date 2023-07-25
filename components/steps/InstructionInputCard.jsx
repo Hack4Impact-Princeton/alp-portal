@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Typography, Grid, TextField, Button } from "@mui/material";
 
 export default function InstructionInputCard(props) {
-  console.log("Props", props);
   const [value, setValue] = useState("");
 
   const handleChange = (event) => {

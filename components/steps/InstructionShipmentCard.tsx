@@ -12,14 +12,13 @@ import Grid from "@mui/material/Unstable_Grid2";
 // }
 type ShipmentCardProps = {
     driveCode: string,
-    driveStatus: string,
-    cardState: number,
+    driveStatus: any,
     handleSaveShipment: Function,
+    shipmentData: Array<Object>,
 }
 
-// States 0-2: no shipments created, shipments created unfinalized, shipments created finalized
-const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, driveStatus, cardState, handleSaveShipment }) => {
-    const [currState, setCurrState] = useState(cardState);
+
+const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, driveStatus, handleSaveShipment, shipmentData }) => {
     const [openInputForm, setOpenInputForm] = useState(false);      // controls 
     const styles = {
         btn: {
@@ -27,24 +26,6 @@ const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, drive
           width: "15vw"
         },
     }
-
-    let defaultContent, displayShipments, inputForm;
-    defaultContent = <>     
-    </>;
-
-    useEffect(() => {
-        console.log("openInputForm: ", openInputForm);
-        if (openInputForm) {
-            inputForm = 
-            <>
-                <h1>Input Shipment Info</h1>
-                <Button variant="contained" size="large" onClick={() => setOpenInputForm(false)}>Save</Button>
-            </>;
-            console.log("component: ", inputForm);
-        } else { 
-            inputForm = <></>;
-        }
-    }, [openInputForm])
 
     return(
         <Grid
@@ -58,8 +39,9 @@ const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, drive
             minWidth={"50%"}
             backgroundColor="#F5F5F5"
             >   
+            
             <Button style={styles.btn} variant="contained" size="large" onClick={() => setOpenInputForm(true)}>Log New Shipment</Button>
-            <ShipmentInputForm driveCode={driveCode} driveStatus={driveStatus} isOpen={true} handleSaveShipment={handleSaveShipment}></ShipmentInputForm>
+            <ShipmentInputForm driveCode={driveCode} driveStatus={driveStatus} handleOpen={setOpenInputForm} isOpen={openInputForm} handleSaveShipment={handleSaveShipment}></ShipmentInputForm>
         </Grid>
     );
 }
