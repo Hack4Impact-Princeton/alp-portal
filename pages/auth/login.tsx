@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Router from 'next/router';
 import { NextPage } from 'next';
 import { signIn } from 'next-auth/react'
-
+import fetch from 'isomorphic-unfetch'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
@@ -89,9 +89,11 @@ const Login: NextPage = () => {
     })
     console.log(res)
     if (!res) {
+      console.log("hellol")
       alert("Something went wrong: please try again")
       return
     }
+    console.log(res.ok)
     if (res.ok) Router.push(`../dash-volunteer`)
     else {
       alert("Email or password is incorrect. Please try again")

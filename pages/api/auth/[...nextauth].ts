@@ -27,15 +27,20 @@ export const authOptions: NextAuthOptions = {
                     account = await VolunteerAccount.findOne({ email: email })
                 }
                 // if none exists then invalid credentials
-                if (!account) throw new Error("Invalid email")
+                if (!account) {
+                    console.log("ummm no account found")
+                    throw new Error("Invalid email")
+                }
                 const bcrypt = require("bcryptjs");
 
                 // compare passwords
                 const result = await bcrypt.compare(password, account.pwhash);
                 if (result) {
+                    console.log("good login")
                     // name actually contains a string representation of whether the user is an admin or not
                     return {id: email, email: email, name: `${isAdministrator}`, fName: account.fname}
                 }
+                console.log("password mismatch")
                 // if hashed passwords don't match, invalid credentials
                 throw new Error("Invalid Password")
             }
