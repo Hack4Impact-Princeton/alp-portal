@@ -2,17 +2,12 @@ import React, { useState } from "react";
 import { Typography, Grid, TextField, Button } from "@mui/material";
 
 export default function InstructionInputCard(props) {
-  console.log("Props", props);
   const [value, setValue] = useState("");
-
-  const [dateSent, setDateSent] = useState("");
 
   const handleChange = (event) => {
     console.log(`Typed => ${event.target.value}`);
     if (props.stepNum == 0)
       setValue(event.target.value);
-    else 
-      setDateSent(event.target.value)
   };
 
   const handleSubmit = async () => {
@@ -27,18 +22,11 @@ export default function InstructionInputCard(props) {
           },
         };
         break;
-      case 6:
-        data = {
-          fl: {
-              dateSent: dateSent
-          }
-        }
       break;
 
     }
 
       console.log("data: ", JSON.stringify(data));
-  
       const response = await fetch(`/api/bookDrive/${props.driveCode}`, {
         method: "PUT",
         body: JSON.stringify(data),

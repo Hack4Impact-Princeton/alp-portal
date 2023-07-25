@@ -318,10 +318,6 @@ function CollectFinishLine(props){
           <TextField size="small" fullWidth={false} id="date-sent" variant="outlined"  value={date} onChange={handleInputDate} sx={{pr:5}}/>
           <Button style={styles.btn} variant="contained" size="large" onClick={handleSubmitButton}>Submit</Button>
         </Grid>
-
-        <Grid item xs={11}>
-        </Grid>
-
         <Grid item xs={4} sx={{ pb: 2 }}>
           <Typography variant="h5">Books Collected:</Typography>
         </Grid>
@@ -339,9 +335,6 @@ function CollectFinishLine(props){
         <Grid item xs={8} sx={{ pb: 2 }}>
           <TextField size="small" id="boxes-collected" variant="outlined" value={boxes} onChange={handleInputBoxes} sx={{pr:5}}/>
           <Button style={styles.btn} variant="contained" size="large" onClick={handleSubmitButton}>Submit</Button>
-        </Grid>
-
-        <Grid item xs={11}>
         </Grid>
       </Grid>
     )
