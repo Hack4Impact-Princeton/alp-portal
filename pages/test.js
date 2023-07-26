@@ -4,13 +4,13 @@ import * as React from 'react';
 import Grid from "@mui/material/Unstable_Grid2";
 import Box from "@mui/material/Box";
 import dbConnect from '../lib/dbConnect'
-import getShipmentModel, {Shipment} from "../models/Shipment.ts";
+import getShipmentModel from "../models/Shipment.ts";
 import getBookDriveModel from "../models/BookDrive";
-import { ConnectingAirportsOutlined, PostAdd } from "@mui/icons-material";
+// import { ConnectingAirportsOutlined, PostAdd } from "@mui/icons-material";
 import { saveNewShipment } from "../db_functions/manageShipments";
 
 function Test(props) {
-    const driveName = JSON.parse(props.driveName);
+    // const driveName = JSON.parse(props.driveName);
     const driveStatus = JSON.parse(props.driveStatus);
     const driveCode = JSON.parse(props.driveCode);
     let shipments = JSON.parse(props.shipments);
@@ -41,7 +41,7 @@ function Test(props) {
 }
 export default Test
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps() {
     // write nother async function...
 
     // const getShipmentData = async (ids) => {
@@ -68,7 +68,7 @@ export async function getServerSideProps(context) {
         const driveCode = "M15-32";  // constant for now
         const BookDrive = getBookDriveModel();
         const currDrive = await BookDrive.findOne({driveCode: driveCode})
-        console.log(currDrive)
+        //console.log(currDrive)
         const driveName = currDrive.driveName;
         const driveStatus = {
             gettingStarted: currDrive.gs,
@@ -76,10 +76,10 @@ export async function getServerSideProps(context) {
             prepareToShip: currDrive.pts,
             finishLine: currDrive.fl,
         }
-        console.log(driveStatus.finishLine)
+        //console.log(driveStatus.finishLine)
         const ids = driveStatus.finishLine.shipments;
         // const BASE = "http://localhost:3000/";
-        console.log("Current FL: ", ids);
+        //console.log("Current FL: ", ids);
         const Shipment = getShipmentModel()
         // let promises = [];
         // const promises = ids.map(async (id) => await fetch(`api/shipments/id/${id}`, {method: "GET"}))
@@ -98,7 +98,7 @@ export async function getServerSideProps(context) {
         //     shipmentData.forEach(shipment => shipment.data.date = new Date(shipment.data.date))
         // }
         // console.log(shipmentData[0].data.date)
-        console.log("Final Shipment Data: ", shipments);
+        //console.log("Final Shipment Data: ", shipments);
 
         return { props: { driveName: JSON.stringify(driveName), driveCode: JSON.stringify(driveCode), driveStatus: JSON.stringify(driveStatus), shipments: JSON.stringify(shipments) } }
     } catch (error) {
