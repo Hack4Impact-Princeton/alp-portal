@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
-import Grid from "@mui/material/Unstable_Grid2";
+import {Grid} from "@mui/material";
 
 type ShipmentInputFormProps = {
     driveCode: string,

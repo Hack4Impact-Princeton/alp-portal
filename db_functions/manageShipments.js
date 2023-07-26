@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+//import fetch from "node-fetch";
 import mongoose from 'mongoose';
 import dbConnect from "../lib/dbConnect.js";
 import getShipmentModel from "../models/Shipment";
