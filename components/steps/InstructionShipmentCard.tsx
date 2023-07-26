@@ -15,12 +15,12 @@ type ShipmentCardProps = {
     driveCode: string,
     driveStatus: any,
     handleSaveShipment: Function,
-    shipmentData: {success: boolean, data: Shipment}[],
+    shipments: Shipment[]
 }
 
 
-const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, driveStatus, handleSaveShipment, shipmentData }) => {
-    const [displayData, setDisplayData] = useState(shipmentData);
+const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, driveStatus, handleSaveShipment, shipments }) => {
+    const [displayData, setDisplayData] = useState(shipments);
     const [openInputForm, setOpenInputForm] = useState(false);      // controls 
     const styles = {
         btn: {
@@ -30,7 +30,7 @@ const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, drive
     }
     
     console.log("Card render: ", displayData);
-    console.log(typeof shipmentData[0].data.date)
+    console.log(typeof shipments[0].date)
     return(
         <Grid
             style={{
@@ -43,7 +43,7 @@ const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, drive
             direction="row"
             spacing={3}
             >   
-            {shipmentData.map((shipment) => <ShipmentInfo date={shipment.data.date} trackingCode={shipment.data.trackingCode} numBooks={shipment.data.numBooks} numBoxes={shipment.data.numBoxes}></ShipmentInfo>)}
+            {shipments.map((shipment) => <ShipmentInfo date={shipment.date} trackingCode={shipment.trackingCode} numBooks={shipment.numBooks} numBoxes={shipment.numBoxes}></ShipmentInfo>)}
             <Button style={styles.btn} variant="contained" size="large" onClick={() => setOpenInputForm(true)}>Log New Shipment</Button>
             <ShipmentInputForm driveCode={driveCode} driveStatus={driveStatus} handleOpen={setOpenInputForm} isOpen={openInputForm} handleSaveShipment={handleSaveShipment} cardState={displayData} displayNewShipment={setDisplayData}></ShipmentInputForm>
         </Grid>

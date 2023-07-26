@@ -4,7 +4,7 @@ import * as React from 'react';
 import Grid from "@mui/material/Unstable_Grid2";
 import Box from "@mui/material/Box";
 import dbConnect from '../lib/dbConnect'
-import getShipmentModel from "../models/Shipment.ts";
+import getShipmentModel, {Shipment} from "../models/Shipment.ts";
 import getBookDriveModel from "../models/BookDrive";
 import { ConnectingAirportsOutlined, PostAdd } from "@mui/icons-material";
 import { saveNewShipment } from "../db_functions/manageShipments";
@@ -13,10 +13,10 @@ function Test(props) {
     const driveName = JSON.parse(props.driveName);
     const driveStatus = JSON.parse(props.driveStatus);
     const driveCode = JSON.parse(props.driveCode);
-    let shipmentData = JSON.parse(props.shipmentData);
-    shipmentData.forEach(shipment => shipment.data.date = new Date(shipment.data.date))
+    let shipments = JSON.parse(props.shipments);
+    shipments.forEach(shipment => shipment.date = new Date(shipment.date))
 
-    console.log("Drive shipment data: ", shipmentData);     // what we want is the .data field from each entry in shipmentData
+    console.log("Drive shipment data: ", shipments);     // what we want is the .data field from each entry in shipmentData
 
     return (
         <Grid>
@@ -32,7 +32,7 @@ function Test(props) {
                 <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={true} groupNum={0} header={"Getting Started"}></InstructionGroupCard>
                 <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={1} header={"Collecting Books"}></InstructionGroupCard>
                 <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} completed={false} groupNum={2} header={"Preparing To Ship"}></InstructionGroupCard>
-                <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} shipmentData={shipmentData} handleSaveShipment={saveNewShipment} groupNum={3} header={"The Finish Line"}></InstructionGroupCard>
+                <InstructionGroupCard driveCode={driveCode} driveStatus={driveStatus} shipments={shipments} handleSaveShipment={saveNewShipment} groupNum={3} header={"The Finish Line"}></InstructionGroupCard>
             </Grid>
         </Box>
         </Grid> 
@@ -78,31 +78,29 @@ export async function getServerSideProps(context) {
         }
         console.log(driveStatus.finishLine)
         const ids = driveStatus.finishLine.shipments;
-        const BASE = "http://localhost:3000/";
+        // const BASE = "http://localhost:3000/";
         console.log("Current FL: ", ids);
-
-        let promises = [];
-        ids.forEach((id) => {
-            promises.push(fetch(BASE + `api/shipments/id/${id}`, {
-                method: "GET",
-            }))
-        })
-
-        const res = await Promise.all(promises);
-        let nextPromises = [];
-        res.forEach((r) => {
-            nextPromises.push(r.json());
-        })
-        const shipmentData = await Promise.all(nextPromises);
+        const Shipment = getShipmentModel()
+        // let promises = [];
+        // const promises = ids.map(async (id) => await fetch(`api/shipments/id/${id}`, {method: "GET"}))
+        const promises = ids.map(async (id) => await Shipment.findById(id))
+        const shipments = await Promise.all(promises)
+        // const res = await Promise.all(promises);
+        // console.log(res)
+        // let nextPromises = [];
+        // res.forEach((r) => {
+        //     nextPromises.push(r.json());
+        // })
+        // const shipmentData = await Promise.all(nextPromises);
         
         // console.log("Intermediate Shipment Data: ", shipmentData);
         // if (shipmentData.length > 0) {
         //     shipmentData.forEach(shipment => shipment.data.date = new Date(shipment.data.date))
         // }
         // console.log(shipmentData[0].data.date)
-        console.log("Final Shipment Data: ", shipmentData);
+        console.log("Final Shipment Data: ", shipments);
 
-        return { props: { driveName: JSON.stringify(driveName), driveCode: JSON.stringify(driveCode), driveStatus: JSON.stringify(driveStatus), shipmentData: JSON.stringify(shipmentData) } }
+        return { props: { driveName: JSON.stringify(driveName), driveCode: JSON.stringify(driveCode), driveStatus: JSON.stringify(driveStatus), shipments: JSON.stringify(shipments) } }
     } catch (error) {
       console.log(error)
       return {props: {error: JSON.stringify(error)}}

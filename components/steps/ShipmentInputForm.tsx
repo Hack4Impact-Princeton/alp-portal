@@ -62,7 +62,7 @@ const ShipmentInputForm: React.FC<ShipmentInputFormProps> = ({driveCode, driveSt
     }
 
     const handleSave = async () => {
-        handleSaveShipment(driveCode, driveStatus, dateVal, tracking, numBooks, numBoxes);
+        await handleSaveShipment(driveCode, driveStatus, dateVal, tracking, numBooks, numBoxes);
         const obj = {
             data: {
                 date: dateVal,

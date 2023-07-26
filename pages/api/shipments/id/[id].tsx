@@ -50,7 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (!newShipment)
           return res.status(400).json({ success: false })
         newShipment.save(function (err: any, shipment: any) {
-          if (err) return console.error(err);
+          if (err) return res.status(500).json({success: false, data: err});
           console.log(shipment._id + "saved to bookstore collection.");
           res.status(200).json({ success: true, id: shipment._id });
           // res.newId(shipment._id);
