@@ -4,7 +4,7 @@ import Button, { ButtonProps } from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import InboxIcon from '@mui/icons-material/Inbox';
 import Navbar from '../components/Navbar'
-import { getSession, signOut } from "next-auth/react"
+import { signOut } from "next-auth/react"
 
 type PageContainerProps = {
     fName: String;

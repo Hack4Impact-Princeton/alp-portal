@@ -9,11 +9,9 @@ import dbConnect from '../lib/dbConnect'
 import getBookDriveModel, { BookDrive } from '../models/BookDrive';
 import Link from 'next/link'
 import getVolunteerAccountModel, { VolunteerAccount } from '../models/VolunteerAccount';
-import { getSession } from 'next-auth/react';
 import { NextPage } from 'next';
-import { CustomSession, VolunteerUser } from '../types/NextauthUser';
-import getAdminAccountModel, { AdminAccount } from '../models/AdminAccount';
-
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from './api/auth/[...nextauth]';
 type DashVolunteerProps = {
   drives: BookDrive[] | null;
   account: VolunteerAccount | null;
@@ -63,7 +61,7 @@ const DashVolunteer: NextPage<DashVolunteerProps> = ({ drives, account, error })
 export async function getServerSideProps(context: any) {
   try {
     await dbConnect()
-    const session = await getSession(context)
+    const session = await getServerSession(context.req, context.res, authOptions)
     console.log("SESSION OBJ: ", session);
     if (!session) {
       return {
