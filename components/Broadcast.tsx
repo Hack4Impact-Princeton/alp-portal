@@ -4,7 +4,7 @@ type BroadcastMessageProps = {
     broadcast: Broadcast,
 }
 const BroadcastMessage: React.FC<BroadcastMessageProps> = ({ broadcast }) => {
-
+    console.log(broadcast)
     return (
         <Grid style={{ display: "flex", flexDirection: "column", padding: 10, margin: 5, border: "1.5px solid black" }}>
             <h2 style={{ marginTop: 2, marginBottom: 2 }}>{broadcast.subject}</h2>

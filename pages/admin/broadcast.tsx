@@ -21,6 +21,7 @@ const BroadcastPage: NextPage<BroadcastPageProps> = ({ account, volunteers, erro
         if (!acctBroadcasts.includes(broadcast)) setAcctBroadcasts(prevBroadcasts => { return [broadcast, ...prevBroadcasts]})
         if (!newBroadcasts.includes(broadcast)) setNewBroadcasts(prevBroadcasts => {return [broadcast, ...prevBroadcasts]})
     }
+    
     // console.log("broadcasts", broadcasts)
     return (
         <Grid container spacing="10" style={{ display: "flex", justifyContent: "space-between" }}>
@@ -70,7 +71,11 @@ export const getServerSideProps = async (context: any) => {
         console.log("volunteers", volunteers)
         const Broadcast: mongoose.Model<Broadcast> = getBroadcastModel()
         console.log(account.broadcasts)
-        const bPromises = account.broadcasts.map(broadcastId => Broadcast.findOne({ id: broadcastId }))
+        const bPromises = account.broadcasts.map(broadcastId => {
+                const res = Broadcast.findOne({ id: broadcastId })
+                if (!res) console.log("the bad broadcastId is", broadcastId)
+                else return res
+        })
         const broadcasts = await Promise.all(bPromises) as Broadcast[]
         return { props: { error: null, account: JSON.parse(JSON.stringify(account)), volunteers: JSON.parse(JSON.stringify(volunteers)), broadcasts: JSON.parse(JSON.stringify(broadcasts)) } }
     } catch (e: Error | any) {
