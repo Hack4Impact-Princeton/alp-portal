@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
-import Grid from "@mui/material/Unstable_Grid2";
+import Grid from "@mui/material/Grid";
 
 type ShipmentInputFormProps = {
     driveCode: string,
@@ -37,24 +37,24 @@ const ShipmentInputForm: React.FC<ShipmentInputFormProps> = ({driveCode, driveSt
         },
     };
 
-    const dateChange = (e) => {
+    const dateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setDate(e.target.value);
     }
 
-    const trackingChange = (e) => {
+    const trackingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTracking(e.target.value);
     }
 
-    const booksChange = (e) => {
-        if (isNaN(e.target.value)) {
+    const booksChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (isNaN(parseInt(e.target.value))) {
 
         } else {
             setNumBooks(parseInt(e.target.value));
         }
     }
 
-    const boxesChange = (e) => {
-        if (isNaN(e.target.value)) {
+    const boxesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (isNaN(parseInt(e.target.value))) {
 
         } else {
             setNumBoxes(parseInt(e.target.value));
@@ -62,7 +62,7 @@ const ShipmentInputForm: React.FC<ShipmentInputFormProps> = ({driveCode, driveSt
     }
 
     const handleSave = async () => {
-        handleSaveShipment(driveCode, driveStatus, dateVal, tracking, numBooks, numBoxes);
+        await handleSaveShipment(driveCode, driveStatus, dateVal, tracking, numBooks, numBoxes);
         const obj = {
             data: {
                 date: dateVal,

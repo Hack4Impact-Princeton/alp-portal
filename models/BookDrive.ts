@@ -7,9 +7,10 @@ export type BookDrive = {
   organizer: string,
   startDate: string,
   country: string,
-  completedDate: string,
   status: number,
   booksGoal: number,
+  completedDate: Date,
+  mailDate: Date,
   gs: { fundraise: String, terms: boolean },
   cb: { booksCurrent: number, updateFreq: number, lastUpdate: Date },
   pts: {
@@ -20,6 +21,7 @@ export type BookDrive = {
     isFinalized: boolean,
     shipments: number[],
    },
+
 }
 
 export const BookDriveSchema = new Schema<BookDrive>({
@@ -28,9 +30,10 @@ export const BookDriveSchema = new Schema<BookDrive>({
   organizer: { type: String },
   startDate: { type: String },
   country: { type: String },
-  completedDate: { type: String },
+  completedDate: { type: Date },
   status: { type: Number },
   booksGoal: { type: Number },
+  mailDate: {type: Date},
   gs: {
     fundraise: { type: String },
     terms: { type: Boolean },
@@ -52,7 +55,7 @@ export const BookDriveSchema = new Schema<BookDrive>({
   },
   fl: {
     isFinalized: { type: Boolean },
-    shipments: { type: Array },
+    shipments: { type: [String] },
   },
 },
   { collection: "bookDrive" }

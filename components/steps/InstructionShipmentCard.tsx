@@ -1,10 +1,10 @@
-import { Typography, TextField, Button } from "@mui/material";
+import { Typography, TextField, Button, } from "@mui/material";
 import React, {useEffect, useState} from "react";
 import { getDisplayName } from "../../node_modules/next/dist/shared/lib/utils";
 import ShipmentInputForm from "./ShipmentInputForm";
 import ShipmentInfo from "./ShipmentInfo";
 import Grid from "@mui/material/Unstable_Grid2";
-
+import {Shipment} from '../../models/Shipment'
 // const driveStatus = {
 //     gettingStarted: currDrive.gs,
 //     collectingBooks: currDrive.cb,
@@ -15,12 +15,12 @@ type ShipmentCardProps = {
     driveCode: string,
     driveStatus: any,
     handleSaveShipment: Function,
-    shipmentData: Array<Object>,
+    shipments: Shipment[]
 }
 
 
-const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, driveStatus, handleSaveShipment, shipmentData }) => {
-    const [displayData, setDisplayData] = useState(shipmentData);
+const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, driveStatus, handleSaveShipment, shipments }) => {
+    const [displayData, setDisplayData] = useState(shipments);
     const [openInputForm, setOpenInputForm] = useState(false);      // controls 
     const styles = {
         btn: {
@@ -28,22 +28,22 @@ const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, drive
           width: "15vw"
         },
     }
-
+    
     console.log("Card render: ", displayData);
-
+    console.log(typeof shipments[0].date)
     return(
         <Grid
-            sx={{
+            style={{
                 border: "3px solid black;",
-                borderRadius: "5px"
+                borderRadius: "5px",
+                minWidth: "50%",
+                backgroundColor: "#F5F5F5"
             }}
             container
             direction="row"
             spacing={3}
-            minWidth={"50%"}
-            backgroundColor="#F5F5F5"
             >   
-            {shipmentData.map((shipment) => <ShipmentInfo date={shipment.data.date} trackingCode={shipment.data.trackingCode} numBooks={shipment.data.numBooks} numBoxes={shipment.data.numBoxes}></ShipmentInfo>)}
+            {shipments.map((shipment) => <ShipmentInfo date={shipment.date} trackingCode={shipment.trackingCode} numBooks={shipment.numBooks} numBoxes={shipment.numBoxes}></ShipmentInfo>)}
             <Button style={styles.btn} variant="contained" size="large" onClick={() => setOpenInputForm(true)}>Log New Shipment</Button>
             <ShipmentInputForm driveCode={driveCode} driveStatus={driveStatus} handleOpen={setOpenInputForm} isOpen={openInputForm} handleSaveShipment={handleSaveShipment} cardState={displayData} displayNewShipment={setDisplayData}></ShipmentInputForm>
         </Grid>
