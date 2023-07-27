@@ -267,5 +267,5 @@ export const africanCountries: string[] = [
     Active = 0,
     Verifying = 1,
     Completed = 2,
-    Concelled = 3,
+    Cancelled = 3,
 }
