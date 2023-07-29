@@ -75,7 +75,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, dr
 
     const handleDriveNameClick = (params: GridCellParams) => {
         if (params.field === 'driveName') {
-            const unsanitizedString = params.value as string
+            const unsanitizedString = params.value as string 
             console.log(unsanitizedString)
             const specialChars = /^(\p{So}+)/gu
             const midDriveName = unsanitizedString.replace(specialChars, '')
