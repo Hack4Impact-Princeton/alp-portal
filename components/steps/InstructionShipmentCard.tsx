@@ -26,7 +26,7 @@ const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, drive
     const styles = {
         btn: {
           backgroundColor: "#FE9834",
-          width: "15vw"
+          width: "14vw"
         },
     }
 
@@ -54,7 +54,8 @@ const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, drive
             <Grid container xs={12} direction="row">
                 {shipmentData.map((shipment) => <ShipmentInfo date={shipment.data.date} trackingCode={shipment.data.trackingCode} numBooks={shipment.data.numBooks} numBoxes={shipment.data.numBoxes}></ShipmentInfo>)}
             </Grid>
-            <Grid xs={12} alignItems="center" sx={{pt:3}}>
+            
+            <Grid xs={12} alignItems="center" sx={{pt:1}}>
                 <Button style={styles.btn} variant="contained" size="large" onClick={() => setOpenInputForm(true)}>Log New Shipment</Button>
                 <ShipmentInputForm driveCode={driveCode} driveStatus={driveStatus} handleOpen={setOpenInputForm} isOpen={openInputForm} handleSaveShipment={handleSaveShipment} cardState={displayData} displayNewShipment={setDisplayData}></ShipmentInputForm> 
             </Grid>

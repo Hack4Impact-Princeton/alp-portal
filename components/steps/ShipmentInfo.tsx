@@ -11,10 +11,10 @@ type ShipmentInfoProps = {
 
 const ShipmentInfo: React.FC<ShipmentInfoProps> = ({ date, trackingCode, numBooks, numBoxes }) => {
     return(
-        <Grid container direction="column" sx={{pr:5}}>
-            <Grid xs={12}><Typography>{(new Date(date)).toDateString()}</Typography></Grid>
-            <Grid xs={12}><Typography>Tracking: {trackingCode}</Typography></Grid>
-            <Grid xs={12}><Typography>{numBooks} books in {numBoxes} boxes</Typography></Grid>
+        <Grid container direction="column" sx={{p:2}} xs={3}>
+            <Grid xs={12}><Typography sx={{fontFamily: "Epilogue", fontWeight:"Bold"}}>{(new Date(date)).toDateString()}</Typography></Grid>
+            <Grid xs={12}><Typography sx={{fontFamily: "Epilogue"}}>Tracking: {trackingCode}</Typography></Grid>
+            <Grid xs={12}><Typography sx={{fontFamily: "Epilogue"}}>{numBooks} books in {numBoxes} boxes</Typography></Grid>
         </Grid>
     )
 }

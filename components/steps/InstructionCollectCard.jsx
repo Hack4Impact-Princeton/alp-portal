@@ -110,7 +110,8 @@ function CollectBooksCard(props) {
         </Typography>
       </Grid>
       <Grid item xs={4} sx={{ pb: 2 }}>
-        <Typography variant="h5">Update Books Collected:</Typography>
+        <Typography variant="h5"># New Books Collected:</Typography>
+        <Typography variant="p">example: 50</Typography>
       </Grid>
       <Grid item xs={8} sx={{ pb: 2 }}>
         <TextField size="small" fullWidth id="books-collected" variant="outlined" value={bookState} onChange={handleInput}/>
