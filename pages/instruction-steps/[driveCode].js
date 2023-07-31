@@ -11,6 +11,7 @@ import { saveNewShipment } from "../../db_functions/manageShipments";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import authOptions from '../api/auth/[...nextauth]'
+import getVolunteerAccountModel from "../../models/VolunteerAccount";
 function InstructionSteps(props) {
     // const driveName = JSON.parse(props.driveName);
     console.log(props.error)
@@ -82,6 +83,9 @@ export async function getServerSideProps(context) {
         const BookDrive = getBookDriveModel();
         const currDrive = await BookDrive.findOne({driveCode: driveCode})
         if (!currDrive) throw new Error(`no bookdrive found with code ${driveCode}`)
+        const VolunteerModel = getVolunteerAccountModel()
+        const volunteer = await VolunteerModel.findOne({email: session.user.email})
+        if (`${volunteer.fname} ${volunteer.lname}` !== currDrive.organizer) throw new Error("Unauthorized attempt to access bookdrive - you do not have the permission to view this bookdrive")
         //console.log(currDrive)
         const driveName = currDrive.driveName;
         const driveStatus = {
