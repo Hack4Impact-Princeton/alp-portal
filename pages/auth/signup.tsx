@@ -18,7 +18,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-const Signup = (prevShowPassword) => {
+const Signup = () => {
     // const error = props.error ? props.error : null
     // const accounts = props.account ? JSON.parse(props.accounts) : null
     const states = getStates()
@@ -31,7 +31,7 @@ const Signup = (prevShowPassword) => {
     const [location, setLocation] = useState(1)
     const [showPassword, setShowPassword] = useState(false);
 
-    const validateEmail = (input) => {
+    const validateEmail = (input: string) => {
       const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
       return emailRegex.test(input);
     };
@@ -49,7 +49,7 @@ const Signup = (prevShowPassword) => {
     const handleSetPassword = (passwordText: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(passwordText.target.value)
     }
-    const handleSetLocation = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleSetLocation = (event: any) => {
         setLocation(Number(event.target.value));
     }
     const handleTogglePassword = () => {
@@ -65,7 +65,7 @@ const Signup = (prevShowPassword) => {
             setSubmit(true)
             setTimeout(() => {
                 setSubmit(false)
-              }, "4000");
+              }, 4000);
 
             const bcrypt = require("bcryptjs");
             const salt = bcrypt.genSaltSync(10);
@@ -73,7 +73,7 @@ const Signup = (prevShowPassword) => {
             const data = { fname: fname, lname: lname, email: email, pwhash: hashedPwd, location: location }
             // return if empty field
             for (let entry in data) 
-                if (data[entry] == '') return;
+                if (entry == '') return;
             const dupAccount = await fetch(`../api/volunteeraccounts/${encodeURIComponent(email)}`).then(res => res.json())
             if (!isValidEmail) {
                 console.log("Invalid email address");
@@ -95,7 +95,7 @@ const Signup = (prevShowPassword) => {
                 password: password,
                 redirect: false,
               })
-              if (signInRes.ok) Router.push(`../dash-volunteer`)
+              if (signInRes?.ok) Router.push(`../dash-volunteer`)
             console.log("success")
         } catch (e) {
             console.error(e)

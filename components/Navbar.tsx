@@ -18,7 +18,7 @@ const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
   });
 
 type NavbarProps = {
-    active: "dash-volunteer" | "profile" | "leaderboard" | "h4i-team" | "forum" | null;
+    active: "dash-volunteer" | "profile" | "leaderboard" | "h4i-team" | "forum" | "instruction-steps" | null;
 }
 const Navbar: React.FC<NavbarProps> = ({active}) => {
     return(

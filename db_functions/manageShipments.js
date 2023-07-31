@@ -1,13 +1,13 @@
-//import fetch from "node-fetch";
-import mongoose from 'mongoose';
-import dbConnect from "../lib/dbConnect.js";
-import getShipmentModel from "../models/Shipment";
+// import fetch from "node-fetch";
+// import mongoose from 'mongoose';
+// import dbConnect from "../lib/dbConnect.js";
+// import getShipmentModel from "../models/Shipment";
 
-const BASE = "http://localhost:3000/";
+// const BASE = "http://localhost:3000/";
 
 export async function saveNewShipment(driveCode, driveStatus, date, tracking, numBooks, numBoxes) {
     console.log("Drive Status: ", driveStatus);
-    const Shipment = getShipmentModel();
+    // const Shipment = getShipmentModel();
     const shipmentData = {
         date: date,
         organizer: "placeholder@test.com",
@@ -18,7 +18,7 @@ export async function saveNewShipment(driveCode, driveStatus, date, tracking, nu
         isFinal: false,
         isReceived: false,
     } 
-    const res = await fetch(BASE + `api/shipments/id/${0}`, {   // nonsense id number
+    const res = await fetch(`api/shipments/id/${0}`, {   // nonsense id number
         method: "POST",
         body: JSON.stringify(shipmentData),
     })
