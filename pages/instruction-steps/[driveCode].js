@@ -1,16 +1,20 @@
-import InstructionGroupCard from "../components/steps/InstructionGroup";
-import PageContainer from "../components/PageContainer";
+import InstructionGroupCard from "../../components/steps/InstructionGroup";
+import PageContainer from "../../components/PageContainer";
 import * as React from 'react';
 import Grid from "@mui/material/Unstable_Grid2";
 import Box from "@mui/material/Box";
-import dbConnect from '../lib/dbConnect'
-import getShipmentModel from "../models/Shipment.ts";
-import getBookDriveModel from "../models/BookDrive";
+import dbConnect from '../../lib/dbConnect'
+import getShipmentModel from "../../models/Shipment";
+import getBookDriveModel from "../../models/BookDrive";
 // import { ConnectingAirportsOutlined, PostAdd } from "@mui/icons-material";
-import { saveNewShipment } from "../db_functions/manageShipments";
-
-function Test(props) {
+import { saveNewShipment } from "../../db_functions/manageShipments";
+import Link from "next/link";
+import { getServerSession } from "next-auth";
+import authOptions from '../api/auth/[...nextauth]'
+function InstructionSteps(props) {
     // const driveName = JSON.parse(props.driveName);
+    console.log(props.error)
+    if (props.error) return (<div key={"hi"}><p>{`Something went wrong... ${props.error}`}</p><Link href="/dash-volunteer">Click to return to volunteer dashboard</Link></div>)
     const driveStatus = JSON.parse(props.driveStatus);
     const driveCode = JSON.parse(props.driveCode);
     let shipments = JSON.parse(props.shipments);
@@ -39,9 +43,9 @@ function Test(props) {
         
     );
 }
-export default Test
+export default InstructionSteps
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
     // write nother async function...
 
     // const getShipmentData = async (ids) => {
@@ -64,10 +68,20 @@ export async function getServerSideProps() {
     // }
 
     try {
+        const session = await getServerSession(context.req, context.res, authOptions)
+        if (!session) {
+            return {
+              redirect: {
+                destination: '/auth/login',
+                permanent: false
+              }
+            }
+          }
+        const driveCode = context.query.driveCode
         await dbConnect()
-        const driveCode = "M15-32";  // constant for now
         const BookDrive = getBookDriveModel();
         const currDrive = await BookDrive.findOne({driveCode: driveCode})
+        if (!currDrive) throw new Error(`no bookdrive found with code ${driveCode}`)
         //console.log(currDrive)
         const driveName = currDrive.driveName;
         const driveStatus = {
@@ -103,6 +117,7 @@ export async function getServerSideProps() {
         return { props: { driveName: JSON.stringify(driveName), driveCode: JSON.stringify(driveCode), driveStatus: JSON.stringify(driveStatus), shipments: JSON.stringify(shipments) } }
     } catch (error) {
       console.log(error)
-      return {props: {error: JSON.stringify(error)}}
+      console.log(error.message)
+      return {props: {error: error.message}}
     }
 }

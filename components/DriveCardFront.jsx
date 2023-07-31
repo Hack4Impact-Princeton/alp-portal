@@ -3,8 +3,7 @@ import * as React from 'react';
 import Box from "@mui/material/Box"
 import ProgressBar from "./ProgressBar";
 import Paper from "@mui/material/Paper"
-
-
+import Link from "next/link";
 
 export default function DriveCardFront(props) {
     console.log(props)
@@ -26,7 +25,7 @@ export default function DriveCardFront(props) {
                         <ProgressBar {...props}></ProgressBar>
                     </Grid>
                     <Grid item xs={4}>
-                        <a href="https://www.youtube.com/watch?v=4gBlND7UjFw" style={{ fontSize: '2vh' }}>View/Update Your Progress</a>
+                        <Link href={`/instruction-steps/${props.drive.driveCode}`} style={{ fontSize: '2vh' }}>View/Update Your Progress</Link>
                     </Grid>
                 </Grid>
 
