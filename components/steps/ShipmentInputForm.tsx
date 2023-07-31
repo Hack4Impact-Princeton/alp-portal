@@ -83,30 +83,30 @@ const ShipmentInputForm: React.FC<ShipmentInputFormProps> = ({driveCode, driveSt
             aria-describedby="shipment-input-modal"
         >
             <Box sx={styles.modal} >
-                <Typography textAlign="center" sx={{fontFamily:"Epilogue"}} variant="h4">Input Shipment Information</Typography>
+                <Typography sx={{fontFamily:"Epilogue"}} variant="h4">Input Shipment Information</Typography>
                 <Grid container sx={{ p: 2 }}>
                     <Grid item xs={6} sx={{pb: 2}}>
-                        <Grid container justifyContent={"center"}>
+                        <Grid container >
                             <Typography sx={{fontFamily:"Epilogue"}} variant="h5">Date Sent:</Typography>
                             <TextField sx={{fontFamily:"Epilogue"}} size="small" fullWidth={false} id="date-sent" variant="outlined" onChange={dateChange} sx={{pr:5}}/>
                         </Grid>
-                        <Grid container justifyContent={"center"}>
+                        <Grid container >
                             <Typography sx={{fontFamily:"Epilogue"}} variant="h5">Tracking Number:</Typography>
                             <TextField sx={{fontFamily:"Epilogue"}} size="small" fullWidth={false} id="date-sent" variant="outlined" onChange={trackingChange} sx={{pr:5}}/>
                         </Grid>
                     </Grid>    
                     <Grid item xs={6} sx={{ pb: 2 }}>
-                        <Grid container justifyContent={"center"}>
+                        <Grid container >
                             <Typography sx={{fontFamily:"Epilogue"}} variant="h5"># Books Collected:</Typography>
                             <TextField sx={{fontFamily:"Epilogue"}} size="small" id="books-collected" variant="outlined" onChange={booksChange} sx={{pr:5}}/>
                         </Grid>
-                        <Grid container justifyContent={"center"}>
+                        <Grid container >
                             <Typography sx={{fontFamily:"Epilogue"}} variant="h5"># Boxes Total:</Typography>
                             <TextField sx={{fontFamily:"Epilogue"}} size="small" id="boxes-collected" variant="outlined" onChange={boxesChange} sx={{pr:5}}/>
                         </Grid>
                     </Grid>
-                    <Grid xs={4}></Grid>
-                    <Grid container xs={4} direction="row" spacing={2}>
+                    <Grid xs={9}></Grid>
+                    <Grid container xs={3} direction="row" spacing={1}>
                         <Grid item><Button style={styles.btn} onClick={handleSave}>Save</Button></Grid>
                         <Grid item><Button style={styles.btn} onClick={() => {handleOpen(false)}}>Cancel</Button></Grid>
                     </Grid>

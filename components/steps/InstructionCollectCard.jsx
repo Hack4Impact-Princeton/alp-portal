@@ -111,7 +111,7 @@ function CollectBooksCard(props) {
       </Grid>
       <Grid item xs={4} sx={{ pb: 2 }}>
         <Typography variant="h5"># New Books Collected:</Typography>
-        <Typography variant="p">example: 50</Typography>
+        <Typography variant="p">example: 100</Typography>
       </Grid>
       <Grid item xs={8} sx={{ pb: 2 }}>
         <TextField size="small" fullWidth id="books-collected" variant="outlined" value={bookState} onChange={handleInput}/>
@@ -180,7 +180,8 @@ function CollectIntFeeCard(props) {
         </Typography>
       </Grid>
       <Grid item xs={4} sx={{ pb: 2 }}>
-        <Typography variant="h5">Update Funds Collected:</Typography>
+        <Typography variant="h5"># New Funds Collected:</Typography>
+        <Typography variant="p">example: 50</Typography>
       </Grid>
       <Grid item xs={8} sx={{ pb: 2 }}>
         <TextField size="small" fullWidth id="books-collected" variant="outlined" value={fundState} onChange={handleInput}/>
@@ -247,7 +248,8 @@ function CollectDomFeeCard(props) {
         </Typography>
       </Grid>
       <Grid item xs={4} sx={{ pb: 2 }}>
-        <Typography variant="h5">Update Books Collected:</Typography>
+        <Typography variant="h5"># New Funds Collected:</Typography>
+        <Typography variant="p">example: 50</Typography>
       </Grid>
       <Grid item xs={8} sx={{ pb: 2 }}>
         <TextField size="small" fullWidth id="books-collected" variant="outlined" value={fundState} onChange={handleInput}/>

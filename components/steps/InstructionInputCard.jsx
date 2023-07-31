@@ -95,7 +95,7 @@ function CardBody({ stepNum, value, handleChange, handleSubmit }) {
       <Grid item xs={11}>
       </Grid>
       <Grid item xs={1}>
-        <Button style={styles.btn} variant="contained" size="medium" onClick={handleSubmit}>
+        <Button style={styles.btn} variant="contained" size="large" onClick={handleSubmit}>
           Submit
         </Button>
       </Grid>
