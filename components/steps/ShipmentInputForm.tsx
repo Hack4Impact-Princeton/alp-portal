@@ -92,7 +92,7 @@ const ShipmentInputForm: React.FC<ShipmentInputFormProps> = ({driveCode, driveSt
                         </Grid>
                         <Grid container >
                             <Typography sx={{fontFamily:"Epilogue"}} variant="h5">Tracking Number:</Typography>
-                            <TextField sx={{fontFamily:"Epilogue"}} size="small" fullWidth={false} id="date-sent" variant="outlined" onChange={trackingChange} sx={{pr:5}}/>
+                            <TextField sx={{fontFamily:"Epilogue"}} size="small" fullWidth={false} id="tracking-num" variant="outlined" onChange={trackingChange} sx={{pr:5}}/>
                         </Grid>
                     </Grid>    
                     <Grid item xs={6} sx={{ pb: 2 }}>
