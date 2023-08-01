@@ -17,29 +17,36 @@ const PageContainer: React.FC<PageContainerProps> = ({fName, currPage}) => {
     }));
 
     let pageName = "";
+    let fontsize="";
     switch(currPage) {
         case "dash-volunteer": {
             pageName="Home"; 
+            fontsize="90px";
             break;
         }
         case "profile": {
             pageName="Profile";
+            fontsize="90px";
             break;
         }
         case "instruction-steps": {
             pageName="Organizer Steps";
+            fontsize="70px";
             break;
         }
         case "h4i-team": {
             pageName="The Developer Team";
+            fontsize="90px";
             break;
         }
         case "forum": {
             pageName="Forum";
+            fontsize="90px";
             break;
         }
         case "leaderboard": {
             pageName="Leaderboard";
+            fontsize="90px";
             break;
         }
     }
@@ -73,12 +80,12 @@ const PageContainer: React.FC<PageContainerProps> = ({fName, currPage}) => {
             </Box>
         </Grid>
         <Grid xs={12} sx={{
-            pl: '10vw',
+            pl: '15vw',
         }}>
             <Box sx={{
                 height: '12vh',
             }}></Box>
-            <h1 style={{ textAlign: "left", fontSize: "90px", paddingRight: 10 }}>{pageName}</h1>
+            <h1 style={{ textAlign: "left", fontSize: fontsize, paddingRight: 10 }}>{pageName}</h1>
         </Grid>
     </>);
 }

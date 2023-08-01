@@ -27,18 +27,20 @@ const DashVolunteer: NextPage<DashVolunteerProps> = ({ drives, account, error })
   if (account) {
     return (
       <Grid2>
-        <PageContainer fName={account.fname} currPage="dash-volunteer"></PageContainer>
+        <PageContainer fName={account.fname} currPage="dash-volunteer" ></PageContainer>
         {/* Necessary box for padding the page body, no overlap with Navbar */}
         <Box display="flex" flexDirection="column" sx={{
-          pl: 20,
-          pt: 5,
-          pr: 5,
+          pl: "15vw",
+          pt: "5vh",
+          pr: "5vw",
           width: '100%',
           justifyContent: "space-between"
         }}>
-          <div style={{ fontSize: '25px', textAlign: 'left', marginTop: '2vh' }}>Active Drives</div>
-          <Link href="volunteeraccounts/profile"> Click here to go to your profile
-          </Link>
+          <Grid2 sx={{pb:'5vh'}}>
+            <div style={{ fontSize: '25px', textAlign: 'left', marginTop: '2vh', paddingBottom:'2vh' }}>Active Drives</div>
+            <Link href="volunteeraccounts/profile" sx={{pb:10}}> Click here to go to your profile
+            </Link>
+          </Grid2>
           {drives && <Stack
             direction="column"
             justifyContent="center"

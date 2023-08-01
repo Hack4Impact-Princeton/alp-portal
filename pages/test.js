@@ -20,11 +20,11 @@ function Test(props) {
 
     return (
         <Grid>
-            <PageContainer fName="Ivy" currPage="test"></PageContainer>
+            <PageContainer fName="Ivy" currPage="instruction-steps"></PageContainer>
             <Box display="flex" flexDirection="column" sx={{
-                pl: 20,
-                pt: 5,
-                pr: 5,
+                pl: "15vw",
+                pt: "5vh",
+                pr: "5vw",
                 width: '100%',
                 justifyContent: "space-between"
                 }}>
