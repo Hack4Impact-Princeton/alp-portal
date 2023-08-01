@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
 import Box from '@mui/material/Box';
-import Navbar from '../components/Navbar';
 import PageContainer from '../components/PageContainer';
 import DriveCard from '../components/DriveCard'
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
@@ -11,26 +10,21 @@ import Link from 'next/link'
 import getVolunteerAccountModel, { VolunteerAccount } from '../models/VolunteerAccount';
 import { getSession } from 'next-auth/react';
 import { NextPage } from 'next';
-import { CustomSession, VolunteerUser } from '../types/NextauthUser';
-import getAdminAccountModel, { AdminAccount } from '../models/AdminAccount';
+import useDynamicPadding from '../lib/useDynamicPadding';
 
-type DashVolunteerProps = {
-  drives: BookDrive[] | null;
-  account: VolunteerAccount | null;
-  error: Error | null;
-}
-
-
-const DashVolunteer: NextPage<DashVolunteerProps> = ({ drives, account, error }) => {
+const DashVolunteer: NextPage<{drives: BookDrive[] | null, account: VolunteerAccount | null, error: Error | null}> = ({ drives, account, error }) => {
   console.log(account)
   console.log("drives", drives)
+
+  const leftPaddingValue = useDynamicPadding(635, 775, "29vw", "20vw", "15vw")
+
   if (account) {
     return (
       <Grid2>
         <PageContainer fName={account.fname} currPage="dash-volunteer" ></PageContainer>
         {/* Necessary box for padding the page body, no overlap with Navbar */}
         <Box display="flex" flexDirection="column" sx={{
-          pl: "15vw",
+          pl: leftPaddingValue,
           pt: "5vh",
           pr: "5vw",
           width: '100%',
@@ -38,13 +32,14 @@ const DashVolunteer: NextPage<DashVolunteerProps> = ({ drives, account, error })
         }}>
           <Grid2 sx={{pb:'5vh'}}>
             <div style={{ fontSize: '25px', textAlign: 'left', marginTop: '2vh', paddingBottom:'2vh' }}>Active Drives</div>
-            <Link href="volunteeraccounts/profile" sx={{pb:10}}> Click here to go to your profile
+            <Link href="volunteeraccounts/profile"> Click here to go to your profile
             </Link>
           </Grid2>
           {drives && <Stack
             direction="column"
             justifyContent="center"
-            spacing={10}>
+            spacing={10}
+            >
             {drives.map((drive) => (
               <DriveCard drive={drive}></DriveCard>
             ))}
