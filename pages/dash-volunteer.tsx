@@ -13,7 +13,6 @@ import { getSession } from 'next-auth/react';
 import { NextPage } from 'next';
 import { CustomSession, VolunteerUser } from '../types/NextauthUser';
 import getAdminAccountModel, { AdminAccount } from '../models/AdminAccount';
-
 type DashVolunteerProps = {
   drives: BookDrive[] | null;
   account: VolunteerAccount | null;
@@ -36,17 +35,18 @@ const DashVolunteer: NextPage<DashVolunteerProps> = ({ drives, account, error })
           width: '100%',
           justifyContent: "space-between"
         }}>
-          <div style={{ fontSize: '25px', textAlign: 'left', marginTop: '2vh' }}>Active Drives</div>
-          <Link href="volunteeraccounts/profile"> Click here to go to your profile
-          </Link>
+          <div style={{ fontSize: '25px', textAlign: 'left', marginTop: '2vh', marginBottom: '2vh' }}>Active Drives</div>
+          {/* <Link href="volunteeraccounts/profile"> Click here to go to your profile
+          </Link> */}
           {drives && <Stack
             direction="column"
             justifyContent="center"
-            spacing={10}>
+            spacing={6}>
             {drives.map((drive) => (
               <DriveCard drive={drive}></DriveCard>
             ))}
           </Stack>}
+          
         </Box>
         </Grid2>
     )
