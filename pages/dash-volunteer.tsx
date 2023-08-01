@@ -38,7 +38,7 @@ const DashVolunteer: NextPage<DashVolunteerProps> = ({ drives, account, error })
         }}>
           <Grid2 sx={{pb:'5vh'}}>
             <div style={{ fontSize: '25px', textAlign: 'left', marginTop: '2vh', paddingBottom:'2vh' }}>Active Drives</div>
-            <Link href="volunteeraccounts/profile" sx={{pb:10}}> Click here to go to your profile
+            <Link href="volunteeraccounts/profile"> Click here to go to your profile
             </Link>
           </Grid2>
           {drives && <Stack
