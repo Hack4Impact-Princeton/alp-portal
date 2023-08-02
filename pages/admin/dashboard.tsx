@@ -3,6 +3,7 @@ import { NextPage } from 'next/types'
 import getAdminAccountModel, { AdminAccount } from '../../models/AdminAccount'
 import getVolunteerAccountModel, { VolunteerAccount } from '../../models/VolunteerAccount';
 import getBookDriveModel, { BookDrive } from '../../models/BookDrive';
+import getShipmentModel, { Shipment } from '../../models/Shipment';
 import mongoose from 'mongoose';
 import { DataGrid, GridColDef, GridCellParams, GridRowParams } from '@mui/x-data-grid'
 import { BookDriveStatus } from '../../lib/enums';
@@ -17,6 +18,9 @@ import Button from '@mui/material/Button'
 import type { } from '@mui/x-data-grid/themeAugmentation';
 import { columnMenuStateInitializer } from '@mui/x-data-grid/internals';
 import styles from './adminTable.module.css'
+import CircularExclamationIcon from '../../components/CircularIconBad';
+import CircularIcon from '../../components/CircularIcon';
+import AdminSidebar from '../../components/AdminSidebar';
 // const theme = createTheme({
 //   components: {
 //     // Use `MuiDataGrid` on DataGrid, DataGridPro and DataGridPremium
@@ -33,16 +37,18 @@ import styles from './adminTable.module.css'
 type AdminDashboardProps = {
     account: AdminAccount;
     volunteers: VolunteerAccount[];
-    drives: BookDrive[];
+    // drives: BookDrive[];
     error: Error | null;
+    driveData: { drive: BookDrive, shipments: Shipment[] }[] | null
 }
-const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, drives, error }) => {
+const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, error, driveData }) => {
+    const drives = driveData?.map(driveDatum => driveDatum.drive)
     console.log(account)
     console.log(volunteers)
     console.log(drives)
 
     const [showSidebar, setShowsidebar] = useState(false)
-    const [sidebarDrive, setSidebarDrive] = useState<BookDrive | undefined>(drives.length != 0 ? drives[0] : undefined)
+    const [sidebarDriveDatum, setSideBarDriveData] = useState<{ drive: BookDrive, shipments: Shipment[] } | undefined>(driveData && driveData.length != 0 ? driveData[0] : undefined)
 
     const prelimColumns: GridColDef[] = [
         { field: 'driveName', headerName: 'Drive Name', width: 250 },
@@ -66,7 +72,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, dr
         return deadlineMap.get(country)!.getTime() - new Date().getTime() < (31 * 24 * 60 * 60 * 1000)
     }
     // ❗🕔 
-    const gridRows = drives.filter(drive => drive.status === BookDriveStatus.Active || BookDriveStatus.Cancelled).map(drive => {
+    const gridRows = drives?.filter(drive => drive.status === BookDriveStatus.Active || BookDriveStatus.Cancelled).map(drive => {
         let driveName = drive.driveName
         if (drive.status == BookDriveStatus.Cancelled) driveName = `❗ ${driveName}`
         if (isDeadlineApproaching(drive.country)) driveName = `🕔 ${driveName}`
@@ -75,28 +81,25 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, dr
 
     const handleDriveNameClick = (params: GridCellParams) => {
         if (params.field === 'driveName') {
-            const unsanitizedString = params.value as string 
-            console.log(unsanitizedString)
-            const specialChars = /^(\p{So}+)/gu
-            const midDriveName = unsanitizedString.replace(specialChars, '')
+            const preDriveName = params.value as string
+            const midDriveName = preDriveName.replace(/[^a-zA-Z0-9\s\p{P}]/gu, '')
             console.log(midDriveName)
             const driveName = midDriveName.trim()
-            console.log(driveName)
             setShowsidebar(true)
-            const sideDrive = drives.find(drive => drive.driveName === driveName)
+            const sideDrive = driveData?.find(driveDatum => driveDatum.drive.driveName === driveName)
             console.log(sideDrive)
-            setSidebarDrive(sideDrive) // I hope this doesn't get too slowly
+            setSideBarDriveData(sideDrive) // I hope this doesn't get too slowly
         }
     }
-    useEffect(() => {
-        console.log(showSidebar)
-        console.log(sidebarDrive)
-    }, [showSidebar])
+    // useEffect(() => {
+    //     console.log(showSidebar)
+    //     console.log(sidebarDriveDatum)
+    // }, [showSidebar])
 
-    useEffect(() => {
-        console.log(sidebarDrive)
-    }, [sidebarDrive])
-    console.log(gridRows.length)
+    // useEffect(() => {
+    //     console.log(sidebarDriveDatum)
+    // }, [sidebarDriveDatum])
+    // console.log(gridRows?.length)
 
     const setRowClassName = (params: GridRowParams) => {
         if (params.row.status === BookDriveStatus.Cancelled) return styles['cancelled-row'];
@@ -111,105 +114,19 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, dr
                     {volunteers && volunteers.map(volunteer => <p>{volunteer.email}</p>)}
                     {drives && drives.map(drive => <p>{drive.driveName}</p>)}
                 </div>}
-            <Box sx={{ height: "wrap-content", width: '80%' }}>
-                <DataGrid
-                    rows={gridRows}
-                    columns={gridColumns}
-                    initialState={{ pagination: { paginationModel: { pageSize: 10 }, }, }} pageSizeOptions={[10]}
-                    checkboxSelection
-                    disableRowSelectionOnClick
-                    onCellClick={handleDriveNameClick}
-                    getRowClassName={setRowClassName}
-                />
-            </Box>
-            {showSidebar && sidebarDrive &&
-                <Grid container direction="column" alignItems="center" spacing={2} sx={{
-                    position: 'fixed',
-                    top: 0,
-                    right: 0,
-                    width: '35%',
-                    minWidth: 300,
-                    height: '100%',
-                    background: 'lightgray',
-                    padding: '20px',
-                    boxSizing: 'border-box',
-                    overflowY: 'auto',
-                    transformOrigin: 'top right',
-                    transform: 'scale(1)',
-                    transition: 'transform 0.2s ease-in-out',
-                    '&.typing': {
-                        transform: 'scale(0.8)',
-                    },
-                }}>
-                    <Grid item>
-                        <Typography variant="h4" sx={{ color: "orange" }}>{sidebarDrive.driveName}</Typography>
-                    </Grid>
-                    <Grid item container direction="row" spacing={1} sx={{ justifyContent: "center" }}>
-                        <Grid item container direction="column" xs={6} sx={{ justifyContent: "center" }}>
-                            <ul>
-                                <li>
-                                    <Typography variant="body1">{statusMap.get(sidebarDrive.status)}</Typography>
-                                </li>
-                                <li>
-                                    <Typography variant="body1">{sidebarDrive.booksGoal === 500 ? "Half library" : "Full library"}</Typography>
-                                </li>
-                                <li>
-                                    <Typography variant="body1">{sidebarDrive.country}</Typography>
-                                </li>
-                            </ul>
-                        </Grid>
-                        <Grid item container direction="column" xs={6} sx={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
-                            <ul>
-                                <li>
-                                    <Typography variant="body1">{sidebarDrive.organizer}</Typography>
-                                </li>
-                                <li>
-                                    <Typography variant="body1">{deadlineMap.get(sidebarDrive.country)!.toLocaleDateString()}</Typography>
-                                </li>
-                            </ul>
-                        </Grid>
-                    </Grid>
-                    <Grid item container justifyContent="center" direction="row" spacing={1}>
-                        <Grid item>
-                            <Button variant="contained" sx={{backgroundColor: "orange", fontSize: 10, width: "fit-content"}}>Send automatic reminder</Button>
-                        </Grid>
-                        <Grid item>
-                            <Button variant="contained" sx={{backgroundColor: "orange", fontSize: 10}}>Compose custom message</Button>
-                        </Grid>
-                        {sidebarDrive.status == BookDriveStatus.Cancelled && <Grid item>
-                            <Button variant="contained" sx={{backgroundColor: "orange"}}>Reactivate Drive</Button>
-                        </Grid>}
-                    </Grid>
-                    <Grid item>
-                        <Typography variant="h5">Heading 2</Typography>
-                    </Grid>
-                    <Grid item>
-                        <TextareaAutosize minRows={3} cols={50} placeholder="Enter text here" />
-                    </Grid>
-                    <Grid item container justifyContent="center" spacing={1}>
-                        <Grid item>
-                            <Button variant="contained">Button 4</Button>
-                        </Grid>
-                        <Grid item>
-                            <Button variant="contained">Button 5</Button>
-                        </Grid>
-                        <Grid item>
-                            <Button variant="contained">Button 6</Button>
-                        </Grid>
-                    </Grid>
-                    <Grid item>
-                        <Typography variant="h5">Heading 3</Typography>
-                    </Grid>
-                    <Grid item>
-                        <Typography variant="h5">Subheading</Typography>
-                        <Typography variant="body1">Some content here</Typography>
-                    </Grid>
-                    <Grid item>
-                        <Typography variant="h5">Another Subheading</Typography>
-                        <Typography variant="body1">More content here</Typography>
-                    </Grid>
-                </Grid>
-            }
+            {account && gridRows && gridColumns &&
+                <Box sx={{ height: "wrap-content", width: '80%' }}>
+                    <DataGrid
+                        rows={gridRows}
+                        columns={gridColumns}
+                        initialState={{ pagination: { paginationModel: { pageSize: 10 }, }, }} pageSizeOptions={[10]}
+                        checkboxSelection
+                        disableRowSelectionOnClick
+                        onCellClick={handleDriveNameClick}
+                        getRowClassName={setRowClassName}
+                    />
+                </Box>}
+            {showSidebar && sidebarDriveDatum && <AdminSidebar drive={sidebarDriveDatum.drive} shipments={sidebarDriveDatum.shipments}/>}
         </>)
 }
 
@@ -235,10 +152,21 @@ export const getServerSideProps = async (context: any) => {
         const volunteers = await Promise.all(vPromises) as VolunteerAccount[]
         console.log("volunteers", volunteers)
         const BookDrive: mongoose.Model<BookDrive> = getBookDriveModel()
-        const driveList = account.driveIds
-        const bPromises = driveList.map(driveId => BookDrive.findOne({ driveCode: driveId }))
-        const drives = await Promise.all(bPromises) as BookDrive[]
-        return { props: { error: null, account: JSON.parse(JSON.stringify(account)), volunteers: JSON.parse(JSON.stringify(volunteers)), drives: JSON.parse(JSON.stringify(drives)) } }
+        // const driveList = account.driveIds
+        // const bPromises = driveList.map(driveId => BookDrive.findOne({ driveCode: driveId }))
+        // const drives = await Promise.all(bPromises) as BookDrive[]
+        const ShipmentModel: mongoose.Model<Shipment> = getShipmentModel()
+
+        const driveDataPromises: Promise<{ drive: BookDrive, shipments: Shipment[] }>[] = account.driveIds.map(async (driveId) => {
+            const drive = await BookDrive.findOne({ driveCode: driveId }) as BookDrive
+            if (!drive) throw new Error(`no bookdrive found with code ${driveId}`)
+            const shipmentPromises = drive.fl.shipments.map(async (shipmentId) => await ShipmentModel.findById(shipmentId))
+            const shipments = await Promise.all(shipmentPromises) as Shipment[]
+            return { drive: drive, shipments: shipments }
+        })
+        const driveData = await Promise.all(driveDataPromises)
+        console.log(driveData)
+        return { props: { error: null, account: JSON.parse(JSON.stringify(account)), volunteers: JSON.parse(JSON.stringify(volunteers)), driveData: JSON.parse(JSON.stringify(driveData)) } }
     } catch (e: Error | any) {
         const errorStr = e.message === "Cannot read properties of null (reading 'user')" ? "You must login before accessing this page" : `${e}`
         return { props: { error: errorStr, account: null, drives: null, volunteers: null } }
