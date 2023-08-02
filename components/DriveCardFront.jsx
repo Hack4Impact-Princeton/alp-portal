@@ -25,7 +25,6 @@ export default function DriveCardFront(props) {
                     <Grid item xs={11}>
                         <ProgressBar {...props}></ProgressBar>
                     </Grid>
-
                     <Grid item style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%", height: "wrap-content" }}>
                         <a href="https://www.youtube.com/watch?v=4gBlND7UjFw" style={{ fontSize: '2vh' }}>View/Update Your Progress</a>
                         <CircularIIcon flipCard={props.flipCard}/>

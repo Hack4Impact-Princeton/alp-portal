@@ -2,9 +2,13 @@ import TeamMember from '../components/TeamMember'
 import Grid from '@mui/material/Unstable_Grid2';
 import { NextPage } from 'next';
 import Navbar from '../components/Navbar';
+import useDynamicPadding from '../lib/useDynamicPadding';
+
 const TeamPage: NextPage = () => {
+    const leftPaddingValue = useDynamicPadding(635, 850, "29vw", "20vw", "12vw")
+
     return(
-        <div className='teampage'>
+        <div className='teampage' style={{paddingLeft: leftPaddingValue}}>
             <Navbar active="h4i-team" />
             <h1>The Hack4Impact Team</h1>
             <h2>Spring 2023</h2>

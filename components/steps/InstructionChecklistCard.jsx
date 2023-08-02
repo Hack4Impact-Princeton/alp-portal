@@ -1,31 +1,29 @@
 import { useState } from 'react';
 import Box from '@mui/material/Box';
-import { Typography, Checkbox, FormControlLabel } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
+import { Typography, Checkbox, FormControlLabel, Grid } from '@mui/material';
+//import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 
 // A generic type of card that would go within an InstructionGroup
 export default function InstructionChecklistCard(props) {
-    const _switchContent = () => {
-        switch (props.stepNum) {
-            case 1: 
-                return(
-                <> 
-                <StepOneCard
-                    driveCode={props.driveCode}
-                    info={props.driveStatus.gettingStarted}> 
-                </StepOneCard> 
-                </>);
-            case 5: 
-                return(
-                <>
-                <StepFiveCard
-                    driveCode={props.driveCode}
-                    info = {props.driveStatus.prepareToShip}> 
-                </StepFiveCard>
-                </>);
-            default: 
-        }
+    let cardContent = <></>;
+    switch (props.stepNum) {
+        case 1: 
+            cardContent=
+            <StepOneCard
+                driveCode={props.driveCode}
+                info={props.driveStatus.gettingStarted}> 
+            </StepOneCard> 
+            break;
+        case 5: 
+            cardContent=
+            <StepFiveCard
+                driveCode={props.driveCode}
+                info = {props.driveStatus.prepareToShip}> 
+            </StepFiveCard>
+            break;
+        default: 
     }
+    
     return (
         <Grid
           sx={{
@@ -38,13 +36,10 @@ export default function InstructionChecklistCard(props) {
           minWidth={"50%"}
           backgroundColor="#F5F5F5"
         >
-        <Grid item xs={12}>
-            <Typography variant="h4">
-              <span>{props.heading}</span>
-            </Typography>
-        </Grid>
-        {_switchContent()}
-    </Grid>)
+        {cardContent}
+        
+    </Grid>
+    );
 }
 
 // 1: Read Collection Guidelines
@@ -72,14 +67,23 @@ function StepOneCard(props) {
         }
     }
     return(
-        <Grid container alignItems="center" spacing={0} sx={{ p: 5 }}>
-            <Grid item sx={{ pb: 5 }}>
-                <span>Click here to view the guidelines.</span>
+        <Grid container alignItems="center" sx={{ p: 5 }}>
+            <Grid item xs={12} sx ={{ pb: 4 }}>
+                <Typography variant="h4">
+                    <span>Read the Book Collection Guidelines</span> 
+                </Typography>
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={12} sx={{ pb: 5 }}>
+                <a href="https://www.youtube.com/watch?v=s4Ow55AbdCg&ab_channel=HYBELABELS">Click here to view the guidelines.</a>
+            </Grid>
+            <Grid item xs={12}>
                 {currState      // default render checked or not
-                ? <FormControlLabel control={<Checkbox defaultChecked/>} onChange={handleTermsCheck} label="I have read and understood the collection guidelines." />
-                : <FormControlLabel control={<Checkbox />} onChange={handleTermsCheck} label="I have read and understood the collection guidelines." />
+                ? <FormControlLabel sx={{
+                    '.MuiFormControlLabel-label':{fontFamily:"Epilogue"},
+                    }}control={<Checkbox sx={{color:"#FE9834", '&.Mui-checked': {color: "#FE9834",},}} defaultChecked/>} onChange={handleTermsCheck} label="I have read and understood the collection guidelines." />
+                : <FormControlLabel sx={{
+                    '.MuiFormControlLabel-label':{fontFamily:"Epilogue"},
+                    }}control={<Checkbox sx={{color:"#FE9834", '&.Mui-checked': {color: "#FE9834",},}} />}onChange={handleTermsCheck} label="I have read and understood the collection guidelines." />
                 }
                 
             </Grid> 
@@ -93,6 +97,7 @@ function StepFiveCard(props) {
     const [collectedTape, setCollectedTape] = useState(props.info.materials.tape);
     const [collectedLabels, setCollectedLabels] = useState(props.info.materials.mailingLabels);
     const [collectedExtraBoard, setCollectedExtraBoard] = useState(props.info.materials.extraCardboard);
+    
 
     const handleClick = async(boxNum) => {
         try {
@@ -143,28 +148,49 @@ function StepFiveCard(props) {
 
     return(
         <Grid container alignItems="center" spacing={0} sx={{ p: 5 }}>
+            <Grid item xs={12} sx ={{ pb: 4 }}>
+                <Typography variant="h4">
+                    <span>Gather Shipping Materials</span> 
+                </Typography>
+            </Grid>
                 <Grid xs={6}>
                     {collectedBoxes
-                        ?   <FormControlLabel control={<Checkbox defaultChecked/>} onChange={() => handleClick(0)} label="Cardboard boxes"></FormControlLabel>
-                        :   <FormControlLabel control={<Checkbox/>} onChange={() => handleClick(0)} label="Cardboard boxes"></FormControlLabel>
+                        ?   <FormControlLabel sx={{
+                            '.MuiFormControlLabel-label':{fontFamily:"Epilogue"},
+                            }}control={<Checkbox sx={{color:"#FE9834", '&.Mui-checked': {color: "#FE9834",},}} defaultChecked/>} onChange={() => handleClick(0)} label="Cardboard boxes"></FormControlLabel>
+                        :   <FormControlLabel sx={{
+                            '.MuiFormControlLabel-label':{fontFamily:"Epilogue"},
+                            }}control={<Checkbox sx={{color:"#FE9834", '&.Mui-checked': {color: "#FE9834",},}} />} onChange={() => handleClick(0)} label="Cardboard boxes"></FormControlLabel>
                     }
                     </Grid>   
                 <Grid xs={6}>
                     {collectedTape
-                        ? <FormControlLabel control={<Checkbox defaultChecked/>} onChange={() => handleClick(1)} label="Packaging tape"></FormControlLabel>
-                        : <FormControlLabel control={<Checkbox/>} onChange={() => handleClick(1)} label="Packaging tape"></FormControlLabel>
+                        ? <FormControlLabel sx={{
+                            '.MuiFormControlLabel-label':{fontFamily:"Epilogue"},
+                            }}control={<Checkbox sx={{color:"#FE9834", '&.Mui-checked': {color: "#FE9834",},}} defaultChecked/>} onChange={() => handleClick(1)} label="Packaging tape"></FormControlLabel>
+                        : <FormControlLabel sx={{
+                            '.MuiFormControlLabel-label':{fontFamily:"Epilogue"},
+                            }}control={<Checkbox sx={{color:"#FE9834", '&.Mui-checked': {color: "#FE9834",},}}/>} onChange={() => handleClick(1)} label="Packaging tape"></FormControlLabel>
                     }
                 </Grid> 
                 <Grid xs={6}>
                     {collectedLabels
-                        ? <FormControlLabel control={<Checkbox defaultChecked/>} onChange={() => handleClick(2)} label="Mailing Labels"></FormControlLabel>
-                        : <FormControlLabel control={<Checkbox/>} onChange={() => handleClick(2)} label="Mailing Labels"></FormControlLabel>
+                        ? <FormControlLabel sx={{
+                            '.MuiFormControlLabel-label':{fontFamily:"Epilogue"},
+                            }}control={<Checkbox sx={{color:"#FE9834", '&.Mui-checked': {color: "#FE9834",},}} defaultChecked/>} onChange={() => handleClick(2)} label="Mailing Labels"></FormControlLabel>
+                        : <FormControlLabel sx={{
+                            '.MuiFormControlLabel-label':{fontFamily:"Epilogue"},
+                            }}control={<Checkbox sx={{color:"#FE9834", '&.Mui-checked': {color: "#FE9834",},}} />}onChange={() => handleClick(2)} label="Mailing Labels"></FormControlLabel>
                     }
                 </Grid>  
                 <Grid xs={6}> 
                     {collectedExtraBoard
-                        ? <FormControlLabel control={<Checkbox defaultChecked/>} onChange={() => handleClick(3)} label="Extra cardboard"></FormControlLabel>
-                        : <FormControlLabel control={<Checkbox/>} onChange={() => handleClick(3)} label="Extra cardboard"></FormControlLabel>
+                        ? <FormControlLabel sx={{
+                            '.MuiFormControlLabel-label':{fontFamily:"Epilogue"},
+                            }}control={<Checkbox sx={{color:"#FE9834", '&.Mui-checked': {color: "#FE9834",},}} defaultChecked/>} onChange={() => handleClick(3)} label="Extra cardboard"></FormControlLabel>
+                        : <FormControlLabel sx={{
+                            '.MuiFormControlLabel-label':{fontFamily:"Epilogue"},
+                            }}control={<Checkbox sx={{color:"#FE9834", '&.Mui-checked': {color: "#FE9834",},}} />} onChange={() => handleClick(3)} label="Extra cardboard"></FormControlLabel>
                     }
                     
                 </Grid> 
