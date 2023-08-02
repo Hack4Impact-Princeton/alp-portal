@@ -4,7 +4,8 @@ import Button, { ButtonProps } from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import InboxIcon from '@mui/icons-material/Inbox';
 import Navbar from '../components/Navbar'
-import { getSession, signOut } from "next-auth/react"
+import { signOut } from "next-auth/react"
+import useDynamicPadding from '../lib/useDynamicPadding';
 
 type PageContainerProps = {
     fName: String;
@@ -12,6 +13,7 @@ type PageContainerProps = {
 }
 
 const PageContainer: React.FC<PageContainerProps> = ({fName, currPage}) => {
+    const leftPaddingValue = useDynamicPadding(635, 775, "29vw", "20vw", "15vw")
     const WhiteTextButton = styled(Button)<ButtonProps>(() => ({
         color: 'white',
     }));
@@ -80,7 +82,7 @@ const PageContainer: React.FC<PageContainerProps> = ({fName, currPage}) => {
             </Box>
         </Grid>
         <Grid xs={12} sx={{
-            pl: '15vw',
+            pl: leftPaddingValue,
         }}>
             <Box sx={{
                 height: '12vh',

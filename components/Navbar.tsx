@@ -28,6 +28,8 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                     alignContent: 'space-evenly',
                     justifyContent: 'center',
                     width: '7vw',
+                    minWidth: "90px",
+                    marginRight: 95
                 }
             }}
             PaperProps={{
