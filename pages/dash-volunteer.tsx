@@ -10,6 +10,7 @@ import Link from 'next/link'
 import getVolunteerAccountModel, { VolunteerAccount } from '../models/VolunteerAccount';
 import { getSession } from 'next-auth/react';
 import { NextPage } from 'next';
+
 import useDynamicPadding from '../lib/useDynamicPadding';
 
 const DashVolunteer: NextPage<{drives: BookDrive[] | null, account: VolunteerAccount | null, error: Error | null}> = ({ drives, account, error }) => {
@@ -30,20 +31,20 @@ const DashVolunteer: NextPage<{drives: BookDrive[] | null, account: VolunteerAcc
           width: '100%',
           justifyContent: "space-between"
         }}>
-          <Grid2 sx={{pb:'5vh'}}>
-            <div style={{ fontSize: '25px', textAlign: 'left', marginTop: '2vh', paddingBottom:'2vh' }}>Active Drives</div>
-            <Link href="volunteeraccounts/profile"> Click here to go to your profile
-            </Link>
-          </Grid2>
+
+          <div style={{ fontSize: '25px', textAlign: 'left', marginTop: '2vh', marginBottom: '2vh' }}>Active Drives</div>
+          {/* <Link href="volunteeraccounts/profile"> Click here to go to your profile
+          </Link> */}
           {drives && <Stack
             direction="column"
             justifyContent="center"
-            spacing={10}
-            >
+            spacing={6}>
+
             {drives.map((drive) => (
               <DriveCard drive={drive}></DriveCard>
             ))}
           </Stack>}
+          
         </Box>
         </Grid2>
     )
