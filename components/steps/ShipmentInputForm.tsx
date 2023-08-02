@@ -92,17 +92,17 @@ const ShipmentInputForm: React.FC<ShipmentInputFormProps> = ({driveCode, driveSt
                         </Grid>
                         <Grid container >
                             <Typography sx={{fontFamily:"Epilogue"}} variant="h5">Tracking Number:</Typography>
-                            <TextField sx={{fontFamily:"Epilogue", pr: 5}} size="small" fullWidth={false} id="tracking-num" variant="outlined" onChange={trackingChange} />
+                            <TextField sx={{fontFamily:"Epilogue", pr: 5}} size="small" fullWidth={false} id="tracking-num" variant="outlined" onChange={trackingChange}/>
                         </Grid>
                     </Grid>    
                     <Grid item xs={6} sx={{ pb: 2 }}>
                         <Grid container >
                             <Typography sx={{fontFamily:"Epilogue"}} variant="h5"># Books Collected:</Typography>
-                            <TextField sx={{fontFamily:"Epilogue", pr: 5}} size="small" id="books-collected" variant="outlined" onChange={booksChange} />
+                            <TextField sx={{fontFamily:"Epilogue"}} size="small" id="books-collected" variant="outlined" onChange={booksChange} />
                         </Grid>
                         <Grid container >
-                            <Typography sx={{fontFamily:"Epilogue"}} variant="h5"># Boxes Total:</Typography>
-                            <TextField sx={{fontFamily:"Epilogue", pr: 5}} size="small" id="boxes-collected" variant="outlined" onChange={boxesChange}/>
+                            <Typography sx={{fontFamily:"Epilogue", pr: 5}} variant="h5"># Boxes Total:</Typography>
+                            <TextField sx={{fontFamily:"Epilogue", pr: 5}} size="small" id="boxes-collected" variant="outlined" onChange={boxesChange} />
                         </Grid>
                     </Grid>
                     <Grid xs={9}></Grid>
