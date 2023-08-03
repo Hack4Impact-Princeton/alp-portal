@@ -6,40 +6,21 @@ import getBookDriveModel, { BookDrive } from '../../models/BookDrive';
 import getShipmentModel, { Shipment } from '../../models/Shipment';
 import mongoose from 'mongoose';
 import { DataGrid, GridColDef, GridCellParams, GridRowParams } from '@mui/x-data-grid'
-import { BookDriveStatus } from '../../lib/enums';
-import { useState, useEffect } from 'react';
+import { BookDriveStatus, deadlineMap } from '../../lib/enums';
+import { useState, useRef  } from 'react';
 import Box from '@mui/material/Box'
-import { deadlineMap, statusMap } from '../../lib/enums';
-import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
-import TextareaAutosize from '@mui/material/TextareaAutosize';
-import Button from '@mui/material/Button'
-// When using TypeScript 4.x and above
+import useClickOutside from '../../lib/useClickOutside';
 import type { } from '@mui/x-data-grid/themeAugmentation';
-import { columnMenuStateInitializer } from '@mui/x-data-grid/internals';
 import styles from './adminTable.module.css'
-import CircularExclamationIcon from '../../components/CircularIconBad';
-import CircularIcon from '../../components/CircularIcon';
 import AdminSidebar from '../../components/AdminSidebar';
-// const theme = createTheme({
-//   components: {
-//     // Use `MuiDataGrid` on DataGrid, DataGridPro and DataGridPremium
-//     MuiDataGrid: {
-//       styleOverrides: {
-//         root: {
-//           backgroundColor: 'red',
-//         },
-//       },
-//     },
-//   },
-// });
+
 
 type AdminDashboardProps = {
     account: AdminAccount;
     volunteers: VolunteerAccount[];
     // drives: BookDrive[];
     error: Error | null;
-    driveData: { drive: BookDrive, shipments: Shipment[] }[] | null
+    driveData: { drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount }[] | null
 }
 const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, error, driveData }) => {
     const drives = driveData?.map(driveDatum => driveDatum.drive)
@@ -47,8 +28,8 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, er
     console.log(volunteers)
     console.log(drives)
 
-    const [showSidebar, setShowsidebar] = useState(false)
-    const [sidebarDriveDatum, setSideBarDriveData] = useState<{ drive: BookDrive, shipments: Shipment[] } | undefined>(driveData && driveData.length != 0 ? driveData[0] : undefined)
+    const [showSidebar, setShowSidebar] = useState(false)
+    const [sidebarDriveDatum, setSideBarDriveData] = useState<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount } | undefined>(driveData && driveData.length != 0 ? driveData[0] : undefined)
 
     const prelimColumns: GridColDef[] = [
         { field: 'driveName', headerName: 'Drive Name', width: 250 },
@@ -85,21 +66,17 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, er
             const midDriveName = preDriveName.replace(/[^a-zA-Z0-9\s\p{P}]/gu, '')
             console.log(midDriveName)
             const driveName = midDriveName.trim()
-            setShowsidebar(true)
             const sideDrive = driveData?.find(driveDatum => driveDatum.drive.driveName === driveName)
             console.log(sideDrive)
             setSideBarDriveData(sideDrive) // I hope this doesn't get too slowly
+            setShowSidebar(true)
         }
     }
-    // useEffect(() => {
-    //     console.log(showSidebar)
-    //     console.log(sidebarDriveDatum)
-    // }, [showSidebar])
+    const sidebarRef = useRef<HTMLDivElement>(null);
 
-    // useEffect(() => {
-    //     console.log(sidebarDriveDatum)
-    // }, [sidebarDriveDatum])
-    // console.log(gridRows?.length)
+    useClickOutside(sidebarRef, () => {
+        setShowSidebar(false);
+    });
 
     const setRowClassName = (params: GridRowParams) => {
         if (params.row.status === BookDriveStatus.Cancelled) return styles['cancelled-row'];
@@ -111,8 +88,8 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, er
             {account &&
                 <div>
                     {account && <p>{account.fname} {account.lname}</p>}
-                    {volunteers && volunteers.map(volunteer => <p>{volunteer.email}</p>)}
-                    {drives && drives.map(drive => <p>{drive.driveName}</p>)}
+                    {volunteers && volunteers.map(volunteer => <p key={volunteer.email}>{volunteer.email}</p>)}
+                    {drives && drives.map(drive => <p key={drive.driveCode}>{drive.driveName}</p>)}
                 </div>}
             {account && gridRows && gridColumns &&
                 <Box sx={{ height: "wrap-content", width: '80%' }}>
@@ -126,7 +103,21 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, er
                         getRowClassName={setRowClassName}
                     />
                 </Box>}
-            {showSidebar && sidebarDriveDatum && <AdminSidebar drive={sidebarDriveDatum.drive} shipments={sidebarDriveDatum.shipments}/>}
+            {sidebarDriveDatum && <div ref={sidebarRef} style={{
+                position: 'fixed',
+                top: 0,
+                right: 0,
+                height: '100%',
+                overflowY: 'scroll',
+                background: '#F5F5F5',
+                padding: '15px',
+                boxSizing: 'border-box',
+                transformOrigin: 'top right',
+                transform: 'scale(1)',
+                transition: 'width .4s ease',
+                width: showSidebar ? 'calc(35% + 20px)' : 0
+            }}><AdminSidebar volunteer={sidebarDriveDatum.volunteer} drive={sidebarDriveDatum.drive} shipments={sidebarDriveDatum.shipments} />
+            </div>}
         </>)
 }
 
@@ -157,17 +148,20 @@ export const getServerSideProps = async (context: any) => {
         // const drives = await Promise.all(bPromises) as BookDrive[]
         const ShipmentModel: mongoose.Model<Shipment> = getShipmentModel()
 
-        const driveDataPromises: Promise<{ drive: BookDrive, shipments: Shipment[] }>[] = account.driveIds.map(async (driveId) => {
+        const driveDataPromises: Promise<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount }>[] = account.driveIds.map(async (driveId) => {
             const drive = await BookDrive.findOne({ driveCode: driveId }) as BookDrive
             if (!drive) throw new Error(`no bookdrive found with code ${driveId}`)
             const shipmentPromises = drive.fl.shipments.map(async (shipmentId) => await ShipmentModel.findById(shipmentId))
             const shipments = await Promise.all(shipmentPromises) as Shipment[]
-            return { drive: drive, shipments: shipments }
+            const volunteer = await VolunteerAccount.findOne({ fname: drive.organizer.split(" ")[0], lname: drive.organizer.split(" ")[1] }) as VolunteerAccount
+            if (!volunteer) throw new Error(`no volunteer found with name ${drive.organizer}`)
+            return { drive: drive, shipments: shipments, volunteer: volunteer }
         })
         const driveData = await Promise.all(driveDataPromises)
         console.log(driveData)
         return { props: { error: null, account: JSON.parse(JSON.stringify(account)), volunteers: JSON.parse(JSON.stringify(volunteers)), driveData: JSON.parse(JSON.stringify(driveData)) } }
     } catch (e: Error | any) {
+        console.log(e)
         const errorStr = e.message === "Cannot read properties of null (reading 'user')" ? "You must login before accessing this page" : `${e}`
         return { props: { error: errorStr, account: null, drives: null, volunteers: null } }
     }

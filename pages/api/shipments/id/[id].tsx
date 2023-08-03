@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     query: { id },
     method,
   } = req
-
+  console.log("shipmentid", id)
   await dbConnect()
   const Shipment: mongoose.Model<Shipment> = getShipmentModel();
 
@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       try {
         /* get shipment id and update */
         const update = JSON.parse(req.body)
-        const shipment = await Shipment.findOneAndUpdate({ _id: id }, update, {
+        const shipment = await Shipment.findOneAndUpdate({ id: id }, update, {
           new: true,
           runValidators: true,
         })
