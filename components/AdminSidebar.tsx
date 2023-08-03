@@ -8,8 +8,9 @@ import { BookDriveStatus } from "../lib/enums"
 import { statusMap } from "../lib/enums"
 import { deadlineMap } from "../lib/enums"
 import TextareaAutosize from "@mui/material/TextareaAutosize"
-const AdminSidebar: React.FC<{drive: BookDrive, shipments: Shipment[]}> = ({drive, shipments}) => {
-    const {status, organizer, driveName, driveCode, country, completedDate, startDate, mailDate, fl, pts, booksGoal, gs, cb} = drive
+import Link from 'next/link'
+const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[] }> = ({ drive, shipments }) => {
+    const { status, organizer, driveName, driveCode, country, completedDate, startDate, mailDate, fl, pts, booksGoal, gs, cb } = drive
     return (
         <Grid container direction="column" alignItems="center" spacing={1} sx={{
             position: 'fixed',
@@ -66,11 +67,19 @@ const AdminSidebar: React.FC<{drive: BookDrive, shipments: Shipment[]}> = ({driv
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid item container justifyContent="center" direction="column">
-                <Button variant="contained" sx={{marginBottom: 1, backgroundColor: "#F3D39A", fontSize: 13, fontWeight: 600, color: '#5F5F5F', width: "56%" }}>Send automatic reminder</Button>
-                <Button variant="contained" sx={{marginBottom: 1, backgroundColor: "#F3D39A", fontWeight: 600, color: '#5F5F5F', fontSize: 13, width: "56%" }}>Compose custom message</Button>
+            <Grid item container justifyContent="space-between" direction="row" width="100%" height="wrap-content">
+                <Button variant="contained" sx={{
+                    marginBottom: 1, backgroundColor: "#F3D39A", "&:hover": {
+                        backgroundColor: "#D3A874", // Change this to a slightly darker shade of the background color.
+                    }, fontSize: 11, fontWeight: 600, color: '#5F5F5F', width: "49%"
+                }}>Send automatic reminder</Button>
+                <Link href="/admin/broadcast"><Button variant="contained" sx={{
+                    marginBottom: 1, backgroundColor: "#F3D39A", "&:hover": {
+                        backgroundColor: "#D3A874", // Change this to a slightly darker shade of the background color.
+                    }, fontWeight: 600, color: '#5F5F5F', fontSize: 11, width: "49%"
+                }}>Compose custom message</Button></Link>
                 {status == BookDriveStatus.Cancelled &&
-                    <Button variant="contained" sx={{marginBottom: 1, backgroundColor: "#F3D39A", fontSize: 13, fontWeight: 600, color: '#5F5F5F', width: "56%" }}>Reactivate Drive</Button>
+                    <Button variant="contained" sx={{ marginBottom: 1, backgroundColor: "#F3D39A", fontSize: 9, fontWeight: 600, color: '#5F5F5F', width: "56%" }}>Reactivate Drive</Button>
                 }
             </Grid>
             {status == BookDriveStatus.Cancelled && <Grid item width={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
