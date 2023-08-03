@@ -7,7 +7,7 @@ import getShipmentModel, { Shipment } from '../../models/Shipment';
 import mongoose from 'mongoose';
 import { DataGrid, GridColDef, GridCellParams, GridRowParams } from '@mui/x-data-grid'
 import { BookDriveStatus, deadlineMap } from '../../lib/enums';
-import { useState, useRef  } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Box from '@mui/material/Box'
 import useClickOutside from '../../lib/useClickOutside';
 import type { } from '@mui/x-data-grid/themeAugmentation';
@@ -30,7 +30,30 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, er
 
     const [showSidebar, setShowSidebar] = useState(false)
     const [sidebarDriveDatum, setSideBarDriveData] = useState<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount } | undefined>(driveData && driveData.length != 0 ? driveData[0] : undefined)
-
+    const [, setState] = useState(false)
+    
+    const updateBookDriveStatus = async (driveCode: string, status: number): Promise<void> => {
+        try {
+            const res = await fetch(`/api/bookDrive/${driveCode}`, {
+                method: "PUT",
+                body: JSON.stringify({ status: status })
+            })
+            if (!res.ok) {
+                alert("updating the status failed")
+                throw new Error("updating the status failed")
+            }
+            const resJson = await res.json()
+            console.log(resJson.data)
+            const modifiedDrive = driveData?.find(driveDatum => driveDatum.drive.driveCode === resJson.data.driveCode)
+            if (!modifiedDrive) throw new Error("something went wrong - Internal Server Error")
+            console.log(modifiedDrive)
+            modifiedDrive!.drive.status = status
+            setState(prev => !prev)
+            alert("drive marked as active successfully")
+        } catch (e: Error | any) {
+            console.error(e)
+        }
+    }
     const prelimColumns: GridColDef[] = [
         { field: 'driveName', headerName: 'Drive Name', width: 250 },
         { field: 'size', headerName: "Size", width: 40 },
@@ -91,7 +114,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, er
                     {volunteers && volunteers.map(volunteer => <p key={volunteer.email}>{volunteer.email}</p>)}
                     {drives && drives.map(drive => <p key={drive.driveCode}>{drive.driveName}</p>)}
                 </div>}
-            {account && gridRows && gridColumns &&
+            {account && gridRows && gridColumns && driveData &&
                 <Box sx={{ height: "wrap-content", width: '80%' }}>
                     <DataGrid
                         rows={gridRows}
@@ -116,7 +139,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, er
                 transform: 'scale(1)',
                 transition: 'width .4s ease',
                 width: showSidebar ? 'calc(35% + 20px)' : 0
-            }}><AdminSidebar volunteer={sidebarDriveDatum.volunteer} drive={sidebarDriveDatum.drive} shipments={sidebarDriveDatum.shipments} />
+            }}><AdminSidebar updateBookDriveStatus={updateBookDriveStatus} volunteer={sidebarDriveDatum.volunteer} drive={sidebarDriveDatum.drive} shipments={sidebarDriveDatum.shipments} />
             </div>}
         </>)
 }

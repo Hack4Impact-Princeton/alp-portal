@@ -15,7 +15,7 @@ import UpCaret from "./UpCaret"
 import DownCaret from "./DownCaret"
 import { getStates } from "../lib/enums"
 
-const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount }> = ({ drive, shipments, volunteer }) => {
+const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount, updateBookDriveStatus: (driveCode: string, status: number) => Promise<void> }> = ({ drive, shipments, volunteer, updateBookDriveStatus }) => {
     const { status, organizer, driveName, driveCode, country, completedDate, startDate, mailDate, fl, pts, booksGoal, gs, cb } = drive
     const [showReactivationReq, setShowReactivationReq] = useState(false)
     const [showUpdateHistory, setShowUpdateHistory] = useState(false)
@@ -40,6 +40,7 @@ const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], voluntee
             console.error(e)
         }
     }
+    
     const loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 
     return (
@@ -112,7 +113,7 @@ const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], voluntee
                         </Grid>
                         <Grid item display="flex" flexDirection="row" justifyContent="center" alignItems="center">
                             <Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" }, marginRight: 1 }}>Reply</Button>
-                            <Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" }, marginRight: 1 }}>Accept</Button>
+                            <Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" }, marginRight: 1 }} onClick={() => updateBookDriveStatus(driveCode, BookDriveStatus.Active)}>Accept</Button>
                             <Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" } }}>Reject</Button>
                         </Grid></div></>}
                 <Grid container spacing={1} sx={{ display: "flex", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", paddingX: 1 }}>
