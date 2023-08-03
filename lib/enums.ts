@@ -205,11 +205,11 @@ export function getStates(): { name: string, index: number }[] {
     return states
 }
 
-export const africanCountries: string[] = [
-    'Algeria',
+
+/*
+ 'Algeria',
     'Angola',
     'Benin',
-    'Botswana',
     'Burkina Faso',
     'Burundi',
     'Cabo Verde',
@@ -227,16 +227,12 @@ export const africanCountries: string[] = [
     'Ethiopia',
     'Gabon',
     'Gambia',
-    'Ghana',
     'Guinea',
     'Guinea-Bissau',
     'Ivory Coast',
-    'Kenya',
-    'Lesotho',
     'Liberia',
     'Libya',
     'Madagascar',
-    'Malawi',
     'Mali',
     'Mauritania',
     'Mauritius',
@@ -251,15 +247,29 @@ export const africanCountries: string[] = [
     'Seychelles',
     'Sierra Leone',
     'Somalia',
-    'South Africa',
     'South Sudan',
     'Sudan',
     'Tanzania',
     'Togo',
     'Tunisia',
-    'Uganda',
     'Zambia',
     'Zimbabwe',
+*/
+export const africanCountries: string[] = [
+   
+    'Botswana',
+    
+    'Ghana',
+    
+    'Kenya',
+    'Lesotho',
+    
+    'Malawi',
+    
+    'South Africa',
+    
+    'Uganda',
+    
   ];
   
 
