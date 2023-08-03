@@ -4,7 +4,8 @@ import Button, { ButtonProps } from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import InboxIcon from '@mui/icons-material/Inbox';
 import Navbar from '../components/Navbar'
-import { getSession, signOut } from "next-auth/react"
+import { signOut } from "next-auth/react"
+import useDynamicPadding from '../lib/useDynamicPadding';
 
 type PageContainerProps = {
     fName: String;
@@ -12,34 +13,42 @@ type PageContainerProps = {
 }
 
 const PageContainer: React.FC<PageContainerProps> = ({fName, currPage}) => {
+    const leftPaddingValue = useDynamicPadding(635, 775, "29vw", "20vw", "15vw")
     const WhiteTextButton = styled(Button)<ButtonProps>(() => ({
         color: 'white',
     }));
 
     let pageName = "";
+    let fontsize="";
     switch(currPage) {
         case "dash-volunteer": {
             pageName="Home"; 
+            fontsize="90px";
             break;
         }
         case "profile": {
             pageName="Profile";
+            fontsize="90px";
             break;
         }
         case "instruction-steps": {
             pageName="Organizer Steps";
+            fontsize="70px";
             break;
         }
         case "h4i-team": {
             pageName="The Developer Team";
+            fontsize="90px";
             break;
         }
         case "forum": {
             pageName="Forum";
+            fontsize="90px";
             break;
         }
         case "leaderboard": {
             pageName="Leaderboard";
+            fontsize="90px";
             break;
         }
     }
@@ -73,12 +82,12 @@ const PageContainer: React.FC<PageContainerProps> = ({fName, currPage}) => {
             </Box>
         </Grid>
         <Grid xs={12} sx={{
-            pl: '10vw',
+            pl: leftPaddingValue,
         }}>
             <Box sx={{
                 height: '12vh',
             }}></Box>
-            <h1 style={{ textAlign: "left", fontSize: "90px", paddingRight: 10 }}>{pageName}</h1>
+            <h1 style={{ textAlign: "left", fontSize: fontsize, paddingRight: 10 }}>{pageName}</h1>
         </Grid>
     </>);
 }

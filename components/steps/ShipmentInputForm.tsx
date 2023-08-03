@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
-import Grid from "@mui/material/Unstable_Grid2";
+import Grid from "@mui/material/Grid";
 
 type ShipmentInputFormProps = {
     driveCode: string,
@@ -22,7 +22,7 @@ const ShipmentInputForm: React.FC<ShipmentInputFormProps> = ({driveCode, driveSt
     const styles = {
         btn: {
             backgroundColor: "#FE9834",
-            width: "5vw"
+            width: "5vw",
         },
         modal: {
             position: 'absolute' as 'absolute',
@@ -34,27 +34,29 @@ const ShipmentInputForm: React.FC<ShipmentInputFormProps> = ({driveCode, driveSt
             border: '2px solid #000',
             boxShadow: 24,
             p: 4,
+            
         },
+        
     };
 
-    const dateChange = (e) => {
+    const dateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setDate(e.target.value);
     }
 
-    const trackingChange = (e) => {
+    const trackingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTracking(e.target.value);
     }
 
-    const booksChange = (e) => {
-        if (isNaN(e.target.value)) {
+    const booksChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (isNaN(parseInt(e.target.value))) {
 
         } else {
             setNumBooks(parseInt(e.target.value));
         }
     }
 
-    const boxesChange = (e) => {
-        if (isNaN(e.target.value)) {
+    const boxesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (isNaN(parseInt(e.target.value))) {
 
         } else {
             setNumBoxes(parseInt(e.target.value));
@@ -62,7 +64,7 @@ const ShipmentInputForm: React.FC<ShipmentInputFormProps> = ({driveCode, driveSt
     }
 
     const handleSave = async () => {
-        handleSaveShipment(driveCode, driveStatus, dateVal, tracking, numBooks, numBoxes);
+        await handleSaveShipment(driveCode, driveStatus, dateVal, tracking, numBooks, numBoxes);
         const obj = {
             data: {
                 date: dateVal,
@@ -80,26 +82,36 @@ const ShipmentInputForm: React.FC<ShipmentInputFormProps> = ({driveCode, driveSt
             open={isOpen}
             aria-describedby="shipment-input-modal"
         >
-            <Box sx={styles.modal}>
-                <Typography variant="h4">Input Shipment Information</Typography>
-                <Grid container sx={{ pb: 2 }}>
+            <Box sx={styles.modal} >
+                <Typography sx={{fontFamily:"Epilogue"}} variant="h4">Input Shipment Information</Typography>
+                <Grid container sx={{ p: 2 }}>
                     <Grid item xs={6} sx={{pb: 2}}>
-                        <Typography variant="h5">Date Sent:</Typography>
-                        <TextField size="small" fullWidth={false} id="date-sent" variant="outlined" onChange={dateChange} sx={{pr:5}}/>
-                        <Typography variant="h5">Tracking Number:</Typography>
-                        <TextField size="small" fullWidth={false} id="date-sent" variant="outlined" onChange={trackingChange} sx={{pr:5}}/>
+                        <Grid container >
+                            <Typography sx={{fontFamily:"Epilogue"}} variant="h5">Date Sent:</Typography>
+                            <TextField sx={{fontFamily:"Epilogue", pr: 5}} size="small" fullWidth={false} id="date-sent" variant="outlined" onChange={dateChange}/>
+                        </Grid>
+                        <Grid container >
+                            <Typography sx={{fontFamily:"Epilogue"}} variant="h5">Tracking Number:</Typography>
+                            <TextField sx={{fontFamily:"Epilogue", pr: 5}} size="small" fullWidth={false} id="tracking-num" variant="outlined" onChange={trackingChange}/>
+                        </Grid>
                     </Grid>    
                     <Grid item xs={6} sx={{ pb: 2 }}>
-                        <Typography variant="h5"># Books Collected:</Typography>
-                        <TextField size="small" id="books-collected" variant="outlined" onChange={booksChange} sx={{pr:5}}/>
-                        <Typography variant="h5"># Boxes Total:</Typography>
-                        <TextField size="small" id="boxes-collected" variant="outlined" onChange={boxesChange} sx={{pr:5}}/>
+                        <Grid container >
+                            <Typography sx={{fontFamily:"Epilogue"}} variant="h5"># Books Collected:</Typography>
+                            <TextField sx={{fontFamily:"Epilogue"}} size="small" id="books-collected" variant="outlined" onChange={booksChange} />
+                        </Grid>
+                        <Grid container >
+                            <Typography sx={{fontFamily:"Epilogue", pr: 5}} variant="h5"># Boxes Total:</Typography>
+                            <TextField sx={{fontFamily:"Epilogue", pr: 5}} size="small" id="boxes-collected" variant="outlined" onChange={boxesChange} />
+                        </Grid>
                     </Grid>
-                    <Grid container xs={12} direction="row" spacing={2}>
-                        <Grid><Button style={styles.btn} onClick={handleSave}>Save</Button></Grid>
-                        <Grid><Button style={styles.btn} onClick={() => {handleOpen(false)}}>Cancel</Button></Grid>
+                    <Grid xs={9}></Grid>
+                    <Grid container xs={3} direction="row" spacing={1}>
+                        <Grid item><Button style={styles.btn} onClick={handleSave}>Save</Button></Grid>
+                        <Grid item><Button style={styles.btn} onClick={() => {handleOpen(false)}}>Cancel</Button></Grid>
                     </Grid>
                 </Grid>
+                
             </Box>
         </Modal>
     );

@@ -12,7 +12,7 @@ type BroadcastPageProps = {
     account: AdminAccount,
     volunteers: VolunteerAccount[],
     broadcasts: Broadcast[],
-    error: Error | string
+    error: null | string
 }
 const BroadcastPage: NextPage<BroadcastPageProps> = ({ account, volunteers, error, broadcasts }) => {
     const [newBroadcasts, setNewBroadcasts] = useState<Broadcast[]>([])

@@ -45,6 +45,8 @@ export default function InstructionGroupCard(props) {
           <Grid paddingTop={2}>
             <InstructionInputCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"How will you Fundraise?"} stepNum={0}> 
             </InstructionInputCard>
+          </Grid>
+          <Grid paddingTop={4}>
             <InstructionChecklistCard driveCode={props.driveCode} driveStatus={props.driveStatus} heading={"Read the Book Collection Guidelines"} stepNum={1}></InstructionChecklistCard>;
           </Grid>
         </Grid>
@@ -73,14 +75,14 @@ export default function InstructionGroupCard(props) {
       case 3: 
       content = <Grid container direction="column">
       <Grid paddingTop={2}>
-        <InstructionShipmentCard driveCode={props.driveCode} driveStatus={props.driveStatus} shipmentData={props.shipmentData} handleSaveShipment={props.handleSaveShipment}></InstructionShipmentCard>
+        <InstructionShipmentCard driveCode={props.driveCode} driveStatus={props.driveStatus} shipments={props.shipments} handleSaveShipment={props.handleSaveShipment}></InstructionShipmentCard>
       </Grid>
     </Grid>
         break;
     }
     return (
       <Grid>
-        <Grid container paddingTop={2} spacing={2} xs={12} sx={{width:"65vw", backgroundColor:"gray"}}>
+        <Grid container paddingTop={2} spacing={2} xs={12} sx={{width:"65vw"}}>
             <Grid container spacing={1} item xs={9} sx={{color:"#FE9834"}} direction="row">
               <Grid>
                 <h1 onClick = {handleExpandClick}>
