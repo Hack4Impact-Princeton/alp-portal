@@ -1,4 +1,4 @@
-import { getSession } from 'next-auth/react'
+import {getServerSession} from 'next-auth/next'
 import { NextPage } from 'next/types'
 import getAdminAccountModel, { AdminAccount } from '../../models/AdminAccount'
 import getVolunteerAccountModel, { VolunteerAccount } from '../../models/VolunteerAccount';
@@ -6,6 +6,8 @@ import getBookDriveModel, { BookDrive } from '../../models/BookDrive';
 import mongoose from 'mongoose';
 import { Box } from '@mui/material';
 import { BookDriveStatus } from '../../lib/enums';
+import { authOptions } from '../api/auth/[...nextauth]';
+import {DataGrid} from '@mui/x-data-grid'
 type AdminDashboardProps = {
     account: AdminAccount;
     volunteers: VolunteerAccount[];
@@ -55,7 +57,7 @@ export default AdminDashboard
 
 export const getServerSideProps = async (context: any) => {
     try {
-        const session = await getSession(context)
+        const session = await getServerSession(context.req, context.res, authOptions)
         if (!session || session.user?.name != 'true') {
             return {
                 redirect: {

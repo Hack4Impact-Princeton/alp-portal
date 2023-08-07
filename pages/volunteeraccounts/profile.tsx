@@ -1,17 +1,18 @@
 import getVolunteerAccountModel, { VolunteerAccount } from "../../models/VolunteerAccount";
 import dbConnect from '../../lib/dbConnect';
-import {Grid} from "@mui/material";
+import { Grid } from "@mui/material";
 import Box from '@mui/material/Box';
 import PageContainer from "../../components/PageContainer";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { signOut } from "next-auth/react";
 import MapComponent from '../../components/MapComponent';
 import Link from 'next/link';
-import { getSession } from "next-auth/react";
 import { BookDriveStatus } from "../../lib/enums";
 import getBookDriveModel, { BookDrive } from "../../models/BookDrive";
-import {NextPage} from 'next';
+import { NextPage } from 'next';
 import mongoose from 'mongoose';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 type ProfileProps = {
   error: string | null;
@@ -20,7 +21,7 @@ type ProfileProps = {
 }
 type BadgeInfoProps = {
   isEarned: boolean,
-  level: number, 
+  level: number,
   name: string,
   description: string,
 }
@@ -80,10 +81,14 @@ const BadgeDisplayCase = () => {
   ];
 
   return (
-    <Grid container style={{ border: '1.5px solid black', padding: '10px', marginBottom: '10px' , display: 'flex',
-    width: '95%',}}>
-      <Grid xs={12} ><h2 style={{ textAlign: 'left', marginBottom: '10px'}}>Badges</h2></Grid>
-      <Grid container xs={12} style={{ display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap', paddingLeft: '10px'}}>
+    <Grid container style={{
+      border: '1.5px solid black', padding: '10px', marginBottom: '10px', display: 'flex',
+      width: '95%',
+      backgroundColor: "#F5F5F5"
+
+    }}>
+      <Grid xs={12} ><h2 style={{ textAlign: 'left', marginBottom: '10px' }}>Badges</h2></Grid>
+      <Grid container xs={12} style={{ display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap', paddingLeft: '10px' }}>
         {badges.map((badge, index) => (
           <BadgeInfo key={index} {...badge} />
         ))}
@@ -102,64 +107,26 @@ const BookDrivesCompletedGraph = () => {
   ];
 
   return (
-    <div style={{ border: '1.5px solid black', padding: '10px', marginBottom: '10px', display: 'flex',
-    width: '95%', }}>
+    <div style={{
+      border: '1.5px solid black', padding: '10px', marginBottom: '10px', display: 'flex',
+      width: '95%', backgroundColor: "#F5F5F5"
+    }}>
       <h2 style={{ textAlign: 'left', marginBottom: '10px', paddingRight: '10px' }}>Book Drives Completed</h2>
       {/* Render your graph component using the graphData */}
     </div>
   );
 };
 
-const Profile: NextPage<ProfileProps> = ({error, account, drives}) => {
+const Profile: NextPage<ProfileProps> = ({ error, account, drives }) => {
   console.log("Profile Page");
-  // account = account ? JSON.parse(account) : null;
-  // drives = drives ? JSON.parse(drives) : null;
-  // error = error ? error : null;
-
-  // if the user is not logged in take them back to the login page
-  const [editIsHovered, setEditIsHovered] = useState(false);
-  const [signOutIsHovered, setSignOutIsHovered] = useState(false);
-
   // if the account is not null, that means that everything is working
   // otherwise render the error message page
   if (account) {
     console.log("ACCOUNT: ", account);
     return (
       <Grid>
-        <PageContainer fName={account.fname} currPage="profile"></PageContainer>
-        <Box display="flex" sx={{ pl: 20, pt: 5, pr: 5, width: '100%', justifyContent: 'space-between' }}>
-      <button
-        onClick={() => signOut({callbackUrl: "/"})}
-        style={{
-          borderRadius: '20%',
-          width: '100px',
-          height: 'auto',
-          justifyContent: 'flex-end',
-          backgroundColor: signOutIsHovered ? 'darkgray' : 'white'
-        }}
-        onMouseEnter={() => setSignOutIsHovered(true)}
-        onMouseLeave={() => setSignOutIsHovered(false)}
-      >
-        Sign Out
-      </button>
-      <Link href="/volunteeraccounts/edit">
-        <button
-          style={{
-            borderRadius: '20%',
-            height: 'auto',
-            width: '100px',
-            justifyContent: 'flex-end',
-            backgroundColor: editIsHovered ? 'darkgray' : 'white'
-          }}
-          onMouseEnter={() => setEditIsHovered(true)}
-          onMouseLeave={() => setEditIsHovered(false)}
-        >
-          Edit Profile
-        </button>
-      </Link>
-      <img style = {{display: "flex", justifyContent: "flex-end", height: "55px"}}src="/alp-logo.png" alt="alp-logo" />
-    </Box>
-        <Grid container display="flex" padding={5} sx={{ pl: 20 }} rowSpacing={2}>
+        <PageContainer fName={account.fname} currPage="profile" />
+        <Grid container display="flex" padding={1} sx={{ pl: 20 }} rowSpacing={2}>
           <Grid item xs={12} sm={7} display="flex" flexDirection="column" >
             <Box
               sx={{
@@ -172,6 +139,7 @@ const Profile: NextPage<ProfileProps> = ({error, account, drives}) => {
                   display: 'flex',
                   width: '95%',
                 },
+                backgroundColor: "#F5F5F5"
               }}
             >
               <div
@@ -197,24 +165,24 @@ const Profile: NextPage<ProfileProps> = ({error, account, drives}) => {
                   width: '65%',
                   display: 'flex',
                   flexDirection: 'column',
-                  justifyContent: 'space-around',
+                  justifyContent: 'center',
                   alignItems: 'flex-start',
-                  paddingLeft: '10px',
+                  paddingLeft: '4px',
                 }}
               >
-                <p>{`${account.fname} ${account.lname}`}</p>
-                <p>{account.email}</p>
-                <p>{`# of Bookdrives completed: ${drives!.length}`}</p>
+                <p style={{fontWeight: 800, fontSize: 30, marginBottom: 2, color: "#5F5F5F"}}>{`${account.fname} ${account.lname}`}</p>
+                <p style={{fontWeight: 500, marginBottom: 2, color: "#5F5F5F"}}>{account.email}</p>
+                <p style={{fontWeight: 500, color: "#5F5F5F"}}>{`# of Bookdrives completed: ${drives!.length}`}</p>
               </div>
             </Box>
             <BookDrivesCompletedGraph />
             <BadgeDisplayCase />
           </Grid>
-          <Grid item xs={12} sm={5} height={"450px"}>
+          <Grid item xs={12} sm={5} height={"418px"}>
             <Box
               sx={{
                 width: "100%",
-                height: "100%",
+                height: "110%",
                 border: "1.5px solid black",
                 '@media (min-width: 600px)': {
                   display: 'inline-block',
@@ -222,31 +190,33 @@ const Profile: NextPage<ProfileProps> = ({error, account, drives}) => {
                   height: '100%',
                 },
                 maxWidth: "450px",
+                backgroundColor: "#F5F5F5"
               }}>
-              <MapComponent drives={drives? drives: []} />
+              <MapComponent drives={drives ? drives : []} />
             </Box>
           </Grid>
         </Grid>
       </Grid>
     )
   }
-  else { 
+  else {
     return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px", flexDirection: "column" }}>
-      <h1>{error}</h1>
-      {// when the error is not an auth error give them the button to go back
-        error !== "You must login before accessing this page" &&
-        <Link href="/dash-volunteer">
-          <button style = {{width:"50px", height:"50px", borderRadius:"20%"}}>Volunteer Dashboard</button>
-        </Link>}
-    </div>
-  )}
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px", flexDirection: "column" }}>
+        <h1>{error}</h1>
+        {// when the error is not an auth error give them the button to go back
+          error !== "You must login before accessing this page" &&
+          <Link href="/dash-volunteer">
+            <button style={{ width: "50px", height: "50px", borderRadius: "20%" }}>Volunteer Dashboard</button>
+          </Link>}
+      </div>
+    )
+  }
 }
 
 export const getServerSideProps = async (context: any) => {
   try {
     // get current session and email --> account of current user
-    const session = await getSession(context)
+    const session = await getServerSession(context.req, context.res, authOptions)
     // if (session) console.log("hiiii")
     if (!session || !session.user) {
       return {
@@ -263,14 +233,14 @@ export const getServerSideProps = async (context: any) => {
     const volunteerAccount: VolunteerAccount | null = await VolunteerAccount.findOne({ email: email });
 
     // findsall completed bookDrives that correspond to the volunteer account
-    const promises = volunteerAccount!.driveIds.map(async (driveId: string) => await BookDrive.find({driveCode: driveId, status: BookDriveStatus.Completed}));
+    const promises = volunteerAccount!.driveIds.map(async (driveId: string) => await BookDrive.find({ driveCode: driveId, status: BookDriveStatus.Completed }));
     // you have to resolve these promises before continuing
     const resolvedPromises = await Promise.all(promises);
     // you have to flatten the array otherwise it will have a weird shape.
     const drives: BookDrive[] | null = resolvedPromises.flat()
-    
-  return { props: { account: JSON.parse(JSON.stringify(volunteerAccount)) as VolunteerAccount, drives: JSON.parse(JSON.stringify(drives)) as BookDrive, error: null } }
-  } catch (e: Error|any) {
+
+    return { props: { account: JSON.parse(JSON.stringify(volunteerAccount)) as VolunteerAccount, drives: JSON.parse(JSON.stringify(drives)) as BookDrive, error: null } }
+  } catch (e: Error | any) {
     console.error(e)
     // if the specific error message occurs it's because the user has not logged in
     let strError = e.message === "Cannot read properties of null (reading 'user')" ? "You must login before accessing this page" : `${e}`

@@ -1,12 +1,21 @@
-import { Drawer, Link, List, ListItem, ListItemButton, ListItemIcon } from '@mui/material';
+import { Drawer, Link, List, ListItem, ListItemButton, ListItemIcon, Tooltip,tooltipClasses, TooltipProps  } from '@mui/material';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
+import { styled } from '@mui/material/styles';
 import FlagIcon from '@mui/icons-material/Flag';
 import Person2Icon from '@mui/icons-material/Person2';
 import HomeIcon from '@mui/icons-material/Home';
 import ShareIcon from '@mui/icons-material/Share';
 import FilterFramesIcon from '@mui/icons-material/FilterFrames';
 
+
 const drawerWidth: number = 80;
+const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))({
+    [`& .${tooltipClasses.tooltip}`]: {
+      fontSize: "2vh"
+    },
+  });
 
 type NavbarProps = {
     active: "dash-volunteer" | "profile" | "leaderboard" | "h4i-team" | "forum" | "instruction-steps" | null;
@@ -19,6 +28,8 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                     alignContent: 'space-evenly',
                     justifyContent: 'center',
                     width: '7vw',
+                    minWidth: "90px",
+                    marginRight: 95
                 }
             }}
             PaperProps={{
@@ -34,6 +45,7 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                     <ListItem key="Home" sx={{
                         alignItems: 'center',
                     }}>
+                        <CustomWidthTooltip title="Home" placement="right" arrow>
                         <ListItemButton>
                             <ListItemIcon>
                                 <HomeIcon fontSize='large' sx={{
@@ -41,10 +53,12 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                                 }}></HomeIcon>
                             </ListItemIcon>
                         </ListItemButton>
+                        </CustomWidthTooltip>
                     </ListItem>
                 </Link>
                 <Link href="/volunteeraccounts/profile">
                     <ListItem key="Organizer Checklist">
+                        <CustomWidthTooltip title="Profile" placement="right" arrow>
                         <ListItemButton>
                             <ListItemIcon>
                                 <Person2Icon fontSize='large' sx={{
@@ -52,10 +66,12 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                                 }}></Person2Icon>
                             </ListItemIcon>
                         </ListItemButton>
+                        </CustomWidthTooltip>
                     </ListItem>
                 </Link>
                 <Link href="/leaderboard">
                     <ListItem key="Milestones">
+                        <CustomWidthTooltip title="Leaderboard" placement="right" arrow>
                         <ListItemButton>
                             <ListItemIcon>
                                 <FlagIcon fontSize='large' sx={{
@@ -63,10 +79,12 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                                 }}></FlagIcon>
                             </ListItemIcon>
                         </ListItemButton>
+                        </CustomWidthTooltip>
                     </ListItem>
                 </Link>
                 <Link href="/h4i-team">
                     <ListItem key="Contact Us">
+                    <CustomWidthTooltip title="Contact Us" placement="right" arrow>
                         <ListItemButton>
                             <ListItemIcon>
                                 <ShareIcon fontSize='large' sx={{
@@ -74,10 +92,12 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                                 }}></ShareIcon>
                             </ListItemIcon>
                         </ListItemButton>
+                    </CustomWidthTooltip>
                     </ListItem>
                 </Link>
                 <Link href="/forum">
                     <ListItem key="Forum">
+                    <CustomWidthTooltip title="Forum" placement="right" arrow>
                         <ListItemButton>
                             <ListItemIcon>
                                 <FilterFramesIcon fontSize = 'large' sx={{
@@ -85,10 +105,13 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                                 
                             </ListItemIcon>
                         </ListItemButton>
+                    </CustomWidthTooltip>
                     </ListItem>
                 </Link>
             <Link href = "/conversations">
                 <ListItem key = "Conversations">
+                <CustomWidthTooltip title="Conversations" placement="right" arrow>
+
                     <ListItemButton>
                         <ListItemIcon>
                             <ChatBubbleIcon fontSize = 'large' sx = {{color:
@@ -96,6 +119,7 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                             </ChatBubbleIcon>
                         </ListItemIcon>
                     </ListItemButton>
+                </CustomWidthTooltip>
                 </ListItem>
             </Link>
             </List>
