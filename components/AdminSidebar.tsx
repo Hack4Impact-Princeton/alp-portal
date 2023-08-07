@@ -15,8 +15,9 @@ import UpCaret from "./UpCaret"
 import DownCaret from "./DownCaret"
 import { getStates } from "../lib/enums"
 import useExpandableElement from "../lib/useExpandableElement"
+import sendBroadcast from "../db_functions/sendBroadcast"
 
-const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount, updateBookDriveStatus: (driveCode: string, status: number) => Promise<void> }> = ({ drive, shipments, volunteer, updateBookDriveStatus }) => {
+const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount, updateBookDriveStatus: (driveCode: string, status: number) => Promise<void>, email: string }> = ({ email, drive, shipments, volunteer, updateBookDriveStatus }) => {
     const { status, organizer, driveName, driveCode, country, completedDate, startDate, mailDate, fl, pts, booksGoal, gs, cb } = drive
     // const [showReactivationReq, setShowReactivationReq] = useState(false)
     const [, setState] = useState(false)
@@ -38,6 +39,20 @@ const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], voluntee
             const ship = shipments.find(shipment => shipment.id === id)
             ship!.received = true;
             setState(state => !state);
+        } catch (e: Error | any) {
+            console.error(e)
+        }
+    }
+    const sendAutomatedBroadcast = async() => {
+        try {
+            const subject = "automated broadcast subject"
+            const message = "automated broadcast message"
+            const broadcastRes = await sendBroadcast(email, [volunteer.email], subject, message)
+            if (!broadcastRes.success) {
+                alert(broadcastRes.error.message)
+                return
+            }
+            alert(`Broadcast sent successfully to ${volunteer.email}`)
         } catch (e: Error | any) {
             console.error(e)
         }
@@ -88,7 +103,7 @@ const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], voluntee
                     </Grid>
                 </Grid>
                 <Grid item container justifyContent="space-between" direction="row" width="100%" height="wrap-content">
-                    <Button variant="contained" sx={{
+                    <Button variant="contained" onClick={sendAutomatedBroadcast} sx={{
                         marginBottom: 1, backgroundColor: "#F3D39A", "&:hover": {
                             backgroundColor: "#D3A874", // Change this to a slightly darker shade of the background color.
                         }, fontSize: 11, fontWeight: 600, color: '#5F5F5F', width: "49.5%"

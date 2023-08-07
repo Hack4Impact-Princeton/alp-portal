@@ -74,18 +74,18 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
         return deadlineMap.get(country)!.getTime() - new Date().getTime() < (31 * 24 * 60 * 60 * 1000)
     }
     const prelimCurrDrivesColumns: GridColDef[] = [
-        { field: 'driveName', headerName: 'Drive Name', width: 450 },
+        { field: 'driveName', headerName: 'Drive Name', width: 255 },
         { field: 'size', headerName: "Size", width: 40 },
-        { field: "country", headerName: "Country", width: 250 },
+        { field: "country", headerName: "Country", width: 175},
         { field: 'organizer', headerName: "Organizer", width: 150 },
-        { field: "lastUpdated", headerName: "Last Updated", width: 200 }
+        { field: "lastUpdated", headerName: "Last Updated", width: 120 }
     ]
     const prelimCompletedDrivesColumns: GridColDef[] = [
-        { field: 'driveName', headerName: 'Drive Name', width: 450 },
+        { field: 'driveName', headerName: 'Drive Name', width: 255 },
         { field: 'size', headerName: "Size", width: 40 },
-        { field: "country", headerName: "Country", width: 250 },
+        { field: "country", headerName: "Country", width: 175 },
         { field: 'organizer', headerName: "Organizer", width: 150 },
-        { field: 'completedDate', headerName: "Completed", width: 200 }
+        { field: 'completedDate', headerName: "Completed", width: 120 }
     ]
     const currDrivesGridColumns: GridColDef[] = prelimCurrDrivesColumns.map((column) => {
         let foundDrive: BookDrive | undefined
@@ -94,9 +94,6 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
             renderCell: (params: GridCellParams) => {
                 if (column.field === 'driveName') {
                     if (!drives) throw new Error("drives don't exist???")
-                    // const preDriveName = params.value as string
-                    // const midDriveName = preDriveName.replace(/[^a-zA-Z0-9\s\p{P}]/gu, '')
-                    // const colDriveName = midDriveName.trim()
                     const colDriveName = params.value as string
                     foundDrive = drives.find(drive => drive.driveName == colDriveName);
                     if (foundDrive) return (
@@ -120,6 +117,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                     if (val == 500) return halfDrive
                     else return fullDrive
                 }
+                else if (column.field === 'country') return <span style={{whiteSpace: 'normal'}}>{params.value as string}</span>
 
             }
         }
@@ -213,7 +211,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                             {showCurrDrives && <DownCaret onClick={setShowCurrDrives} />}
                         </Grid>
                         <div ref={currDriveTableRef} style={currDriveTableStyles}>
-                            <Grid item>
+                            <Grid item sx={{width: "fit-content"}}>
                                 <DataGrid
                                     rows={currDrivesGridRows}
                                     columns={currDrivesGridColumns}
@@ -232,7 +230,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                             {showCompletedDrives && <DownCaret onClick={toggleShowCompletedDrives} />}
                         </Grid>
                         <div ref={completedDriveTableRef} style={completedDriveTableStyles}>
-                            <Grid item>
+                            <Grid item sx={{width: "fit-content"}}>
                                 <DataGrid
                                     rows={completedDrivesGridRows}
                                     columns={completedDrivesColumns}
@@ -257,7 +255,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                     transform: 'scale(1)',
                     transition: 'width .4s ease',
                     width: showSidebar ? 'calc(35% + 20px)' : 0
-                }}><AdminSidebar updateBookDriveStatus={updateBookDriveStatus} volunteer={sidebarDriveDatum.volunteer} drive={sidebarDriveDatum.drive} shipments={sidebarDriveDatum.shipments} />
+                }}><AdminSidebar email={account.email} updateBookDriveStatus={updateBookDriveStatus} volunteer={sidebarDriveDatum.volunteer} drive={sidebarDriveDatum.drive} shipments={sidebarDriveDatum.shipments} />
                 </div>}
             </Grid>
         </>)
