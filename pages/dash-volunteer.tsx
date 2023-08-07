@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
 import Box from '@mui/material/Box';
-import Navbar from '../components/Navbar';
 import PageContainer from '../components/PageContainer';
 import DriveCard from '../components/DriveCard'
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
@@ -10,41 +9,42 @@ import getBookDriveModel, { BookDrive } from '../models/BookDrive';
 import Link from 'next/link'
 import getVolunteerAccountModel, { VolunteerAccount } from '../models/VolunteerAccount';
 import { NextPage } from 'next';
+
+import useDynamicPadding from '../lib/useDynamicPadding';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from './api/auth/[...nextauth]';
-type DashVolunteerProps = {
-  drives: BookDrive[] | null;
-  account: VolunteerAccount | null;
-  error: Error | null;
-}
-
-
-const DashVolunteer: NextPage<DashVolunteerProps> = ({ drives, account, error }) => {
+const DashVolunteer: NextPage<{drives: BookDrive[] | null, account: VolunteerAccount | null, error: Error | null}> = ({ drives, account, error }) => {
   console.log(account)
   console.log("drives", drives)
+
+  const leftPaddingValue = useDynamicPadding(635, 775, "29vw", "20vw", "15vw")
+
   if (account) {
     return (
       <Grid2>
-        <PageContainer fName={account.fname} currPage="dash-volunteer"></PageContainer>
+        <PageContainer fName={account.fname} currPage="dash-volunteer" ></PageContainer>
         {/* Necessary box for padding the page body, no overlap with Navbar */}
         <Box display="flex" flexDirection="column" sx={{
-          pl: 20,
-          pt: 5,
-          pr: 5,
+          pl: leftPaddingValue,
+          pt: "5vh",
+          pr: "5vw",
           width: '100%',
           justifyContent: "space-between"
         }}>
-          <div style={{ fontSize: '25px', textAlign: 'left', marginTop: '2vh' }}>Active Drives</div>
-          <Link href="volunteeraccounts/profile"> Click here to go to your profile
-          </Link>
+
+          <div style={{ fontSize: '25px', textAlign: 'left', marginTop: '2vh', marginBottom: '2vh' }}>Active Drives</div>
+          {/* <Link href="volunteeraccounts/profile"> Click here to go to your profile
+          </Link> */}
           {drives && <Stack
             direction="column"
             justifyContent="center"
-            spacing={10}>
+            spacing={6}>
+
             {drives.map((drive) => (
               <DriveCard drive={drive}></DriveCard>
             ))}
           </Stack>}
+          
         </Box>
         </Grid2>
     )
