@@ -1,9 +1,13 @@
-import { getSession } from 'next-auth/react'
+import {getServerSession} from 'next-auth/next'
 import { NextPage } from 'next/types'
 import getAdminAccountModel, { AdminAccount } from '../../models/AdminAccount'
 import getVolunteerAccountModel, { VolunteerAccount } from '../../models/VolunteerAccount';
 import getBookDriveModel, { BookDrive } from '../../models/BookDrive';
 import mongoose from 'mongoose';
+import { Box } from '@mui/material';
+import { BookDriveStatus } from '../../lib/enums';
+import { authOptions } from '../api/auth/[...nextauth]';
+import {DataGrid} from '@mui/x-data-grid'
 type AdminDashboardProps = {
     account: AdminAccount;
     volunteers: VolunteerAccount[];
@@ -14,14 +18,37 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, dr
     console.log(account)
     console.log(volunteers)
     console.log(drives)
-    
+    const updateBookDriveStatus = async (driveCode: string, status: number): Promise<void> => {
+        try {
+            const res = await fetch(`/api/bookDrive/${driveCode}`, {
+                method: "PUT",
+                body: JSON.stringify({ status: status })
+            })
+            if (!res.ok) {
+                alert("updating the status failed")
+                throw new Error("updating the status failed")
+            }
+            const resJson = await res.json()
+            console.log(resJson.data)
+        } catch (e: Error | any) {
+            console.error(e)
+        }
+    }
     return (
-    <>
-        {account && 
-        <div>
-            {account && <p>{account.fname} {account.lname}</p>}
-            {volunteers && volunteers.map(volunteer => <p>{volunteer.email}</p>)}
-            {drives && drives.map(drive => <p>{drive.driveName}</p>)}
+        <>
+            {account &&
+                <div>
+                    {account && <p>{account.fname} {account.lname}</p>}
+                    {volunteers && volunteers.map(volunteer => <p>{volunteer.email}</p>)}
+                    {drives && drives.map(drive => {
+                        return (
+                            <Box sx={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
+                                <p>{drive.driveName}</p>
+                                <button onClick={() => updateBookDriveStatus(drive.driveCode, BookDriveStatus.Active)}>{`Mark ${drive.driveName} as active`}</button>
+                                <button onClick={() => updateBookDriveStatus(drive.driveCode, BookDriveStatus.Cancelled)}>{`Mark ${drive.driveName} as cancelled`}</button>
+                            </Box>
+                        )
+                    })}
         </div>}
     </>)
 }
@@ -30,7 +57,7 @@ export default AdminDashboard
 
 export const getServerSideProps = async (context: any) => {
     try {
-        const session = await getSession(context)
+        const session = await getServerSession(context.req, context.res, authOptions)
         if (!session || session.user?.name != 'true') {
             return {
                 redirect: {
@@ -54,6 +81,6 @@ export const getServerSideProps = async (context: any) => {
         return { props: { error: null, account: JSON.parse(JSON.stringify(account)), volunteers: JSON.parse(JSON.stringify(volunteers)), drives: JSON.parse(JSON.stringify(drives)) } }
     } catch (e: Error | any) {
         const errorStr = e.message === "Cannot read properties of null (reading 'user')" ? "You must login before accessing this page" : `${e}`
-        return {props: {error: errorStr, account: null, drives: null, volunteers: null}}
+        return { props: { error: errorStr, account: null, drives: null, volunteers: null } }
     }
 }

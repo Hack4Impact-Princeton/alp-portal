@@ -3,11 +3,12 @@ import { useState } from 'react'
 import getAdminAccountModel, { AdminAccount } from '../../models/AdminAccount'
 import getVolunteerAccountModel, { VolunteerAccount } from '../../models/VolunteerAccount'
 import mongoose from 'mongoose'
-import { getSession } from 'next-auth/react'
 import BroadcastForm from '../../components/BroadcastForm'
 import getBroadcastModel, { Broadcast } from '../../models/Broadcast'
 import { Grid } from '@mui/material'
 import BroadcastMessage from '../../components/Broadcast'
+import { authOptions } from '../api/auth/[...nextauth]'
+import { getServerSession } from 'next-auth/next'
 type BroadcastPageProps = {
     account: AdminAccount,
     volunteers: VolunteerAccount[],
@@ -53,7 +54,7 @@ export default BroadcastPage
 
 export const getServerSideProps = async (context: any) => {
     try {
-        const session = await getSession(context)
+        const session = await getServerSession(context.req, context.res, authOptions)
         if (!session || session.user?.name != 'true') {
             return {
                 redirect: {

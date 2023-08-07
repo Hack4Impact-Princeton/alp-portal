@@ -3,8 +3,7 @@ import { useState, useEffect, useRef } from "react"
 import { Broadcast } from "../models/Broadcast"
 import { FormControl, InputLabel, Select, MenuItem, OutlinedInput, Button, Box, Grid, TextField } from '@mui/material'
 import RecipientList from './RecipientList'
-import genUniqueId from "../lib/idGen"
-
+import sendBroadcast from "../db_functions/sendBroadcast"
 type BroadcastFormProps = {
     email: string,
     volunteers: VolunteerAccount[],
@@ -18,33 +17,36 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({ email, volunteers, addBro
     // email addresses of the recipients
     const [recipients, setRecipients] = useState<string[]>([])
 
-    const sendBroadcast = async (isAutomatedBroadcast: boolean) => {
+    const sendCustomBroadcast = async () => {
         try {
-            if (recipients.length == 0) {
-                alert("You must send the message to at least one person")
-                return
-            }
             setSubmit(true)
             setTimeout(() => { setSubmit(false) }, 4000)
-            const broadcast: Broadcast = {
-                id: genUniqueId(),
-                senderEmail: email,
-                receiverEmails: recipients,
-                read: new Array<boolean>(recipients.length).fill(false),
-                sentTime: new Date().toString(),
-                subject: isAutomatedBroadcast ? "automated broadcast subject" : subject,
-                message: isAutomatedBroadcast ? "This is the message that volunteers will receive when they send an automated broadcast" : message,
+            const broadcastRes = await sendBroadcast(email, recipients, subject, message)
+            if (!broadcastRes.success) {
+                alert(broadcastRes.error.message)
+                return
             }
-            console.log(broadcast)
-            const res = await fetch(`/api/broadcast/${broadcast.id}`, {
-                method: "POST",
-                body: JSON.stringify(broadcast)
-            })
-            const resJson = await res.json()
-            if (res.status !== 200) throw new Error(`something went wrong: ${resJson.data}`)
-            addBroadcast(resJson.data)
-            console.log("successfully sent out the broadcast", resJson.data)
-            setShowCustomBroadcast(false)
+            addBroadcast(broadcastRes.broadcast)
+            setRecipients([])
+            setMessage("")
+            setSubject("")
+
+        } catch (e: Error | any) {
+            console.error(e)
+        }
+    }
+
+    const sendAutomatedBroadcast = async() => {
+        try {
+            const subj = "automated broadcast subject"
+            const msg = "automated broadcast message"
+            const broadcastRes = await sendBroadcast(email, recipients, subj, msg)
+            if (!broadcastRes.success) {
+                alert(broadcastRes.error.message)
+                return
+            }
+            addBroadcast(broadcastRes.broadcast)
+            setRecipients([])
 
         } catch (e: Error | any) {
             console.error(e)
@@ -78,7 +80,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({ email, volunteers, addBro
                 <RecipientList recipients={recipients} onAddAll={addAllRecipients} onClear={() => setRecipients([])} onRemove={removeRecipient} />
             </Grid>
             {!showCustomBroadcast && <>
-                <Button variant="contained" onClick={() => sendBroadcast(true)} sx={{ marginTop: 1.5 }}>Send Automated Broadcast </Button>
+                <Button variant="contained" onClick={sendAutomatedBroadcast} sx={{ marginTop: 1.5 }}>Send Automated Broadcast </Button>
                 <Button variant="contained" onClick={() => setShowCustomBroadcast(true)} sx={{ marginTop: 1.5 }}>Create Custom Broadcast </Button>
             </>
             }
@@ -93,7 +95,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({ email, volunteers, addBro
                         minWidth: "340px"
                     }} />
                 <TextField required error={submit && message == ''} multiline minRows={6} maxRows={Infinity} label="Message" aria-label="message" placeholder="message" value={message} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)} style={{ width: "45%", minWidth: "340px" }} />
-                <Button variant="contained" onClick={() => sendBroadcast(false)} sx={{ marginTop: 1.5 }}>Send Broadcast </Button>
+                <Button variant="contained" onClick={sendCustomBroadcast} sx={{ marginTop: 1.5 }}>Send Broadcast </Button>
                 <Button variant="contained" onClick={() => setShowCustomBroadcast(false)} sx={{ marginTop: 1.5 }}>Back</Button>
 
             </Grid>}
