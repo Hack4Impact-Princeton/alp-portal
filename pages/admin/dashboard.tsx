@@ -19,18 +19,29 @@ import useExpandableElement from '../../lib/useExpandableElement';
 import CircularIcon from '../../components/CircularIcon';
 import { PanoramaVerticalSelect } from '@mui/icons-material';
 import { isIdentifier } from 'typescript';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]';
 type AdminDashboardProps = {
     account: AdminAccount;
     error: Error | null;
     driveData: { drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount }[] | null
 }
 const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveData }) => {
+    if (error) return <h1>{`error: ${error}`}</h1>
     const drives = driveData?.map(driveDatum => driveDatum.drive)
     const [showSidebar, setShowSidebar] = useState(false)
     const [sidebarDriveDatum, setSideBarDriveData] = useState<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount } | undefined>(undefined)
     const { visible: showCurrDrives, toggleVisibility: setShowCurrDrives, elementRef: currDriveTableRef, elementStyles: currDriveTableStyles } = useExpandableElement()
-    const {visible: showCompletedDrives, toggleVisibility: toggleShowCompletedDrives, elementRef: completedDriveTableRef, elementStyles: completedDriveTableStyles} = useExpandableElement()
+    const { visible: showCompletedDrives, toggleVisibility: toggleShowCompletedDrives, elementRef: completedDriveTableRef, elementStyles: completedDriveTableStyles } = useExpandableElement()
     const [, setState] = useState(false)
+
+    const halfDrive = <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+        <path fillRule="evenodd" clipRule="evenodd" d="M12.5 25C19.4036 25 25 19.4036 25 12.5C25 5.59644 19.4036 0 12.5 0C5.59644 0 0 5.59644 0 12.5C0 19.4036 5.59644 25 12.5 25ZM12.5 23.8015C18.7416 23.8015 23.8014 18.7417 23.8014 12.5001C23.8014 6.25853 18.7416 1.19873 12.5 1.19873C6.25842 1.19873 1.19863 6.25853 1.19863 12.5001C1.19863 18.7417 6.25842 23.8015 12.5 23.8015Z" fill="#5F5F5F" />
+        <path fillRule="evenodd" clipRule="evenodd" d="M4.95675e-10 12.5C4.95675e-10 12.5 0 12.5001 0 12.5001C0 19.4037 5.59644 25.0001 12.5 25.0001C19.4036 25.0001 25 19.4037 25 12.5001C25 12.5001 25 12.5 25 12.5H4.95675e-10Z" fill="#5F5F5F" />
+    </svg>
+    const fullDrive = <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+        <circle cx="12.5" cy="12.5" r="12.5" fill="#5F5F5F" />
+    </svg>
 
 
     const updateBookDriveStatus = async (driveCode: string, status: number): Promise<void> => {
@@ -69,11 +80,11 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
         { field: "lastUpdated", headerName: "Last Updated", width: 200 }
     ]
     const prelimCompletedDrivesColumns: GridColDef[] = [
-        {field: 'driveName', headerName: 'Drive Name', width: 450},
+        { field: 'driveName', headerName: 'Drive Name', width: 450 },
         { field: 'size', headerName: "Size", width: 40 },
         { field: "country", headerName: "Country", width: 250 },
         { field: 'organizer', headerName: "Organizer", width: 150 },
-        {field: 'completedDate', headerName: "Completed", width: 200}
+        { field: 'completedDate', headerName: "Completed", width: 200 }
     ]
     const currDrivesGridColumns: GridColDef[] = prelimCurrDrivesColumns.map((column) => {
         let foundDrive: BookDrive | undefined
@@ -105,16 +116,8 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                 }
                 else if (column.field === 'size') {
                     const val = params.value as number
-                    if (val == 500) return (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12.5 25C19.4036 25 25 19.4036 25 12.5C25 5.59644 19.4036 0 12.5 0C5.59644 0 0 5.59644 0 12.5C0 19.4036 5.59644 25 12.5 25ZM12.5 23.8015C18.7416 23.8015 23.8014 18.7417 23.8014 12.5001C23.8014 6.25853 18.7416 1.19873 12.5 1.19873C6.25842 1.19873 1.19863 6.25853 1.19863 12.5001C1.19863 18.7417 6.25842 23.8015 12.5 23.8015Z" fill="#5F5F5F" />
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M4.95675e-10 12.5C4.95675e-10 12.5 0 12.5001 0 12.5001C0 19.4037 5.59644 25.0001 12.5 25.0001C19.4036 25.0001 25 19.4037 25 12.5001C25 12.5001 25 12.5 25 12.5H4.95675e-10Z" fill="#5F5F5F" />
-                        </svg>
-
-                    )
-                    else return (<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
-                        <circle cx="12.5" cy="12.5" r="12.5" fill="#5F5F5F" />
-                    </svg>)
+                    if (val == 500) return halfDrive
+                    else return fullDrive
                 }
 
             }
@@ -129,25 +132,26 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                 }
                 else if (column.field === 'size') {
                     const val = params.value as number
-                    if (val == 500) return (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12.5 25C19.4036 25 25 19.4036 25 12.5C25 5.59644 19.4036 0 12.5 0C5.59644 0 0 5.59644 0 12.5C0 19.4036 5.59644 25 12.5 25ZM12.5 23.8015C18.7416 23.8015 23.8014 18.7417 23.8014 12.5001C23.8014 6.25853 18.7416 1.19873 12.5 1.19873C6.25842 1.19873 1.19863 6.25853 1.19863 12.5001C1.19863 18.7417 6.25842 23.8015 12.5 23.8015Z" fill="#5F5F5F" />
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M4.95675e-10 12.5C4.95675e-10 12.5 0 12.5001 0 12.5001C0 19.4037 5.59644 25.0001 12.5 25.0001C19.4036 25.0001 25 19.4037 25 12.5001C25 12.5001 25 12.5 25 12.5H4.95675e-10Z" fill="#5F5F5F" />
-                        </svg>
-
-                    )
-                    else return (<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
-                        <circle cx="12.5" cy="12.5" r="12.5" fill="#5F5F5F" />
-                    </svg>)
+                    if (val == 500) return halfDrive                    
+                    else return fullDrive
                 }
             }
         }
     })
-    const currDrivesGridRows = drives?.filter(drive => drive.status === BookDriveStatus.Active || BookDriveStatus.Cancelled).map(drive => {
+    const currDrives = drives?.filter(drive => drive.status === BookDriveStatus.Active || drive.status === BookDriveStatus.Cancelled)
+    console.log(currDrives)
+    console.log("currDrive length", currDrives?.length)
+    const currDrivesGridRows = currDrives?.map(drive => {
+        console.log("acceptable statuses", `${BookDriveStatus.Cancelled}, ${BookDriveStatus.Active}`)
+        console.log("status by driveName", `${drive.driveName}: ${drive.status}`)
         return { id: drive.driveCode, driveName: drive.driveName, size: drive.booksGoal, country: drive.country, organizer: drive.organizer, lastUpdated: new Date(drive.cb.lastUpdate).toLocaleDateString(), status: drive.status }
     })
 
-    const completedDrivesGridRows = drives? drives.filter(drive => drive.status === BookDriveStatus.Completed).map(drive => {return {id: drive.driveCode, driveName: drive.driveName, size: drive.booksGoal, country: drive.country, organizer: drive.organizer, completed: new Date(drive.completedDate).toLocaleDateString()}}) : []
+    const completedDrivesGridRows = drives ? drives.filter(drive => drive.status === BookDriveStatus.Completed).map(drive => {
+        console.log("status by driveName", `${drive.driveName}: ${drive.status}`)
+        
+         return { id: drive.driveCode, driveName: drive.driveName, size: drive.booksGoal, country: drive.country, organizer: drive.organizer, completedDate: new Date(drive.completedDate).toLocaleDateString() } 
+    }) : []
     // ❗🕔 
 
     const handleDriveNameClick = (params: GridCellParams) => {
@@ -183,6 +187,8 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
         else if (params.row.id === 'header') return styles['header-row']; // this never works I don't know where to set the header row
         else return '';
     };
+
+
     return (
         <>
             <Grid sx={{ width: "100%", height: "100%", padding: 5 }}>
@@ -191,7 +197,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                         <Grid display="flex" flexDirection="row" justifyContent="flex-start" alignItems="center" >
                             <h1 style={{ color: "#5F5F5F", marginRight: 10, fontSize: 90, fontWeight: 600 }}>DASHBOARD</h1>
                             <svg xmlns="http://www.w3.org/2000/svg" width="67" height="65" viewBox="0 0 67 65" fill="none" onClick={() => window.location.reload()} style={{ cursor: "pointer" }}>
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M58.2318 30.9165C58.0576 28.316 55.3593 26.8851 52.8828 27.6974C50.614 28.4416 49.3812 30.8298 49.2658 33.2147C49.0294 38.0981 46.3651 42.7562 41.7909 45.3332C34.7129 49.321 25.7424 46.8158 21.7547 39.7378C21.2681 38.8741 20.2578 38.3989 19.3158 38.7079L15.7623 39.8735C13.941 40.4709 12.9727 42.4855 13.9136 44.1555C20.3411 55.5641 34.8001 59.602 46.2086 53.1744C54.429 48.5431 58.8227 39.7418 58.2318 30.9165ZM11.0861 29.2468C10.6632 32.2674 13.7235 34.2536 16.6216 33.3029C18.5618 32.6665 19.8135 30.8478 20.3201 28.8697C21.2806 25.1194 23.711 21.7519 27.3501 19.7016C32.7856 16.6393 39.337 17.406 43.891 21.1322C45.4726 22.4263 47.5592 23.1549 49.5011 22.518C52.395 21.5687 53.687 18.1586 51.564 15.9749C44.2438 8.44537 32.5126 6.46302 22.9324 11.8605C16.2335 15.6346 12.0759 22.1779 11.0861 29.2468Z" fill="#5F5F5F" />
+                                <path fillRule="evenodd" clipRule="evenodd" d="M58.2318 30.9165C58.0576 28.316 55.3593 26.8851 52.8828 27.6974C50.614 28.4416 49.3812 30.8298 49.2658 33.2147C49.0294 38.0981 46.3651 42.7562 41.7909 45.3332C34.7129 49.321 25.7424 46.8158 21.7547 39.7378C21.2681 38.8741 20.2578 38.3989 19.3158 38.7079L15.7623 39.8735C13.941 40.4709 12.9727 42.4855 13.9136 44.1555C20.3411 55.5641 34.8001 59.602 46.2086 53.1744C54.429 48.5431 58.8227 39.7418 58.2318 30.9165ZM11.0861 29.2468C10.6632 32.2674 13.7235 34.2536 16.6216 33.3029C18.5618 32.6665 19.8135 30.8478 20.3201 28.8697C21.2806 25.1194 23.711 21.7519 27.3501 19.7016C32.7856 16.6393 39.337 17.406 43.891 21.1322C45.4726 22.4263 47.5592 23.1549 49.5011 22.518C52.395 21.5687 53.687 18.1586 51.564 15.9749C44.2438 8.44537 32.5126 6.46302 22.9324 11.8605C16.2335 15.6346 12.0759 22.1779 11.0861 29.2468Z" fill="#5F5F5F" />
                                 <path d="M12.2871 36.4002C12.4325 35.1886 13.6197 34.3886 14.7973 34.7086L27.5498 38.1742C29.2022 38.6232 29.563 40.8058 28.143 41.7627L13.8155 51.4179C12.3955 52.3749 10.508 51.2211 10.712 49.521L12.2871 36.4002Z" fill="#5F5F5F" />
                                 <path d="M55.5213 22.6482C55.755 23.8459 54.871 24.9719 53.652 25.0291L40.4515 25.648C38.741 25.7283 37.7273 23.762 38.7847 22.4152L49.4539 8.82588C50.5114 7.47907 52.662 7.99725 52.99 9.67786L55.5213 22.6482Z" fill="#5F5F5F" />
                             </svg>
@@ -260,7 +266,8 @@ export default AdminDashboard
 
 export const getServerSideProps = async (context: any) => {
     try {
-        const session = await getSession(context)
+        const session = await getServerSession(context.req, context.res, authOptions)
+        console.log("session obj", session)
         if (!session || session.user?.name != 'true') {
             return {
                 redirect: {
@@ -271,6 +278,7 @@ export const getServerSideProps = async (context: any) => {
         }
         const AdminAccount: mongoose.Model<AdminAccount> = getAdminAccountModel()
         const account: AdminAccount = await AdminAccount.findOne({ email: session.user.email }) as AdminAccount
+        if (!account) throw new Error(`account with email ${session.user.email}`)
         console.log("account", account)
         // const volunteerList = account.volunteerIds
         const VolunteerAccount: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel()

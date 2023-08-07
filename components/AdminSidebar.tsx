@@ -42,6 +42,8 @@ const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], voluntee
             console.error(e)
         }
     }
+
+    
     
     const loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 
@@ -91,7 +93,7 @@ const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], voluntee
                             backgroundColor: "#D3A874", // Change this to a slightly darker shade of the background color.
                         }, fontSize: 11, fontWeight: 600, color: '#5F5F5F', width: "49.5%"
                     }}>Send automatic reminder</Button>
-                    <Link href="/admin/broadcast"><Button variant="contained" sx={{
+                    <Link href={`/admin/broadcast?recipient=${encodeURIComponent(volunteer.email)}`}><Button variant="contained" sx={{
                         marginBottom: 1, backgroundColor: "#F3D39A", "&:hover": {
                             backgroundColor: "#D3A874", // Change this to a slightly darker shade of the background color.
                         }, fontWeight: 600, color: '#5F5F5F', fontSize: 10.8, width: "50%"
