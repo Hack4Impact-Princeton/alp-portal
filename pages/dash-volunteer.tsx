@@ -8,11 +8,11 @@ import dbConnect from '../lib/dbConnect'
 import getBookDriveModel, { BookDrive } from '../models/BookDrive';
 import Link from 'next/link'
 import getVolunteerAccountModel, { VolunteerAccount } from '../models/VolunteerAccount';
-import { getSession } from 'next-auth/react';
 import { NextPage } from 'next';
 
 import useDynamicPadding from '../lib/useDynamicPadding';
-
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from './api/auth/[...nextauth]';
 const DashVolunteer: NextPage<{drives: BookDrive[] | null, account: VolunteerAccount | null, error: Error | null}> = ({ drives, account, error }) => {
   console.log(account)
   console.log("drives", drives)
@@ -61,7 +61,7 @@ const DashVolunteer: NextPage<{drives: BookDrive[] | null, account: VolunteerAcc
 export async function getServerSideProps(context: any) {
   try {
     await dbConnect()
-    const session = await getSession(context)
+    const session = await getServerSession(context.req, context.res, authOptions)
     console.log("SESSION OBJ: ", session);
     if (!session) {
       return {
