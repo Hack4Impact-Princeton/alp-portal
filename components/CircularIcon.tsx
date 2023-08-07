@@ -1,6 +1,5 @@
 
 const CircularIcon: React.FC<{ stringContent?: string | null, reactNodeContent?: React.ReactNode | null, bgColor: string, fgColor?: string }> = ({ stringContent, reactNodeContent, bgColor, fgColor }) => {
-    if (reactNodeContent) console.log("YAAAA")
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
             <circle cx="14" cy="14" r="14" fill={bgColor} />

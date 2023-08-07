@@ -8,30 +8,31 @@ import mongoose from 'mongoose';
 import { DataGrid, GridColDef, GridCellParams, GridRowParams } from '@mui/x-data-grid'
 import { BookDriveStatus, deadlineMap } from '../../lib/enums';
 import { useState, useRef, useEffect } from 'react';
-import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 import useClickOutside from '../../lib/useClickOutside';
 import type { } from '@mui/x-data-grid/themeAugmentation';
 import styles from './adminTable.module.css'
 import AdminSidebar from '../../components/AdminSidebar';
-
-
+import DownCaret from '../../components/DownCaret';
+import UpCaret from '../../components/UpCaret';
+import useExpandableElement from '../../lib/useExpandableElement';
+import CircularIcon from '../../components/CircularIcon';
+import { PanoramaVerticalSelect } from '@mui/icons-material';
+import { isIdentifier } from 'typescript';
 type AdminDashboardProps = {
     account: AdminAccount;
-    volunteers: VolunteerAccount[];
-    // drives: BookDrive[];
     error: Error | null;
     driveData: { drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount }[] | null
 }
-const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, error, driveData }) => {
+const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveData }) => {
     const drives = driveData?.map(driveDatum => driveDatum.drive)
-    console.log(account)
-    console.log(volunteers)
-    console.log(drives)
-
     const [showSidebar, setShowSidebar] = useState(false)
-    const [sidebarDriveDatum, setSideBarDriveData] = useState<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount } | undefined>(driveData && driveData.length != 0 ? driveData[0] : undefined)
+    const [sidebarDriveDatum, setSideBarDriveData] = useState<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount } | undefined>(undefined)
+    const { visible: showCurrDrives, toggleVisibility: setShowCurrDrives, elementRef: currDriveTableRef, elementStyles: currDriveTableStyles } = useExpandableElement()
+    const {visible: showCompletedDrives, toggleVisibility: toggleShowCompletedDrives, elementRef: completedDriveTableRef, elementStyles: completedDriveTableStyles} = useExpandableElement()
     const [, setState] = useState(false)
-    
+
+
     const updateBookDriveStatus = async (driveCode: string, status: number): Promise<void> => {
         try {
             const res = await fetch(`/api/bookDrive/${driveCode}`, {
@@ -43,7 +44,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, er
                 throw new Error("updating the status failed")
             }
             const resJson = await res.json()
-            console.log(resJson.data)
+            // console.log(resJson.data)
             const modifiedDrive = driveData?.find(driveDatum => driveDatum.drive.driveCode === resJson.data.driveCode)
             if (!modifiedDrive) throw new Error("something went wrong - Internal Server Error")
             console.log(modifiedDrive)
@@ -54,34 +55,100 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, er
             console.error(e)
         }
     }
-    const prelimColumns: GridColDef[] = [
-        { field: 'driveName', headerName: 'Drive Name', width: 250 },
+    const isDeadlineApproaching = (country: string): boolean => {
+        // TODO implement deadline logic here based on date and current time
+        if (!country) throw new Error("Something went wrong - country is undefined")
+        if (!deadlineMap.has(country)) throw new Error(`${country} does not exist in deadline map`)
+        return deadlineMap.get(country)!.getTime() - new Date().getTime() < (31 * 24 * 60 * 60 * 1000)
+    }
+    const prelimCurrDrivesColumns: GridColDef[] = [
+        { field: 'driveName', headerName: 'Drive Name', width: 450 },
         { field: 'size', headerName: "Size", width: 40 },
         { field: "country", headerName: "Country", width: 250 },
         { field: 'organizer', headerName: "Organizer", width: 150 },
         { field: "lastUpdated", headerName: "Last Updated", width: 200 }
     ]
-    const gridColumns: GridColDef[] = prelimColumns.map((column) => {
+    const prelimCompletedDrivesColumns: GridColDef[] = [
+        {field: 'driveName', headerName: 'Drive Name', width: 450},
+        { field: 'size', headerName: "Size", width: 40 },
+        { field: "country", headerName: "Country", width: 250 },
+        { field: 'organizer', headerName: "Organizer", width: 150 },
+        {field: 'completedDate', headerName: "Completed", width: 200}
+    ]
+    const currDrivesGridColumns: GridColDef[] = prelimCurrDrivesColumns.map((column) => {
+        let foundDrive: BookDrive | undefined
         return {
             ...column,
-            renderCell: (params: GridCellParams) => (
-                // textDecoration: "underline"
-                <span style={{ fontWeight: column.field === 'driveName' ? 600 : 400, cursor: column.field === 'driveName' ? "pointer" : "default", whiteSpace: "normal" }}>{params.value as string}</span>
-            ),
+            renderCell: (params: GridCellParams) => {
+                if (column.field === 'driveName') {
+                    if (!drives) throw new Error("drives don't exist???")
+                    // const preDriveName = params.value as string
+                    // const midDriveName = preDriveName.replace(/[^a-zA-Z0-9\s\p{P}]/gu, '')
+                    // const colDriveName = midDriveName.trim()
+                    const colDriveName = params.value as string
+                    foundDrive = drives.find(drive => drive.driveName == colDriveName);
+                    if (foundDrive) return (
+                        // textDecoration: "underline"
+                        <span style={{ textDecoration: "underline", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", fontWeight: 600, cursor: "pointer", whiteSpace: "normal" }}>
+                            {foundDrive?.status === BookDriveStatus.Cancelled ?
+                                <div style={{ marginRight: 3 }}><CircularIcon stringContent="!" bgColor={"#F3D39A"} fgColor={"#5F5F5F"} /></div> : <></>}
+                            {isDeadlineApproaching(foundDrive.country) ?
+                                <div style={{ marginRight: 3 }}><CircularIcon bgColor={"F3D39A"} reactNodeContent={<><circle cx="14" cy="14" r="14" fill="#F3D39A" />
+                                    <circle cx="14" cy="14" r="9" stroke="#5F5F5F" strokeWidth="2" />
+                                    <circle cx="14" cy="14" r="1" fill="#5F5F5F" />
+                                    <rect x="12.6479" y="6.60059" width="2" height="7.46818" rx="1" transform="rotate(-3.48103 12.6479 6.60059)" fill="#5F5F5F" />
+                                    <rect x="17.9458" y="12" width="2.00318" height="4.03109" rx="1.00159" transform="rotate(78.1979 17.9458 12)" fill="#5F5F5F" /></>} /> </div> : <></>
+                            }
+                            {params.value as string}
+                        </span>
+                    )
+                }
+                else if (column.field === 'size') {
+                    const val = params.value as number
+                    if (val == 500) return (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12.5 25C19.4036 25 25 19.4036 25 12.5C25 5.59644 19.4036 0 12.5 0C5.59644 0 0 5.59644 0 12.5C0 19.4036 5.59644 25 12.5 25ZM12.5 23.8015C18.7416 23.8015 23.8014 18.7417 23.8014 12.5001C23.8014 6.25853 18.7416 1.19873 12.5 1.19873C6.25842 1.19873 1.19863 6.25853 1.19863 12.5001C1.19863 18.7417 6.25842 23.8015 12.5 23.8015Z" fill="#5F5F5F" />
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M4.95675e-10 12.5C4.95675e-10 12.5 0 12.5001 0 12.5001C0 19.4037 5.59644 25.0001 12.5 25.0001C19.4036 25.0001 25 19.4037 25 12.5001C25 12.5001 25 12.5 25 12.5H4.95675e-10Z" fill="#5F5F5F" />
+                        </svg>
+
+                    )
+                    else return (<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                        <circle cx="12.5" cy="12.5" r="12.5" fill="#5F5F5F" />
+                    </svg>)
+                }
+
+            }
         }
     })
-    const isDeadlineApproaching = (country: string): boolean => {
-        // TODO implement deadline logic here based on date and current time
-        if (!deadlineMap.has(country)) throw new Error(`${country} does not exist in deadline map`)
-        return deadlineMap.get(country)!.getTime() - new Date().getTime() < (31 * 24 * 60 * 60 * 1000)
-    }
-    // ❗🕔 
-    const gridRows = drives?.filter(drive => drive.status === BookDriveStatus.Active || BookDriveStatus.Cancelled).map(drive => {
-        let driveName = drive.driveName
-        if (drive.status == BookDriveStatus.Cancelled) driveName = `❗ ${driveName}`
-        if (isDeadlineApproaching(drive.country)) driveName = `🕔 ${driveName}`
-        return { id: drive.driveCode, driveName: driveName, size: drive.booksGoal, country: drive.country, organizer: drive.organizer, lastUpdated: new Date(drive.cb.lastUpdate).toLocaleDateString(), status: drive.status }
+    const completedDrivesColumns: GridColDef[] = prelimCompletedDrivesColumns.map((column) => {
+        return {
+            ...column,
+            renderCell: (params: GridCellParams) => {
+                if (column.field === 'driveName') {
+                    return <span style={{ textDecoration: "underline", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", fontWeight: 600, cursor: "pointer", whiteSpace: "normal" }}>{params.value as string} </span>
+                }
+                else if (column.field === 'size') {
+                    const val = params.value as number
+                    if (val == 500) return (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12.5 25C19.4036 25 25 19.4036 25 12.5C25 5.59644 19.4036 0 12.5 0C5.59644 0 0 5.59644 0 12.5C0 19.4036 5.59644 25 12.5 25ZM12.5 23.8015C18.7416 23.8015 23.8014 18.7417 23.8014 12.5001C23.8014 6.25853 18.7416 1.19873 12.5 1.19873C6.25842 1.19873 1.19863 6.25853 1.19863 12.5001C1.19863 18.7417 6.25842 23.8015 12.5 23.8015Z" fill="#5F5F5F" />
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M4.95675e-10 12.5C4.95675e-10 12.5 0 12.5001 0 12.5001C0 19.4037 5.59644 25.0001 12.5 25.0001C19.4036 25.0001 25 19.4037 25 12.5001C25 12.5001 25 12.5 25 12.5H4.95675e-10Z" fill="#5F5F5F" />
+                        </svg>
+
+                    )
+                    else return (<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                        <circle cx="12.5" cy="12.5" r="12.5" fill="#5F5F5F" />
+                    </svg>)
+                }
+            }
+        }
     })
+    const currDrivesGridRows = drives?.filter(drive => drive.status === BookDriveStatus.Active || BookDriveStatus.Cancelled).map(drive => {
+        return { id: drive.driveCode, driveName: drive.driveName, size: drive.booksGoal, country: drive.country, organizer: drive.organizer, lastUpdated: new Date(drive.cb.lastUpdate).toLocaleDateString(), status: drive.status }
+    })
+
+    const completedDrivesGridRows = drives? drives.filter(drive => drive.status === BookDriveStatus.Completed).map(drive => {return {id: drive.driveCode, driveName: drive.driveName, size: drive.booksGoal, country: drive.country, organizer: drive.organizer, completed: new Date(drive.completedDate).toLocaleDateString()}}) : []
+    // ❗🕔 
 
     const handleDriveNameClick = (params: GridCellParams) => {
         if (params.field === 'driveName') {
@@ -89,17 +156,27 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, er
             const midDriveName = preDriveName.replace(/[^a-zA-Z0-9\s\p{P}]/gu, '')
             console.log(midDriveName)
             const driveName = midDriveName.trim()
+            if (sidebarDriveDatum && driveName === sidebarDriveDatum.drive.driveName) {
+                closeSidebar()
+                console.log("closing the drive because we have a duplicate: ", driveName)
+                return
+            }
+            console.log("setting the new  drive to be ", driveName)
             const sideDrive = driveData?.find(driveDatum => driveDatum.drive.driveName === driveName)
-            console.log(sideDrive)
-            setSideBarDriveData(sideDrive) // I hope this doesn't get too slowly
-            setShowSidebar(true)
+            setTimeout(() => {
+                setSideBarDriveData(sideDrive)
+                setShowSidebar(true)
+            }, 125) // I hope this doesn't get too slowly
         }
     }
     const sidebarRef = useRef<HTMLDivElement>(null);
-
-    useClickOutside(sidebarRef, () => {
-        setShowSidebar(false);
-    });
+    const closeSidebar = () => {
+        setShowSidebar(false)
+        setTimeout(() => {
+            setSideBarDriveData(undefined);
+        }, 100);
+    }
+    useClickOutside(sidebarRef, closeSidebar)
 
     const setRowClassName = (params: GridRowParams) => {
         if (params.row.status === BookDriveStatus.Cancelled) return styles['cancelled-row'];
@@ -108,39 +185,74 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, er
     };
     return (
         <>
-            {account &&
-                <div>
-                    {account && <p>{account.fname} {account.lname}</p>}
-                    {volunteers && volunteers.map(volunteer => <p key={volunteer.email}>{volunteer.email}</p>)}
-                    {drives && drives.map(drive => <p key={drive.driveCode}>{drive.driveName}</p>)}
+            <Grid sx={{ width: "100%", height: "100%", padding: 5 }}>
+                {account &&
+                    <Grid sx={{ marginBottom: 3, width: "100%" }}>
+                        <Grid display="flex" flexDirection="row" justifyContent="flex-start" alignItems="center" >
+                            <h1 style={{ color: "#5F5F5F", marginRight: 10, fontSize: 90, fontWeight: 600 }}>DASHBOARD</h1>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="67" height="65" viewBox="0 0 67 65" fill="none" onClick={() => window.location.reload()} style={{ cursor: "pointer" }}>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M58.2318 30.9165C58.0576 28.316 55.3593 26.8851 52.8828 27.6974C50.614 28.4416 49.3812 30.8298 49.2658 33.2147C49.0294 38.0981 46.3651 42.7562 41.7909 45.3332C34.7129 49.321 25.7424 46.8158 21.7547 39.7378C21.2681 38.8741 20.2578 38.3989 19.3158 38.7079L15.7623 39.8735C13.941 40.4709 12.9727 42.4855 13.9136 44.1555C20.3411 55.5641 34.8001 59.602 46.2086 53.1744C54.429 48.5431 58.8227 39.7418 58.2318 30.9165ZM11.0861 29.2468C10.6632 32.2674 13.7235 34.2536 16.6216 33.3029C18.5618 32.6665 19.8135 30.8478 20.3201 28.8697C21.2806 25.1194 23.711 21.7519 27.3501 19.7016C32.7856 16.6393 39.337 17.406 43.891 21.1322C45.4726 22.4263 47.5592 23.1549 49.5011 22.518C52.395 21.5687 53.687 18.1586 51.564 15.9749C44.2438 8.44537 32.5126 6.46302 22.9324 11.8605C16.2335 15.6346 12.0759 22.1779 11.0861 29.2468Z" fill="#5F5F5F" />
+                                <path d="M12.2871 36.4002C12.4325 35.1886 13.6197 34.3886 14.7973 34.7086L27.5498 38.1742C29.2022 38.6232 29.563 40.8058 28.143 41.7627L13.8155 51.4179C12.3955 52.3749 10.508 51.2211 10.712 49.521L12.2871 36.4002Z" fill="#5F5F5F" />
+                                <path d="M55.5213 22.6482C55.755 23.8459 54.871 24.9719 53.652 25.0291L40.4515 25.648C38.741 25.7283 37.7273 23.762 38.7847 22.4152L49.4539 8.82588C50.5114 7.47907 52.662 7.99725 52.99 9.67786L55.5213 22.6482Z" fill="#5F5F5F" />
+                            </svg>
+                        </Grid>
+                    </Grid>
+                }
+                {account && currDrivesGridRows && currDrivesGridColumns && driveData &&
+                    <Grid container spacing={2} sx={{ height: "wrap-content", width: '90%', display: "flex", flexDirection: "column" }}>
+                        <Grid item display="flex" flexDirection="row" alignItems="center">
+                            <h1 style={{ color: "#FE9384" }}>Current Drives</h1>
+                            {!showCurrDrives && <UpCaret onClick={setShowCurrDrives} />}
+                            {showCurrDrives && <DownCaret onClick={setShowCurrDrives} />}
+                        </Grid>
+                        <div ref={currDriveTableRef} style={currDriveTableStyles}>
+                            <Grid item>
+                                <DataGrid
+                                    rows={currDrivesGridRows}
+                                    columns={currDrivesGridColumns}
+                                    initialState={{ pagination: { paginationModel: { pageSize: 10 }, }, }} pageSizeOptions={[10]}
+                                    checkboxSelection
+                                    disableRowSelectionOnClick
+                                    onCellClick={handleDriveNameClick}
+                                    getRowClassName={setRowClassName}
+
+                                />
+                            </Grid>
+                        </div>
+                        <Grid item display="flex" flexDirection="row" alignItems="center">
+                            <h1 style={{ color: "#FE9384" }}>Completed Drives</h1>
+                            {!showCompletedDrives && <UpCaret onClick={toggleShowCompletedDrives} />}
+                            {showCompletedDrives && <DownCaret onClick={toggleShowCompletedDrives} />}
+                        </Grid>
+                        <div ref={completedDriveTableRef} style={completedDriveTableStyles}>
+                            <Grid item>
+                                <DataGrid
+                                    rows={completedDrivesGridRows}
+                                    columns={completedDrivesColumns}
+                                    initialState={{ pagination: { paginationModel: { pageSize: 10 }, }, }} pageSizeOptions={[10]}
+                                    checkboxSelection
+                                    disableRowSelectionOnClick
+                                    onCellClick={handleDriveNameClick}
+                                />
+                            </Grid>
+                        </div>
+                    </Grid>}
+                {sidebarDriveDatum && <div ref={sidebarRef} style={{
+                    position: 'fixed',
+                    top: 0,
+                    right: 0,
+                    height: '100%',
+                    overflowY: showSidebar ? 'scroll' : "hidden",
+                    background: '#F5F5F5',
+                    padding: '15px',
+                    boxSizing: 'border-box',
+                    transformOrigin: 'top right',
+                    transform: 'scale(1)',
+                    transition: 'width .4s ease',
+                    width: showSidebar ? 'calc(35% + 20px)' : 0
+                }}><AdminSidebar updateBookDriveStatus={updateBookDriveStatus} volunteer={sidebarDriveDatum.volunteer} drive={sidebarDriveDatum.drive} shipments={sidebarDriveDatum.shipments} />
                 </div>}
-            {account && gridRows && gridColumns && driveData &&
-                <Box sx={{ height: "wrap-content", width: '80%' }}>
-                    <DataGrid
-                        rows={gridRows}
-                        columns={gridColumns}
-                        initialState={{ pagination: { paginationModel: { pageSize: 10 }, }, }} pageSizeOptions={[10]}
-                        checkboxSelection
-                        disableRowSelectionOnClick
-                        onCellClick={handleDriveNameClick}
-                        getRowClassName={setRowClassName}
-                    />
-                </Box>}
-            {sidebarDriveDatum && <div ref={sidebarRef} style={{
-                position: 'fixed',
-                top: 0,
-                right: 0,
-                height: '100%',
-                overflowY: 'scroll',
-                background: '#F5F5F5',
-                padding: '15px',
-                boxSizing: 'border-box',
-                transformOrigin: 'top right',
-                transform: 'scale(1)',
-                transition: 'width .4s ease',
-                width: showSidebar ? 'calc(35% + 20px)' : 0
-            }}><AdminSidebar updateBookDriveStatus={updateBookDriveStatus} volunteer={sidebarDriveDatum.volunteer} drive={sidebarDriveDatum.drive} shipments={sidebarDriveDatum.shipments} />
-            </div>}
+            </Grid>
         </>)
 }
 
@@ -160,11 +272,11 @@ export const getServerSideProps = async (context: any) => {
         const AdminAccount: mongoose.Model<AdminAccount> = getAdminAccountModel()
         const account: AdminAccount = await AdminAccount.findOne({ email: session.user.email }) as AdminAccount
         console.log("account", account)
-        const volunteerList = account.volunteerIds
+        // const volunteerList = account.volunteerIds
         const VolunteerAccount: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel()
-        const vPromises = volunteerList.map(volunteerId => VolunteerAccount.findOne({ alp_id: volunteerId }))
-        const volunteers = await Promise.all(vPromises) as VolunteerAccount[]
-        console.log("volunteers", volunteers)
+        // const vPromises = volunteerList.map(volunteerId => VolunteerAccount.findOne({ alp_id: volunteerId }))
+        // const volunteers = await Promise.all(vPromises) as VolunteerAccount[]
+        // console.log("volunteers", volunteers)
         const BookDrive: mongoose.Model<BookDrive> = getBookDriveModel()
         // const driveList = account.driveIds
         // const bPromises = driveList.map(driveId => BookDrive.findOne({ driveCode: driveId }))
@@ -182,7 +294,7 @@ export const getServerSideProps = async (context: any) => {
         })
         const driveData = await Promise.all(driveDataPromises)
         console.log(driveData)
-        return { props: { error: null, account: JSON.parse(JSON.stringify(account)), volunteers: JSON.parse(JSON.stringify(volunteers)), driveData: JSON.parse(JSON.stringify(driveData)) } }
+        return { props: { error: null, account: JSON.parse(JSON.stringify(account)), driveData: JSON.parse(JSON.stringify(driveData)) } }
     } catch (e: Error | any) {
         console.log(e)
         const errorStr = e.message === "Cannot read properties of null (reading 'user')" ? "You must login before accessing this page" : `${e}`

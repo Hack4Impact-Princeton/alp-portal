@@ -14,12 +14,14 @@ import { useState } from "react"
 import UpCaret from "./UpCaret"
 import DownCaret from "./DownCaret"
 import { getStates } from "../lib/enums"
+import useExpandableElement from "../lib/useExpandableElement"
 
 const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount, updateBookDriveStatus: (driveCode: string, status: number) => Promise<void> }> = ({ drive, shipments, volunteer, updateBookDriveStatus }) => {
     const { status, organizer, driveName, driveCode, country, completedDate, startDate, mailDate, fl, pts, booksGoal, gs, cb } = drive
-    const [showReactivationReq, setShowReactivationReq] = useState(false)
-    const [showUpdateHistory, setShowUpdateHistory] = useState(false)
+    // const [showReactivationReq, setShowReactivationReq] = useState(false)
     const [, setState] = useState(false)
+    const {visible: showReactivationReq, toggleVisibility: toggleShowReactivationReq, elementRef: reactivationReqRef, elementStyles: reactivationReqStyles} = useExpandableElement({extraHeight: 10})
+    const {visible: showUpdateHistory, toggleVisibility: toggleShowUpdateHistory, elementRef: showUpdateHistoryRef, elementStyles: showUpdateHistoryStyles} = useExpandableElement({extraHeight: 10})
     const states = getStates()
     const markShipmentReception = async (id: number) => {
         try {
@@ -98,20 +100,16 @@ const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], voluntee
                 {status == BookDriveStatus.Cancelled && <><Grid item width={"100%"} display={"flex"} justifyContent={"flex-start"} alignItems={"center"}>
                     <CircularIcon stringContent={"!"} fgColor={"#FE9834"} bgColor={"#F3D39A"} />
                     <Typography variant="h5" style={{ color: "#FE9834", fontWeight: 700, marginLeft: 10 }}>Reactivation Request</Typography>
-                    {!showReactivationReq && <UpCaret onClick={() => setShowReactivationReq(prev => !prev)} />}
-                    {showReactivationReq && <DownCaret onClick={() => setShowReactivationReq(prev => !prev)} />}
+                    {!showReactivationReq && <UpCaret onClick={toggleShowReactivationReq} />}
+                    {showReactivationReq && <DownCaret onClick={toggleShowReactivationReq} />}
                 </Grid>
-                    <div
-                        style={{
-                            overflow: "hidden",
-                            transition: "height .3s ease", // You can adjust the timing and easing here
-                            height: showReactivationReq ? "260px" : 0,
-                        }}
+                    <div ref={reactivationReqRef}
+                        style={reactivationReqStyles}
                     >
                         <Grid item>
                             <TextareaAutosize maxRows={15} minRows={15} cols={50} style={{ overflowY: "auto", resize: "none", border: "1.5px solid black", borderRadius: "3%" }} readOnly placeholder={loremIpsum} />
                         </Grid>
-                        <Grid item display="flex" flexDirection="row" justifyContent="center" alignItems="center">
+                        <Grid item display="flex" flexDirection="row" justifyContent="center" alignItems="center" sx={{marginBottom: 1}}>
                             <Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" }, marginRight: 1 }}>Reply</Button>
                             <Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" }, marginRight: 1 }} onClick={() => updateBookDriveStatus(driveCode, BookDriveStatus.Active)}>Accept</Button>
                             <Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" } }}>Reject</Button>
@@ -120,14 +118,10 @@ const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], voluntee
                     <Grid item sx={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", width: "100%" }}>
 
                         <Typography variant="h5" sx={{ marginRight: 1, color: "#FE9834", fontWeight: 600 }}>Update History</Typography>
-                        {!showUpdateHistory && <UpCaret onClick={() => setShowUpdateHistory(prev => !prev)} key="no" />}
-                        {showUpdateHistory && <DownCaret onClick={() => setShowUpdateHistory(prev => !prev)} key="hi" />}
+                        {!showUpdateHistory && <UpCaret onClick={toggleShowUpdateHistory} key="no" />}
+                        {showUpdateHistory && <DownCaret onClick={toggleShowUpdateHistory} key="hi" />}
                     </Grid>
-                    <div style={{
-                        overflow: "auto",
-                        transition: "height .3s ease",
-                        height: showUpdateHistory? "400px": 0
-                    }}>
+                    <div ref={showUpdateHistoryRef} style={showUpdateHistoryStyles}>
                         <Grid sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "flex-start", paddingX: 1 }}>
                             <Typography variant={"h6"} sx={{ fontWeight: 600, color: "#5F5F5F" }}>Shipment Progress</Typography>
                             {shipments && shipments.map((shipment) => {
