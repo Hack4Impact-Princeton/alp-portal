@@ -1,9 +1,12 @@
-import { getSession } from 'next-auth/react'
+import {getServerSession} from 'next-auth/next'
 import { NextPage } from 'next/types'
 import getAdminAccountModel, { AdminAccount } from '../../models/AdminAccount'
 import getVolunteerAccountModel, { VolunteerAccount } from '../../models/VolunteerAccount';
 import getBookDriveModel, { BookDrive } from '../../models/BookDrive';
 import mongoose from 'mongoose';
+import { BookDriveStatus } from '../../lib/enums';
+import { authOptions } from '../api/auth/[...nextauth]';
+import {DataGrid} from '@mui/x-data-grid'
 import getShipmentModel, { Shipment } from '../../models/Shipment';
 import { Box } from '@mui/material';
 import React from 'react';
@@ -36,7 +39,22 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, volunteers, dr
             console.error(e)
         }
     }
-
+const updateBookDriveStatus = async (driveCode: string, status: number): Promise<void> => {
+        try {
+            const res = await fetch(`/api/bookDrive/${driveCode}`, {
+                method: "PUT",
+                body: JSON.stringify({ status: status })
+            })
+            if (!res.ok) {
+                alert("updating the status failed")
+                throw new Error("updating the status failed")
+            }
+            const resJson = await res.json()
+            console.log(resJson.data)
+        } catch (e: Error | any) {
+            console.error(e)
+        }
+    }
     return (
         <>
             {account &&
@@ -64,7 +82,7 @@ export default AdminDashboard
 
 export const getServerSideProps = async (context: any) => {
     try {
-        const session = await getSession(context)
+        const session = await getServerSession(context.req, context.res, authOptions)
         if (!session || session.user?.name != 'true') {
             return {
                 redirect: {

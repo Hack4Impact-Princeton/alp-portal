@@ -3,11 +3,12 @@ import { useState } from 'react'
 import getAdminAccountModel, { AdminAccount } from '../../models/AdminAccount'
 import getVolunteerAccountModel, { VolunteerAccount } from '../../models/VolunteerAccount'
 import mongoose from 'mongoose'
-import { getSession } from 'next-auth/react'
 import BroadcastForm from '../../components/BroadcastForm'
 import getBroadcastModel, { Broadcast } from '../../models/Broadcast'
 import { Grid } from '@mui/material'
 import BroadcastMessage from '../../components/Broadcast'
+import { authOptions } from '../api/auth/[...nextauth]'
+import { getServerSession } from 'next-auth/next'
 type BroadcastPageProps = {
     account: AdminAccount,
     volunteers: VolunteerAccount[],
@@ -21,6 +22,7 @@ const BroadcastPage: NextPage<BroadcastPageProps> = ({ account, volunteers, erro
         if (!acctBroadcasts.includes(broadcast)) setAcctBroadcasts(prevBroadcasts => { return [broadcast, ...prevBroadcasts]})
         if (!newBroadcasts.includes(broadcast)) setNewBroadcasts(prevBroadcasts => {return [broadcast, ...prevBroadcasts]})
     }
+    
     // console.log("broadcasts", broadcasts)
     return (
         <Grid container spacing="10" style={{ display: "flex", justifyContent: "space-between" }}>
@@ -52,7 +54,7 @@ export default BroadcastPage
 
 export const getServerSideProps = async (context: any) => {
     try {
-        const session = await getSession(context)
+        const session = await getServerSession(context.req, context.res, authOptions)
         if (!session || session.user?.name != 'true') {
             return {
                 redirect: {
@@ -70,7 +72,11 @@ export const getServerSideProps = async (context: any) => {
         console.log("volunteers", volunteers)
         const Broadcast: mongoose.Model<Broadcast> = getBroadcastModel()
         console.log(account.broadcasts)
-        const bPromises = account.broadcasts.map(broadcastId => Broadcast.findOne({ id: broadcastId }))
+        const bPromises = account.broadcasts.map(broadcastId => {
+                const res = Broadcast.findOne({ id: broadcastId })
+                if (!res) console.log("the bad broadcastId is", broadcastId)
+                else return res
+        })
         const broadcasts = await Promise.all(bPromises) as Broadcast[]
         return { props: { error: null, account: JSON.parse(JSON.stringify(account)), volunteers: JSON.parse(JSON.stringify(volunteers)), broadcasts: JSON.parse(JSON.stringify(broadcasts)) } }
     } catch (e: Error | any) {

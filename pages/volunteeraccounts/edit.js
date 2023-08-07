@@ -1,11 +1,10 @@
 import dbConnect from "../../lib/dbConnect"
 import getVolunteerAccountModel from "../../models/VolunteerAccount"
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Button } from "@mui/material"
 import { getStates } from "../../lib/enums"
-import { getSession, useSession } from "next-auth/react"
-import Router from 'next/router'
-import Link from "next/link"
+import { getServerSession } from "next-auth/next"
+import { authOptions } from '../api/auth/[...nextauth]';
 
 const EditVolunteerAccount = (props) => {
     const volunteerAccount = props.account ? JSON.parse(props.account): null
@@ -91,7 +90,7 @@ const EditVolunteerAccount = (props) => {
 export const getServerSideProps = async (context) => {
     try {
         await dbConnect()
-        const session = await getSession(context)
+        const session = await getServerSession(context.req, context.res, authOptions)
         if (!session) {
             return {
                 redirect: {
