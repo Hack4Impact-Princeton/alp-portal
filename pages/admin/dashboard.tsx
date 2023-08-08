@@ -79,7 +79,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
             // console.log(resJson.data)
             const modifiedDrive = driveData?.find(driveDatum => driveDatum.drive.driveCode === resJson.data.driveCode)
             if (!modifiedDrive) throw new Error("something went wrong - Internal Server Error")
-            console.log(modifiedDrive)
+            // console.log(modifiedDrive)
             modifiedDrive!.drive.status = status
             setState(prev => !prev)
             alert("drive marked as active successfully")
@@ -107,9 +107,9 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
         { field: 'organizer', headerName: "Organizer", width: 150 },
         { field: 'completedDate', headerName: "Completed", width: 120 }
     ]
-    const prelimReactivationReqColumns: GridColDef[] = [{ field: 'driveName', headerName: 'Reactivation Requests', width: 270 }]
-    const prelimShipmentsPendingColumns: GridColDef[] = [{ field: 'driveName', headerName: 'Shipments Pending', width: 270 }]
-    const prelimNotUpdatedInColumns: GridColDef[] = [{ field: 'driveName', headerName: 'Not Updated in 10 Days', width: 270 }]
+    const prelimReactivationReqColumns: GridColDef[] = [{ field: 'driveName', headerName: 'Reactivation Requests', width: 300 }]
+    const prelimShipmentsPendingColumns: GridColDef[] = [{ field: 'driveName', headerName: 'Shipments Pending', width: 300 }]
+    const prelimNotUpdatedInColumns: GridColDef[] = [{ field: 'driveName', headerName: 'Not Updated in 10 Days', width: 300 }]
     const reactivationReqColumns = prelimReactivationReqColumns.map((column) => {
         return {
             ...column,
@@ -172,16 +172,16 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
         }
     })
     const currDrives = drives?.filter(drive => drive.status === BookDriveStatus.Active || drive.status === BookDriveStatus.Cancelled)
-    console.log(currDrives)
-    console.log("currDrive length", currDrives?.length)
+    // console.log(currDrives)
+    // console.log("currDrive length", currDrives?.length)
     const currDrivesGridRows = currDrives?.map(drive => {
-        console.log("acceptable statuses", `${BookDriveStatus.Cancelled}, ${BookDriveStatus.Active}`)
-        console.log("status by driveName", `${drive.driveName}: ${drive.status}`)
+        // console.log("acceptable statuses", `${BookDriveStatus.Cancelled}, ${BookDriveStatus.Active}`)
+        // console.log("status by driveName", `${drive.driveName}: ${drive.status}`)
         return { id: drive.driveCode, driveName: drive.driveName, size: drive.booksGoal, country: drive.country, organizer: drive.organizer, lastUpdated: new Date(drive.cb.lastUpdate).toLocaleDateString(), status: drive.status }
     })
 
     const completedDrivesGridRows = drives ? drives.filter(drive => drive.status === BookDriveStatus.Completed).map(drive => {
-        console.log("status by driveName", `${drive.driveName}: ${drive.status}`)
+        // console.log("status by driveName", `${drive.driveName}: ${drive.status}`)
 
         return { id: drive.driveCode, driveName: drive.driveName, size: drive.booksGoal, country: drive.country, organizer: drive.organizer, completedDate: new Date(drive.completedDate).toLocaleDateString() }
     }) : []
@@ -204,19 +204,19 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
         if (params.field === 'driveName') {
             const preDriveName = params.value as string
             const midDriveName = preDriveName.replace(/[^a-zA-Z0-9\s\p{P}]/gu, '')
-            console.log(midDriveName)
+            // console.log(midDriveName)
             const driveName = midDriveName.trim()
             if (sidebarDriveDatum && driveName === sidebarDriveDatum.drive.driveName) {
                 closeSidebar()
-                console.log("closing the drive because we have a duplicate: ", driveName)
+                // console.log("closing the drive because we have a duplicate: ", driveName)
                 return
             }
-            console.log("setting the new  drive to be ", driveName)
+            // console.log("setting the new  drive to be ", driveName)
             const sideDrive = driveData?.find(driveDatum => driveDatum.drive.driveName === driveName)
             setTimeout(() => {
                 setSideBarDriveData(sideDrive)
                 setShowSidebar(true)
-            }, 125) // I hope this doesn't get too slowly
+            }, 220) // I hope this doesn't get too slowly
         }
     }
     const sidebarRef = useRef<HTMLDivElement>(null);
@@ -224,7 +224,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
         setShowSidebar(false)
         setTimeout(() => {
             setSideBarDriveData(undefined);
-        }, 100);
+        }, 200);
     }
     useClickOutside(sidebarRef, closeSidebar)
 
@@ -302,7 +302,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                         </div>
                     </Grid>
                 }
-                {account && currDrivesGridRows && currDrivesGridColumns && driveData &&
+                {account && currDrivesGridRows && currDrivesGridColumns && currDrivesGridRows.length !== 0 && driveData &&
                     <Grid container spacing={2} sx={{ height: "wrap-content", width: '90%', display: "flex", flexDirection: "column" }}>
                         <Grid item display="flex" flexDirection="row" alignItems="center">
                             <h1 style={{ color: "#FE9384" }}>Current Drives</h1>
@@ -330,7 +330,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                             {showCompletedDrives && <DownCaret onClick={toggleShowCompletedDrives} />}
                         </Grid>
                         <div ref={completedDriveTableRef} style={completedDriveTableStyles}>
-                            <Grid item sx={{ width: "fit-content" }}>
+                            {completedDrivesGridRows.length !== 0 && <Grid item sx={{ width: "fit-content" }}>
                                 <DataGrid
                                     rows={completedDrivesGridRows}
                                     columns={completedDrivesColumns}
@@ -340,7 +340,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                                     disableRowSelectionOnClick
                                     onCellClick={handleDriveNameClick}
                                 />
-                            </Grid>
+                            </Grid>}
                         </div>
                     </Grid>}
                 {sidebarDriveDatum && <div ref={sidebarRef} style={{
@@ -354,8 +354,9 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                     boxSizing: 'border-box',
                     transformOrigin: 'top right',
                     transform: 'scale(1)',
+                    minWidth: showSidebar? '400px' : 0,
                     transition: 'width .4s ease',
-                    width: showSidebar ? 'calc(35% + 20px)' : 0
+                    width: showSidebar ? '36%' : 0
                 }}><AdminSidebar email={account.email} updateBookDriveStatus={updateBookDriveStatus} volunteer={sidebarDriveDatum.volunteer} drive={sidebarDriveDatum.drive} shipments={sidebarDriveDatum.shipments} />
                 </div>}
             </Grid>
@@ -367,7 +368,7 @@ export default AdminDashboard
 export const getServerSideProps = async (context: any) => {
     try {
         const session = await getServerSession(context.req, context.res, authOptions)
-        console.log("session obj", session)
+        // console.log("session obj", session)
         if (!session || session.user?.name != 'true') {
             return {
                 redirect: {
@@ -379,7 +380,7 @@ export const getServerSideProps = async (context: any) => {
         const AdminAccount: mongoose.Model<AdminAccount> = getAdminAccountModel()
         const account: AdminAccount = await AdminAccount.findOne({ email: session.user.email }) as AdminAccount
         if (!account) throw new Error(`account with email ${session.user.email}`)
-        console.log("account", account)
+        // console.log("account", account)
         // const volunteerList = account.volunteerIds
         const VolunteerAccount: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel()
         // const vPromises = volunteerList.map(volunteerId => VolunteerAccount.findOne({ alp_id: volunteerId }))
@@ -401,7 +402,7 @@ export const getServerSideProps = async (context: any) => {
             return { drive: drive, shipments: shipments, volunteer: volunteer }
         })
         const driveData = await Promise.all(driveDataPromises)
-        console.log(driveData)
+        // console.log(driveData)
         return { props: { error: null, account: JSON.parse(JSON.stringify(account)), driveData: JSON.parse(JSON.stringify(driveData)) } }
     } catch (e: Error | any) {
         console.log(e)
