@@ -9,12 +9,13 @@ type BroadcastFormProps = {
     volunteers: VolunteerAccount[],
     addBroadcast: (broadcast: Broadcast) => void,
     recipient: string | undefined,
+    sbjt: string | undefined,
 }
-const BroadcastForm: React.FC<BroadcastFormProps> = ({ email, volunteers, addBroadcast, recipient }) => {
+const BroadcastForm: React.FC<BroadcastFormProps> = ({ email, volunteers, addBroadcast, recipient, sbjt }) => {
     const [message, setMessage] = useState("")
-    const [subject, setSubject] = useState("")
+    const [subject, setSubject] = useState(sbjt ? sbjt : "")
     const [submit, setSubmit] = useState(false)
-    const [showCustomBroadcast, setShowCustomBroadcast] = useState(false)
+    const [showCustomBroadcast, setShowCustomBroadcast] = useState(recipient || sbjt ? true : false)
     // email addresses of the recipients
     const [recipients, setRecipients] = useState<string[]>(recipient ? [recipient] : [])
 

@@ -58,6 +58,22 @@ const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], voluntee
         }
     }
 
+    const rejectReactivationReq = async() => {
+        try {
+            const subject = `Rejection of Reactivation Request for ${driveName}`
+            const message = `Your request to reactivate ${driveName} was rejected. If you feel that this is not right, please submit another reactivation request`
+            const broadcastRes = await sendBroadcast(email, [volunteer.email], subject, message)
+            if (!broadcastRes.success) {
+                alert(broadcastRes.error.message)
+                return
+            }
+            alert(`Reactivation request for ${driveName} was successfully rejected`)
+            toggleShowReactivationReq()
+        } catch  (e: Error | any) {
+            console.error(e)
+        }
+    }
+
     
     
     const loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
@@ -127,9 +143,9 @@ const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], voluntee
                             <TextareaAutosize maxRows={15} minRows={15} cols={50} style={{ overflowY: "auto", resize: "none", border: "1.5px solid black", borderRadius: "3%" }} readOnly placeholder={loremIpsum} />
                         </Grid>
                         <Grid item display="flex" flexDirection="row" justifyContent="center" alignItems="center" sx={{marginBottom: 1}}>
-                            <Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" }, marginRight: 1 }}>Reply</Button>
+                            <Link href={`/admin/broadcast?recipient=${encodeURIComponent(volunteer.email)}&subject=${driveName} Reactivation Request`}><Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" }, marginRight: 1 }}>Reply</Button></Link>
                             <Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" }, marginRight: 1 }} onClick={() => updateBookDriveStatus(driveCode, BookDriveStatus.Active)}>Accept</Button>
-                            <Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" } }}>Reject</Button>
+                            <Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" } }} onClick={rejectReactivationReq}>Reject</Button>
                         </Grid></div></>}
                 <Grid container spacing={1} sx={{ display: "flex", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", paddingX: 1 }}>
                     <Grid item sx={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", width: "100%" }}>

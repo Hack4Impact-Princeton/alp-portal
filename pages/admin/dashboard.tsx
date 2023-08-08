@@ -94,14 +94,14 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
         return deadlineMap.get(country)!.getTime() - new Date().getTime() < (31 * 24 * 60 * 60 * 1000)
     }
     const prelimCurrDrivesColumns: GridColDef[] = [
-        { field: 'driveName', headerName: 'Drive Name', width: 255 },
+        { field: 'driveName', headerName: 'Drive Name', width: 300 },
         { field: 'size', headerName: "Size", width: 40 },
         { field: "country", headerName: "Country", width: 175 },
         { field: 'organizer', headerName: "Organizer", width: 150 },
         { field: "lastUpdated", headerName: "Last Updated", width: 120 }
     ]
     const prelimCompletedDrivesColumns: GridColDef[] = [
-        { field: 'driveName', headerName: 'Drive Name', width: 255 },
+        { field: 'driveName', headerName: 'Drive Name', width: 300 },
         { field: 'size', headerName: "Size", width: 40 },
         { field: "country", headerName: "Country", width: 175 },
         { field: 'organizer', headerName: "Organizer", width: 150 },

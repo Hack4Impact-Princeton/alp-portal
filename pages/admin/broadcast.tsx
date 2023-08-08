@@ -15,8 +15,9 @@ type BroadcastPageProps = {
     broadcasts: Broadcast[],
     error: null | string,
     recipient: string | undefined,
+    subject: string | undefined,
 }
-const BroadcastPage: NextPage<BroadcastPageProps> = ({ account, volunteers, error, broadcasts, recipient }) => {
+const BroadcastPage: NextPage<BroadcastPageProps> = ({ account, volunteers, error, broadcasts, recipient, subject }) => {
     const [newBroadcasts, setNewBroadcasts] = useState<Broadcast[]>([])
     const [acctBroadcasts, setAcctBroadcasts] = useState<Broadcast[]>(broadcasts)
     const addBroadcast = (broadcast: Broadcast) => {
@@ -28,7 +29,7 @@ const BroadcastPage: NextPage<BroadcastPageProps> = ({ account, volunteers, erro
     return (
         <Grid container spacing="10" style={{ display: "flex", justifyContent: "space-between" }}>
             <Grid item>
-                <BroadcastForm email={account.email} volunteers={volunteers} addBroadcast={addBroadcast} recipient={recipient}/>
+                <BroadcastForm email={account.email} volunteers={volunteers} addBroadcast={addBroadcast} recipient={recipient} sbjt={subject}/>
             </Grid>
             <Grid item style={{ display: "flex", flexDirection: "column" }}>
                 <h1 style={{ padding: 10 }}>Broadcasts sent just now:</h1>
@@ -65,6 +66,7 @@ export const getServerSideProps = async (context: any) => {
             }
         }
         const recipient: string | undefined = context.query.recipient
+        const subject: string | undefined = context.query.subject
         const AdminAccount: mongoose.Model<AdminAccount> = getAdminAccountModel()
         const account: AdminAccount = await AdminAccount.findOne({ email: session.user.email }) as AdminAccount
         console.log("account", account)
@@ -80,9 +82,9 @@ export const getServerSideProps = async (context: any) => {
                 else return res
         })
         const broadcasts = await Promise.all(bPromises) as Broadcast[]
-        return { props: { error: null, account: JSON.parse(JSON.stringify(account)), volunteers: JSON.parse(JSON.stringify(volunteers)), broadcasts: JSON.parse(JSON.stringify(broadcasts)), recipient } }
+        return { props: { error: null, account: JSON.parse(JSON.stringify(account)), volunteers: JSON.parse(JSON.stringify(volunteers)), broadcasts: JSON.parse(JSON.stringify(broadcasts)), recipient, subject } }
     } catch (e: Error | any) {
         const errorStr = e.message === "Cannot read properties of null (reading 'user')" ? "You must login before accessing this page" : `${e}`
-        return { props: { error: errorStr, account: null, volunteers: null, broadcasts: null, recipient: null } }
+        return { props: { error: errorStr, account: null, volunteers: null, broadcasts: null, recipient: null, subject: null } }
     }
 }
