@@ -58,21 +58,21 @@ const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], voluntee
         }
     }
 
-    const rejectReactivationReq = async() => {
-        try {
-            const subject = `Rejection of Reactivation Request for ${driveName}`
-            const message = `Your request to reactivate ${driveName} was rejected. If you feel that this is not right, please submit another reactivation request`
-            const broadcastRes = await sendBroadcast(email, [volunteer.email], subject, message)
-            if (!broadcastRes.success) {
-                alert(broadcastRes.error.message)
-                return
-            }
-            alert(`Reactivation request for ${driveName} was successfully rejected`)
-            toggleShowReactivationReq()
-        } catch  (e: Error | any) {
-            console.error(e)
-        }
-    }
+    // const rejectReactivationReq = async() => {
+    //     try {
+    //         const subject = `Rejection of Reactivation Request for ${driveName}`
+    //         const message = `Your request to reactivate ${driveName} was rejected. If you feel that this is not right, please submit another reactivation request`
+    //         const broadcastRes = await sendBroadcast(email, [volunteer.email], subject, message)
+    //         if (!broadcastRes.success) {
+    //             alert(broadcastRes.error.message)
+    //             return
+    //         }
+    //         alert(`Reactivation request for ${driveName} was successfully rejected`)
+    //         toggleShowReactivationReq()
+    //     } catch  (e: Error | any) {
+    //         console.error(e)
+    //     }
+    // }
 
     
     
@@ -145,7 +145,7 @@ const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], voluntee
                         <Grid item display="flex" flexDirection="row" justifyContent="center" alignItems="center" sx={{marginBottom: 1}}>
                             <Link href={`/admin/broadcast?recipient=${encodeURIComponent(volunteer.email)}&subject=${driveName} Reactivation Request`}><Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" }, marginRight: 1 }}>Reply</Button></Link>
                             <Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" }, marginRight: 1 }} onClick={() => updateBookDriveStatus(driveCode, BookDriveStatus.Active)}>Accept</Button>
-                            <Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" } }} onClick={rejectReactivationReq}>Reject</Button>
+                            <Link href={`/admin/broadcast?recipient=${encodeURIComponent(volunteer.email)}&subject=${driveName} Reactivation Request Rejection`}><Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" } }}>Reject</Button></Link>
                         </Grid></div></>}
                 <Grid container spacing={1} sx={{ display: "flex", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", paddingX: 1 }}>
                     <Grid item sx={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", width: "100%" }}>

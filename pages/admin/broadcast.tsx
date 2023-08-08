@@ -28,10 +28,10 @@ const BroadcastPage: NextPage<BroadcastPageProps> = ({ account, volunteers, erro
     // console.log("broadcasts", broadcasts)
     return (
         <Grid container spacing="10" style={{ display: "flex", justifyContent: "space-between" }}>
-            <Grid item>
+            <Grid item width={"50%"}>
                 <BroadcastForm email={account.email} volunteers={volunteers} addBroadcast={addBroadcast} recipient={recipient} sbjt={subject}/>
             </Grid>
-            <Grid item style={{ display: "flex", flexDirection: "column" }}>
+            <Grid item style={{ display: "flex", flexDirection: "column", width: "50%" }}>
                 <h1 style={{ padding: 10 }}>Broadcasts sent just now:</h1>
                 {newBroadcasts &&
                     newBroadcasts.map(broadcast => {

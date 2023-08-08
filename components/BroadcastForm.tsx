@@ -69,7 +69,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({ email, volunteers, addBro
         <Grid container spacing="10" style={{ display: "flex", flexDirection: "column", margin: 'auto', padding: 10, width: "100%" }}>
             <Grid item style={{ display: "flex", justifyContent: "center", flexDirection: "column" }}>
                 <label htmlFor="volunteer-picker">Choose recipients</label>
-                <FormControl id="volunteer-picker" sx={{ width: "25%", mt: 2, mb: 1 }}>
+                <FormControl id="volunteer-picker" sx={{ width: "80%", mt: 2, mb: 1 }}>
                     <InputLabel id="volunteer-label">Volunteer</InputLabel>
                     <Select onChange={updateRecipients}
                         input={<OutlinedInput label="Volunteer" />}>
@@ -93,10 +93,10 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({ email, volunteers, addBro
                     value={subject} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSubject(e.target.value)}
                     sx={{
                         mb: 2,
-                        width: "45%",
-                        minWidth: "340px"
+                        width: "95%",
+                        minWidth: "500px",
                     }} />
-                <TextField required error={submit && message == ''} multiline minRows={6} maxRows={Infinity} label="Message" aria-label="message" placeholder="message" value={message} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)} style={{ width: "45%", minWidth: "340px" }} />
+                <TextField required error={submit && message == ''} multiline minRows={6} maxRows={Infinity} label="Message" aria-label="message" placeholder="message" value={message} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)} style={{ width: "95%", minWidth: "500px" }} />
                 <Button variant="contained" onClick={sendCustomBroadcast} sx={{ marginTop: 1.5 }}>Send Broadcast </Button>
                 <Button variant="contained" onClick={() => setShowCustomBroadcast(false)} sx={{ marginTop: 1.5 }}>Back</Button>
 
