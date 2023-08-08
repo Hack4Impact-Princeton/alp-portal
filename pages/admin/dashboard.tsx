@@ -1,4 +1,4 @@
-import {getServerSession} from 'next-auth/next'
+import { getServerSession } from 'next-auth/next'
 import { NextPage } from 'next/types'
 import getAdminAccountModel, { AdminAccount } from '../../models/AdminAccount'
 import getVolunteerAccountModel, { VolunteerAccount } from '../../models/VolunteerAccount';
@@ -34,6 +34,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
     const [sidebarDriveDatum, setSideBarDriveData] = useState<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount } | undefined>(undefined)
     const { visible: showCurrDrives, toggleVisibility: setShowCurrDrives, elementRef: currDriveTableRef, elementStyles: currDriveTableStyles } = useExpandableElement()
     const { visible: showCompletedDrives, toggleVisibility: toggleShowCompletedDrives, elementRef: completedDriveTableRef, elementStyles: completedDriveTableStyles } = useExpandableElement()
+    const { visible: showQuickActions, toggleVisibility: toggleQuickActions, elementRef: quickActionsRef, elementStyles: quickActionsStyles } = useExpandableElement()
     const [, setState] = useState(false)
 
     const halfDrive = <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
@@ -44,6 +45,25 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
         <circle cx="12.5" cy="12.5" r="12.5" fill="#5F5F5F" />
     </svg>
 
+    const getDriveNameCell = (driveName: string) => {
+        const foundDrive = drives?.find(drive => drive.driveName === driveName)
+        if (foundDrive) return (
+            <span style={{ textDecoration: "underline", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", fontWeight: 600, cursor: "pointer", whiteSpace: "normal" }}>
+                {foundDrive?.status === BookDriveStatus.Cancelled ?
+                    <div style={{ marginRight: 8 }}><CircularIcon stringContent="!" bgColor={"#F3D39A"} fgColor={"#5F5F5F"} /></div> : <></>}
+                {isDeadlineApproaching(foundDrive.country) ?
+                    <div style={{ marginRight: 8 }}><CircularIcon bgColor={"F3D39A"} reactNodeContent={<><circle cx="14" cy="14" r="14" fill="#F3D39A" />
+                        <circle cx="14" cy="14" r="9" stroke="#5F5F5F" strokeWidth="2" />
+                        <circle cx="14" cy="14" r="1" fill="#5F5F5F" />
+                        <rect x="12.6479" y="6.60059" width="2" height="7.46818" rx="1" transform="rotate(-3.48103 12.6479 6.60059)" fill="#5F5F5F" />
+                        <rect x="17.9458" y="12" width="2.00318" height="4.03109" rx="1.00159" transform="rotate(78.1979 17.9458 12)" fill="#5F5F5F" /></>} /> </div> : <></>
+                }
+                {driveName}
+            </span>
+        )
+        else return <span></span>
+
+    }
 
     const updateBookDriveStatus = async (driveCode: string, status: number): Promise<void> => {
         try {
@@ -76,7 +96,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
     const prelimCurrDrivesColumns: GridColDef[] = [
         { field: 'driveName', headerName: 'Drive Name', width: 255 },
         { field: 'size', headerName: "Size", width: 40 },
-        { field: "country", headerName: "Country", width: 175},
+        { field: "country", headerName: "Country", width: 175 },
         { field: 'organizer', headerName: "Organizer", width: 150 },
         { field: "lastUpdated", headerName: "Last Updated", width: 120 }
     ]
@@ -87,37 +107,51 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
         { field: 'organizer', headerName: "Organizer", width: 150 },
         { field: 'completedDate', headerName: "Completed", width: 120 }
     ]
+    const prelimReactivationReqColumns: GridColDef[] = [{ field: 'driveName', headerName: 'Reactivation Requests', width: 270 }]
+    const prelimShipmentsPendingColumns: GridColDef[] = [{ field: 'driveName', headerName: 'Shipments Pending', width: 270 }]
+    const prelimNotUpdatedInColumns: GridColDef[] = [{ field: 'driveName', headerName: 'Not Updated in 10 Days', width: 270 }]
+    const reactivationReqColumns = prelimReactivationReqColumns.map((column) => {
+        return {
+            ...column,
+            renderCell: (params: GridCellParams) => {
+                const colDriveName = params.value as string
+                return getDriveNameCell(colDriveName)
+            }
+        }
+    })
+    const shipmentsPendingColumns = prelimShipmentsPendingColumns.map((column) => {
+        return {
+            ...column,
+            renderCell: (params: GridCellParams) => {
+                const colDriveName = params.value as string
+                return getDriveNameCell(colDriveName)
+            }
+        }
+    })
+    const notUpdatedInColumns = prelimNotUpdatedInColumns.map((column) => {
+        return {
+            ...column,
+            renderCell: (params: GridCellParams) => {
+                const colDriveName = params.value as string
+                return getDriveNameCell(colDriveName)
+            }
+        }
+    })
     const currDrivesGridColumns: GridColDef[] = prelimCurrDrivesColumns.map((column) => {
-        let foundDrive: BookDrive | undefined
         return {
             ...column,
             renderCell: (params: GridCellParams) => {
                 if (column.field === 'driveName') {
                     if (!drives) throw new Error("drives don't exist???")
                     const colDriveName = params.value as string
-                    foundDrive = drives.find(drive => drive.driveName == colDriveName);
-                    if (foundDrive) return (
-                        // textDecoration: "underline"
-                        <span style={{ textDecoration: "underline", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", fontWeight: 600, cursor: "pointer", whiteSpace: "normal" }}>
-                            {foundDrive?.status === BookDriveStatus.Cancelled ?
-                                <div style={{ marginRight: 3 }}><CircularIcon stringContent="!" bgColor={"#F3D39A"} fgColor={"#5F5F5F"} /></div> : <></>}
-                            {isDeadlineApproaching(foundDrive.country) ?
-                                <div style={{ marginRight: 3 }}><CircularIcon bgColor={"F3D39A"} reactNodeContent={<><circle cx="14" cy="14" r="14" fill="#F3D39A" />
-                                    <circle cx="14" cy="14" r="9" stroke="#5F5F5F" strokeWidth="2" />
-                                    <circle cx="14" cy="14" r="1" fill="#5F5F5F" />
-                                    <rect x="12.6479" y="6.60059" width="2" height="7.46818" rx="1" transform="rotate(-3.48103 12.6479 6.60059)" fill="#5F5F5F" />
-                                    <rect x="17.9458" y="12" width="2.00318" height="4.03109" rx="1.00159" transform="rotate(78.1979 17.9458 12)" fill="#5F5F5F" /></>} /> </div> : <></>
-                            }
-                            {params.value as string}
-                        </span>
-                    )
+                    return getDriveNameCell(colDriveName)
                 }
                 else if (column.field === 'size') {
                     const val = params.value as number
                     if (val == 500) return halfDrive
                     else return fullDrive
                 }
-                else if (column.field === 'country') return <span style={{whiteSpace: 'normal'}}>{params.value as string}</span>
+                else if (column.field === 'country') return <span style={{ whiteSpace: 'normal' }}>{params.value as string}</span>
 
             }
         }
@@ -131,7 +165,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                 }
                 else if (column.field === 'size') {
                     const val = params.value as number
-                    if (val == 500) return halfDrive                    
+                    if (val == 500) return halfDrive
                     else return fullDrive
                 }
             }
@@ -148,8 +182,21 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
 
     const completedDrivesGridRows = drives ? drives.filter(drive => drive.status === BookDriveStatus.Completed).map(drive => {
         console.log("status by driveName", `${drive.driveName}: ${drive.status}`)
-        
-         return { id: drive.driveCode, driveName: drive.driveName, size: drive.booksGoal, country: drive.country, organizer: drive.organizer, completedDate: new Date(drive.completedDate).toLocaleDateString() } 
+
+        return { id: drive.driveCode, driveName: drive.driveName, size: drive.booksGoal, country: drive.country, organizer: drive.organizer, completedDate: new Date(drive.completedDate).toLocaleDateString() }
+    }) : []
+
+    const shipmentsPendingRows = drives ? drives.filter(drive => drive.status === BookDriveStatus.Verifying).map(drive => {
+        return { id: drive.driveCode, driveName: drive.driveName }
+    }) : []
+
+    // this is temporary - I need to figure out how we are going to know if there was a reactivation request made or not
+    const reactivationReqRows = drives ? drives.filter(drive => drive.country === 'South Africa').map(drive => {
+        return { id: drive.driveCode, driveName: drive.driveName }
+    }) : []
+
+    const notUpdatedInRows = drives ? drives.filter(drive => drive.status === BookDriveStatus.Active && new Date().getTime() - new Date(drive.cb.lastUpdate).getTime() > (10 * 24 * 60 * 60 * 1000)).map((drive) => {
+        return {id: drive.driveCode, driveName: drive.driveName}
     }) : []
     // ❗🕔 
 
@@ -203,6 +250,58 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                         </Grid>
                     </Grid>
                 }
+                {account &&
+                    <Grid container spacing={2} sx={{ height: "wrap-content", width: '90%', display: "flex", flexDirection: "column", marginBottom: 2 }}>
+                        <Grid item display={"flex"} flexDirection="row" alignItems="center">
+                            <h1 style={{ color: "#FE9384" }}>Quick Actions</h1>
+                            {!showQuickActions && <UpCaret onClick={toggleQuickActions} />}
+                            {showQuickActions && <DownCaret onClick={toggleQuickActions} />}
+                        </Grid>
+                        <div ref={quickActionsRef} style={quickActionsStyles}>
+                            <Grid container spacing={2} display="flex" flexDirection="row" alignItems="center" justifyContent="flex-start">
+                                {notUpdatedInRows.length !== 0 && <Grid item sx={{ width: "fit-content" }}>
+                                    <DataGrid
+                                        rows={notUpdatedInRows}
+                                        columns={notUpdatedInColumns}
+                                        initialState={{ pagination: { paginationModel: { pageSize: 10 }, }, }} pageSizeOptions={[10]}
+                                        hideFooter
+                                        checkboxSelection
+                                        disableRowSelectionOnClick
+                                        onCellClick={handleDriveNameClick}
+                                        getRowClassName={setRowClassName}
+
+                                    />
+                                </Grid>}
+                                {shipmentsPendingRows.length !== 0 && <Grid item sx={{ width: "fit-content" }}>
+                                    <DataGrid
+                                        rows={shipmentsPendingRows}
+                                        columns={shipmentsPendingColumns}
+                                        initialState={{ pagination: { paginationModel: { pageSize: 10 }, }, }} pageSizeOptions={[10]}
+                                        checkboxSelection
+                                        hideFooter
+                                        disableRowSelectionOnClick
+                                        onCellClick={handleDriveNameClick}
+                                        getRowClassName={setRowClassName}
+
+                                    />
+                                </Grid>}
+                                {reactivationReqRows.length !== 0 && <Grid item sx={{ width: "fit-content" }}>
+                                    <DataGrid
+                                        rows={reactivationReqRows}
+                                        columns={reactivationReqColumns}
+                                        initialState={{ pagination: { paginationModel: { pageSize: 10 }, }, }} pageSizeOptions={[10]}
+                                        checkboxSelection
+                                        hideFooter
+                                        disableRowSelectionOnClick
+                                        onCellClick={handleDriveNameClick}
+                                        getRowClassName={setRowClassName}
+
+                                    />
+                                </Grid>}
+                            </Grid>
+                        </div>
+                    </Grid>
+                }
                 {account && currDrivesGridRows && currDrivesGridColumns && driveData &&
                     <Grid container spacing={2} sx={{ height: "wrap-content", width: '90%', display: "flex", flexDirection: "column" }}>
                         <Grid item display="flex" flexDirection="row" alignItems="center">
@@ -211,12 +310,13 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                             {showCurrDrives && <DownCaret onClick={setShowCurrDrives} />}
                         </Grid>
                         <div ref={currDriveTableRef} style={currDriveTableStyles}>
-                            <Grid item sx={{width: "fit-content"}}>
+                            <Grid item sx={{ width: "fit-content" }}>
                                 <DataGrid
                                     rows={currDrivesGridRows}
                                     columns={currDrivesGridColumns}
                                     initialState={{ pagination: { paginationModel: { pageSize: 10 }, }, }} pageSizeOptions={[10]}
                                     checkboxSelection
+                                    hideFooter
                                     disableRowSelectionOnClick
                                     onCellClick={handleDriveNameClick}
                                     getRowClassName={setRowClassName}
@@ -230,12 +330,13 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                             {showCompletedDrives && <DownCaret onClick={toggleShowCompletedDrives} />}
                         </Grid>
                         <div ref={completedDriveTableRef} style={completedDriveTableStyles}>
-                            <Grid item sx={{width: "fit-content"}}>
+                            <Grid item sx={{ width: "fit-content" }}>
                                 <DataGrid
                                     rows={completedDrivesGridRows}
                                     columns={completedDrivesColumns}
                                     initialState={{ pagination: { paginationModel: { pageSize: 10 }, }, }} pageSizeOptions={[10]}
                                     checkboxSelection
+                                    hideFooter
                                     disableRowSelectionOnClick
                                     onCellClick={handleDriveNameClick}
                                 />
