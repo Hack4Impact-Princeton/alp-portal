@@ -31,6 +31,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
     if (error) return <h1>{`error: ${error}`}</h1>
     const drives = driveData?.map(driveDatum => driveDatum.drive)
     const [showSidebar, setShowSidebar] = useState(false)
+    const [activateSidebarMinWidth, toggleActivateSidebarMinWidth] = useState(false)
     const [sidebarDriveDatum, setSideBarDriveData] = useState<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount } | undefined>(undefined)
     const { visible: showCurrDrives, toggleVisibility: setShowCurrDrives, elementRef: currDriveTableRef, elementStyles: currDriveTableStyles } = useExpandableElement()
     const { visible: showCompletedDrives, toggleVisibility: toggleShowCompletedDrives, elementRef: completedDriveTableRef, elementStyles: completedDriveTableStyles } = useExpandableElement()
@@ -196,36 +197,60 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
     }) : []
 
     const notUpdatedInRows = drives ? drives.filter(drive => drive.status === BookDriveStatus.Active && new Date().getTime() - new Date(drive.cb.lastUpdate).getTime() > (10 * 24 * 60 * 60 * 1000)).map((drive) => {
-        return {id: drive.driveCode, driveName: drive.driveName}
+        return { id: drive.driveCode, driveName: drive.driveName }
     }) : []
     // ❗🕔 
 
     const handleDriveNameClick = (params: GridCellParams) => {
         if (params.field === 'driveName') {
-            const preDriveName = params.value as string
-            const midDriveName = preDriveName.replace(/[^a-zA-Z0-9\s\p{P}]/gu, '')
-            // console.log(midDriveName)
-            const driveName = midDriveName.trim()
+            console.log("showSidebar", showSidebar)
+            const preDriveName = params.value as string;
+            const midDriveName = preDriveName.replace(/[^a-zA-Z0-9\s\p{P}]/gu, '');
+            const driveName = midDriveName.trim();
+            // Close the current sidebar (if any) before opening the new one
             if (sidebarDriveDatum && driveName === sidebarDriveDatum.drive.driveName) {
                 closeSidebar()
                 // console.log("closing the drive because we have a duplicate: ", driveName)
                 return
             }
-            // console.log("setting the new  drive to be ", driveName)
-            const sideDrive = driveData?.find(driveDatum => driveDatum.drive.driveName === driveName)
-            setTimeout(() => {
-                setSideBarDriveData(sideDrive)
-                setShowSidebar(true)
-            }, 220) // I hope this doesn't get too slowly
+            
+            const sideDrive = driveData?.find(driveDatum => driveDatum.drive.driveName === driveName);
+            if (!sideDrive) {
+                alert("Something went wrong on our end. Try refreshing the page")
+                return
+            }
+            
+            openSidebar(sideDrive);
+            
         }
-    }
-    const sidebarRef = useRef<HTMLDivElement>(null);
+    };
+
+    const openSidebar = (sideDrive: {drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount}) => {
+        setTimeout(() => {
+            setSideBarDriveData(sideDrive)
+            console.log("setSideBarDriveData(sideDrive)")
+            setShowSidebar(true);
+            console.log("setShowSidebar(true)")
+        }, 250); // Adjust the delay as needed
+        setTimeout(() => {
+            toggleActivateSidebarMinWidth(true)
+            console.log("activateMinWidth")
+        }, 400)
+    };
+
     const closeSidebar = () => {
-        setShowSidebar(false)
+        toggleActivateSidebarMinWidth(false)
+        console.log("toggleActivateSidebarMinWidTH(false)")
+        setShowSidebar(false);
+        console.log("setShowsidebar(false)")
         setTimeout(() => {
             setSideBarDriveData(undefined);
-        }, 200);
-    }
+            console.log("setSidebarDriveData(undefined)")
+        }, 240); // Delayed reset after closing
+    };
+
+    const sidebarRef = useRef<HTMLDivElement>(null);
+    
     useClickOutside(sidebarRef, closeSidebar)
 
     const setRowClassName = (params: GridRowParams) => {
@@ -354,9 +379,10 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                     boxSizing: 'border-box',
                     transformOrigin: 'top right',
                     transform: 'scale(1)',
-                    minWidth: showSidebar? '400px' : 0,
-                    transition: 'width .4s ease',
-                    width: showSidebar ? '36%' : 0
+                    transition: 'width .23s ease',
+                    width: showSidebar ? '36%' : 0,
+                    minWidth: activateSidebarMinWidth ? '400px' : 0,
+
                 }}><AdminSidebar email={account.email} updateBookDriveStatus={updateBookDriveStatus} volunteer={sidebarDriveDatum.volunteer} drive={sidebarDriveDatum.drive} shipments={sidebarDriveDatum.shipments} />
                 </div>}
             </Grid>
