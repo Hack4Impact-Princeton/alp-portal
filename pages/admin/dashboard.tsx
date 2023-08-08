@@ -203,7 +203,6 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
 
     const handleDriveNameClick = (params: GridCellParams) => {
         if (params.field === 'driveName') {
-            console.log("showSidebar", showSidebar)
             const preDriveName = params.value as string;
             const midDriveName = preDriveName.replace(/[^a-zA-Z0-9\s\p{P}]/gu, '');
             const driveName = midDriveName.trim();
@@ -219,7 +218,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                 alert("Something went wrong on our end. Try refreshing the page")
                 return
             }
-            
+            // tbh I don't know why this works
             openSidebar(sideDrive);
             
         }
@@ -228,24 +227,18 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
     const openSidebar = (sideDrive: {drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount}) => {
         setTimeout(() => {
             setSideBarDriveData(sideDrive)
-            console.log("setSideBarDriveData(sideDrive)")
             setShowSidebar(true);
-            console.log("setShowSidebar(true)")
         }, 250); // Adjust the delay as needed
         setTimeout(() => {
             toggleActivateSidebarMinWidth(true)
-            console.log("activateMinWidth")
         }, 400)
     };
 
     const closeSidebar = () => {
         toggleActivateSidebarMinWidth(false)
-        console.log("toggleActivateSidebarMinWidTH(false)")
         setShowSidebar(false);
-        console.log("setShowsidebar(false)")
         setTimeout(() => {
             setSideBarDriveData(undefined);
-            console.log("setSidebarDriveData(undefined)")
         }, 240); // Delayed reset after closing
     };
 
