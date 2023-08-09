@@ -3,15 +3,16 @@ import dbConnect from '../../lib/dbConnect';
 import { Grid } from "@mui/material";
 import Box from '@mui/material/Box';
 import PageContainer from "../../components/PageContainer";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { signOut } from "next-auth/react";
 import MapComponent from '../../components/MapComponent';
 import Link from 'next/link';
-import { getSession } from "next-auth/react";
 import { BookDriveStatus } from "../../lib/enums";
 import getBookDriveModel, { BookDrive } from "../../models/BookDrive";
 import { NextPage } from 'next';
 import mongoose from 'mongoose';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 type ProfileProps = {
   error: string | null;
@@ -215,7 +216,7 @@ const Profile: NextPage<ProfileProps> = ({ error, account, drives }) => {
 export const getServerSideProps = async (context: any) => {
   try {
     // get current session and email --> account of current user
-    const session = await getSession(context)
+    const session = await getServerSession(context.req, context.res, authOptions)
     // if (session) console.log("hiiii")
     if (!session || !session.user) {
       return {
