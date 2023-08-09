@@ -125,14 +125,14 @@ const Login: NextPage = () => {
               width: 400,
               height: 225,
             }}>
-            <TextField fullWidth required id="email" label="Email" variant="outlined"
+            <TextField fullWidth required className="email" id="email" label="Email" variant="outlined"
               value={email}
               onChange={handleSetEmail}
               sx={{
                 mt: 2,
                 mb: 2
               }} />
-            <TextField fullWidth required id="password" label="Password" variant="outlined"
+            <TextField fullWidth required className="password" id="password" label="Password" variant="outlined"
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={handleSetPassword}
