@@ -5,8 +5,8 @@ describe('login spec', () => {
     cy.contains('log in').click()
 
     cy.url().should('include', '/auth/login')
-    cy.get('.email').type('test1@test.com')
-    cy.get('.password').type('test1@test.com')
+    cy.get('.email').type('test2@test.com')
+    cy.get('.password').type('test2@test.com')
     cy.contains('Volunteer Login').click()
 
     cy.url().should('include', '/dash-volunteer')
