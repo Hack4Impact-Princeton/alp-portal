@@ -3,8 +3,7 @@ import { useState, useEffect, useRef } from "react"
 import { Broadcast } from "../models/Broadcast"
 import { FormControl, InputLabel, Select, MenuItem, OutlinedInput, Button, Box, Grid, TextField } from '@mui/material'
 import RecipientList from './RecipientList'
-import genUniqueId from "../lib/idGen"
-
+import sendBroadcast from "../db_functions/sendBroadcast"
 type BroadcastFormProps = {
     email: string,
     volunteers: VolunteerAccount[],
@@ -14,35 +13,40 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({ email, volunteers, addBro
     const [message, setMessage] = useState("")
     const [subject, setSubject] = useState("")
     const [submit, setSubmit] = useState(false)
+    const [showCustomBroadcast, setShowCustomBroadcast] = useState(false)
     // email addresses of the recipients
     const [recipients, setRecipients] = useState<string[]>([])
 
-    const sendBroadcast = async () => {
+    const sendCustomBroadcast = async () => {
         try {
-            if (recipients.length == 0) {
-                alert("You must send the message to at least one person")
-                return
-            }
             setSubmit(true)
             setTimeout(() => { setSubmit(false) }, 4000)
-            const broadcast: Broadcast = {
-                id: genUniqueId(),
-                senderEmail: email,
-                receiverEmails: recipients,
-                read: new Array<boolean>(recipients.length).fill(false),
-                sentTime: new Date().toString(),
-                subject: subject,
-                message: message,
+            const broadcastRes = await sendBroadcast(email, recipients, subject, message)
+            if (!broadcastRes.success) {
+                alert(broadcastRes.error.message)
+                return
             }
-            console.log(broadcast)
-            const res = await fetch(`/api/broadcast/${broadcast.id}`, {
-                method: "POST",
-                body: JSON.stringify(broadcast)
-            })
-            const resJson = await res.json()
-            if (res.status !== 200) throw new Error(`something went wrong: ${resJson.data}`)
-            addBroadcast(resJson.data)
-            console.log("successfully sent out the broadcast", resJson.data)
+            addBroadcast(broadcastRes.broadcast)
+            setRecipients([])
+            setMessage("")
+            setSubject("")
+
+        } catch (e: Error | any) {
+            console.error(e)
+        }
+    }
+
+    const sendAutomatedBroadcast = async() => {
+        try {
+            const subj = "automated broadcast subject"
+            const msg = "automated broadcast message"
+            const broadcastRes = await sendBroadcast(email, recipients, subj, msg)
+            if (!broadcastRes.success) {
+                alert(broadcastRes.error.message)
+                return
+            }
+            addBroadcast(broadcastRes.broadcast)
+            setRecipients([])
 
         } catch (e: Error | any) {
             console.error(e)
@@ -61,7 +65,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({ email, volunteers, addBro
     return (
 
         <Grid container spacing="10" style={{ display: "flex", flexDirection: "column", margin: 'auto', padding: 10, width: "100%" }}>
-            <Grid item style={{display: "flex", justifyContent: "center", flexDirection: "column"}}>
+            <Grid item style={{ display: "flex", justifyContent: "center", flexDirection: "column" }}>
                 <label htmlFor="volunteer-picker">Choose recipients</label>
                 <FormControl id="volunteer-picker" sx={{ width: "25%", mt: 2, mb: 1 }}>
                     <InputLabel id="volunteer-label">Volunteer</InputLabel>
@@ -75,7 +79,14 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({ email, volunteers, addBro
                 <label>Recipients:</label>
                 <RecipientList recipients={recipients} onAddAll={addAllRecipients} onClear={() => setRecipients([])} onRemove={removeRecipient} />
             </Grid>
+            {!showCustomBroadcast && <>
+                <Button variant="contained" onClick={sendAutomatedBroadcast} sx={{ marginTop: 1.5 }}>Send Automated Broadcast </Button>
+                <Button variant="contained" onClick={() => setShowCustomBroadcast(true)} sx={{ marginTop: 1.5 }}>Create Custom Broadcast </Button>
+            </>
+            }
+            {showCustomBroadcast && 
             <Grid item style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start", width: "90%" }}>
+                
                 <TextField required error={submit && subject == ''} id="subject" label="Subject" placeholder="subject" variant="outlined"
                     value={subject} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSubject(e.target.value)}
                     sx={{
@@ -83,9 +94,11 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({ email, volunteers, addBro
                         width: "45%",
                         minWidth: "340px"
                     }} />
-                <TextField required error={submit && message == ''} multiline minRows={6} maxRows={Infinity} label="Message" aria-label="message" placeholder="message" value={message} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)} style={{width: "45%", minWidth: "340px"}}/>
-                <Button variant="contained" onClick={sendBroadcast} sx={{ marginTop: 1.5 }}>Send Broadcast </Button>
-            </Grid>
+                <TextField required error={submit && message == ''} multiline minRows={6} maxRows={Infinity} label="Message" aria-label="message" placeholder="message" value={message} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)} style={{ width: "45%", minWidth: "340px" }} />
+                <Button variant="contained" onClick={sendCustomBroadcast} sx={{ marginTop: 1.5 }}>Send Broadcast </Button>
+                <Button variant="contained" onClick={() => setShowCustomBroadcast(false)} sx={{ marginTop: 1.5 }}>Back</Button>
+
+            </Grid>}
         </Grid>
 
     )
