@@ -94,7 +94,10 @@ const Login: NextPage = () => {
       alert("Something went wrong: please try again")
       return
     }
-    if (res.ok) Router.push(`../dash-volunteer`)
+    if (res.ok) {
+      console.log("Redirecting to dash")
+      Router.push(`../dash-volunteer`)
+    }
     else {
       alert("Email or password is incorrect. Please try again")
       console.log(`something went wrong: ${res.error}`) 

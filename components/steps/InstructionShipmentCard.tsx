@@ -29,7 +29,7 @@ const InstructionShipmentCard: React.FC<ShipmentCardProps> = ({ driveCode, drive
     }
     
     console.log("Card render: ", displayData);
-    console.log(typeof shipments[0].date)
+    // console.log(typeof shipments[0].date)
     return(
         <Grid
             sx={{
