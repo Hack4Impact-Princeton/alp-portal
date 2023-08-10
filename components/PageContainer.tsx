@@ -76,7 +76,7 @@ const PageContainer: React.FC<PageContainerProps> = ({fName, currPage}) => {
                     alignItems="center">
                     <Grid xs={4}><h3>Welcome, {fName}</h3></Grid>
                     <Grid xs={1}><InboxIcon></InboxIcon></Grid>              
-                    <Grid xs={3}><WhiteTextButton variant="text"  onClick={handleSignOut}> Sign Out </WhiteTextButton></Grid>
+                    <Grid xs={3}><WhiteTextButton variant="text"  className="signout" onClick={handleSignOut}> Sign Out </WhiteTextButton></Grid>
                     <Grid xs={2}><img src="/alp-logo.png" alt="alp-logo" height="55px"></img></Grid>
                 </Grid> 
             </Box>

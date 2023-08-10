@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     case 'GET':
       console.log("here");
       try {
-        const shipment = await Shipment.findById(id);
+        const shipment = await Shipment.findOne({id: id});
         if (!shipment) {
           return res.status(400).json({ success: false });
         }

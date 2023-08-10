@@ -3,11 +3,12 @@ import { NextPage } from 'next/types'
 import getAdminAccountModel, { AdminAccount } from '../../models/AdminAccount'
 import getVolunteerAccountModel, { VolunteerAccount } from '../../models/VolunteerAccount';
 import getBookDriveModel, { BookDrive } from '../../models/BookDrive';
-import getShipmentModel, { Shipment } from '../../models/Shipment';
 import mongoose from 'mongoose';
-import { Box } from '@mui/material';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { DataGrid, GridColDef, GridCellParams, GridRowParams } from '@mui/x-data-grid'
+import getShipmentModel, { Shipment } from '../../models/Shipment';
+import { Box } from '@mui/material';
+import React from 'react';
 import { BookDriveStatus, deadlineMap } from '../../lib/enums';
 import { useState, useRef, useEffect } from 'react';
 import Grid from '@mui/material/Grid'
@@ -426,6 +427,6 @@ export const getServerSideProps = async (context: any) => {
     } catch (e: Error | any) {
         console.log(e)
         const errorStr = e.message === "Cannot read properties of null (reading 'user')" ? "You must login before accessing this page" : `${e}`
-        return { props: { error: errorStr, account: null, drives: null, volunteers: null } }
+        return { props: { error: errorStr, account: null, volunteers: null, driveData: null } }
     }
 }
