@@ -85,7 +85,11 @@ export async function getServerSideProps(context) {
         if (!currDrive) throw new Error(`no bookdrive found with code ${driveCode}`)
         const VolunteerModel = getVolunteerAccountModel()
         const volunteer = await VolunteerModel.findOne({email: session.user.email})
-        if (`${volunteer.fname} ${volunteer.lname}` !== currDrive.organizer) throw new Error("Unauthorized attempt to access bookdrive - you do not have the permission to view this bookdrive")
+        console.log("organizer: ", currDrive.organizer);
+        const currUser = `${volunteer.fname} ${volunteer.lname}`;
+        console.log("curr user: ", currUser);
+        // hardcode two test accounts to be able to see all drives
+        if ((currUser !== 'test1 test1' && currUser !== 'Ivy Wang') && currUser!== currDrive.organizer) throw new Error("Unauthorized attempt to access bookdrive - you do not have the permission to view this bookdrive")
         //console.log(currDrive)
         const driveName = currDrive.driveName;
         const driveStatus = {
