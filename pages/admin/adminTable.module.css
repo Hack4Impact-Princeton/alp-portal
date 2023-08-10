@@ -1,0 +1,9 @@
+.header-row {
+    background-color: #e6a45e;
+  }
+  
+  .cancelled-row {
+    background-color: rgb(235, 235, 235);
+    font-style: italic;
+    color: rgb(152, 152, 152);
+  }

@@ -279,3 +279,15 @@ export const africanCountries: string[] = [
     Completed = 2,
     Cancelled = 3,
 }
+
+export const statusMap = new Map<number, string>([
+    [0, "Active"],
+    [1, "Verifying"],
+    [2, "Completed"],
+    [3, "Cancelled"]
+])
+
+export const deadlineMap = new Map<string, Date>([
+    ['South Africa', new Date()],
+    ['Democratic Republic of the Congo', new Date()]
+])

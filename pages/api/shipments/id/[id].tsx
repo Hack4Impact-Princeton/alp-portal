@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     query: { id },
     method,
   } = req
-
+  console.log("shipmentid", id)
   await dbConnect()
   const Shipment: mongoose.Model<Shipment> = getShipmentModel();
 
