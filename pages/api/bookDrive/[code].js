@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     query: { code },
     method,
   } = req
-
+  console.log("hi")
   await dbConnect()
   const BookDrive = getBookDriveModel();
   switch (method) {
@@ -42,6 +42,7 @@ export default async function handler(req, res) {
       break
     case 'POST': /* Create new Drive */
         try {
+          console.log("code", code)
           if (await BookDrive.exists({driveCode : code})) {
               console.log("drive already exists")
               return res.status(400).json({ success: false })
@@ -55,8 +56,8 @@ export default async function handler(req, res) {
           if (!newDrive) 
             return res.status(400).json({ success: false })
           newDrive.save(function (err, drive) {
-            if (err) return console.error(err);
-            console.log(drive.name + " saved to bookstore collection.");
+            if (err) return res.status(500).json({success: false, data: err});
+            console.log(drive.driveName + " saved to bookstore collection.");
           });
           res.status(200).json({ success: true, data: newDrive })
         } catch (error) {

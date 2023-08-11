@@ -7,10 +7,9 @@ import mongoose from 'mongoose';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { DataGrid, GridColDef, GridCellParams, GridRowParams } from '@mui/x-data-grid'
 import getShipmentModel, { Shipment } from '../../models/Shipment';
-import { Box } from '@mui/material';
 import React from 'react';
 import { BookDriveStatus, deadlineMap } from '../../lib/enums';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import Grid from '@mui/material/Grid'
 import useClickOutside from '../../lib/useClickOutside';
 import type { } from '@mui/x-data-grid/themeAugmentation';
@@ -20,9 +19,10 @@ import DownCaret from '../../components/DownCaret';
 import UpCaret from '../../components/UpCaret';
 import useExpandableElement from '../../lib/useExpandableElement';
 import CircularIcon from '../../components/CircularIcon';
-import { PanoramaVerticalSelect } from '@mui/icons-material';
-import { isIdentifier } from 'typescript';
-
+import Button from '@mui/material/Button'
+import Papa from 'papaparse'
+import createBookDrive from '../../db_functions/createBookDrive';
+import { initial } from 'cypress/types/lodash';
 type AdminDashboardProps = {
     account: AdminAccount;
     error: Error | null;
@@ -185,7 +185,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
     const completedDrivesGridRows = drives ? drives.filter(drive => drive.status === BookDriveStatus.Completed).map(drive => {
         // console.log("status by driveName", `${drive.driveName}: ${drive.status}`)
 
-        return { id: drive.driveCode, driveName: drive.driveName, size: drive.booksGoal, country: drive.country, organizer: drive.organizer, completedDate: new Date(drive.completedDate).toLocaleDateString() }
+        return { id: drive.driveCode, driveName: drive.driveName, size: drive.booksGoal, country: drive.country, organizer: drive.organizer, completedDate: new Date(drive.completedDate!).toLocaleDateString() }
     }) : []
 
     const shipmentsPendingRows = drives ? drives.filter(drive => drive.status === BookDriveStatus.Verifying).map(drive => {
@@ -213,7 +213,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                 // console.log("closing the drive because we have a duplicate: ", driveName)
                 return
             }
-            
+
             const sideDrive = driveData?.find(driveDatum => driveDatum.drive.driveName === driveName);
             if (!sideDrive) {
                 alert("Something went wrong on our end. Try refreshing the page")
@@ -221,11 +221,11 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
             }
             // tbh I don't know why this works
             openSidebar(sideDrive);
-            
+
         }
     };
 
-    const openSidebar = (sideDrive: {drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount}) => {
+    const openSidebar = (sideDrive: { drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount }) => {
         setTimeout(() => {
             setSideBarDriveData(sideDrive)
             setShowSidebar(true);
@@ -244,7 +244,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
     };
 
     const sidebarRef = useRef<HTMLDivElement>(null);
-    
+
     useClickOutside(sidebarRef, closeSidebar)
 
     const setRowClassName = (params: GridRowParams) => {
@@ -252,10 +252,58 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
         else if (params.row.id === 'header') return styles['header-row']; // this never works I don't know where to set the header row
         else return '';
     };
+    const [csvFile, setCsvFile] = useState<File | null>(null)
+    const [data, setData] = useState<string[]>([])
+    const handleCsvUpload = async () => {
+        try {
 
 
+            if (csvFile) {
+                console.log("hi")
+                const parsedData = await parseCsvFile(csvFile)
+                console.log("hi")
+                console.log(parsedData)
+                console.log(typeof parsedData)
+                setData(parsedData)
+                //     const data = parsedData.map(datum =>  {
+                //         return {
+                //         driveName: datum[0],
+                //         driveCode: datum[1],
+                //         organizer: datum[2],
+                //         startDate: datum[3],
+                //         booksGoal: parseInt(datum[4]),
+                //         country: datum[5],
+                // }})
+                // const i = data[0];
+                //     const res = await createBookDrive(i.driveName, i.driveCode, i.organizer, i.startDate, i.booksGoal, i.country)
+                //     if (!res.successful) throw new Error("Internal Server Error")
+                //     alert("file upload successful")
+                //     console.log(res.data)
+
+            } else alert("You did not attach a .csv file. Please try again")
+        } catch (e: Error | any) {
+            console.error("Error Uploading file: ", e.message)
+            alert("Internal Server Error. Try again")
+        }
+    }
+
+    const parseCsvFile = (file: File): Promise<any[]> => {
+        return new Promise((resolve, reject) => {
+            Papa.parse(file, {
+                header: true,
+                complete: (result) => {
+                    if (result.errors.length > 0) {
+                        console.error(result.errors)
+                        reject(result.errors[0].message);
+                    } else {
+                        resolve(result.data);
+                    }
+                },
+            });
+        });
+    };
     return (
-        <>
+        <Grid width="100%">
             <Grid sx={{ width: "100%", height: "100%", padding: 5 }}>
                 {account &&
                     <Grid sx={{ marginBottom: 3, width: "100%" }}>
@@ -269,6 +317,33 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                         </Grid>
                     </Grid>
                 }
+                <Grid display={"flex"} flexDirection={"column"}>
+                    <form onSubmit={(event: React.FormEvent) => {
+                        event.preventDefault()
+                        handleCsvUpload()
+                    }}>
+                        <label>Upload CSV Here
+                            <input type="file" accept=".csv" required onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCsvFile(e.target.files ? e.target.files[0] : null)} />
+                        </label>
+                        <Button type="submit" variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" }, marginRight: 1 }} >Upload</Button>
+                    </form>
+                    {/* {data && data.map((driveInfo) => {
+
+                        if (driveInfo.length > 0) return (
+                            <div>
+                                <p>{`drive Name: ${driveInfo[0]}`}</p>
+                                <p>{`code: ${driveInfo[1]}`}</p>
+                                <p>{`organizer Name: ${driveInfo[2]}`}</p>
+                                <p>{`startdate: ${driveInfo[3]}`}</p>
+                                <p>{`size: ${driveInfo[4]}`}</p>
+                                <p>{`country: ${driveInfo[5]}`}</p>
+                                <p>{`organizerEmail: ${driveInfo[6]}`}</p>
+                            </div>
+                        )
+                    })} */}
+                    {/* <p>{data}</p> */}
+                </Grid>
+
                 {account &&
                     <Grid container spacing={2} sx={{ height: "wrap-content", width: '90%', display: "flex", flexDirection: "column", marginBottom: 2 }}>
                         <Grid item display={"flex"} flexDirection="row" alignItems="center">
@@ -380,7 +455,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                 }}><AdminSidebar email={account.email} updateBookDriveStatus={updateBookDriveStatus} volunteer={sidebarDriveDatum.volunteer} drive={sidebarDriveDatum.drive} shipments={sidebarDriveDatum.shipments} />
                 </div>}
             </Grid>
-        </>)
+        </Grid>)
 }
 
 export default AdminDashboard
@@ -388,7 +463,6 @@ export default AdminDashboard
 export const getServerSideProps = async (context: any) => {
     try {
         const session = await getServerSession(context.req, context.res, authOptions)
-        // console.log("session obj", session)
         if (!session || session.user?.name != 'true') {
             return {
                 redirect: {
@@ -400,18 +474,9 @@ export const getServerSideProps = async (context: any) => {
         const AdminAccount: mongoose.Model<AdminAccount> = getAdminAccountModel()
         const account: AdminAccount = await AdminAccount.findOne({ email: session.user.email }) as AdminAccount
         if (!account) throw new Error(`account with email ${session.user.email}`)
-        // console.log("account", account)
-        // const volunteerList = account.volunteerIds
         const VolunteerAccount: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel()
-        // const vPromises = volunteerList.map(volunteerId => VolunteerAccount.findOne({ alp_id: volunteerId }))
-        // const volunteers = await Promise.all(vPromises) as VolunteerAccount[]
-        // console.log("volunteers", volunteers)
         const BookDrive: mongoose.Model<BookDrive> = getBookDriveModel()
-        // const driveList = account.driveIds
-        // const bPromises = driveList.map(driveId => BookDrive.findOne({ driveCode: driveId }))
-        // const drives = await Promise.all(bPromises) as BookDrive[]
         const ShipmentModel: mongoose.Model<Shipment> = getShipmentModel()
-
         const driveDataPromises: Promise<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount }>[] = account.driveIds.map(async (driveId) => {
             const drive = await BookDrive.findOne({ driveCode: driveId }) as BookDrive
             if (!drive) throw new Error(`no bookdrive found with code ${driveId}`)
@@ -422,7 +487,6 @@ export const getServerSideProps = async (context: any) => {
             return { drive: drive, shipments: shipments, volunteer: volunteer }
         })
         const driveData = await Promise.all(driveDataPromises)
-        // console.log(driveData)
         return { props: { error: null, account: JSON.parse(JSON.stringify(account)), driveData: JSON.parse(JSON.stringify(driveData)) } }
     } catch (e: Error | any) {
         console.log(e)
