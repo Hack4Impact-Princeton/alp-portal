@@ -50,5 +50,27 @@ const deleteReq = async(driveCode: string, reactivationReqId: string) => {
         return {success: false, error: e}
     }
 }
+
+const editReq = async (reactivationReqId: string, message: string) => {
+    try {
+        if (message === '') return {success: false, error: new Error("Message cannot be empty")}
+        const update = {
+            message: message,
+            date: new Date(),
+        }
+        const res = await fetch(`http://localhost:3000/api/reactivationRequest/${reactivationReqId}`, {
+            method: "PATCH",
+            body: JSON.stringify(update)
+        })
+        const resJson = await res.json()
+        if (!res.ok) throw new Error(resJson.data)
+        if (!resJson.data) throw new Error("Something went wrong")
+        return { success: true, reactivationReq: resJson.data}
+    } catch (e: Error | any) {
+        console.error(e)
+        return { success: false, error: e }
+    }
+}
 // testReactivationRequestPost()
-// deleteReq("SA3-32", "llcuk0mw-a4y9ng")
+// deleteReq("SA3-32", "llcv2cdn-cyfug9")
+editReq('llcv5l4v-hj3tsw', "this is the edited string")

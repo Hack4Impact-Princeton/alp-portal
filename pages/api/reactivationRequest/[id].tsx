@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       } catch (error) {
         res.status(400).json({ success: false })
       }
-    case 'PUT':
+    case 'PATCH':
       try {
         /* get reactivationreq id and update */
         const update = JSON.parse(req.body)
@@ -35,11 +35,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         console.log(req.body)
         console.log(reactivationReq)
         if (!reactivationReq) {
-          return res.status(400).json({ success: false })
+          return res.status(400).json({ success: false, data: "Internal server error: something went wrong - could not access the old reactivation request" })
         }
         res.status(200).json({ success: true, data: reactivationReq })
       } catch (error) {
-        res.status(400).json({ success: false })
+        res.status(400).json({ success: false, data: "internal server error - something went wrong." })
       }
       break
     case 'POST':

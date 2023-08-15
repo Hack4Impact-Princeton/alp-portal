@@ -11,10 +11,11 @@ export type ReactivationRequest = {
 }
 
 export const ReactivationRequestSchema = new Schema<ReactivationRequest>({
-    id: {type: String},
-    date: {type: Date}, 
-    volunteerId: {type: Number},
-    driveCode: {type: String}, 
+    id: {type: String, required: true},
+    date: {type: Date, required: true}, 
+    volunteerId: {type: Number, required: true},
+    driveCode: {type: String, required: true}, 
+    message: {type: String, required: true}
 
 }, 
     { collection : "reactivationRequests"}
