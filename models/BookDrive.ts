@@ -11,6 +11,7 @@ export type BookDrive = {
   booksGoal: number,
   completedDate: Date,
   mailDate: Date,
+  reactivationRequestId?: String,
   gs: { fundraise: String, terms: boolean },
   cb: { booksCurrent: number, updateFreq: number, lastUpdate: Date },
   pts: {
@@ -34,6 +35,7 @@ export const BookDriveSchema = new Schema<BookDrive>({
   status: { type: Number },
   booksGoal: { type: Number },
   mailDate: {type: Date},
+  reactivationRequestId:{type :String , default:"NA"},
   gs: {
     fundraise: { type: String },
     terms: { type: Boolean },
