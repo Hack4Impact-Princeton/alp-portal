@@ -73,6 +73,7 @@ export const editReactivationRequest = async (reactivationReqId: string, message
         const resJson = await res.json()
         if (!res.ok) throw new Error(resJson.data)
         if (!resJson.data) throw new Error("Something went wrong")
+        console.log(resJson.data)
         return { success: true, reactivationReq: resJson.data}
     } catch (e: Error | any) {
         console.error(e)

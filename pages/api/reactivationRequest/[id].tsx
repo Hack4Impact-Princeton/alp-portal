@@ -60,6 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
             const reactivationReq = await ReactivationRequestModel.findOneAndDelete({id: id})
             if (!reactivationReq) return res.status(500).json({success: false, data: `Internal Server Error - Could not find reactivation request with id ${id} `})
+            console.log(reactivationReq.id)
             return res.status(200).json({success: true, data: reactivationReq})
         } catch (e: Error | any) {
             res.status(500).json({success: false, data: e})
