@@ -17,12 +17,15 @@ import { authOptions } from './api/auth/[...nextauth]';
 import getReactivationRequestModel, { ReactivationRequest } from '../models/ReactivationRequest';
 import { TextField } from '@mui/material';
 import { DriveEtaSharp } from '@mui/icons-material';
+import CircularIIcon from '../components/CircularIIcon';
 const DashVolunteer: NextPage<{ driveData: { drive: BookDrive | null, reactivationReq: ReactivationRequest | null }[], account: VolunteerAccount | null, error: Error | null }> = ({ driveData, account, error }) => {
   console.log(account)
   const drives = driveData.map(driveDatum => driveDatum.drive)
   console.log("drives", drives)
-  const [reactivationReqMessage, setReactivationReqMessage] = useState("")
   const leftPaddingValue = useDynamicPadding(635, 775, "29vw", "20vw", "15vw")
+  
+  const [showReqInfo, setShowReqInfo] = useState(false)
+  const [reactivationReqMessage, setReactivationReqMessage] = useState("")
   const newReqModalRef = useRef<HTMLDialogElement>(null)
   const [currDriveCode, setCurrDriveCode] = useState<string>("")
   const [editReq, setEditReq] = useState(false)
@@ -80,7 +83,7 @@ const DashVolunteer: NextPage<{ driveData: { drive: BookDrive | null, reactivati
     setEditReq(true)
     setReactivationReqMessage(reactivationReqMessage)
   }
-  
+
   if (account) {
     return (
       <Grid2>
@@ -109,8 +112,21 @@ const DashVolunteer: NextPage<{ driveData: { drive: BookDrive | null, reactivati
 
           <dialog ref={newReqModalRef} style={{ height: "55%", width: "50%", borderRadius: "3%", padding: 0, position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
             <Grid2 display={"flex"} flexDirection={"column"} justifyContent={"space-around"} alignItems={"center"} sx={{ backgroundColor: "#F5F5F5", width: "100%", height: "100%", padding: 2 }}>
-              <p style={{ marginBottom: "5px", color: "#FE9834", fontWeight: 600, fontSize: 20 }}>Reactivation Request Message for {currDriveCode}</p>
-              <TextField multiline autoFocus required placeholder="message" maxRows={9} rows={8} value={reactivationReqMessage} sx={{ width: "85%", marginBottom: "5px", backgroundColor: "#FFFFFF", color: "#FE9384", borderColor: "#FE9834" }} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setReactivationReqMessage(e.target.value)} />
+              <Grid2 display="flex" flexDirection="row" alignItems="center" justifyContent={"space-between"} width="100%">
+                <p style={{ marginBottom: "5px", color: "#FE9834", fontWeight: 600, fontSize: 20, width: "75%", marginLeft: "10%" }}>Reactivation Request Message for {currDriveCode}</p>
+                <Grid2 display="flex" flexDirection="row" justifyContent="flex-end" sx={{ width: "20%" }}>
+                  <div onMouseEnter={() => setShowReqInfo(true)} onMouseLeave={() => setShowReqInfo(false)} style={{width: "wrap-content", height: "wrap-content"}}>
+                    <CircularIIcon onMouseEnter={() => setShowReqInfo(true)} onMouseLeave={() => setShowReqInfo(false)}/>
+                  </div>
+                  {
+                    showReqInfo &&
+                    <div style={{height: "auto", width: "50%", padding: 3, margin: 3, zIndex: 200, position: "absolute", top: "20%", left: "48%", border: "1.5px solid black", borderRadius: "3%", backgroundColor: "#FFFFFF"}}>
+                      <p style={{fontSize: 13}}>Write a message to your container manager explaining why you would like to request drive reactivation. Your container manager can either accept, reject, or reply to your request. You will receive a broadcast when a decision has been made.</p>
+                    </div>
+                  }
+                </Grid2>
+              </Grid2>
+              <TextField multiline autoFocus required placeholder="message" rows={7} value={reactivationReqMessage} sx={{ width: "85%", marginBottom: "5px", backgroundColor: "#FFFFFF", color: "#FE9384", borderColor: "#FE9834" }} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setReactivationReqMessage(e.target.value)} />
               <Grid2 display="flex" flexDirection="row" justifyContent="space-around" alignItems="center" sx={{ width: "50%" }}>
                 <Button onClick={() => toggleModal(newReqModalRef, false, "")} sx={{ backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874", }, fontWeight: 550, color: '#5F5F5F' }}>Cancel</Button>
                 <Button onClick={() => submitReq(false)} sx={{ backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874", }, fontWeight: 550, color: '#5F5F5F' }}>Submit</Button>
@@ -128,12 +144,11 @@ const DashVolunteer: NextPage<{ driveData: { drive: BookDrive | null, reactivati
                 {editReq && <Button onClick={() => submitReq(true, currReqId)} sx={{ backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874", }, fontWeight: 550, color: '#5F5F5F' }}>Submit</Button>}
                 {!editReq && <Button onClick={allowEdit} sx={{ backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874", }, fontWeight: 550, color: '#5F5F5F' }}>Edit</Button>}
                 <Button onClick={() => deleteModalRef?.current?.showModal()} sx={{ backgroundColor: "#AF0000", "&:hover": { backgroundColor: "#990000", }, fontWeight: 550, color: '#FFFFFF' }}>Delete Request</Button>
-
               </Grid2>
             </Grid2>
           </dialog>
           <dialog ref={deleteModalRef} style={{ height: "55%", width: "50%", borderRadius: "3%", padding: 0, position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
-            <Grid2 display="flex" flexDirection="column" justifyContent="space-between" alignItems="center" sx={{width: "100%", height: "100%", backgroundColor: "#F5F5F5", padding: 10}}>
+            <Grid2 display="flex" flexDirection="column" justifyContent="space-between" alignItems="center" sx={{ width: "100%", height: "100%", backgroundColor: "#F5F5F5", padding: 10 }}>
               <h2 style={{ color: "#FE9384", fontWeight: 600, fontSize: 25, textAlign: "center" }}>Are you sure you want to delete this reactivation request?</h2>
               <Grid2 display="flex" flexDirection="row" width="80%" justifyContent="space-between">
                 <Button onClick={() => deleteModalRef.current?.close()} sx={{ backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874", }, fontWeight: 550, color: '#5F5F5F' }}>No, go back</Button>
