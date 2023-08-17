@@ -7,7 +7,6 @@ import mongoose from 'mongoose';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { DataGrid, GridColDef, GridCellParams, GridRowParams } from '@mui/x-data-grid'
 import getShipmentModel, { Shipment } from '../../models/Shipment';
-import { Box } from '@mui/material';
 import React from 'react';
 import { BookDriveStatus, deadlineMap } from '../../lib/enums';
 import { useState, useRef, useEffect } from 'react';
@@ -20,23 +19,24 @@ import DownCaret from '../../components/DownCaret';
 import UpCaret from '../../components/UpCaret';
 import useExpandableElement from '../../lib/useExpandableElement';
 import CircularIcon from '../../components/CircularIcon';
-import { PanoramaVerticalSelect } from '@mui/icons-material';
-import { isIdentifier } from 'typescript';
+import getReactivationRequestModel, { ReactivationRequest } from '../../models/ReactivationRequest';
 
 type AdminDashboardProps = {
     account: AdminAccount;
     error: Error | null;
-    driveData: { drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount }[] | null
+    driveDataProps: { drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount, reactivationReq: ReactivationRequest | null}[] | null
 }
-const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveData }) => {
+const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDataProps }) => {
     if (error) return <h1>{`error: ${error}`}</h1>
-    const drives = driveData?.map(driveDatum => driveDatum.drive)
+    const [driveData, setDriveData] = useState<{drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount, reactivationReq: ReactivationRequest | null}[] | null>(driveDataProps)
     const [showSidebar, setShowSidebar] = useState(false)
     const [activateSidebarMinWidth, toggleActivateSidebarMinWidth] = useState(false)
-    const [sidebarDriveDatum, setSideBarDriveData] = useState<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount } | undefined>(undefined)
+    const [sidebarDriveDatum, setSideBarDriveData] = useState<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount, reactivationReq: ReactivationRequest | null } | null>(null)
     const { visible: showCurrDrives, toggleVisibility: setShowCurrDrives, elementRef: currDriveTableRef, elementStyles: currDriveTableStyles } = useExpandableElement()
     const { visible: showCompletedDrives, toggleVisibility: toggleShowCompletedDrives, elementRef: completedDriveTableRef, elementStyles: completedDriveTableStyles } = useExpandableElement()
     const { visible: showQuickActions, toggleVisibility: toggleQuickActions, elementRef: quickActionsRef, elementStyles: quickActionsStyles } = useExpandableElement()
+    
+    const drives = driveDataProps?.map(driveDatum => driveDatum.drive)
     const [, setState] = useState(false)
 
     const halfDrive = <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
@@ -174,34 +174,53 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
         }
     })
     const currDrives = drives?.filter(drive => drive.status === BookDriveStatus.Active || drive.status === BookDriveStatus.Cancelled)
-    // console.log(currDrives)
-    // console.log("currDrive length", currDrives?.length)
+
     const currDrivesGridRows = currDrives?.map(drive => {
-        // console.log("acceptable statuses", `${BookDriveStatus.Cancelled}, ${BookDriveStatus.Active}`)
-        // console.log("status by driveName", `${drive.driveName}: ${drive.status}`)
         return { id: drive.driveCode, driveName: drive.driveName, size: drive.booksGoal, country: drive.country, organizer: drive.organizer, lastUpdated: new Date(drive.cb.lastUpdate).toLocaleDateString(), status: drive.status }
     })
 
     const completedDrivesGridRows = drives ? drives.filter(drive => drive.status === BookDriveStatus.Completed).map(drive => {
-        // console.log("status by driveName", `${drive.driveName}: ${drive.status}`)
-
         return { id: drive.driveCode, driveName: drive.driveName, size: drive.booksGoal, country: drive.country, organizer: drive.organizer, completedDate: new Date(drive.completedDate).toLocaleDateString() }
     }) : []
 
+    // this is nice and easy but maybe it would be better to just make it so that it checks to see whether they have shipments that haven't been received yet
     const shipmentsPendingRows = drives ? drives.filter(drive => drive.status === BookDriveStatus.Verifying).map(drive => {
         return { id: drive.driveCode, driveName: drive.driveName }
     }) : []
 
-    // this is temporary - I need to figure out how we are going to know if there was a reactivation request made or not
-    const reactivationReqRows = drives ? drives.filter(drive => drive.country === 'South Africa').map(drive => {
-        return { id: drive.driveCode, driveName: drive.driveName }
-    }) : []
-
+    
     const notUpdatedInRows = drives ? drives.filter(drive => drive.status === BookDriveStatus.Active && new Date().getTime() - new Date(drive.cb.lastUpdate).getTime() > (10 * 24 * 60 * 60 * 1000)).map((drive) => {
         return { id: drive.driveCode, driveName: drive.driveName }
     }) : []
     // ❗🕔 
+    const reactivationReqRows = driveData ? driveData.filter(driveDatum => driveDatum.reactivationReq !== null).map(driveDatum => {
+        return { id: driveDatum.drive.driveCode, driveName: driveDatum.drive.driveName }
+    }) : []
 
+    const removeReactivationReq = (driveCode: string) => {
+        const foundDriveDatum = driveData?.find(driveDatum => driveDatum.drive.driveCode === driveCode)
+        if (!foundDriveDatum) {
+            console.error(`hmmm, couldn't find the drive with code ${driveCode}`)
+            alert(`hmmm, couldn't find the drive with code ${driveCode}`)
+            return
+        }
+        if (!foundDriveDatum.reactivationReq) {
+            console.error(`hmmm, there was no reactivation request found for the drive with driveCode ${driveCode}`)
+            alert(`hmmm, there was no reactivation request found for the drive with driveCode ${driveCode}`)
+            return
+        }
+        const filteredDrives = driveData?.filter(datum => datum.drive.driveCode !== driveCode) 
+        setDriveData(filteredDrives ? filteredDrives : null)
+        const editedCurrDrive = sidebarDriveDatum
+        if (!editedCurrDrive) {
+            console.error('attempting to access the current sidebar drive but it doesnt exist apparently')
+            alert('attempting to access the current sidebar drive but it doesnt exist apparently')
+            return
+        }
+        editedCurrDrive.reactivationReq = null
+        editedCurrDrive.drive.reactivationRequestId = undefined
+        setSideBarDriveData(editedCurrDrive)
+    }
     const handleDriveNameClick = (params: GridCellParams) => {
         if (params.field === 'driveName') {
             const preDriveName = params.value as string;
@@ -225,7 +244,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
         }
     };
 
-    const openSidebar = (sideDrive: {drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount}) => {
+    const openSidebar = (sideDrive: {drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount, reactivationReq: ReactivationRequest | null}) => {
         setTimeout(() => {
             setSideBarDriveData(sideDrive)
             setShowSidebar(true);
@@ -239,7 +258,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
         toggleActivateSidebarMinWidth(false)
         setShowSidebar(false);
         setTimeout(() => {
-            setSideBarDriveData(undefined);
+            setSideBarDriveData(null);
         }, 240); // Delayed reset after closing
     };
 
@@ -377,7 +396,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({ account, error, driveDa
                     width: showSidebar ? '36%' : 0,
                     minWidth: activateSidebarMinWidth ? '400px' : 0,
 
-                }}><AdminSidebar email={account.email} updateBookDriveStatus={updateBookDriveStatus} volunteer={sidebarDriveDatum.volunteer} drive={sidebarDriveDatum.drive} shipments={sidebarDriveDatum.shipments} />
+                }}><AdminSidebar email={account.email} updateBookDriveStatus={updateBookDriveStatus} driveData={sidebarDriveDatum} removeReactivationReq={removeReactivationReq}/>
                 </div>}
             </Grid>
         </>)
@@ -411,19 +430,21 @@ export const getServerSideProps = async (context: any) => {
         // const bPromises = driveList.map(driveId => BookDrive.findOne({ driveCode: driveId }))
         // const drives = await Promise.all(bPromises) as BookDrive[]
         const ShipmentModel: mongoose.Model<Shipment> = getShipmentModel()
-
-        const driveDataPromises: Promise<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount }>[] = account.driveIds.map(async (driveId) => {
+        const ReactivationRequestModel: mongoose.Model<ReactivationRequest> = getReactivationRequestModel()
+        const driveDataPromises: Promise<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount, reactivationReq: ReactivationRequest | null }>[] = account.driveIds.map(async (driveId) => {
             const drive = await BookDrive.findOne({ driveCode: driveId }) as BookDrive
             if (!drive) throw new Error(`no bookdrive found with code ${driveId}`)
             const shipmentPromises = drive.fl.shipments.map(async (shipmentId) => await ShipmentModel.findById(shipmentId))
             const shipments = await Promise.all(shipmentPromises) as Shipment[]
             const volunteer = await VolunteerAccount.findOne({ fname: drive.organizer.split(" ")[0], lname: drive.organizer.split(" ")[1] }) as VolunteerAccount
             if (!volunteer) throw new Error(`no volunteer found with name ${drive.organizer}`)
-            return { drive: drive, shipments: shipments, volunteer: volunteer }
+            if (!drive.reactivationRequestId) return { drive: drive, shipments: shipments, volunteer: volunteer, reactivationReq: null } 
+            const reactivationRequest = await ReactivationRequestModel.findOne({id: drive.reactivationRequestId}) as ReactivationRequest
+            return { drive: drive, shipments: shipments, volunteer: volunteer, reactivationReq: reactivationRequest }
         })
         const driveData = await Promise.all(driveDataPromises)
         // console.log(driveData)
-        return { props: { error: null, account: JSON.parse(JSON.stringify(account)), driveData: JSON.parse(JSON.stringify(driveData)) } }
+        return { props: { error: null, account: JSON.parse(JSON.stringify(account)), driveDataProps: JSON.parse(JSON.stringify(driveData)) } }
     } catch (e: Error | any) {
         console.log(e)
         const errorStr = e.message === "Cannot read properties of null (reading 'user')" ? "You must login before accessing this page" : `${e}`

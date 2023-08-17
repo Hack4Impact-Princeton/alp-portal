@@ -9,21 +9,21 @@ import dbConnect from '../lib/dbConnect'
 import getBookDriveModel, { BookDrive } from '../models/BookDrive';
 import getVolunteerAccountModel, { VolunteerAccount } from '../models/VolunteerAccount';
 import { NextPage } from 'next';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import sendReactivationReq, { deleteReactivationRequest, editReactivationRequest } from '../db_functions/reactivationReqFns';
 import useDynamicPadding from '../lib/useDynamicPadding';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from './api/auth/[...nextauth]';
 import getReactivationRequestModel, { ReactivationRequest } from '../models/ReactivationRequest';
 import { TextField } from '@mui/material';
-import { DriveEtaSharp } from '@mui/icons-material';
 import CircularIIcon from '../components/CircularIIcon';
+
 const DashVolunteer: NextPage<{ driveData: { drive: BookDrive | null, reactivationReq: ReactivationRequest | null }[], account: VolunteerAccount | null, error: Error | null }> = ({ driveData, account, error }) => {
   console.log(account)
   const drives = driveData.map(driveDatum => driveDatum.drive)
   console.log("drives", drives)
   const leftPaddingValue = useDynamicPadding(635, 775, "29vw", "20vw", "15vw")
-  
+
   const [showReqInfo, setShowReqInfo] = useState(false)
   const [reactivationReqMessage, setReactivationReqMessage] = useState("")
   const newReqModalRef = useRef<HTMLDialogElement>(null)
@@ -60,7 +60,6 @@ const DashVolunteer: NextPage<{ driveData: { drive: BookDrive | null, reactivati
       delete datum!.drive!.reactivationRequestId
       setReactivationReqMessage("")
       setCurrReqId("")
-
       alert("Successfully deleted reactivation request")
     } catch (e: Error | any) {
       console.error(e)
@@ -115,13 +114,13 @@ const DashVolunteer: NextPage<{ driveData: { drive: BookDrive | null, reactivati
               <Grid2 display="flex" flexDirection="row" alignItems="center" justifyContent={"space-between"} width="100%">
                 <p style={{ marginBottom: "5px", color: "#FE9834", fontWeight: 600, fontSize: 20, width: "75%", marginLeft: "10%" }}>Reactivation Request Message for {currDriveCode}</p>
                 <Grid2 display="flex" flexDirection="row" justifyContent="flex-end" sx={{ width: "20%" }}>
-                  <div onMouseEnter={() => setShowReqInfo(true)} onMouseLeave={() => setShowReqInfo(false)} style={{width: "wrap-content", height: "wrap-content"}}>
-                    <CircularIIcon onMouseEnter={() => setShowReqInfo(true)} onMouseLeave={() => setShowReqInfo(false)}/>
+                  <div onMouseEnter={() => setShowReqInfo(true)} onMouseLeave={() => setShowReqInfo(false)} style={{ width: "wrap-content", height: "wrap-content" }}>
+                    <CircularIIcon onMouseEnter={() => setShowReqInfo(true)} onMouseLeave={() => setShowReqInfo(false)} />
                   </div>
                   {
                     showReqInfo &&
-                    <div style={{height: "auto", width: "50%", padding: 3, margin: 3, zIndex: 200, position: "absolute", top: "20%", left: "48%", border: "1.5px solid black", borderRadius: "3%", backgroundColor: "#FFFFFF"}}>
-                      <p style={{fontSize: 13}}>Write a message to your container manager explaining why you would like to request drive reactivation. Your container manager can either accept, reject, or reply to your request. You will receive a broadcast when a decision has been made.</p>
+                    <div style={{ height: "auto", width: "50%", padding: 3, margin: 3, zIndex: 200, position: "absolute", top: "20%", left: "48%", border: "1.5px solid black", borderRadius: "3%", backgroundColor: "#FFFFFF" }}>
+                      <p style={{ fontSize: 13 }}>Write a message to your container manager explaining why you would like to request drive reactivation. Your container manager can either accept, reject, or reply to your request. You will receive a broadcast when a decision has been made.</p>
                     </div>
                   }
                 </Grid2>
@@ -154,9 +153,7 @@ const DashVolunteer: NextPage<{ driveData: { drive: BookDrive | null, reactivati
                 <Button onClick={() => deleteModalRef.current?.close()} sx={{ backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874", }, fontWeight: 550, color: '#5F5F5F' }}>No, go back</Button>
                 <Button onClick={() => deleteReq(currDriveCode, currReqId)} sx={{ backgroundColor: "#AF0000", "&:hover": { backgroundColor: "#990000", }, fontWeight: 550, color: '#FFFFFF' }}>Yes, Delete Request</Button>
               </Grid2>
-
             </Grid2>
-
           </dialog>
         </Box>
       </Grid2 >

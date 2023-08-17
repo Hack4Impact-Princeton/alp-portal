@@ -16,8 +16,11 @@ import DownCaret from "./DownCaret"
 import { getStates } from "../lib/enums"
 import useExpandableElement from "../lib/useExpandableElement"
 import sendBroadcast from "../db_functions/sendBroadcast"
+import { ReactivationRequest } from "../models/ReactivationRequest"
+import { deleteReactivationRequest } from "../db_functions/reactivationReqFns"
 
-const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount, updateBookDriveStatus: (driveCode: string, status: number) => Promise<void>, email: string }> = ({ email, drive, shipments, volunteer, updateBookDriveStatus }) => {
+const AdminSidebar: React.FC<{driveData: { drive: BookDrive, shipments: Shipment[], volunteer: VolunteerAccount, reactivationReq: ReactivationRequest | null}, updateBookDriveStatus: (driveCode: string, status: number) => Promise<void>, removeReactivationReq: (driveCode: string) => void, email: string }> = ({ email, driveData, updateBookDriveStatus, removeReactivationReq }) => {
+    const { drive, shipments, volunteer, reactivationReq} = driveData
     const { status, organizer, driveName, driveCode, country, completedDate, startDate, mailDate, fl, pts, booksGoal, gs, cb } = drive
     // const [showReactivationReq, setShowReactivationReq] = useState(false)
     const [, setState] = useState(false)
@@ -74,9 +77,25 @@ const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], voluntee
     //     }
     // }
 
+
+    const decideReactivationReq = async(accepted: boolean) => {
+        try {
+            if (!reactivationReq) {
+                throw new Error("Hmmm something went wrong- attempting to reject a reactivatino request that apparently doesn't exist")
+            }
+            removeReactivationReq(drive.driveCode)
+            const res = await deleteReactivationRequest(driveCode, reactivationReq.id)
+            if (accepted) await updateBookDriveStatus(driveCode, BookDriveStatus.Active)
+            if (!res.success) throw new Error(`something went wrong: ${res.error}`)
+            alert(`successfully ${accepted ? 'accepted' : 'rejected'} the reactivation request for ${drive.driveName}`)
+        } catch (e: Error | any) {
+            console.error(e)
+            if (("message" in e)) alert(e.message as any)
+        }
+    }
     
     
-    const loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    // const loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 
     return (
         
@@ -130,7 +149,7 @@ const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], voluntee
                         }, fontWeight: 600, color: '#5F5F5F', fontSize: 10.8, width: "50%"
                     }}>Compose custom message</Button></Link>
                 </Grid>
-                {status == BookDriveStatus.Cancelled && <><Grid item width={"100%"} display={"flex"} justifyContent={"flex-start"} alignItems={"center"}>
+                {status == BookDriveStatus.Cancelled && reactivationReq && <><Grid item width={"100%"} display={"flex"} justifyContent={"flex-start"} alignItems={"center"}>
                     <CircularIcon stringContent={"!"} fgColor={"#FE9834"} bgColor={"#F3D39A"} />
                     <Typography variant="h5" style={{ color: "#FE9834", fontWeight: 700, marginLeft: 10 }}>Reactivation Request</Typography>
                     {!showReactivationReq && <UpCaret onClick={toggleShowReactivationReq} />}
@@ -140,12 +159,12 @@ const AdminSidebar: React.FC<{ drive: BookDrive, shipments: Shipment[], voluntee
                         style={reactivationReqStyles}
                     >
                         <Grid item>
-                            <TextareaAutosize maxRows={15} minRows={15} cols={50} style={{ overflowY: "auto", resize: "none", border: "1.5px solid black", borderRadius: "3%" }} readOnly placeholder={loremIpsum} />
+                            <TextareaAutosize maxRows={15} minRows={15} cols={50} style={{ overflowY: "auto", resize: "none", border: "1.5px solid black", borderRadius: "3%" }} value={reactivationReq.message} />
                         </Grid>
                         <Grid item display="flex" flexDirection="row" justifyContent="center" alignItems="center" sx={{marginBottom: 1}}>
                             <Link href={`/admin/broadcast?recipient=${encodeURIComponent(volunteer.email)}&subject=${driveName} Reactivation Request`}><Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" }, marginRight: 1 }}>Reply</Button></Link>
-                            <Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" }, marginRight: 1 }} onClick={() => updateBookDriveStatus(driveCode, BookDriveStatus.Active)}>Accept</Button>
-                            <Link href={`/admin/broadcast?recipient=${encodeURIComponent(volunteer.email)}&subject=${driveName} Reactivation Request Rejection`}><Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" } }}>Reject</Button></Link>
+                            <Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" }, marginRight: 1 }} onClick={() => decideReactivationReq(true)}>Accept</Button>
+                            <Link href={`/admin/broadcast?recipient=${encodeURIComponent(volunteer.email)}&subject=${driveName} Reactivation Request Rejection`}><Button variant="contained" sx={{ color: "#5F5F5F", fontWeight: 600, fontSize: 12, backgroundColor: "#F3D39A", "&:hover": { backgroundColor: "#D3A874" } }} onClick={() => decideReactivationReq(false)}>Reject</Button></Link>
                         </Grid></div></>}
                 <Grid container spacing={1} sx={{ display: "flex", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", paddingX: 1 }}>
                     <Grid item sx={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", width: "100%" }}>
