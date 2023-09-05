@@ -19,7 +19,7 @@ git branch <name-issue number>
 ```bash
 git switch <name-issue number>
 ```
-To test locally: ```npm run dev```
+To test locally: ```yarn run dev```
 
 Viewing all your local changes:
 ```bash
