@@ -1,9 +1,9 @@
 import React from 'react';
 
-const CircularIIcon: React.FC<{flipCard: () => void}> = ({flipCard}) => {
+const CircularIIcon: React.FC<{flipCard?: () => void, onMouseEnter?: () => void, onMouseLeave?: () => void}> = ({flipCard, onMouseEnter, onMouseLeave}) => {
   return (
     <>
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 70 70" fill="none" style={{cursor: "pointer"}} onClick={flipCard}>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 70 70" fill="none" style={{cursor: flipCard ? "pointer" : "default"}} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={flipCard}>
         <circle cx="35" cy="35" r="35" fill="#FE9834" />
         <text
         fill="#FFFFFF"

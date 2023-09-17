@@ -1,5 +1,5 @@
 // const genUniqueId = require("../lib/idGen");
-const genUniqueId = (): string => {
+const genUniqueIdBroadcast = (): string => {
     const dateStr = Date
       .now()
       .toString(36); // convert num to base 36 and stringify
@@ -14,7 +14,7 @@ const genUniqueId = (): string => {
 
 const testPost = async(): Promise<void> => {
     const data = {
-        id: genUniqueId(),
+        id: genUniqueIdBroadcast(),
         senderEmail: 'email_test@gmail.com',
         receiverEmails: ['test1@test.com', 'test2@test.com'],
         read: [false, false],
