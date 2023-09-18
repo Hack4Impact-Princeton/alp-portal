@@ -6,6 +6,7 @@ import InboxIcon from '@mui/icons-material/Inbox';
 import Navbar from '../components/AdminNavbar'
 import { signOut } from "next-auth/react"
 import useDynamicPadding from '../lib/useDynamicPadding';
+import { Margin } from '@mui/icons-material';
 
 type PageContainerProps = {
     fName: String;
@@ -87,7 +88,7 @@ const PageContainer: React.FC<PageContainerProps> = ({fName, currPage}) => {
             <Box sx={{
                 height: '12vh',
             }}></Box>
-            <h1 style={{ textAlign: "left", fontSize: fontsize, paddingRight: 10 }}>{pageName}</h1>
+            <h1 style={{ textAlign: "left", fontSize: fontsize, marginLeft: -60 }}>{pageName}</h1>
         </Grid>
     </>);
 }
