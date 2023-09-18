@@ -1,8 +1,7 @@
-import React from 'react'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Router from 'next/router'
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Image from 'next/image';
@@ -19,8 +18,6 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 const Signup = () => {
-    // const error = props.error ? props.error : null
-    // const accounts = props.account ? JSON.parse(props.accounts) : null
     const states = getStates()
     const [submit, setSubmit] = useState(false)
     const [fname, setFName] = useState("")
@@ -56,10 +53,7 @@ const Signup = () => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
       };
 
-    const signUpHandler = async () => {
-        // const post0 = await PostHelper.createPost("id_1", "test post 0", "i really hope this works"); // make new post
-
-        
+    const signUpHandler = async () => {   
         try {
             // set timeout for reseting error fields
             setSubmit(true)
@@ -128,19 +122,17 @@ const Signup = () => {
                             value={fname} onChange={handleSetFName} 
                             sx={{
                                 mt: 2,
-                                mb: 2
+                                mb: 1
                             }} />
                             <TextField fullWidth required error={submit && lname==''} id="lname" label="Last Name" variant="outlined"
                                 value={lname} onChange={handleSetLName} 
                                 sx={{
-                                    mt: 2,
-                                    mb: 2
+                                    mb: 1
                                 }}/>
                             <TextField fullWidth required error={submit && email==''} id="email" label="Email" variant="outlined"
                                 value={email} onChange={handleSetEmail} 
                                 sx={{
-                                    mt: 2,
-                                    mb: 2
+                                    mb: 1
                                 }} />
                             <TextField fullWidth required id="password" label="Password" variant="outlined"
                           type={showPassword ? 'text' : 'password'}
@@ -156,8 +148,7 @@ const Signup = () => {
                               ),
                            }}
                           sx={{
-                          mt: 2,
-                         mb: 4,
+                         mb: 1,
                           }}
                         />
                         <FormControl sx={{ width: 300}}>
@@ -177,7 +168,7 @@ const Signup = () => {
                     <Button variant="contained"
                                 onClick={signUpHandler}
                                 sx={{
-                                    marginTop: 3,
+                                    marginTop: 1,
                                 }}>Signup</Button>
                     </Box>
                 </Grid2>
@@ -186,17 +177,4 @@ const Signup = () => {
     )
 }
 
-
-// export const getServerSideProps = async() => {
-//     try {
-//         await dbConnect()
-//         const VolunteerAccount = getVolunteerAccountModel()
-//         const accounts = await VolunteerAccount.find({})
-//         return {props: {accounts: JSON.stringify(accounts), error: null}}
-//     } catch (e) {
-//         console.log(e)
-//         const err = `${e}`
-//         return {props: {error: err, accounts: null}}
-//     } 
-//}
 export default Signup

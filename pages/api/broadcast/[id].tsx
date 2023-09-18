@@ -5,7 +5,6 @@ import mongoose from "mongoose";
 import { Broadcast } from "../../../models/Broadcast";
 import getAdminAccountModel, { AdminAccount } from "../../../models/AdminAccount";
 import getVolunteerAccountModel, { VolunteerAccount } from "../../../models/VolunteerAccount";
-import { send } from "process";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const id = req.query.id
