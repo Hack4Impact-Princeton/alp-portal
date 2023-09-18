@@ -41,7 +41,7 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
             anchor="left"
         >
             <List>
-                <Link href="/dash-volunteer">
+                <Link href="/admin/dashboard">
                     <ListItem key="Home" sx={{
                         alignItems: 'center',
                     }}>
@@ -56,7 +56,7 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                         </CustomWidthTooltip>
                     </ListItem>
                 </Link>
-                <Link href="/volunteeraccounts/profile">
+                <Link href="/admin/profile">
                     <ListItem key="Organizer Checklist">
                         <CustomWidthTooltip title="Profile" placement="right" arrow>
                         <ListItemButton>
@@ -69,49 +69,9 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                         </CustomWidthTooltip>
                     </ListItem>
                 </Link>
-                <Link href="/leaderboard">
-                    <ListItem key="Milestones">
-                        <CustomWidthTooltip title="Leaderboard" placement="right" arrow>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                <FlagIcon fontSize='large' sx={{
-                                    color: active === 'leaderboard' ? 'orange' : '#9C9C9C',
-                                }}></FlagIcon>
-                            </ListItemIcon>
-                        </ListItemButton>
-                        </CustomWidthTooltip>
-                    </ListItem>
-                </Link>
-                <Link href="/h4i-team">
-                    <ListItem key="Contact Us">
-                    <CustomWidthTooltip title="Contact Us" placement="right" arrow>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                <ShareIcon fontSize='large' sx={{
-                                    color: active === 'h4i-team' ? 'orange' : '#9C9C9C',
-                                }}></ShareIcon>
-                            </ListItemIcon>
-                        </ListItemButton>
-                    </CustomWidthTooltip>
-                    </ListItem>
-                </Link>
-                <Link href="/forum">
-                    <ListItem key="Forum">
-                    <CustomWidthTooltip title="Forum" placement="right" arrow>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                <FilterFramesIcon fontSize = 'large' sx={{
-                                    color: '#9C9C9C',}}></FilterFramesIcon> 
-                                
-                            </ListItemIcon>
-                        </ListItemButton>
-                    </CustomWidthTooltip>
-                    </ListItem>
-                </Link>
-            <Link href = "/conversations">
-                <ListItem key = "Conversations">
-                <CustomWidthTooltip title="Conversations" placement="right" arrow>
-
+            <Link href = "broadcast">
+                <ListItem key = "Brodcasts">
+                <CustomWidthTooltip title="Broadcasts" placement="right" arrow>
                     <ListItemButton>
                         <ListItemIcon>
                             <ChatBubbleIcon fontSize = 'large' sx = {{color:
