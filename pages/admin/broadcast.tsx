@@ -82,7 +82,7 @@ export const getServerSideProps = async (context: any) => {
                 else return res
         })
         const broadcasts = await Promise.all(bPromises) as Broadcast[]
-        return { props: { error: null, account: JSON.parse(JSON.stringify(account)), volunteers: JSON.parse(JSON.stringify(volunteers)), broadcasts: JSON.parse(JSON.stringify(broadcasts)), recipient, subject } }
+        return { props: { error: null, account: JSON.parse(JSON.stringify(account)), volunteers: JSON.parse(JSON.stringify(volunteers)), broadcasts: JSON.parse(JSON.stringify(broadcasts)), recipient: recipient ? recipient : null, subject: subject ? subject : null } }
     } catch (e: Error | any) {
         const errorStr = e.message === "Cannot read properties of null (reading 'user')" ? "You must login before accessing this page" : `${e}`
         return { props: { error: errorStr, account: null, volunteers: null, broadcasts: null, recipient: null, subject: null } }
