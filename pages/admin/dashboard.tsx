@@ -207,7 +207,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
           currPage="dash-volunteer"
         ></AdminPageContainer>
       <Grid sx={{ width: "100%", height: "100%", padding: 5 }}>
-        <Grid sx={{ marginBottom: 3, width: "100%" }}>
+        <Grid sx={{ marginBottom: 3, width: "100%", marginLeft : 20 }}>
 
           <Grid
             display="flex"
@@ -259,6 +259,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
             height: "wrap-content",
             width: "90%",
             display: "flex",
+            marginLeft: 20,
             flexDirection: "column",
             marginBottom: 2,
           }}
@@ -277,6 +278,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
           sx={{
             height: "wrap-content",
             width: "90%",
+            marginLeft: 20,
             display: "flex",
             flexDirection: "column",
           }}
