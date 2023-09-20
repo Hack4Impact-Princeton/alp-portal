@@ -88,7 +88,6 @@ const PageContainer: React.FC<PageContainerProps> = ({fName, currPage}) => {
             <Box sx={{
                 height: '12vh',
             }}></Box>
-            <h1 style={{ textAlign: "left", fontSize: fontsize, marginLeft: -60 }}>{pageName}</h1>
         </Grid>
     </>);
 }
