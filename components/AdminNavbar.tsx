@@ -18,7 +18,7 @@ const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
   });
 
 type NavbarProps = {
-    active: "dash-volunteer" | "profile" | "leaderboard" | "h4i-team" | "forum" | "instruction-steps" | null;
+    active: "dash-admin" | "profile" | "Broadcast" | null;
 }
 const Navbar: React.FC<NavbarProps> = ({active}) => {
     return(
@@ -49,7 +49,7 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                         <ListItemButton>
                             <ListItemIcon>
                                 <HomeIcon fontSize='large' sx={{
-                                    color: active === 'dash-volunteer' ? 'orange' : '#9C9C9C',
+                                    color: active === 'dash-admin' ? 'orange' : '#9C9C9C',
                                 }}></HomeIcon>
                             </ListItemIcon>
                         </ListItemButton>

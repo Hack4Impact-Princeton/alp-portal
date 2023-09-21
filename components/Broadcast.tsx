@@ -9,15 +9,15 @@ const BroadcastMessage: React.FC<BroadcastMessageProps> = ({ broadcast }) => {
     console.log(broadcast)
     const {subject, message, receiverEmails, sentTime} = broadcast
     return (
-
-        <Grid style={{ display: "flex", flexDirection: "column", padding: 10, margin: 5, border: "1.5px solid black", whiteSpace: 'normal', width: "80%" }}>
+        <div>
             <div>
       <AdminPageContainer
-      // i forgor how to pass props to here
-        fName= "test"
+      // help on to pass the name from account.
+          fName= "test"
           currPage="Broadcast"
         ></AdminPageContainer>
         </div>
+        <Grid style={{ display: "flex", flexDirection: "column", padding: 10, margin: 5, border: "1.5px solid black", whiteSpace: 'normal', width: "80%" }}>
             <h2 style={{ marginTop: 2, marginBottom: 2 }}>{subject}</h2>
             <hr />
             <p style={{ marginBottom: 2, marginTop: 2 }}>{message}</p>
@@ -29,6 +29,7 @@ const BroadcastMessage: React.FC<BroadcastMessageProps> = ({ broadcast }) => {
                     {receiverEmails.map((email) => <p>{email}</p>)}
                 </>}
         </Grid>
+        </div>
     )
 }
 
