@@ -1,10 +1,16 @@
 
-import React from 'react';
- 
-function Profile() {
+import AdminPageContainer from "../../components/AdminPageContainer";
+import { NextPage } from 'next'
+function Profile(){
     return (
-        <h1> Profile </h1>
+        <div>
+      <AdminPageContainer
+      // i forgor how to pass props to here
+        fName= "test"
+          currPage="profile"
+        ></AdminPageContainer>
+
+  </div>
     );
 }
- 
-export default Profile;
+export default Profile

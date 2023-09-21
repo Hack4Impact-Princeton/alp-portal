@@ -10,7 +10,7 @@ import { Margin } from '@mui/icons-material';
 
 type PageContainerProps = {
     fName: String;
-    currPage: "dash-volunteer" | "profile" | "instruction-steps" | "h4i-team" | "forum" | "leaderboard";
+    currPage: "dash-admin" | "profile" | "Broadcast";
 }
 
 const PageContainer: React.FC<PageContainerProps> = ({fName, currPage}) => {
@@ -22,33 +22,13 @@ const PageContainer: React.FC<PageContainerProps> = ({fName, currPage}) => {
     let pageName = "";
     let fontsize="";
     switch(currPage) {
-        case "dash-volunteer": {
+        case "dash-admin": {
             pageName="Home"; 
             fontsize="90px";
             break;
         }
         case "profile": {
             pageName="Profile";
-            fontsize="90px";
-            break;
-        }
-        case "instruction-steps": {
-            pageName="Organizer Steps";
-            fontsize="70px";
-            break;
-        }
-        case "h4i-team": {
-            pageName="The Developer Team";
-            fontsize="90px";
-            break;
-        }
-        case "forum": {
-            pageName="Forum";
-            fontsize="90px";
-            break;
-        }
-        case "leaderboard": {
-            pageName="Leaderboard";
             fontsize="90px";
             break;
         }
