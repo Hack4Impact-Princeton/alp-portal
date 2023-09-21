@@ -151,11 +151,20 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
           >
             Create Custom Broadcast{" "}
           </Button>
+          {/*<Grid
+            style={{
+              textAlign: "center",
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
+              paddingTop: 10,
+            }}
+          >
+            <Link href="/admin/dashboard">Return to Dashboard</Link>
+          </Grid>*/}
         </>
       )}
-      <Grid>
-        <Link href="/admin/dashboard">Return to Dashboard</Link>
-      </Grid>
+
       {showCustomBroadcast && (
         <Grid
           item
