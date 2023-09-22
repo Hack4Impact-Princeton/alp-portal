@@ -134,7 +134,7 @@ function CollectBooksCard(props) {
       <Grid item xs={11}>
       </Grid>
       <Grid item xs={1} sx={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItems: "center", pb: 4 }}>
-        <UndoButton undo={undoBookAdd} />
+        <UndoButton undo={undoBookAdd} active={lastBookUpdate ? true : false} />
         <Button style={{ ...styles.btn, marginLeft: 7 }} variant="contained" size="large" onClick={handleSubmitButton}>Submit</Button>
       </Grid>
     </Grid>
@@ -223,7 +223,7 @@ function CollectIntFeeCard(props) {
       <Grid item xs={11}>
       </Grid>
       <Grid item xs={1} sx={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-end", pb: 4 }}>
-        <UndoButton undo={undoAddFunds} />
+        <UndoButton undo={undoAddFunds} active={lastFundUpdate ? true : false} />
         <Button style={{ ...styles.btn, marginLeft: 5 }} variant="contained" size="large" onClick={handleSubmitButton}>Submit</Button>
       </Grid>
     </Grid>
@@ -311,7 +311,7 @@ function CollectDomFeeCard(props) {
       <Grid item xs={11}>
       </Grid>
       <Grid item xs={1} sx={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-end", pb: 4 }}>
-        <UndoButton undo={undoAddFunds} />
+        <UndoButton undo={undoAddFunds} active={lastFundUpdate ? true : false} />
         <Button style={{ ...styles.btn, marginLeft: 5 }} variant="contained" size="large" onClick={handleSubmitButton}>Submit</Button>
       </Grid>
     </Grid>
