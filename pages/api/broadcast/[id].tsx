@@ -26,7 +26,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                         return res.status(400).json({ success: false, data: `no receiver found with email ${email}` })
                 })
                 // update the sender's broadcast array
-                sender.updateOne({ $push: { broadcasts: broadcastInfo.id } }).exec()
+                // sender.updateOne({ $push: { broadcasts: broadcastInfo.id } }).exec()
+                sender.updateOne(
+                    { /* Your query criteria here */ },
+                    { $push: { broadcasts: { $each: [broadcastInfo.id], $position: 0 } } }
+                ).exec();
                 // update the receivers broadcast array
                 broadcastInfo.receiverEmails.map(async email => {
                     await VolunteerAccount.findOneAndUpdate({ email: email }, {

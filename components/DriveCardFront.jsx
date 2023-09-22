@@ -29,10 +29,10 @@ export default function DriveCardFront(props) {
                         <ProgressBar {...props}></ProgressBar>
                     </Grid>
                     <Grid item style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%", height: "wrap-content" }}>
-                        {props.drive.status !== BookDriveStatus.Cancelled && <a href="https://www.youtube.com/watch?v=4gBlND7UjFw" style={{ fontSize: '2vh' }}>View/Update Your Progress</a>}
-                        {props.drive.status == BookDriveStatus.Cancelled && !props.reqExists && <p onClick={props.openNewReqModal} style={{textDecoration: "underline", cursor: "pointer", fontSize: "2vh"}}>Request Reactivation</p>}
-                        {props.drive.status == BookDriveStatus.Cancelled && props.reqExists && <p onClick={props.openViewReqModal} style={{textDecoration: "underline", cursor: "pointer", fontSize: "2vh"}}>View/Edit Reactivation Request</p>}
-                        <CircularIIcon flipCard={props.flipCard}/>
+                        {props.drive.status !== BookDriveStatus.Cancelled && <Link href={`/instruction-steps/${props.drive.driveCode}`} style={{ fontSize: '2vh' }}>View/Update Your Progress</Link>}
+                        {props.drive.status == BookDriveStatus.Cancelled && !props.reqExists && <p onClick={props.openNewReqModal} style={{ textDecoration: "underline", cursor: "pointer", fontSize: "2vh" }}>Request Reactivation</p>}
+                        {props.drive.status == BookDriveStatus.Cancelled && props.reqExists && <p onClick={props.openViewReqModal} style={{ textDecoration: "underline", cursor: "pointer", fontSize: "2vh" }}>View/Edit Reactivation Request</p>}
+                        <CircularIIcon flipCard={props.flipCard} />
                     </Grid>
                 </Grid>
 
