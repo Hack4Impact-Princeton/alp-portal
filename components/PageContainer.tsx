@@ -6,6 +6,9 @@ import InboxIcon from '@mui/icons-material/Inbox';
 import Navbar from '../components/Navbar'
 import { signOut } from "next-auth/react"
 import useDynamicPadding from '../lib/useDynamicPadding';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import React from 'react';
+
 
 type PageContainerProps = {
     fName: String;
@@ -17,6 +20,28 @@ const PageContainer: React.FC<PageContainerProps> = ({fName, currPage}) => {
     const WhiteTextButton = styled(Button)<ButtonProps>(() => ({
         color: 'white',
     }));
+    const InboxIconButton = styled(Button)<ButtonProps>(() => ({
+        height: '100%',
+        width: '100%',
+        borderRadius: '5px',
+    }));
+    const [openDialog, setOpenDialog] = React.useState(false);
+
+    const handleOpenDialog = () => {
+        setOpenDialog(true);
+    };
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+    const handleBroadcasts = () => {
+        console.log("Broadcasts");
+        handleOpenDialog();
+    };
+
+    const [broadcasts, setBroadcasts] = React.useState([]);
+
+
+
 
     let pageName = "";
     let fontsize="";
@@ -75,7 +100,25 @@ const PageContainer: React.FC<PageContainerProps> = ({fName, currPage}) => {
                     justifyContent="flex-end"
                     alignItems="center">
                     <Grid xs={4}><h3>Welcome, {fName}</h3></Grid>
-                    <Grid xs={1}><InboxIcon></InboxIcon></Grid>              
+                    <Grid xs={1}>
+                       <InboxIconButton color="inherit"   onClick={handleBroadcasts}>
+                        <InboxIcon></InboxIcon>
+                        </InboxIconButton>
+                        </Grid>       
+                        <Dialog open={openDialog} onClose={handleCloseDialog}>
+  <DialogTitle>Broadcasts</DialogTitle>
+  <DialogContent>
+    {broadcasts.map((broadcast, index) => (
+      <DialogContentText key={index}>{broadcast}</DialogContentText>
+    ))}
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseDialog} color="primary">
+      Close
+    </Button>
+  </DialogActions>
+</Dialog>
+       
                     <Grid xs={3}><WhiteTextButton variant="text"  className="signout" onClick={handleSignOut}> Sign Out </WhiteTextButton></Grid>
                     <Grid xs={2}><img src="/alp-logo.png" alt="alp-logo" height="55px"></img></Grid>
                 </Grid> 
