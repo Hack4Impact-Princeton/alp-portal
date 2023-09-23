@@ -1,6 +1,8 @@
 import { VolunteerAccount } from "../models/VolunteerAccount";
 import { useState, useEffect, useRef } from "react";
 import { Broadcast } from "../models/Broadcast";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
 import {
   FormControl,
   InputLabel,
@@ -93,6 +95,12 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
   const addAllRecipients = () => {
     setRecipients(volunteers.map((volunteer) => volunteer.email));
   };
+  const theme = createTheme({
+    palette: {
+      primary: { main: "#F3D39A" },
+    },
+  });
+
   return (
     <Grid
       container
@@ -113,27 +121,43 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
           flexDirection: "column",
         }}
       >
-        <label htmlFor="volunteer-picker">Choose recipients</label>
-        <FormControl id="volunteer-picker" sx={{ width: "80%", mt: 2, mb: 1 }}>
-          <InputLabel id="volunteer-label">Volunteer</InputLabel>
-          <Select
-            onChange={updateRecipients}
-            input={<OutlinedInput label="Volunteer" />}
-          >
-            {volunteers.map((volunteer) => (
-              <MenuItem key={volunteer.alp_id} value={volunteer.email}>{`${
-                volunteer.fname
-              } ${volunteer.lname.substring(0, 1)}.`}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <label>Recipients:</label>
-        <RecipientList
-          recipients={recipients}
-          onAddAll={addAllRecipients}
-          onClear={() => setRecipients([])}
-          onRemove={removeRecipient}
-        />
+        <Grid>
+          <Grid container sx={{ backgroundColor: "#F5F5F5" }}>
+            <Grid xs={6}>
+              <label htmlFor="volunteer-picker">Choose recipients</label>
+              <FormControl
+                id="volunteer-picker"
+                sx={{ width: "80%", mt: 2, mb: 1 }}
+              >
+                <InputLabel id="volunteer-label">Volunteer</InputLabel>
+                <Select
+                  onChange={updateRecipients}
+                  input={<OutlinedInput label="Volunteer" />}
+                >
+                  {volunteers.map((volunteer) => (
+                    <MenuItem
+                      key={volunteer.alp_id}
+                      value={volunteer.email}
+                    >{`${volunteer.fname} ${volunteer.lname.substring(
+                      0,
+                      1
+                    )}.`}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid xs={6}>
+              <label>Recipients:</label>
+              <RecipientList
+                recipients={recipients}
+                onAddAll={addAllRecipients}
+                onClear={() => setRecipients([])}
+                onRemove={removeRecipient}
+              />
+            </Grid>
+            <Grid xs={12}> </Grid>
+          </Grid>
+        </Grid>
       </Grid>
       {!showCustomBroadcast && (
         <>
@@ -144,13 +168,54 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
           >
             Send Automated Broadcast{" "}
           </Button>
+          <TextField
+            required
+            error={submit && subject == ""}
+            id="subject"
+            label="Subject"
+            placeholder="subject"
+            variant="outlined"
+            value={subject}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setSubject(e.target.value)
+            }
+            sx={{
+              mb: 2,
+              width: "95%",
+              minWidth: "500px",
+            }}
+          />
+          <TextField
+            required
+            error={submit && message == ""}
+            multiline
+            minRows={6}
+            maxRows={Infinity}
+            label="Message"
+            aria-label="message"
+            placeholder="message"
+            value={message}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setMessage(e.target.value)
+            }
+            style={{ width: "95%", minWidth: "500px" }}
+          />
           <Button
+            variant="contained"
+            onClick={sendCustomBroadcast}
+            sx={{ marginTop: 1.5 }}
+          >
+            Send Custom Broadcast{" "}
+          </Button>
+
+          {/*<Button
             variant="contained"
             onClick={() => setShowCustomBroadcast(true)}
             sx={{ marginTop: 1.5 }}
+            color="primary"
           >
             Create Custom Broadcast{" "}
-          </Button>
+          </Button>*/}
           {/*<Grid
             style={{
               textAlign: "center",
@@ -165,7 +230,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
         </>
       )}
 
-      {showCustomBroadcast && (
+      {/*{showCustomBroadcast && (
         <Grid
           item
           style={{
@@ -223,7 +288,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
             Back
           </Button>
         </Grid>
-      )}
+          )}*/}
     </Grid>
   );
 };
