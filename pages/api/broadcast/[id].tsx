@@ -17,25 +17,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             try {
                 // parse the new broadcast information
                 const broadcastInfo: Broadcast = JSON.parse(req.body)
-                // find the sender among the admin accounts
-                // const sender = await AdminAccount.findOne({ email: broadcastInfo.senderEmail })
-                // if (!sender) return res.status(400).json({ success: false, data: `no admin account found with email ${broadcastInfo.senderEmail}` })
-                // make sure that all of the receiveremails belong to volunteers
-                broadcastInfo.receiverEmails.map(async email => {
-                    if (!await VolunteerAccount.findOne({ email: email }))
-                        return res.status(400).json({ success: false, data: `no receiver found with email ${email}` })
-                })
+                const errorStrings: string[] = []
                 // update the sender's broadcast array
-                // sender.updateOne({ $push: { broadcasts: broadcastInfo.id } }).exec()
                 const updatedSender = await AdminAccount.findOneAndUpdate({ email: broadcastInfo.senderEmail }, { $push: { broadcasts: { $each: [broadcastInfo.id], $position: 0 } } }, { new: true })
                 if (!updatedSender) throw new Error("Failure to add broadcast to admin")
-                // sender.updateOne(
-                //     { /* Your query criteria here */ },
-                //     { $push: { broadcasts: { $each: [broadcastInfo.id], $position: 0 } } }
-                // ).exec();
-                // update the receivers broadcast array
                 broadcastInfo.receiverEmails.map(async email => {
-                    await VolunteerAccount.findOneAndUpdate({ email: email }, {
+                    const volunteerRecipient = await VolunteerAccount.findOneAndUpdate({ email: email }, {
                         $push: {
                             broadcasts: {
                                 $each: [broadcastInfo.id],
@@ -43,12 +30,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                             }
                         }
                     })
+                    if (!volunteerRecipient) errorStrings.push(`Delivery failed to ${email}`)
                 })
                 // create a new broadcast and save it.
                 const broadcast = new Broadcast(broadcastInfo)
                 if (!broadcast) return res.status(400).json({ success: false, data: 'error creating broadcast' })
                 await broadcast.save()
                 console.log("broadcast created", broadcast)
+                // if failed to deliver to at least one person
+                if (errorStrings.length !== 0) {
+                    let errorString = ""
+                    errorStrings.forEach(eString => errorString += eString + "\n")
+                    throw new Error(errorString)
+                }
                 return res.status(200).json({ success: true, data: broadcast })
             } catch (e: Error | any) {
                 return res.status(500).json({ success: false, data: e })
