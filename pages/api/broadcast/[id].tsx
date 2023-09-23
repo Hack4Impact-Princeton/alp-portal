@@ -18,8 +18,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 // parse the new broadcast information
                 const broadcastInfo: Broadcast = JSON.parse(req.body)
                 // find the sender among the admin accounts
-                const sender = await AdminAccount.findOne({ email: broadcastInfo.senderEmail })
-                if (!sender) return res.status(400).json({ success: false, data: `no admin account found with email ${broadcastInfo.senderEmail}` })
+                // const sender = await AdminAccount.findOne({ email: broadcastInfo.senderEmail })
+                // if (!sender) return res.status(400).json({ success: false, data: `no admin account found with email ${broadcastInfo.senderEmail}` })
                 // make sure that all of the receiveremails belong to volunteers
                 broadcastInfo.receiverEmails.map(async email => {
                     if (!await VolunteerAccount.findOne({ email: email }))
@@ -27,10 +27,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 })
                 // update the sender's broadcast array
                 // sender.updateOne({ $push: { broadcasts: broadcastInfo.id } }).exec()
-                sender.updateOne(
-                    { /* Your query criteria here */ },
-                    { $push: { broadcasts: { $each: [broadcastInfo.id], $position: 0 } } }
-                ).exec();
+                const updatedSender = await AdminAccount.findOneAndUpdate({ email: broadcastInfo.senderEmail }, { $push: { broadcasts: { $each: [broadcastInfo.id], $position: 0 } } }, { new: true })
+                if (!updatedSender) throw new Error("Failure to add broadcast to admin")
+                // sender.updateOne(
+                //     { /* Your query criteria here */ },
+                //     { $push: { broadcasts: { $each: [broadcastInfo.id], $position: 0 } } }
+                // ).exec();
                 // update the receivers broadcast array
                 broadcastInfo.receiverEmails.map(async email => {
                     await VolunteerAccount.findOneAndUpdate({ email: email }, {
