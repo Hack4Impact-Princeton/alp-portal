@@ -8,6 +8,7 @@ import { signOut } from "next-auth/react"
 import useDynamicPadding from '../lib/useDynamicPadding';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import React from 'react';
+import { Popover, Typography } from '@mui/material';
 
 
 type PageContainerProps = {
@@ -25,20 +26,21 @@ const PageContainer: React.FC<PageContainerProps> = ({fName, currPage}) => {
         width: '100%',
         borderRadius: '5px',
     }));
-    const [openDialog, setOpenDialog] = React.useState(false);
+    const [popoverOpen, setPopoverOpen] = React.useState(false);    
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const handleOpenPopover = () => {
+  setPopoverOpen(true);
+};
 
-    const handleOpenDialog = () => {
-        setOpenDialog(true);
-    };
-    const handleCloseDialog = () => {
-        setOpenDialog(false);
-    };
-    const handleBroadcasts = () => {
-        console.log("Broadcasts");
-        handleOpenDialog();
-    };
+      const broadcasts = [
+    { message: 'Broadcast 1' },
+    { message: 'Broadcast 2' },
+    { message: 'Broadcast 3' },
+  ];
 
-    const [broadcasts, setBroadcasts] = React.useState([]);
+    const handleClosePopover = () => {
+        setPopoverOpen(false);
+    };
 
 
 
@@ -91,7 +93,7 @@ const PageContainer: React.FC<PageContainerProps> = ({fName, currPage}) => {
             <Box sx={{
                 float: 'right',
                 height: '7vh',
-                width: '30vw',
+                width: '30.2vw',
                 backgroundColor: '#fe9834',
                 borderRadius: '5px',
                 pt: '5px'
@@ -100,24 +102,29 @@ const PageContainer: React.FC<PageContainerProps> = ({fName, currPage}) => {
                     justifyContent="flex-end"
                     alignItems="center">
                     <Grid xs={4}><h3>Welcome, {fName}</h3></Grid>
-                    <Grid xs={1}>
-                       <InboxIconButton color="inherit"   onClick={handleBroadcasts}>
+                    <Grid xs={2}>
+                       <InboxIconButton color="inherit"   onClick={handleOpenPopover}>
                         <InboxIcon></InboxIcon>
                         </InboxIconButton>
+                        <Popover
+                        open={popoverOpen}
+                        anchorEl={anchorEl}
+                        onClose={handleClosePopover}
+                        anchorOrigin={{
+                        vertical: 66.5,
+                        horizontal: 'right',
+
+                        }}
+                        >
+                        <Box p={2}>
+                        <Typography variant="h1">Broadcasts</Typography>
+                        {broadcasts.map((broadcast, index) => (
+                        <Typography key={index}>{broadcast.message}</Typography>
+                        ))}
+                        </Box>
+                        </Popover>
                         </Grid>       
-                        <Dialog open={openDialog} onClose={handleCloseDialog}>
-  <DialogTitle>Broadcasts</DialogTitle>
-  <DialogContent>
-    {broadcasts.map((broadcast, index) => (
-      <DialogContentText key={index}>{broadcast}</DialogContentText>
-    ))}
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={handleCloseDialog} color="primary">
-      Close
-    </Button>
-  </DialogActions>
-</Dialog>
+
        
                     <Grid xs={3}><WhiteTextButton variant="text"  className="signout" onClick={handleSignOut}> Sign Out </WhiteTextButton></Grid>
                     <Grid xs={2}><img src="/alp-logo.png" alt="alp-logo" height="55px"></img></Grid>
