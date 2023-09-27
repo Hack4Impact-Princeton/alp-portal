@@ -5,7 +5,7 @@ export type BookDrive = {
   driveName: string;
   driveCode: string,
   organizer: string,
-  startDate: string,
+  startDate: Date,
   country: string,
   status: number,
   booksGoal: number,
