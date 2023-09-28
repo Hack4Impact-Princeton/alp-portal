@@ -7,7 +7,7 @@ import getVolunteerAccountModel, {
 import mongoose from "mongoose";
 import BroadcastForm from "../../components/BroadcastForm";
 import getBroadcastModel, { Broadcast } from "../../models/Broadcast";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import BroadcastMessage from "../../components/Broadcast";
 import { authOptions } from "../api/auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
@@ -56,7 +56,14 @@ const BroadcastPage: NextPage<BroadcastPageProps> = ({
         <Navbar active="broadcast"></Navbar>
       </Grid>
 
-      <Grid style={{ paddingLeft: leftPaddingValue }} item width={"60%"}>
+      <Grid
+        style={{
+          paddingLeft: leftPaddingValue,
+          paddingTop: "8vh",
+        }}
+        item
+        width={"60%"}
+      >
         <h1
           style={{
             color: "#5F5F5F",
@@ -73,10 +80,12 @@ const BroadcastPage: NextPage<BroadcastPageProps> = ({
             marginRight: 10,
             fontSize: 40,
             fontWeight: 600,
+            padding: 5,
           }}
         >
           New Broadcast:
         </h2>
+
         <BroadcastForm
           email={account.email}
           volunteers={volunteers}
@@ -87,7 +96,12 @@ const BroadcastPage: NextPage<BroadcastPageProps> = ({
       </Grid>
       <Grid
         item
-        style={{ display: "flex", flexDirection: "column", width: "40%" }}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          width: "40%",
+          paddingTop: "8vh",
+        }}
       >
         <h1 style={{ padding: 10, color: "#FE9834" }}>Sent just now:</h1>
         {newBroadcasts &&
