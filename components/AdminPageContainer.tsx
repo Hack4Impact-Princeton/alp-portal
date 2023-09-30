@@ -50,8 +50,10 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage }) => {
         <Box
           sx={{
             float: "right",
-            height: "7vh",
-            width: "30vw",
+            height: "10vh",
+            minHeight: "63px",
+            width: fName.length > 10 ? "30vw" : "25vw",
+            minWidth: fName.length > 10 ? "353px" : "320px",
             backgroundColor: "#fe9834",
             borderRadius: "5px",
             pt: "5px",
@@ -60,14 +62,12 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage }) => {
           <Grid
             container
             flex-direction="row"
-            justifyContent="flex-end"
+            justifyContent="space-between"
+            paddingX="10px"
             alignItems="center"
           >
-            <Grid xs={4}>
+            <Grid xs={4} sx={{ marginRight: fName.length > 10 ? 5 : 1 }}>
               <h3>Welcome, {fName}</h3>
-            </Grid>
-            <Grid xs={1}>
-              <InboxIcon></InboxIcon>
             </Grid>
             <Grid xs={3}>
               <WhiteTextButton
@@ -80,7 +80,7 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage }) => {
               </WhiteTextButton>
             </Grid>
             <Grid xs={2}>
-              <img src="/alp-logo.png" alt="alp-logo" height="55px"></img>
+              <img src="/alp-logo.png" alt="alp-logo" height="59px"></img>
             </Grid>
           </Grid>
         </Box>
