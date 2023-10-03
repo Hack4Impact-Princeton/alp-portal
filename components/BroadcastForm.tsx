@@ -1,6 +1,8 @@
 import { VolunteerAccount } from "../models/VolunteerAccount";
 import { useState, useEffect, useRef } from "react";
 import { Broadcast } from "../models/Broadcast";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
 import {
   FormControl,
   InputLabel,
@@ -93,6 +95,12 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
   const addAllRecipients = () => {
     setRecipients(volunteers.map((volunteer) => volunteer.email));
   };
+  const theme = createTheme({
+    palette: {
+      primary: { main: "#F3D39A" },
+    },
+  });
+
   return (
     <Grid
       container
@@ -101,56 +109,124 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
         display: "flex",
         flexDirection: "column",
         margin: "auto",
-        padding: 10,
+        padding: 5,
         width: "100%",
       }}
     >
       <Grid
-        item
+        container
         style={{
           display: "flex",
           justifyContent: "center",
-          flexDirection: "column",
+          flexDirection: "row",
+          backgroundColor: "#F5F5F5",
+          width: "95%",
+          padding: 10,
         }}
       >
-        <label htmlFor="volunteer-picker">Choose recipients</label>
-        <FormControl id="volunteer-picker" sx={{ width: "80%", mt: 2, mb: 1 }}>
-          <InputLabel id="volunteer-label">Volunteer</InputLabel>
-          <Select
-            onChange={updateRecipients}
-            input={<OutlinedInput label="Volunteer" />}
+        <Grid xs={6}>
+          <label htmlFor="volunteer-picker" style={{ fontSize: 20 }}>
+            Choose recipients:
+          </label>
+          <FormControl
+            id="volunteer-picker"
+            sx={{ width: "80%", mt: 1, mb: 1 }}
           >
-            {volunteers.map((volunteer) => (
-              <MenuItem key={volunteer.alp_id} value={volunteer.email}>{`${
-                volunteer.fname
-              } ${volunteer.lname.substring(0, 1)}.`}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <label>Recipients:</label>
-        <RecipientList
-          recipients={recipients}
-          onAddAll={addAllRecipients}
-          onClear={() => setRecipients([])}
-          onRemove={removeRecipient}
-        />
+            <InputLabel id="volunteer-label">Volunteer</InputLabel>
+            <Select
+              onChange={updateRecipients}
+              input={<OutlinedInput label="Volunteer" />}
+            >
+              {volunteers.map((volunteer) => (
+                <MenuItem key={volunteer.alp_id} value={volunteer.email}>{`${
+                  volunteer.fname
+                } ${volunteer.lname.substring(0, 1)}.`}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid xs={6}>
+          <label style={{ fontSize: 20 }}>Recipients:</label>
+          <RecipientList
+            recipients={recipients}
+            onAddAll={addAllRecipients}
+            onClear={() => setRecipients([])}
+            onRemove={removeRecipient}
+          />
+        </Grid>
+        <Grid xs={12}> </Grid>
       </Grid>
       {!showCustomBroadcast && (
         <>
           <Button
             variant="contained"
             onClick={sendAutomatedBroadcast}
-            sx={{ marginTop: 1.5 }}
+            sx={{ marginTop: 2, marginBottom: 4, width: "95%" }}
           >
             Send Automated Broadcast{" "}
           </Button>
-          <Button
+          <Grid
+            container
+            display="flex"
+            sx={{
+              flexDirection: "column",
+              backgroundColor: "#F5F5F5",
+              width: "95%",
+              justifyContent: "center",
+              alignItems: "center",
+              pt: 2,
+              pb: 2,
+            }}
+          >
+            <TextField
+              required
+              error={submit && subject == ""}
+              id="subject"
+              label="Subject"
+              placeholder="subject"
+              variant="outlined"
+              value={subject}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setSubject(e.target.value)
+              }
+              sx={{
+                mb: 2,
+                width: "95%",
+                minWidth: "500px",
+              }}
+            />
+            <TextField
+              required
+              error={submit && message == ""}
+              multiline
+              minRows={6}
+              maxRows={Infinity}
+              label="Message"
+              aria-label="message"
+              placeholder="message"
+              value={message}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setMessage(e.target.value)
+              }
+              style={{ width: "95%", minWidth: "500px" }}
+            />
+            <Button
+              variant="contained"
+              onClick={sendCustomBroadcast}
+              sx={{ marginTop: 1.5, width: "95%" }}
+            >
+              Send Custom Broadcast{" "}
+            </Button>
+          </Grid>
+
+          {/*<Button
             variant="contained"
             onClick={() => setShowCustomBroadcast(true)}
             sx={{ marginTop: 1.5 }}
+            color="primary"
           >
             Create Custom Broadcast{" "}
-          </Button>
+          </Button>*/}
           {/*<Grid
             style={{
               textAlign: "center",
@@ -165,7 +241,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
         </>
       )}
 
-      {showCustomBroadcast && (
+      {/*{showCustomBroadcast && (
         <Grid
           item
           style={{
@@ -223,7 +299,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
             Back
           </Button>
         </Grid>
-      )}
+          )}*/}
     </Grid>
   );
 };

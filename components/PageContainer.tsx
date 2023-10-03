@@ -17,7 +17,7 @@ type PageContainerProps = {
     currPage: "dash-volunteer" | "profile" | "instruction-steps" | "h4i-team" | "forum" | "leaderboard";
 }
 
-const PageContainer: React.FC<PageContainerProps> = ({fName, currPage}) => {
+const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage }) => {
     const leftPaddingValue = useDynamicPadding(635, 775, "29vw", "20vw", "15vw")
     const WhiteTextButton = styled(Button)<ButtonProps>(() => ({
         color: 'white',
@@ -54,36 +54,36 @@ const broadcasts = [
 
 
     let pageName = "";
-    let fontsize="";
-    switch(currPage) {
+    let fontsize = "";
+    switch (currPage) {
         case "dash-volunteer": {
-            pageName="Home"; 
-            fontsize="90px";
+            pageName = "Home";
+            fontsize = "90px";
             break;
         }
         case "profile": {
-            pageName="Profile";
-            fontsize="90px";
+            pageName = "Profile";
+            fontsize = "90px";
             break;
         }
         case "instruction-steps": {
-            pageName="Organizer Steps";
-            fontsize="70px";
+            pageName = "Organizer Steps";
+            fontsize = "70px";
             break;
         }
         case "h4i-team": {
-            pageName="The Developer Team";
-            fontsize="90px";
+            pageName = "The Developer Team";
+            fontsize = "90px";
             break;
         }
         case "forum": {
-            pageName="Forum";
-            fontsize="90px";
+            pageName = "Forum";
+            fontsize = "90px";
             break;
         }
         case "leaderboard": {
-            pageName="Leaderboard";
-            fontsize="90px";
+            pageName = "Leaderboard";
+            fontsize = "90px";
             break;
         }
     }
@@ -93,7 +93,6 @@ const broadcasts = [
         signOut();
         window.location.href = '/';
     }
-
     return(
     <>
         <Grid>
