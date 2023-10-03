@@ -33,9 +33,9 @@ const PageContainer: React.FC<PageContainerProps> = ({fName, currPage}) => {
   setPopoverOpen(true);
 };
 const broadcasts = [
-    { message: 'Broadcast 1' },
-    { message: 'Broadcast 2' },
-    { message: 'Broadcast 3' },
+    { message: 'Broadcast 1; click me like popping buble wrap' },
+    { message: 'Broadcast 2; click on me too!!' },
+    { message: 'Broadcast 3; mEEEE THREEEEEEE' },
   ];
   const [visibleBroadcasts, setVisibleBroadcasts] = useState(Array(broadcasts.length).fill(true));
 
@@ -122,28 +122,22 @@ const broadcasts = [
                         vertical: 66.5,
                         horizontal: 'right',
                         }}
+                        sx={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }} 
                         >
                         <Box p={2}>
                         <Typography variant="h2">Broadcasts</Typography>
                         {broadcasts.map((broadcast, index) => (
                         <Collapse in={visibleBroadcasts[index]} key={index} sx={{ transition: '0.3s' }}>
                             <Box sx={{
-      width: '300px',
-      borderRadius: '10px',
-      boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
-      border: '1px solid #d89600', // Add a border
-      padding: '12px', // Add some padding
-    }}>
+                                width: '300px',
+                                borderRadius: '10px',
+                                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+                                border: '1px solid #d89600', // Add a border
+                                padding: '12px', // Add some padding
+                                }}>
                         <Typography variant="body1" sx={{ cursor: 'pointer', flex: 1 }} onClick={() => handleBroadcastClick(index)}>
                         {broadcast.message}
                         </Typography>
-                            <Button
-            size="small"
-            onClick={() => handleBroadcastClick(index)}
-            endIcon={<CloseIcon fontSize="small" />}
-            sx={{ marginLeft: '8px' }} // Add left margin to the button
-          >
-          </Button>
                         </Box>
                         </Collapse>
                          ))}
