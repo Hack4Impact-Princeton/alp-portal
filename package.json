@@ -10,6 +10,7 @@
     "@emotion/styled": "^11.10.4",
     "@mui/icons-material": "^5.10.14",
     "@mui/material": "^5.14.0",
+    "@mui/x-charts": "^6.0.0-alpha.13",
     "@mui/x-data-grid": "^6.10.2",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^20.4.5",
