@@ -1,41 +1,58 @@
-import { useEffect, useState } from 'react'
-import io from 'Socket.IO-client'
-let socket;
+import React, { useEffect, useState } from 'react';
+import io from 'socket.io-client';
 
 const Home = () => {
-  const [input, setInput] = useState('')
+  const [input, setInput] = useState('');
+  let socket;
 
   useEffect(() => {
-  async function socketInitializer() {
-    await fetch('/api/socket');
-    socket = io();
+    // Fetch to ensure server is up (you can adjust the endpoint)
+    async function socketInitializer() {
+      await fetch('/api/socket');
+      // Establish a Socket.IO connection
+      socket = io('http://localhost:3000');
 
-    socket.on('connect', () => {
-      console.log('connected');
-    });
+      socket.on('connect', () => {
+        console.log('connected');
+      });
 
-    socket.on('update-input', (msg) => {
-      setInput(msg);
-    });
-  }
+      socket.on('update-input', (msg) => {
+        setInput(msg);
+      });
+    }
 
-  socketInitializer(); // Call the async function immediately
-  return () => {
-  };
-}, []); // Ensure you pass an empty dependency array if the effect doesn't depend on any props or state
+    socketInitializer();
+
+    return () => {
+      // Clean up the socket connection when the component unmounts
+      if (socket) {
+        socket.disconnect();
+      }
+    };
+  }, []);
 
   const onChangeHandler = (e) => {
-    setInput(e.target.value)
-    socket.emit('input-change', e.target.value)
-  }
+    const newInput = e.target.value;
+    setInput(newInput);
+
+    // Console log the input value
+    console.log('Input value:', newInput);
+
+    // Emit the 'input-change' event to the server
+    if (socket) {
+      socket.emit('input-change', newInput);
+    }
+  };
 
   return (
-    <input
-      placeholder="Type something"
-      value={input}
-      onChange={onChangeHandler}
-    />
-  )
-}
+    <div>
+      <input
+        placeholder="Type something"
+        value={input}
+        onChange={onChangeHandler}
+      />
+    </div>
+  );
+};
 
 export default Home;
