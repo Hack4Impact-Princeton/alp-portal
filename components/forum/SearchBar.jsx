@@ -36,7 +36,8 @@ const Bar = ({ setSearchQuery }) => (
       }}
       variant="outlined"
       placeholder="Search for a profile..."
-      size="medium"
+      size="small"
+      sx={{ width: "40vw" }}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
@@ -60,7 +61,6 @@ const SearchBar = () => {
         alignSelf: "center",
         justifyContent: "center",
         flexDirection: "column",
-        padding: 20,
       }}
     >
       <Bar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
