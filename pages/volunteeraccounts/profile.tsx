@@ -13,11 +13,13 @@ import { NextPage } from 'next';
 import mongoose from 'mongoose';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
+import getBroadcastModel, { Broadcast } from "../../models/Broadcast";
 
 type ProfileProps = {
   error: string | null;
   account: VolunteerAccount | null;
   drives: BookDrive[] | null;
+  broadcasts: Broadcast[];
 }
 type BadgeInfoProps = {
   isEarned: boolean,
@@ -117,7 +119,7 @@ const BookDrivesCompletedGraph = () => {
   );
 };
 
-const Profile: NextPage<ProfileProps> = ({ error, account, drives }) => {
+const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives }) => {
   console.log("Profile Page");
   // if the account is not null, that means that everything is working
   // otherwise render the error message page
@@ -125,7 +127,7 @@ const Profile: NextPage<ProfileProps> = ({ error, account, drives }) => {
     console.log("ACCOUNT: ", account);
     return (
       <Grid>
-        <PageContainer fName={account.fname} currPage="profile" />
+        <PageContainer broadcasts = {broadcasts} fName={account.fname} currPage="profile" />
         <Grid container display="flex" padding={1} sx={{ pl: 20 }} rowSpacing={2}>
           <Grid item xs={12} sm={7} display="flex" flexDirection="column" >
             <Box
@@ -228,19 +230,28 @@ export const getServerSideProps = async (context: any) => {
       }
     }
     const email = session.user.email
+    
     await dbConnect()
     const VolunteerAccount: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel()
     const BookDrive: mongoose.Model<BookDrive> = getBookDriveModel()
     const volunteerAccount: VolunteerAccount | null = await VolunteerAccount.findOne({ email: email });
-
+    if(!volunteerAccount) throw new Error("Volunteer account not found")
     // findsall completed bookDrives that correspond to the volunteer account
     const promises = volunteerAccount!.driveIds.map(async (driveId: string) => await BookDrive.find({ driveCode: driveId, status: BookDriveStatus.Completed }));
     // you have to resolve these promises before continuing
     const resolvedPromises = await Promise.all(promises);
     // you have to flatten the array otherwise it will have a weird shape.
     const drives: BookDrive[] | null = resolvedPromises.flat()
-
-    return { props: { account: JSON.parse(JSON.stringify(volunteerAccount)) as VolunteerAccount, drives: JSON.parse(JSON.stringify(drives)) as BookDrive, error: null } }
+    const Broadcast: mongoose.Model<Broadcast> = getBroadcastModel();
+    
+    console.log(volunteerAccount.broadcasts);
+    const bPromises = volunteerAccount.broadcasts.map((broadcastId) => {
+      const res = Broadcast.findOne({ id: broadcastId });
+      if (!res) console.log("the bad broadcastId is", broadcastId);
+      else return res;
+    });
+    const broadcasts = (await Promise.all(bPromises)) as Broadcast[];
+    return { props: { broadcasts: JSON.parse(JSON.stringify(broadcasts)), account: JSON.parse(JSON.stringify(volunteerAccount)) as VolunteerAccount, drives: JSON.parse(JSON.stringify(drives)) as BookDrive, error: null } }
   } catch (e: Error | any) {
     console.error(e)
     // if the specific error message occurs it's because the user has not logged in

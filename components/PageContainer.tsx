@@ -10,11 +10,12 @@ import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } 
 import React, {useState} from 'react';
 import { Popover, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-
+import { Broadcast } from "../models/Broadcast";
 
 type PageContainerProps = {
     fName: String;
     currPage: "dash-volunteer" | "profile" | "instruction-steps" | "h4i-team" | "forum" | "leaderboard";
+    broadcasts ?: Broadcast[];
 }
 
 const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage }) => {
