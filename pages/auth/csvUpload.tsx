@@ -63,13 +63,16 @@ const Upload = () => {
             }
           }`,
       };
-      console.log(testBookDriveJson);
       setJson(testBookDriveJson);
-      // Perform any further processing or rendering with the parsed data here
     };
 
     reader.readAsText(selectedFile);
   };
+  
+  const test = () => {
+    console.log(json)
+    console.log("Uploading Drive to Mongo")
+  }
 
   return (
     <div>
@@ -90,6 +93,10 @@ const Upload = () => {
         >
           {uploading ? "Uploading..." : "Upload"}
         </button>
+        <button 
+            onClick = {test}
+            className = "btn btn-primary"
+        >Testing</button>
       </div>
       <div>
         <h4> Testing Testing </h4>
