@@ -38,28 +38,28 @@ const Upload = () => {
         mailDate: `${new Date()}`,
         reactivationRequestId: null,
         gs: {
-            fundraise: "fundraise",
-            terms: true
+          fundraise: "fundraise",
+          terms: true,
         },
         cb: {
-            booksCurrent: 0,
-            updateFreq: 0,
-            lastUpdate: `${new Date()}`
+          booksCurrent: 0,
+          updateFreq: 0,
+          lastUpdate: `${new Date()}`,
         },
         pts: {
-            intFee: 0,
-            domFee: 0,
-            materials: {
+          intFee: 0,
+          domFee: 0,
+          materials: {
             boxes: false,
             extraCardboard: false,
             tape: false,
-            mailingLabels: false
-            }
+            mailingLabels: false,
+          },
         },
         fl: {
-            isFinalized: false,
-            shipments: []
-        }
+          isFinalized: false,
+          shipments: [],
+        },
       };
       setJson(testBookDriveJson);
     };
@@ -69,17 +69,16 @@ const Upload = () => {
 
   const test = async () => {
     //console.log(JSON.stringify(json));
-    console.log("Uploading Drive to Mongo")
-    console.log(json['driveCode'])
+    console.log("Uploading Drive to Mongo");
+    console.log(json["driveCode"]);
     try {
-        await fetch(`/api/bookDrive/${json['driveCode']}`, {
-            method: "POST",
-            body: JSON.stringify(json)
-        });
-    } catch(e) {
-        console.log(e)
+      await fetch(`/api/bookDrive/${json["driveCode"]}`, {
+        method: "POST",
+        body: JSON.stringify(json),
+      });
+    } catch (e) {
+      console.log(e);
     }
-    
   };
 
   return (
@@ -101,10 +100,9 @@ const Upload = () => {
         >
           {uploading ? "Uploading..." : "Upload"}
         </button>
-        <button 
-            onClick = {test}
-            className = "btn btn-primary"
-        >Testing</button>
+        <button onClick={test} className="btn btn-primary">
+          Testing
+        </button>
       </div>
       <div>
         <h4> Testing Testing </h4>
