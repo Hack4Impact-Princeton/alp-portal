@@ -16,6 +16,7 @@ import {
   ListItemIcon,
   Typography,
 } from "@mui/material";
+import Post from "../components/forum/PostContainer";
 
 const Forum: NextPage = () => {
   const [active, setActive] = useState("friends");
@@ -109,7 +110,11 @@ const Forum: NextPage = () => {
                 container
                 flexDirection={"column"}
               >
-                {active == "friends" && <p>friends posts</p>}
+                {active == "friends" && (
+                  <div style={{ width: "85%", margin: 2 }}>
+                    <Post />
+                  </div>
+                )}
                 {active == "all" && <p>all posts</p>}
                 {active == "my" && <p>my posts</p>}
               </Grid2>

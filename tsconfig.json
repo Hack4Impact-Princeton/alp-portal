@@ -103,7 +103,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "components/MapComponent.tsx", "pages/maptest.js", "pages/api/email/email.js", "pages/api/email/updatepassword/index.js", "scripts/addBookDrives.mjs", "pages/volunteeraccounts/profile.tsx", "db_functions/manageShipments.js", "pages/api/bookDrive/standardize/index.js"  ],
+, "components/MapComponent.tsx", "pages/maptest.js", "pages/api/email/email.js", "pages/api/email/updatepassword/index.js", "scripts/addBookDrives.mjs", "pages/volunteeraccounts/profile.tsx", "db_functions/manageShipments.js", "pages/api/bookDrive/standardize/index.js", "components/forum/SearchBar.jsx"  ],
   "exclude": [
     "node_modules"
   ]
