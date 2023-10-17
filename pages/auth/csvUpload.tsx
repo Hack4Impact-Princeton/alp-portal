@@ -67,7 +67,7 @@ const Upload = () => {
     reader.readAsText(selectedFile);
   };
 
-  const test = async () => {
+  const uploadDrive = async () => {
     //console.log(JSON.stringify(json));
     console.log("Uploading Drive to Mongo");
     console.log(json["driveCode"]);
@@ -100,7 +100,7 @@ const Upload = () => {
         >
           {uploading ? "Uploading..." : "Upload"}
         </button>
-        <button onClick={test} className="btn btn-primary">
+        <button onClick={uploadDrive} className="btn btn-primary">
           Testing
         </button>
       </div>
