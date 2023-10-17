@@ -27,52 +27,60 @@ const Upload = () => {
       const testDataCase = parsedData[0];
 
       let testBookDriveJson = {
-        body: `{
-            "driveName": "${testDataCase["Book Drive Name"]}",
-            "driveCode": "${testDataCase["Book Drive Code"]}",
-            "organizer": "${testDataCase["Contact: Full Name"]}",
-            "startDate": "${new Date()}",
-            "country": "USA",
-            "status": "Active",
-            "booksGoal": 1000,
-            "completedDate": "${new Date()}",
-            "mailDate": "${new Date()}",
-            "reactivationRequestId": null,
-            "gs": {
-              "fundraise": "fundraise",
-              "terms": true
-            },
-            "cb": {
-              "booksCurrent": 0,
-              "updateFreq": 0,
-              "lastUpdate": "${new Date()}"
-            },
-            "pts": {
-              "intFee": 0,
-              "domFee": 0,
-              "materials": {
-                "boxes": false,
-                "extraCardboard": false,
-                "tape": false,
-                "mailingLabels": false
-              }
-            },
-            "fl": {
-              "isFinalized": false,
-              "shipments": []
+        driveName: `${testDataCase["Book Drive Name"]}`,
+        driveCode: `${testDataCase["Book Drive Code"]}`,
+        organizer: `${testDataCase["Contact: Full Name"]}`,
+        startDate: `${new Date()}`,
+        country: `USA`,
+        status: 0,
+        booksGoal: 1000,
+        completedDate: `${new Date()}`,
+        mailDate: `${new Date()}`,
+        reactivationRequestId: null,
+        gs: {
+            fundraise: "fundraise",
+            terms: true
+        },
+        cb: {
+            booksCurrent: 0,
+            updateFreq: 0,
+            lastUpdate: `${new Date()}`
+        },
+        pts: {
+            intFee: 0,
+            domFee: 0,
+            materials: {
+            boxes: false,
+            extraCardboard: false,
+            tape: false,
+            mailingLabels: false
             }
-          }`,
+        },
+        fl: {
+            isFinalized: false,
+            shipments: []
+        }
       };
       setJson(testBookDriveJson);
     };
 
     reader.readAsText(selectedFile);
   };
-  
-  const test = () => {
-    console.log(json)
+
+  const test = async () => {
+    //console.log(JSON.stringify(json));
     console.log("Uploading Drive to Mongo")
-  }
+    console.log(json['driveCode'])
+    try {
+        await fetch(`/api/bookDrive/${json['driveCode']}`, {
+            method: "POST",
+            body: JSON.stringify(json)
+        });
+    } catch(e) {
+        console.log(e)
+    }
+    
+  };
 
   return (
     <div>
