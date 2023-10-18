@@ -2,6 +2,9 @@ import Grid2 from "@mui/material/Unstable_Grid2";
 import { Posts } from "../../models/Post";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { Button, Link } from "@mui/material";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import CommentIcon from "@mui/icons-material/Comment";
 type PostProps = {
   post: Posts;
 };
@@ -11,7 +14,7 @@ const PostContainer: React.FC<{}> = () => {
       container
       display="flex"
       flexDirection={"column"}
-      sx={{ backgroundColor: "#F5F5F5", minHeight: "30vh" }}
+      sx={{ backgroundColor: "#F5F5F5" }}
     >
       <Grid2
         container
@@ -66,8 +69,18 @@ const PostContainer: React.FC<{}> = () => {
           </p>
         </Grid2>
       </Grid2>
-      <Grid2 container sx={{ backgroundColor: "white", margin: 0.5 }}>
-        <p>comment section</p>
+      <Grid2
+        container
+        display="flex"
+        sx={{ backgroundColor: "white", margin: 0.5 }}
+      >
+        <Button>
+          <FavoriteBorderIcon />
+        </Button>
+        <Button>
+          <CommentIcon />
+        </Button>
+        <Button>{"View all comments"}</Button>
       </Grid2>
     </Grid2>
   );

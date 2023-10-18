@@ -16,9 +16,34 @@ import {
   ListItemIcon,
   Typography,
 } from "@mui/material";
-import Post from "../components/forum/PostContainer";
+import PostContainer from "../components/forum/PostContainer";
+import getPostModel, { Posts } from "../models/Post";
+import { authOptions } from "./api/auth/[...nextauth]";
+import mongoose from "mongoose";
+import { getServerSession } from "next-auth";
+import getBroadcastModel from "../models/Broadcast";
+import getVolunteerAccountModel from "../models/VolunteerAccount";
+import FriendList from "../components/forum/FriendList";
 
-const Forum: NextPage = () => {
+type PostProps = {
+  title: string;
+  post_id: number;
+  alp_id: string;
+  date: string;
+  text: string;
+  upvotes: string[];
+  downvotes: string[];
+};
+
+const Forum: NextPage<PostProps> = ({
+  title,
+  post_id,
+  alp_id,
+  date,
+  text,
+  upvotes,
+  downvotes,
+}) => {
   const [active, setActive] = useState("friends");
   return (
     <div>
@@ -111,8 +136,8 @@ const Forum: NextPage = () => {
                 flexDirection={"column"}
               >
                 {active == "friends" && (
-                  <div style={{ width: "85%", margin: 2 }}>
-                    <Post />
+                  <div style={{ width: "85%", marginTop: 10 }}>
+                    <PostContainer />
                   </div>
                 )}
                 {active == "all" && <p>all posts</p>}
@@ -130,3 +155,37 @@ const Forum: NextPage = () => {
 };
 
 export default Forum;
+
+export const getServerSideProps = async (context: any) => {
+  try {
+    const session = await getServerSession(
+      context.req,
+      context.res,
+      authOptions
+    );
+    if (!session || session.user?.name != "true") {
+      return {
+        redirect: {
+          destination: "../auth/login",
+          permanent: false,
+        },
+      };
+    }
+    const Posts: mongoose.Model<Posts> = getPostModel();
+
+    const posts = await Posts.find();
+    return {
+      props: {
+        postData: postData ? JSON.parse(JSON.stringify(postData)) : null,
+      },
+    };
+  } catch (e: Error | any) {
+    const errorStr =
+      e.message === "Cannot read properties of null (reading 'user')"
+        ? "You must login before accessing this page"
+        : `${e}`;
+    return {
+      props: { error: errorStr },
+    };
+  }
+};
