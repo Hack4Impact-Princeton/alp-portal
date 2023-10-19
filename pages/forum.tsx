@@ -28,7 +28,7 @@ import FriendList from "../components/forum/FriendList";
 type PostProps = {
   title: string;
   post_id: number;
-  alp_id: string;
+  email: string;
   date: string;
   text: string;
   upvotes: string[];
@@ -38,7 +38,7 @@ type PostProps = {
 const Forum: NextPage<PostProps> = ({
   title,
   post_id,
-  alp_id,
+  email,
   date,
   text,
   upvotes,
