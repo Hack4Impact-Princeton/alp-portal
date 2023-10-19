@@ -146,6 +146,7 @@ const Forum: NextPage<PostProps> = ({
             </Grid2>
             <Grid2 sx={{ width: "25vw" }}>
               <h1 style={{ color: "#FE9834" }}>Friends</h1>
+              <FriendList />
             </Grid2>
           </Grid2>
         </Grid2>
@@ -163,7 +164,7 @@ export const getServerSideProps = async (context: any) => {
       context.res,
       authOptions
     );
-    if (!session || session.user?.name != "true") {
+    if (!session) {
       return {
         redirect: {
           destination: "../auth/login",
