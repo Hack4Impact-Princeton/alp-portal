@@ -30,17 +30,20 @@ import FriendList from "../components/forum/FriendList";
 type PostProps = {
   title: string;
   post_id: number;
-  email: string;
+  alp_id: string;
   date: string;
   text: string;
   upvotes: string[];
   downvotes: string[];
+  allPosts: Posts[];
+  friendsPosts: Posts[];
+  myPosts: Posts[];
 };
 
 const Forum: NextPage<PostProps> = ({
   title,
   post_id,
-  email,
+  alp_id,
   date,
   text,
   upvotes,
@@ -183,11 +186,26 @@ export const getServerSideProps = async (context: any) => {
 
     const Posts: mongoose.Model<Posts> = getPostModel();
 
-    const posts = await Posts.find();
+    const allPosts = await Posts.find();
+    let friendsPosts: Posts[] = [];
+    let myPosts: Posts[] = [];
+
+    allPosts.forEach((p) => {
+      friendList.forEach((f) => {
+        if (f === p.email) {
+          friendsPosts.push(p);
+        }
+      });
+      if (p.email === account.email) {
+        myPosts.push(p);
+      }
+    });
 
     return {
       props: {
-        postData: postData ? JSON.parse(JSON.stringify(postData)) : null,
+        friendsPosts: friendsPosts,
+        allPosts: allPosts,
+        myPosts: myPosts,
       },
     };
   } catch (e: Error | any) {
