@@ -22,7 +22,9 @@ import { authOptions } from "./api/auth/[...nextauth]";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import getBroadcastModel from "../models/Broadcast";
-import getVolunteerAccountModel from "../models/VolunteerAccount";
+import getVolunteerAccountModel, {
+  VolunteerAccount,
+} from "../models/VolunteerAccount";
 import FriendList from "../components/forum/FriendList";
 
 type PostProps = {
@@ -172,9 +174,17 @@ export const getServerSideProps = async (context: any) => {
         },
       };
     }
+    const VolunteerAccount: mongoose.Model<VolunteerAccount> =
+      getVolunteerAccountModel();
+    const account: VolunteerAccount = (await VolunteerAccount.findOne({
+      email: session.user?.email,
+    })) as VolunteerAccount;
+    const friendList = account.friends;
+
     const Posts: mongoose.Model<Posts> = getPostModel();
 
     const posts = await Posts.find();
+
     return {
       props: {
         postData: postData ? JSON.parse(JSON.stringify(postData)) : null,
