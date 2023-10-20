@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 export interface Comments {
-  alp_id: string;
+  email: string;
   date: string;
   text: string;
   upvotes: number;
@@ -11,7 +11,7 @@ export interface Comments {
 export interface Posts {
   title: string;
   post_id: number;
-  alp_id: string;
+  email: string;
   date: string;
   text: string;
   upvotes: string[];
@@ -20,7 +20,7 @@ export interface Posts {
 }
 
 const CommentSchema = new Schema<Comments>({
-  alp_id: { type: String },
+  email: { type: String },
   date: { type: String },
   text: { type: String },
   upvotes: { type: Number },
@@ -31,7 +31,7 @@ const PostSchema = new Schema<Posts>(
   {
     title: { type: String },
     post_id: { type: Number },
-    alp_id: { type: String },
+    email: { type: String },
     date: { type: String },
     text: { type: String },
     upvotes: { type: [String] },
