@@ -28,18 +28,12 @@ import getVolunteerAccountModel, {
 import FriendList from "../components/forum/FriendList";
 
 type PostProps = {
-  name: string;
   allPosts: Posts[];
   friendsPosts: Posts[];
   myPosts: Posts[];
 };
 
-const Forum: NextPage<PostProps> = ({
-  name,
-  allPosts,
-  friendsPosts,
-  myPosts,
-}) => {
+const Forum: NextPage<PostProps> = ({ allPosts, friendsPosts, myPosts }) => {
   const [active, setActive] = useState("friends");
   return (
     <div>
@@ -135,7 +129,7 @@ const Forum: NextPage<PostProps> = ({
                   friendsPosts.map((post) => {
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
-                        <PostContainer post={post} name={name} />
+                        <PostContainer post={post} />
                       </div>
                     );
                   })}
@@ -144,7 +138,7 @@ const Forum: NextPage<PostProps> = ({
                   allPosts.map((post) => {
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
-                        <PostContainer post={post} name={name} />
+                        <PostContainer post={post} />
                       </div>
                     );
                   })}
@@ -152,7 +146,7 @@ const Forum: NextPage<PostProps> = ({
                   myPosts.map((post) => {
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
-                        <PostContainer post={post} name={name} />
+                        <PostContainer post={post} />
                       </div>
                     );
                   })}
@@ -191,12 +185,16 @@ export const getServerSideProps = async (context: any) => {
     const account: VolunteerAccount = (await VolunteerAccount.findOne({
       email: session.user?.email,
     })) as VolunteerAccount;
-    const name = account.fname + " " + account.lname;
+    //const name = account.fname + " " + account.lname;
+    //console.log("account", account);
+    console.log("account email", account.email);
     const friendList = account.friends;
+    console.log("friendslist", console.log(friendList));
 
     const Posts: mongoose.Model<Posts> = getPostModel();
 
     const allPosts = (await Posts.find()) as Posts[];
+    console.log("posts", allPosts);
     let friendsPosts: Posts[] = [];
     let myPosts: Posts[] = [];
 
@@ -210,13 +208,14 @@ export const getServerSideProps = async (context: any) => {
         myPosts.push(p);
       }
     });
+    console.log("friends posts", friendsPosts);
+    console.log("my posts", myPosts);
 
     return {
       props: {
-        name: name,
-        friendsPosts: friendsPosts,
-        allPosts: allPosts,
-        myPosts: myPosts,
+        friendsPosts: JSON.parse(JSON.stringify(friendsPosts)),
+        allPosts: JSON.parse(JSON.stringify(allPosts)),
+        myPosts: JSON.parse(JSON.stringify(myPosts)),
       },
     };
   } catch (e: Error | any) {

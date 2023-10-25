@@ -6,10 +6,9 @@ import { Button, Link } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CommentIcon from "@mui/icons-material/Comment";
 type PostProps = {
-  name: string;
   post: Posts;
 };
-const PostContainer: React.FC<PostProps> = ({ name, post }) => {
+const PostContainer: React.FC<PostProps> = ({ post }) => {
   return (
     <Grid2
       container
@@ -50,7 +49,7 @@ const PostContainer: React.FC<PostProps> = ({ name, post }) => {
               justifyContent: "center",
             }}
           >
-            <h2>{name}</h2>
+            <h2>{post.email}</h2>
             <p style={{ fontStyle: "italic" }}>{post.date}</p>
           </Grid2>
           <Grid2 container xs={1}>
