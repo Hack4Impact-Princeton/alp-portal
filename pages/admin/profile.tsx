@@ -4,7 +4,7 @@ import getVolunteerAccountModel, {
 import dbConnect from "../../lib/dbConnect";
 import { Grid } from "@mui/material";
 import Box from "@mui/material/Box";
-import PageContainer from "../../components/PageContainer";
+import PageContainer from "../../components/AdminPageContainer";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
 import MapComponent from "../../components/MapComponent";

@@ -18,7 +18,7 @@ type PageContainerProps = {
     broadcasts ?: Broadcast[];
 }
 
-const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage }) => {
+const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcasts }) => {
     const leftPaddingValue = useDynamicPadding(635, 775, "29vw", "20vw", "15vw")
     const WhiteTextButton = styled(Button)<ButtonProps>(() => ({
         color: 'white',
@@ -33,12 +33,12 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage }) => {
     const handleOpenPopover = () => {
   setPopoverOpen(true);
 };
-const broadcasts = [
-    { message: 'Broadcast 1; click me like popping buble wrap' },
-    { message: 'Broadcast 2; click on me too!!' },
-    { message: 'Broadcast 3; mEEEE THREEEEEEE' },
-  ];
-  const [visibleBroadcasts, setVisibleBroadcasts] = useState(Array(broadcasts.length).fill(true));
+// const broadcasts = [
+//     { message: 'Broadcast 1; click me like popping buble wrap' },
+//     { message: 'Broadcast 2; click on me too!!' },
+//     { message: 'Broadcast 3; mEEEE THREEEEEEE' },
+//   ];
+  const [visibleBroadcasts, setVisibleBroadcasts] = useState(Array(broadcasts?.length).fill(true));
 
 
 
@@ -126,7 +126,7 @@ const broadcasts = [
                         >
                         <Box p={2}>
                         <Typography variant="h2">Broadcasts</Typography>
-                        {broadcasts.map((broadcast, index) => (
+                        {broadcasts?.map((broadcast, index) => (
                         <Collapse in={visibleBroadcasts[index]} key={index} sx={{ transition: '0.3s' }}>
                             <Box sx={{
                                 width: '300px',
