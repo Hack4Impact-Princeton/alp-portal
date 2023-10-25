@@ -28,26 +28,17 @@ import getVolunteerAccountModel, {
 import FriendList from "../components/forum/FriendList";
 
 type PostProps = {
-  title: string;
-  post_id: number;
-  alp_id: string;
-  date: string;
-  text: string;
-  upvotes: string[];
-  downvotes: string[];
+  name: string;
   allPosts: Posts[];
   friendsPosts: Posts[];
   myPosts: Posts[];
 };
 
 const Forum: NextPage<PostProps> = ({
-  title,
-  post_id,
-  alp_id,
-  date,
-  text,
-  upvotes,
-  downvotes,
+  name,
+  allPosts,
+  friendsPosts,
+  myPosts,
 }) => {
   const [active, setActive] = useState("friends");
   return (
@@ -140,13 +131,31 @@ const Forum: NextPage<PostProps> = ({
                 container
                 flexDirection={"column"}
               >
-                {active == "friends" && (
-                  <div style={{ width: "85%", marginTop: 10 }}>
-                    <PostContainer />
-                  </div>
-                )}
-                {active == "all" && <p>all posts</p>}
-                {active == "my" && <p>my posts</p>}
+                {active == "friends" &&
+                  friendsPosts.map((post) => {
+                    return (
+                      <div style={{ width: "85%", marginTop: 10 }}>
+                        <PostContainer post={post} name={name} />
+                      </div>
+                    );
+                  })}
+
+                {active == "all" &&
+                  allPosts.map((post) => {
+                    return (
+                      <div style={{ width: "85%", marginTop: 10 }}>
+                        <PostContainer post={post} name={name} />
+                      </div>
+                    );
+                  })}
+                {active == "my" &&
+                  myPosts.map((post) => {
+                    return (
+                      <div style={{ width: "85%", marginTop: 10 }}>
+                        <PostContainer post={post} name={name} />
+                      </div>
+                    );
+                  })}
               </Grid2>
             </Grid2>
             <Grid2 sx={{ width: "25vw" }}>
@@ -182,11 +191,12 @@ export const getServerSideProps = async (context: any) => {
     const account: VolunteerAccount = (await VolunteerAccount.findOne({
       email: session.user?.email,
     })) as VolunteerAccount;
+    const name = account.fname + " " + account.lname;
     const friendList = account.friends;
 
     const Posts: mongoose.Model<Posts> = getPostModel();
 
-    const allPosts = await Posts.find();
+    const allPosts = (await Posts.find()) as Posts[];
     let friendsPosts: Posts[] = [];
     let myPosts: Posts[] = [];
 
@@ -203,6 +213,7 @@ export const getServerSideProps = async (context: any) => {
 
     return {
       props: {
+        name: name,
         friendsPosts: friendsPosts,
         allPosts: allPosts,
         myPosts: myPosts,

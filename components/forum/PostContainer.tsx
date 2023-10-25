@@ -6,9 +6,10 @@ import { Button, Link } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CommentIcon from "@mui/icons-material/Comment";
 type PostProps = {
+  name: string;
   post: Posts;
 };
-const PostContainer: React.FC<{}> = () => {
+const PostContainer: React.FC<PostProps> = ({ name, post }) => {
   return (
     <Grid2
       container
@@ -49,8 +50,8 @@ const PostContainer: React.FC<{}> = () => {
               justifyContent: "center",
             }}
           >
-            <h2>john doe</h2>
-            <p style={{ fontStyle: "italic" }}>2 days ago</p>
+            <h2>{name}</h2>
+            <p style={{ fontStyle: "italic" }}>{post.date}</p>
           </Grid2>
           <Grid2 container xs={1}>
             <MoreVertIcon sx={{ position: "absolute", top: 0, right: 0 }} />
@@ -63,10 +64,7 @@ const PostContainer: React.FC<{}> = () => {
             padding: 2,
           }}
         >
-          <p style={{ lineHeight: 1.5 }}>
-            I wanted to share some thoughts with my friends. What do you think
-            of them? let me know your thoughts below.
-          </p>
+          <p style={{ lineHeight: 1.5 }}>{post.text}</p>
         </Grid2>
       </Grid2>
       <Grid2
