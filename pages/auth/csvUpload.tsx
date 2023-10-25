@@ -1,11 +1,25 @@
 import React, { useState } from "react";
 import * as d3 from "d3";
 
+const fieldsToCheck = ["driveName", "driveCode", "organizer", "country"];
+
+function hasBlankFields(obj, fieldsToCheck) {
+  for (const field of fieldsToCheck) {
+    const value = obj[field];
+    if (value === "" || value === null) {
+      return true; // At least one blank field found
+    }
+  }
+  return false; // No blank fields found
+}
+
 const Upload = () => {
   const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState(false)
   const [selectedFile, setSelectedFile] = useState();
   const [bookDrives, setBookDrives] = useState([]);
+  const [errorDriveMap, setErrorDriveMap] = useState(new Map());
+  const [testErrorMessage, setTestErrorMessage] = useState("")
  
   // set uploaded csv file as selectedFile
   const changeHandler = (event) => {
@@ -69,6 +83,15 @@ const Upload = () => {
   const uploadDrives = async () => {
     console.log("Uploading Drive to Mongo");
     for (let i = 0; i < bookDrives.length; i++) {
+      if(bookDrives[i]["driveCode"] === "" || bookDrives[i]["driveCode"] === null) {
+        setErrorDriveMap((map) => new Map(map.set(i, "drive code missing")));
+        
+        continue;
+      }
+
+      if (hasBlankFields(bookDrives[i], fieldsToCheck)) {
+        setErrorDriveMap((map) => new Map(map.set(i, "field is missing")));
+      }
       try {
         const response = await fetch(
           `/api/bookDrive/${bookDrives[i]["driveCode"]}`,
@@ -82,10 +105,9 @@ const Upload = () => {
           console.log(
             `Uploaded book drive with code: ${bookDrives[i]["driveCode"]}`
           );
-        } else {
-          console.log(
-            `Failed to upload book drive with code: ${bookDrives[i]["driveCode"]}`
-          );
+        }
+        else {
+          setErrorDriveMap((map) => new Map(map.set(i, "seems to be a problem with the database, check if drive already exists " + response.status)));
         }
       } catch (e) {
         console.log(e);
@@ -94,34 +116,48 @@ const Upload = () => {
   };
 
   return (
+  <div>
     <div>
-      <div>
-        <h4 className="page-header mb-4">Upload a CSV</h4>
-        <div className="mb-4">
-          <input
-            type="file"
-            className="form-control"
-            onChange={changeHandler}
-          />
-        </div>
-        <button
-          onClick={handleUploadCSV}
-          disabled={!uploaded}
-          className="btn btn-primary"
-        >
-          {uploaded ? "Parse Different Drives" : "Parse Drives"}
-        </button>
-        <button 
-          onClick={uploadDrives} 
-          disabled={!uploaded}
-          className="btn btn-primary"
-        >
-          Upload Bookdrives
-        </button>
+      <h4 className="page-header mb-4">Upload a CSV</h4>
+      <div className="mb-4">
+        <input
+          type="file"
+          className="form-control"
+          onChange={changeHandler}
+        />
       </div>
+      <button
+        onClick={handleUploadCSV}
+        disabled={!uploaded}
+        className="btn btn-primary"
+      >
+        {uploaded ? "Parse Different Drives" : "Parse Drives"}
+      </button>
+      <button
+        onClick={uploadDrives}
+        disabled={!uploaded}
+        className="btn btn-primary"
+      >
+        Upload Bookdrives
+      </button>
     </div>
-  );
-};
+    <div>
+      {errorDriveMap.size !== 0 && (
+        <div> 
+          Erroring Drives:
+          <ul>
+            {Array.from(errorDriveMap.entries()).map(([key, value]) => (
+              <li key={key}>
+                Drive at index {key}: {value}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  </div>
+)
+            }
 
 Upload.propTypes = {};
 
