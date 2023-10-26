@@ -7,10 +7,10 @@ function hasBlankFields(obj, fieldsToCheck) {
   for (const field of fieldsToCheck) {
     const value = obj[field];
     if (value === "" || value === null) {
-      return true; // At least one blank field found
+      return field; // At least one blank field found
     }
   }
-  return false; // No blank fields found
+  return ""; // No blank fields found
 }
 
 const Upload = () => {
@@ -19,7 +19,6 @@ const Upload = () => {
   const [selectedFile, setSelectedFile] = useState();
   const [bookDrives, setBookDrives] = useState([]);
   const [errorDriveMap, setErrorDriveMap] = useState(new Map());
-  const [testErrorMessage, setTestErrorMessage] = useState("")
  
   // set uploaded csv file as selectedFile
   const changeHandler = (event) => {
@@ -83,14 +82,12 @@ const Upload = () => {
   const uploadDrives = async () => {
     console.log("Uploading Drive to Mongo");
     for (let i = 0; i < bookDrives.length; i++) {
-      if(bookDrives[i]["driveCode"] === "" || bookDrives[i]["driveCode"] === null) {
-        setErrorDriveMap((map) => new Map(map.set(i, "drive code missing")));
-        
-        continue;
-      }
-
-      if (hasBlankFields(bookDrives[i], fieldsToCheck)) {
-        setErrorDriveMap((map) => new Map(map.set(i, "field is missing")));
+      
+      // if any missing fields, don't upload drive and tell that there is an error
+      const missingField = hasBlankFields(bookDrives[i], fieldsToCheck);
+      if (missingField !== "") {
+        setErrorDriveMap((map) => new Map(map.set(i, "The following information is missing: " + missingField)));
+        continue
       }
       try {
         const response = await fetch(
@@ -107,7 +104,7 @@ const Upload = () => {
           );
         }
         else {
-          setErrorDriveMap((map) => new Map(map.set(i, "seems to be a problem with the database, check if drive already exists " + response.status)));
+          setErrorDriveMap((map) => new Map(map.set(i, "check if the drive you are trying to input already exists " + response.status)));
         }
       } catch (e) {
         console.log(e);
