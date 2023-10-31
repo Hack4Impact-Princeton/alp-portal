@@ -283,7 +283,8 @@ export const statusMap = new Map<number, string>([
 ]);
 
 export const deadlineMap = new Map<string, Date>([
-  ["South Africa", new Date()],
-  ["Democratic Republic of the Congo", new Date()],
-  ["Malawi", new Date()],
-]);
+
+    ['South Africa', new Date()],
+    ['Democratic Republic of the Congo', new Date()],
+    ['Malawi', new Date()]
+])
