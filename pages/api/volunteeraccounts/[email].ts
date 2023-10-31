@@ -38,6 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     allDrives: 0,
                     badges: 0,
                     driveIds: [],
+                    friends: [],
                     broadcasts: [],
                 })
                 console.log(newVolunteerAccount.startDate)

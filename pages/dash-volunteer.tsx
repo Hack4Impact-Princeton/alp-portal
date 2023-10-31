@@ -24,15 +24,17 @@ import getReactivationRequestModel, {
 } from "../models/ReactivationRequest";
 import { TextField } from "@mui/material";
 import CircularIIcon from "../components/CircularIIcon";
+import getBroadcastModel, { Broadcast } from "../models/Broadcast";
 
 const DashVolunteer: NextPage<{
   driveData: {
     drive: BookDrive | null;
     reactivationReq: ReactivationRequest | null;
   }[];
+  broadcasts: Broadcast[];
   account: VolunteerAccount | null;
   error: Error | null;
-}> = ({ driveData, account, error }) => {
+}> = ({ driveData, account, error, broadcasts }) => {
   console.log(account);
   const drives = driveData.map((driveDatum) => driveDatum.drive);
   console.log("drives", drives);
@@ -144,6 +146,7 @@ const DashVolunteer: NextPage<{
         <PageContainer
           fName={account.fname}
           currPage="dash-volunteer"
+          broadcasts = {broadcasts}
         ></PageContainer>
         {/* Necessary box for padding the page body, no overlap with Navbar */}
         <Box
@@ -582,6 +585,14 @@ export async function getServerSideProps(context: any) {
     const driveList = account.driveIds;
     const ReactivationRequestModel: mongoose.Model<ReactivationRequest> =
       getReactivationRequestModel();
+    const Broadcast: mongoose.Model<Broadcast> = getBroadcastModel();
+    console.log(account.broadcasts);
+    const bPromises = account.broadcasts.map((broadcastId) => {
+      const res = Broadcast.findOne({ id: broadcastId });
+      if (!res) console.log("the bad broadcastId is", broadcastId);
+      else return res;
+    });
+    const broadcasts = (await Promise.all(bPromises)) as Broadcast[];
     const driveDataPromises: Promise<{
       drive: BookDrive;
       reactivationReq: ReactivationRequest | null;
@@ -605,6 +616,7 @@ export async function getServerSideProps(context: any) {
     return {
       props: {
         driveData: driveData ? JSON.parse(JSON.stringify(driveData)) : null,
+        broadcasts: JSON.parse(JSON.stringify(broadcasts)),
         account: JSON.parse(JSON.stringify(account)),
       },
     };

@@ -47,27 +47,6 @@ function InstructionSteps(props) {
 export default InstructionSteps
 
 export async function getServerSideProps(context) {
-    // write nother async function...
-
-    // const getShipmentData = async (ids) => {
-    //     const BASE = "http://localhost:3000/";
-    //     let shipments = [];
-    //     ids.forEach(async (id) => {
-    //         fetch(BASE + `api/shipments/id/${id}`, {
-    //             method: "GET",
-    //         }).then(async (res) => {
-    //             console.log("Response Status: ", res.status);
-    //             const msg = await res.json();
-    //             console.log("jsonified msg: ", msg);
-    //             shipments.push(msg.data);
-    //         });
-    //     }).then(() => {
-    //         console.log("Within function: shipments = ", shipments);
-    //         return shipments;
-    //     });
-
-    // }
-
     try {
         const session = await getServerSession(context.req, context.res, authOptions)
         if (!session) {
@@ -90,7 +69,6 @@ export async function getServerSideProps(context) {
         console.log("curr user: ", currUser);
         // hardcode two test accounts to be able to see all drives
         if ((currUser !== 'test1 test1' && currUser !== 'Ivy Wang') && currUser!== currDrive.organizer) throw new Error("Unauthorized attempt to access bookdrive - you do not have the permission to view this bookdrive")
-        //console.log(currDrive)
         const driveName = currDrive.driveName;
         const driveStatus = {
             gettingStarted: currDrive.gs,
@@ -98,30 +76,10 @@ export async function getServerSideProps(context) {
             prepareToShip: currDrive.pts,
             finishLine: currDrive.fl,
         }
-        //console.log(driveStatus.finishLine)
         const ids = driveStatus.finishLine.shipments;
-        // const BASE = "http://localhost:3000/";
-        //console.log("Current FL: ", ids);
         const Shipment = getShipmentModel()
-        // let promises = [];
-        // const promises = ids.map(async (id) => await fetch(`api/shipments/id/${id}`, {method: "GET"}))
         const promises = ids.map(async (id) => await Shipment.findById(id))
         const shipments = await Promise.all(promises)
-        // const res = await Promise.all(promises);
-        // console.log(res)
-        // let nextPromises = [];
-        // res.forEach((r) => {
-        //     nextPromises.push(r.json());
-        // })
-        // const shipmentData = await Promise.all(nextPromises);
-        
-        // console.log("Intermediate Shipment Data: ", shipmentData);
-        // if (shipmentData.length > 0) {
-        //     shipmentData.forEach(shipment => shipment.data.date = new Date(shipment.data.date))
-        // }
-        // console.log(shipmentData[0].data.date)
-        //console.log("Final Shipment Data: ", shipments);
-
         return { props: { driveName: JSON.stringify(driveName), driveCode: JSON.stringify(driveCode), driveStatus: JSON.stringify(driveStatus), shipments: JSON.stringify(shipments) } }
     } catch (error) {
       console.log(error)

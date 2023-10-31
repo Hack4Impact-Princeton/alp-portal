@@ -200,15 +200,13 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
   };
 
   return (
-    
     <>
-        <AdminPageContainer
-          fName={account.fname}
-          currPage="dash-volunteer"
-        ></AdminPageContainer>
+      <AdminPageContainer
+        fName={account.fname}
+        currPage="dashboard"
+      ></AdminPageContainer>
       <Grid sx={{ width: "100%", height: "100%", padding: 5 }}>
-        <Grid sx={{ marginBottom: 3, width: "100%", marginLeft : 20 }}>
-
+        <Grid sx={{ marginBottom: 3, width: "100%", marginLeft: 20 }}>
           <Grid
             display="flex"
             flexDirection="row"

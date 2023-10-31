@@ -12,6 +12,7 @@ export type VolunteerAccount = {
     startDate: String,
     allDrives: number,
     driveIds: Types.Array<string>,
+    friends: string[],
     badges: number,
     broadcasts: string[],
 }
@@ -56,6 +57,7 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>({
         required: true
     },
     driveIds: [String],
+    friends: [String],
     badges: {
         type: Number,
         required: true
