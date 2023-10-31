@@ -189,7 +189,7 @@ export const getServerSideProps = async (context: any) => {
     //console.log("account", account);
     console.log("account email", account.email);
     const friendList = account.friends;
-    console.log("friendslist", console.log(friendList));
+    console.log("friendslist", friendList);
 
     const Posts: mongoose.Model<Posts> = getPostModel();
 
