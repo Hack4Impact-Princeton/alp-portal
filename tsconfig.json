@@ -113,7 +113,8 @@
     "scripts/addBookDrives.mjs",
     "pages/volunteeraccounts/profile.tsx",
     "db_functions/manageShipments.js",
-    "pages/api/bookDrive/standardize/index.js"
+    "pages/api/bookDrive/standardize/index.js",
+    "components/forum/SearchBar.jsx"
   ],
   "exclude": [
     "node_modules"

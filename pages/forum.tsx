@@ -16,8 +16,24 @@ import {
   ListItemIcon,
   Typography,
 } from "@mui/material";
+import PostContainer from "../components/forum/PostContainer";
+import getPostModel, { Posts } from "../models/Post";
+import { authOptions } from "./api/auth/[...nextauth]";
+import mongoose from "mongoose";
+import { getServerSession } from "next-auth";
+import getBroadcastModel from "../models/Broadcast";
+import getVolunteerAccountModel, {
+  VolunteerAccount,
+} from "../models/VolunteerAccount";
+import FriendList from "../components/forum/FriendList";
 
-const Forum: NextPage = () => {
+type PostProps = {
+  allPosts: Posts[];
+  friendsPosts: Posts[];
+  myPosts: Posts[];
+};
+
+const Forum: NextPage<PostProps> = ({ allPosts, friendsPosts, myPosts }) => {
   const [active, setActive] = useState("friends");
   return (
     <div>
@@ -109,13 +125,36 @@ const Forum: NextPage = () => {
                 container
                 flexDirection={"column"}
               >
-                {active == "friends" && <p>friends posts</p>}
-                {active == "all" && <p>all posts</p>}
-                {active == "my" && <p>my posts</p>}
+                {active == "friends" &&
+                  friendsPosts.map((post) => {
+                    return (
+                      <div style={{ width: "85%", marginTop: 10 }}>
+                        <PostContainer post={post} />
+                      </div>
+                    );
+                  })}
+
+                {active == "all" &&
+                  allPosts.map((post) => {
+                    return (
+                      <div style={{ width: "85%", marginTop: 10 }}>
+                        <PostContainer post={post} />
+                      </div>
+                    );
+                  })}
+                {active == "my" &&
+                  myPosts.map((post) => {
+                    return (
+                      <div style={{ width: "85%", marginTop: 10 }}>
+                        <PostContainer post={post} />
+                      </div>
+                    );
+                  })}
               </Grid2>
             </Grid2>
             <Grid2 sx={{ width: "25vw" }}>
               <h1 style={{ color: "#FE9834" }}>Friends</h1>
+              <FriendList />
             </Grid2>
           </Grid2>
         </Grid2>
@@ -125,3 +164,67 @@ const Forum: NextPage = () => {
 };
 
 export default Forum;
+
+export const getServerSideProps = async (context: any) => {
+  try {
+    const session = await getServerSession(
+      context.req,
+      context.res,
+      authOptions
+    );
+    if (!session) {
+      return {
+        redirect: {
+          destination: "../auth/login",
+          permanent: false,
+        },
+      };
+    }
+    const VolunteerAccount: mongoose.Model<VolunteerAccount> =
+      getVolunteerAccountModel();
+    const account: VolunteerAccount = (await VolunteerAccount.findOne({
+      email: session.user?.email,
+    })) as VolunteerAccount;
+    //const name = account.fname + " " + account.lname;
+    //console.log("account", account);
+    console.log("account email", account.email);
+    const friendList = account.friends;
+    console.log("friendslist", friendList);
+
+    const Posts: mongoose.Model<Posts> = getPostModel();
+
+    const allPosts = (await Posts.find()) as Posts[];
+    console.log("posts", allPosts);
+    let friendsPosts: Posts[] = [];
+    let myPosts: Posts[] = [];
+
+    allPosts.forEach((p) => {
+      friendList.forEach((f) => {
+        if (f === p.email) {
+          friendsPosts.push(p);
+        }
+      });
+      if (p.email === account.email) {
+        myPosts.push(p);
+      }
+    });
+    console.log("friends posts", friendsPosts);
+    console.log("my posts", myPosts);
+
+    return {
+      props: {
+        friendsPosts: JSON.parse(JSON.stringify(friendsPosts)),
+        allPosts: JSON.parse(JSON.stringify(allPosts)),
+        myPosts: JSON.parse(JSON.stringify(myPosts)),
+      },
+    };
+  } catch (e: Error | any) {
+    const errorStr =
+      e.message === "Cannot read properties of null (reading 'user')"
+        ? "You must login before accessing this page"
+        : `${e}`;
+    return {
+      props: { error: errorStr },
+    };
+  }
+};
