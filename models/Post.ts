@@ -3,6 +3,7 @@ const { Schema } = mongoose;
 
 export interface Comments {
   email: string;
+  username: string;
   date: string;
   text: string;
   upvotes: number;
@@ -11,6 +12,7 @@ export interface Comments {
 export interface Posts {
   title: string;
   post_id: number;
+  username: string;
   email: string;
   date: string;
   text: string;
@@ -21,6 +23,7 @@ export interface Posts {
 
 const CommentSchema = new Schema<Comments>({
   email: { type: String },
+  username: { type: String },
   date: { type: String },
   text: { type: String },
   upvotes: { type: Number },
@@ -31,6 +34,7 @@ const PostSchema = new Schema<Posts>(
   {
     title: { type: String },
     post_id: { type: Number },
+    username: { type: String },
     email: { type: String },
     date: { type: String },
     text: { type: String },

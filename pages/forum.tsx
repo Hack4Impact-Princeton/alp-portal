@@ -26,6 +26,7 @@ import getVolunteerAccountModel, {
   VolunteerAccount,
 } from "../models/VolunteerAccount";
 import FriendList from "../components/forum/FriendList";
+import NewPost from "../components/forum/NewPost";
 
 type PostProps = {
   allPosts: Posts[];
@@ -69,7 +70,16 @@ const Forum: NextPage<PostProps> = ({ allPosts, friendsPosts, myPosts }) => {
           </Grid2>
           <Grid2 container flexDirection="row" spacing={4}>
             <Grid2 sx={{ width: "50vw" }}>
-              <h1 style={{ color: "#FE9834" }}>Posts</h1>
+              <Grid2
+                container
+                flexDirection={"row"}
+                alignItems={"center"}
+                sx={{ marginBottom: 2 }}
+              >
+                <h1 style={{ color: "#FE9834", marginRight: 10 }}>Posts</h1>
+                <NewPost />
+              </Grid2>
+
               <Grid2
                 className="button-container"
                 container
