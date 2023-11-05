@@ -2,7 +2,8 @@ import Grid2 from "@mui/material/Unstable_Grid2";
 import { Posts, Comments } from "../../models/Post";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { Button, Link, IconButton } from "@mui/material";
+import SendIcon from '@mui/icons-material/Send';
+import { Button, Link, IconButton, TextField } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CommentIcon from "@mui/icons-material/Comment";
 import { useState, useRef, useEffect } from 'react'
@@ -45,6 +46,9 @@ const GEN_DUMMY_COMMENTS = (n: number) => {
 const PostContainer: React.FC<PostProps> = ({ post }) => {
 
   const [showComments, setShowComments] = useState(false);
+  const [showAddComment, setShowAddComment] = useState(false);
+  const [newCommentText, setNewCommentText] = useState('');
+
   const parent = useRef(null)
 
   useEffect(() => {
@@ -53,6 +57,10 @@ const PostContainer: React.FC<PostProps> = ({ post }) => {
 
   const handleViewComments = () => {
     setShowComments(!showComments);
+  }
+
+  const handleShowAddComment = () => {
+      setShowAddComment(!showAddComment);
   }
 
   useEffect(() => {
@@ -147,7 +155,7 @@ const PostContainer: React.FC<PostProps> = ({ post }) => {
                 <FavoriteBorderIcon />
               </IconButton>
               <IconButton>
-                <CommentIcon />
+                <CommentIcon onClick={handleShowAddComment} />
               </IconButton>
               <Button
                 onClick={handleViewComments}
@@ -162,6 +170,64 @@ const PostContainer: React.FC<PostProps> = ({ post }) => {
                 {`${showComments? "Hide" : "View"} all comments`}
               </Button>
             </div>
+            { showAddComment &&
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        margin: "1rem",
+                        width: "100%",
+                        alignItems: 'center',
+                    }}
+                >
+                    <AccountCircleIcon sx={{ fontSize: "4vw" }}
+                      style={{
+                        color: "#848484", // TODO
+                      }}
+                    />
+
+                    {/*<TextField
+                        id="outlined-controlled"
+                        label=""
+                        value={newCommentText}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            setNewCommentText(e.target.value);
+                        }}
+                        placeholder="Say something..."
+                        style={{
+                            width: "100%",
+                            marginRight: "2rem",
+                            borderRadius: "10000px",
+                        }}
+                    />*/}
+                    <input type="text" placeholder="Say something..."
+                        value={newCommentText}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            setNewCommentText(e.target.value);
+                        }}
+                        style={{
+                        width: "100%",
+                        marginRight: "2rem",
+                        marginLeft: "0rem",
+                        borderRadius: "30px",
+                        paddingRight: "1rem",
+                        paddingLeft: "1rem",
+                        height: "2.5rem",
+                        outline: "none !important",
+                        border: "2px solid #EEEEEE", // TODO
+                    }}
+                    />
+                    <SendIcon style={{
+                        //move it to be inside the right of the input
+                        position: "absolute",
+                        right: "1.6rem",
+                        color: "#848484", // TODO
+                        backgroundColor: "lightorange",
+                        borderRadius: "50%",
+                        //padding: "0.2rem",
+                    }}/>
+                </div>
+              }
             {showComments && post.comments.map((comment) => {
               return (
                 <div
