@@ -5,9 +5,10 @@ import { VolunteerAccount } from '../models/VolunteerAccount';
 const SearchBar: React.FC<{
   users: VolunteerAccount[];
   onQueryChange: (query: string, filteredUsers: VolunteerAccount[]) => void;
-}> = ({ users, onQueryChange }) => {
-  const [query, setQuery] = useState("");
-
+  onBackToForum: () => void; // Function to handle the "Back to Forum" button
+}> = ({ users, onQueryChange, onBackToForum }) => {
+  const [query, setQuery] = useState("")
+    
   useEffect(() => {
     const filteredUsers = users.filter((user) =>
       user.fname.toLowerCase().includes(query.toLowerCase()) || user.lname.toLowerCase().includes(query.toLowerCase())
@@ -15,18 +16,19 @@ const SearchBar: React.FC<{
     onQueryChange(query, filteredUsers);
   }, [query]);
 
-  const searchBarStyle = {
+  const searchBarStyle:  React.CSSProperties = {
     position: 'absolute',
     left: '250px', // Adjust the right position as needed
     top: '200px', // Adjust the top position as needed
-    width: '300px', // Adjust the width as needed
+    width: '800px', // Adjust the width as needed
+    padding: '10px',
     fontSize: '16px',
     border: '1px solid #ccc',
     borderRadius: '5px',
     outline: 'none',
   };
 
-  const inputStyle = {
+  const inputStyle:  React.CSSProperties = {
     width: '100%', // Adjust the width as needed
     padding: '10px',
     fontSize: '16px',
@@ -36,7 +38,7 @@ const SearchBar: React.FC<{
     paddingLeft: '40px', // To make space for the icon
   };
 
-  const iconStyle = {
+  const iconStyle:  React.CSSProperties = {
     position: 'absolute',
     left: '10px', // Adjust the left position to your preference
     top: '50%', // Center vertically
@@ -46,7 +48,7 @@ const SearchBar: React.FC<{
 
   return (
     <div style={searchBarStyle}>
-      <SearchIcon style={iconStyle} /> {/* Add the Search icon */}
+      <SearchIcon style ={iconStyle} />
       <input
         style={inputStyle}
         type="text"
