@@ -18,6 +18,8 @@ import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import UploadFileOutlinedIcon from "@mui/icons-material/UploadFileOutlined";
 import LinkOutlinedIcon from "@mui/icons-material/LinkOutlined";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { Posts } from "../../models/Post";
+import genUniqueId from "../../lib/idGen";
 
 const style = {
   position: "absolute" as "absolute",
@@ -30,12 +32,51 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+type NewPostProps = {
+  username: string;
+  email: string;
+  addPost: (newPost: Posts) => void;
+};
 
-const NewPost: React.FC<{}> = ({}) => {
+const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
   const [open, setOpen] = useState(false);
   const [switchLabel, setSwitchLabel] = useState("Friends Only");
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [submit, setSubmit] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const sendPost = async () => {
+    try {
+      setSubmit(true);
+      setTimeout(() => {
+        setSubmit(false);
+      }, 4000);
+      const newPost: Posts = {
+        title: "",
+        post_id: genUniqueId(),
+        username: username,
+        email: email,
+        date: new Date().toString(),
+        text: message,
+        upvotes: [],
+        downvotes: [],
+        comments: [],
+      };
+      const res = await fetch(`/api/posts/${newPost.post_id}`, {
+        method: "POST",
+        body: JSON.stringify(newPost),
+      });
+      if (!res) throw new Error("Internal server error");
+      const resJson = await res.json();
+      if (res.status !== 200) throw new Error(resJson.data);
+      console.log("successfully posted", resJson.data);
+      addPost(resJson.data);
+    } catch (e: Error | any) {
+      console.error("Error posting", e);
+      return { success: false, error: e };
+    }
+  };
 
   return (
     <Grid2>
@@ -77,7 +118,7 @@ const NewPost: React.FC<{}> = ({}) => {
                 marginLeft: 2,
               }}
             >
-              <h2>name</h2>
+              <h2>{username}</h2>
             </Grid2>
             <Grid2 container xs={1}>
               <IconButton
@@ -100,11 +141,16 @@ const NewPost: React.FC<{}> = ({}) => {
             flexDirection={"column"}
           >
             <TextField
+              required
+              error={submit && message == ""}
               label="What do you want to talk about?"
               multiline
               rows={2}
               variant="standard"
               InputProps={{ disableUnderline: true }}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setMessage(e.target.value)
+              }
             />
             <Grid2 display="flex" flexDirection={"row"} sx={{ marginTop: 2 }}>
               <Button>
@@ -126,7 +172,11 @@ const NewPost: React.FC<{}> = ({}) => {
               <h4>{switchLabel}</h4>
             </Grid2>
             <Grid2 xs={1} sx={{ position: "absolute", right: 30 }}>
-              <Button variant="contained" sx={{ backgroundColor: "#F3D39A" }}>
+              <Button
+                variant="contained"
+                sx={{ backgroundColor: "#F3D39A" }}
+                onClick={sendPost}
+              >
                 <h3 style={{ color: "black" }}>Post</h3>
               </Button>
             </Grid2>
@@ -136,4 +186,5 @@ const NewPost: React.FC<{}> = ({}) => {
     </Grid2>
   );
 };
+
 export default NewPost;

@@ -32,10 +32,31 @@ type PostProps = {
   allPosts: Posts[];
   friendsPosts: Posts[];
   myPosts: Posts[];
+  username: string;
+  email: string;
 };
 
-const Forum: NextPage<PostProps> = ({ allPosts, friendsPosts, myPosts }) => {
+const Forum: NextPage<PostProps> = ({
+  allPosts,
+  friendsPosts,
+  myPosts,
+  username,
+  email,
+}) => {
   const [active, setActive] = useState("friends");
+  const [myPostsList, setmyPostsList] = useState<Posts[]>(myPosts);
+  const [allPostsList, setallPostsList] = useState<Posts[]>(allPosts);
+  const addPost = (myPost: Posts) => {
+    if (!myPostsList.includes(myPost))
+      setmyPostsList((prevPosts) => {
+        return [myPost, ...prevPosts];
+      });
+    if (!allPostsList.includes(myPost))
+      setallPostsList((prevPosts) => {
+        return [myPost, ...prevPosts];
+      });
+  };
+
   return (
     <div>
       <Grid2>
@@ -77,7 +98,7 @@ const Forum: NextPage<PostProps> = ({ allPosts, friendsPosts, myPosts }) => {
                 sx={{ marginBottom: 2 }}
               >
                 <h1 style={{ color: "#FE9834", marginRight: 10 }}>Posts</h1>
-                <NewPost />
+                <NewPost username={username} email={email} addPost={addPost} />
               </Grid2>
 
               <Grid2
@@ -145,7 +166,7 @@ const Forum: NextPage<PostProps> = ({ allPosts, friendsPosts, myPosts }) => {
                   })}
 
                 {active == "all" &&
-                  allPosts.map((post) => {
+                  allPostsList.map((post) => {
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
                         <PostContainer post={post} />
@@ -153,7 +174,7 @@ const Forum: NextPage<PostProps> = ({ allPosts, friendsPosts, myPosts }) => {
                     );
                   })}
                 {active == "my" &&
-                  myPosts.map((post) => {
+                  myPostsList.map((post) => {
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
                         <PostContainer post={post} />
@@ -199,6 +220,10 @@ export const getServerSideProps = async (context: any) => {
     //console.log("account", account);
     console.log("account email", account.email);
     const friendList = account.friends;
+    const userName = account.fname + " " + account.lname;
+    console.log(userName);
+    const volunteerEmail = account.email;
+    console.log(volunteerEmail);
     console.log("friendslist", friendList);
 
     const Posts: mongoose.Model<Posts> = getPostModel();
@@ -226,6 +251,8 @@ export const getServerSideProps = async (context: any) => {
         friendsPosts: JSON.parse(JSON.stringify(friendsPosts)),
         allPosts: JSON.parse(JSON.stringify(allPosts)),
         myPosts: JSON.parse(JSON.stringify(myPosts)),
+        username: userName,
+        email: volunteerEmail,
       },
     };
   } catch (e: Error | any) {
