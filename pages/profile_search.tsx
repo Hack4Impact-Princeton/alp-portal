@@ -19,6 +19,7 @@ import { getServerSession } from "next-auth/next";
 import getBroadcastModel, { Broadcast } from "../models/Broadcast";
 import dbConnect from '../lib/dbConnect';
 import { BookDriveStatus } from "../lib/enums";
+import SearchBar from '../components/SearchBar';
 
 type ProfileProps = {
   error: string | null;
@@ -26,32 +27,6 @@ type ProfileProps = {
   drives: BookDrive[] | null;
   broadcasts: Broadcast[];
 }
-
-const SearchBar: React.FC<{
-  users: VolunteerAccount[];
-  onQueryChange: (query: string) => void;
-}> = ({ users, onQueryChange }) => {
-  const [query, setQuery] = useState("");
-
-  useEffect(() => {
-    const filteredUsers = users.filter((user) =>
-      user.fname.toLowerCase().includes(query.toLowerCase()) || user.lname.toLowerCase().includes(query.toLowerCase())
-    );
-    onQueryChange(query, filteredUsers);
-  }, [query]);
-
-  return (
-    <div>
-      <input
-        type="text"
-        placeholder="Search for users"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
-    </div>
-  );
-};
-
 const profile_search: NextPage<ProfileProps> = ({ error, broadcasts, account, drives }) => {
   console.log("Profile Page");
 
@@ -67,9 +42,7 @@ const profile_search: NextPage<ProfileProps> = ({ error, broadcasts, account, dr
     return (
       <Grid>
         <PageContainer broadcasts={broadcasts} fName={account.fname} currPage="profile_search" />
-        <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '50px' }}>
-              <SearchBar users={users} onQueryChange={handleQueryChange} />
-            </div>
+        <SearchBar users={users} onQueryChange={handleQueryChange} />
         <ul>
           {filteredUsers.map((user, index) => (
             <li key={index}>
