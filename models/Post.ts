@@ -8,7 +8,10 @@ export interface Comments {
   text: string;
   upvotes: number;
   downvotes: number;
+  comment_id: string;
+  username: string;
 }
+
 export interface Posts {
   title: string;
   post_id: number;
@@ -18,7 +21,7 @@ export interface Posts {
   text: string;
   upvotes: string[];
   downvotes: string[];
-  comments: (typeof CommentSchema)[];
+  comments: Comments[];
 }
 
 const CommentSchema = new Schema<Comments>({
