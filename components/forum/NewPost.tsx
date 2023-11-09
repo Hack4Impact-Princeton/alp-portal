@@ -20,6 +20,8 @@ import LinkOutlinedIcon from "@mui/icons-material/LinkOutlined";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { Posts } from "../../models/Post";
 import genUniqueId from "../../lib/idGen";
+import { format } from "date-fns";
+import { BuildTwoTone } from "@mui/icons-material";
 
 const style = {
   position: "absolute" as "absolute",
@@ -42,7 +44,10 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
   const [open, setOpen] = useState(false);
   const [switchLabel, setSwitchLabel] = useState("Friends Only");
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () =>
+    setTimeout(() => {
+      setOpen(false);
+    }, 200);
   const [submit, setSubmit] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -57,7 +62,7 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
         post_id: genUniqueId(),
         username: username,
         email: email,
-        date: new Date().toString(),
+        date: Intl.DateTimeFormat("sv-SE").format(new Date()).toString(),
         text: message,
         upvotes: [],
         downvotes: [],
@@ -76,6 +81,11 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
       console.error("Error posting", e);
       return { success: false, error: e };
     }
+  };
+  const onPostClick = () => {
+    sendPost();
+    handleClose();
+    console.log("pressed");
   };
 
   return (
@@ -173,9 +183,8 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
             </Grid2>
             <Grid2 xs={1} sx={{ position: "absolute", right: 30 }}>
               <Button
-                variant="contained"
-                sx={{ backgroundColor: "#F3D39A" }}
-                onClick={sendPost}
+                style={{ backgroundColor: "#F3D39A" }}
+                onClick={onPostClick}
               >
                 <h3 style={{ color: "black" }}>Post</h3>
               </Button>
