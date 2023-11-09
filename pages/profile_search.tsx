@@ -21,6 +21,7 @@ import dbConnect from '../lib/dbConnect';
 import { BookDriveStatus } from "../lib/enums";
 import SearchBar from '../components/SearchBar';
 import ProfileDisplayCase from '../components/ProfileDisplayCase';
+import ProfileCard from '../components/ProfileCard';
 
 type ProfileProps = {
   error: string | null;
@@ -36,7 +37,31 @@ type BadgeInfoProps = {
 }
 const profile_search: NextPage<ProfileProps> = ({ error, broadcasts, account, drives }) => {
   console.log("Profile Page");
-
+ const profiles = [
+  {
+    name: 'John Doe',
+    state: 'California',
+    email: 'john@example.com',
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    badges: [
+      { isEarned: true, level: 1, name: 'Badge 1', description: 'Description for Badge 1' },
+      { isEarned: false, level: 2, name: 'Badge 2', description: 'Description for Badge 2' },
+      // Add more badges as needed
+    ],
+  },
+  {
+    name: 'John Doe',
+    state: 'California',
+    email: 'john@example.com',
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    badges: [
+      { isEarned: true, level: 1, name: 'Badge 1', description: 'Description for Badge 1' },
+      { isEarned: false, level: 2, name: 'Badge 2', description: 'Description for Badge 2' },
+      // Add more badges as needed
+    ],
+  },
+  // Add more profiles as needed
+];
   if (account) {
     console.log("ACCOUNT: ", account);
     const [filteredUsers, setFilteredUsers] = useState<VolunteerAccount[]>([]);
@@ -49,21 +74,37 @@ const profile_search: NextPage<ProfileProps> = ({ error, broadcasts, account, dr
     return (
       <Grid>
         <PageContainer broadcasts = {broadcasts} fName={account.fname} currPage="profile_search" />
-        <Grid container display="flex" padding={1} sx={{ pl: 20 }} rowSpacing={2}>
-          <Grid item xs={12} sm={7} display="flex" flexDirection="column" >
-        <SearchBar users={users} onQueryChange={handleQueryChange} />
-        <ul>
-          {filteredUsers.map((user, index) => (
-            <li key={index}>
-              {`${user.fname} ${user.lname} - ${user.email}`}
-            </li>
-          ))}
-        </ul>
+          <Grid container display="flex" padding={1} sx={{ pl: 20 }} rowSpacing={2}>
+        <Grid item xs={12} sm={7} display="flex" flexDirection="column">
+           <SearchBar users={users} onQueryChange={handleQueryChange} onBackToForum={() => {}} />
+             <ul>
+            {filteredUsers.map((user, index) => {
+              // Define state and profilePicture locally for each user
+              const state: string = 'Colorado'; // Define your state here
+              const profilePicture: string = 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug'; // Define your profile picture URL here
+
+              // Use the ProfileCard component here
+              return (
+                <li key={index}>
+                  <ProfileCard
+                    name={`${user.fname} ${user.lname}`}
+                    state={state}
+                    email={user.email}
+                    profilePicture={profilePicture}
+                    badges={user.badges}
+                  />
+                </li>
+              );
+            })}
+          </ul>
+        </Grid>
+        <Grid item xs={12} sm={5} mt={6} style={{ position: 'absolute', left: '250px', top: '200px' }}>
+          <ProfileDisplayCase profiles={profiles} />
+
+        </Grid>
       </Grid>
-            <ProfileDisplayCase />
-      </Grid>
-</Grid>
-      
+    </Grid>
+    
     );
   } else {
     return (
