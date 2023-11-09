@@ -14,6 +14,7 @@ type ProfileCardProps = {
   profilePicture: string;
   badges: BadgeInfoProps[];
   useBadges?: boolean; // Make useBadges optional
+  style?: React.CSSProperties;
 };
 
 const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePicture, badges, useBadges = true }) => {
