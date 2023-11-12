@@ -44,8 +44,8 @@ const profile_search: NextPage<ProfileProps> = ({ error, broadcasts, account, dr
     email: 'john@example.com',
     profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     badges: [
-      { isEarned: true, level: 1, name: 'Badge 1', description: 'Description for Badge 1' },
-      { isEarned: false, level: 2, name: 'Badge 2', description: 'Description for Badge 2' },
+      { isEarned: true, level: 1},
+      { isEarned: false, level: 2},
       // Add more badges as needed
     ],
   },
@@ -55,8 +55,8 @@ const profile_search: NextPage<ProfileProps> = ({ error, broadcasts, account, dr
     email: 'john@example.com',
     profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     badges: [
-      { isEarned: true, level: 1, name: 'Badge 1', description: 'Description for Badge 1' },
-      { isEarned: false, level: 2, name: 'Badge 2', description: 'Description for Badge 2' },
+      { isEarned: true, level: 1 },
+      { isEarned: false, level: 2},
       // Add more badges as needed
     ],
   },
@@ -66,8 +66,8 @@ const profile_search: NextPage<ProfileProps> = ({ error, broadcasts, account, dr
     email: 'john@example.com',
     profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     badges: [
-      { isEarned: true, level: 1, name: 'Badge 1', description: 'Description for Badge 1' },
-      { isEarned: false, level: 2, name: 'Badge 2', description: 'Description for Badge 2' },
+      { isEarned: true, level: 1 },
+      { isEarned: false, level: 2 },
       // Add more badges as needed
     ],
   },
@@ -77,8 +77,8 @@ const profile_search: NextPage<ProfileProps> = ({ error, broadcasts, account, dr
     email: 'john@example.com',
     profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     badges: [
-      { isEarned: true, level: 1, name: 'Badge 1', description: 'Description for Badge 1' },
-      { isEarned: false, level: 2, name: 'Badge 2', description: 'Description for Badge 2' },
+      { isEarned: true, level: 1 },
+      { isEarned: false, level: 2 },
       // Add more badges as needed
     ],
   },
@@ -88,8 +88,8 @@ const profile_search: NextPage<ProfileProps> = ({ error, broadcasts, account, dr
     email: 'john@example.com',
     profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     badges: [
-      { isEarned: true, level: 1, name: 'Badge 1', description: 'Description for Badge 1' },
-      { isEarned: false, level: 2, name: 'Badge 2', description: 'Description for Badge 2' },
+      { isEarned: true, level: 1 },
+      { isEarned: false, level: 2},
       // Add more badges as needed
     ],
   },
@@ -99,8 +99,8 @@ const profile_search: NextPage<ProfileProps> = ({ error, broadcasts, account, dr
     email: 'john@example.com',
     profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     badges: [
-      { isEarned: true, level: 1, name: 'Badge 1', description: 'Description for Badge 1' },
-      { isEarned: false, level: 2, name: 'Badge 2', description: 'Description for Badge 2' },
+      { isEarned: true, level: 1},
+      { isEarned: false, level: 2},
       // Add more badges as needed
     ],
   }
