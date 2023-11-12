@@ -21,7 +21,6 @@ import getPostModel, { Posts } from "../models/Post";
 import { authOptions } from "./api/auth/[...nextauth]";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
-import getBroadcastModel from "../models/Broadcast";
 import getVolunteerAccountModel, {
   VolunteerAccount,
 } from "../models/VolunteerAccount";
