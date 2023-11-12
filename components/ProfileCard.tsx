@@ -66,23 +66,37 @@ const getButtonColor = () => {
   }
 };
 const buttonStyle: React.CSSProperties = {
+  position: 'relative',
   padding: '8px 16px',
   borderRadius: '4px',
   border: 'none',
   backgroundColor: getButtonColor(),
   color: 'white',
-  cursor: 'pointer',
-  margin: '4px 0', // Add some margin between buttons
+  cursor: 'not-allowed',
+  margin: '4px 0',
 };
 
 const revokeButtonStyle: React.CSSProperties = {
-  padding: '8px 16px',
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
   borderRadius: '4px',
-  border: 'none',
   backgroundColor: '#A9A9A9', // Gray color for revoke button
   color: 'white',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  pointerEvents: 'none', // Disable pointer events for the 'x' icon
+};
+
+const revokeIconStyle: React.CSSProperties = {
+  position: 'absolute',
+  top: '50%',
+  left: '4px', // Adjust the left positioning
+  transform: 'translateY(-50%)',
   cursor: 'pointer',
-  margin: '4px 0', // Add some margin between buttons
 };
 
   const handleSendFriendRequest = () => {
@@ -92,7 +106,6 @@ const revokeButtonStyle: React.CSSProperties = {
 
   const handleRevokeFriendRequest = () => {
     setFriendStatus('none');
-    setShowRevokeButton(false);
   };
 
   const handleAcceptFriendRequest = () => {
@@ -124,17 +137,40 @@ const revokeButtonStyle: React.CSSProperties = {
               </div>
             ))}
 
-          {/* Friend Request Buttons */}
+       {/* Friend Request Buttons */}
     <div style={buttonsContainerStyle}>
       {friendStatus === 'none' && (
-        <button style={buttonStyle} onClick={handleSendFriendRequest}>
-          Request
+        <button
+          onClick={handleSendFriendRequest}
+          style={{
+            backgroundColor: '#FE9834',
+            color: '#fff',
+            padding: '5px 10px',
+            cursor: 'pointer',
+            border: 'none', // Remove the default button border
+            outline: 'none', // Remove the default button outline
+            // Add other styles as needed
+          }}
+        >
+          Send Friend Request
         </button>
       )}
       {friendStatus === 'sent' && (
-        <button style={buttonStyle} onClick={handleRevokeFriendRequest}>
-          Remove Friend Request
-        </button>
+        <div style={{ position: 'relative', width: '100%' }}>
+          <div style={buttonStyle}>
+            Revoke
+            <span
+              style={revokeIconStyle}
+              onClick={() => {
+                handleRevokeFriendRequest();
+                // Explicitly set the friendStatus state to 'none' when 'x' is clicked
+                setFriendStatus('none');
+              }}
+            >
+              x
+            </span>
+          </div>
+        </div>
       )}
       {(friendStatus === 'received' || friendStatus === 'friends') && showRevokeButton && (
         <button style={buttonStyle} onClick={handleRevokeFriendRequest}>
@@ -146,14 +182,8 @@ const revokeButtonStyle: React.CSSProperties = {
           Accept Friend Request
         </button>
       )}
-      {/* 'x' to revoke friend request */}
-      {friendStatus === 'sent' && (
-        <div style={revokeButtonStyle} onClick={handleRevokeFriendRequest}>
-          x
-        </div>
-      )}
     </div>
-          </div>
+  </div>
         </>
       )}
       {/* Add other profile card content as needed */}

@@ -23,12 +23,18 @@ import SearchBar from '../components/SearchBar';
 import ProfileDisplayCase from '../components/ProfileDisplayCase';
 import ProfileCard from '../components/ProfileCard';
 
-type ProfileProps = {
-  error: string | null;
-  account: VolunteerAccount | null;
-  drives: BookDrive[] | null;
-  broadcasts: Broadcast[];
-}
+type ProfileCardProps = {
+  name: string;
+  state: string;
+  email: string;
+  profilePicture: string;
+  badges: BadgeInfoProps[];
+  useBadges?: boolean;
+  friendStatus: string; // Add friendStatus prop
+  onFriendRequest: () => void; // Add onFriendRequest prop
+  onRevokeFriendRequest: () => void; // Add onRevokeFriendRequest prop
+  style?: React.CSSProperties;
+};
 type BadgeInfoProps = {
   isEarned: boolean,
   level: number,
@@ -37,6 +43,16 @@ type BadgeInfoProps = {
 }
 const profile_search: NextPage<ProfileProps> = ({ error, broadcasts, account, drives }) => {
   console.log("Profile Page");
+
+  const handleFriendRequest = () => {
+    // Handle the logic for sending a friend request
+    console.log('Friend request sent');
+  };
+
+  const handleRevokeFriendRequest = () => {
+    // Handle the logic for revoking a friend request
+    console.log('Friend request revoked');
+  };
  const profiles = [
   {
     name: 'John Doe',
@@ -136,6 +152,9 @@ const profile_search: NextPage<ProfileProps> = ({ error, broadcasts, account, dr
                     email={user.email}
                     profilePicture={profilePicture}
                     badges={user.badges}
+                    friendStatus={friendStatus}
+                    onFriendRequest={handleFriendRequest}
+                    onRevokeFriendRequest={handleRevokeFriendRequest}
                     style={{ marginRight: '20px', marginBottom: '20px' }}
                   />
                 </li>
