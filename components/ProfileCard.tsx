@@ -52,12 +52,34 @@ const buttonsContainerStyle: React.CSSProperties = {
   alignItems: 'flex-start',
   width: '100%', // Ensure the container takes the full width
 };
-
+const getButtonColor = () => {
+  switch (friendStatus) {
+    case 'none':
+      return '#FE9834'; // Color for "Send Friend Request"
+    case 'sent':
+    case 'received':
+      return '#FF6347'; // Color for "Revoke Friend Request"
+    case 'friends':
+      return '#4CAF50'; // Color for "Unfriend"
+    default:
+      return '#FE9834'; // Default color (you can change this)
+  }
+};
 const buttonStyle: React.CSSProperties = {
   padding: '8px 16px',
   borderRadius: '4px',
   border: 'none',
-  backgroundColor: '#4CAF50', // Green color, you can change this
+  backgroundColor: getButtonColor(),
+  color: 'white',
+  cursor: 'pointer',
+  margin: '4px 0', // Add some margin between buttons
+};
+
+const revokeButtonStyle: React.CSSProperties = {
+  padding: '8px 16px',
+  borderRadius: '4px',
+  border: 'none',
+  backgroundColor: '#A9A9A9', // Gray color for revoke button
   color: 'white',
   cursor: 'pointer',
   margin: '4px 0', // Add some margin between buttons
@@ -106,15 +128,15 @@ const buttonStyle: React.CSSProperties = {
     <div style={buttonsContainerStyle}>
       {friendStatus === 'none' && (
         <button style={buttonStyle} onClick={handleSendFriendRequest}>
-          Send Friend Request
+          Request
         </button>
       )}
-      {(friendStatus === 'sent' || friendStatus === 'received') && showRevokeButton && (
+      {friendStatus === 'sent' && (
         <button style={buttonStyle} onClick={handleRevokeFriendRequest}>
-          Revoke Friend Request
+          Remove Friend Request
         </button>
       )}
-      {friendStatus === 'friends' && showRevokeButton && (
+      {(friendStatus === 'received' || friendStatus === 'friends') && showRevokeButton && (
         <button style={buttonStyle} onClick={handleRevokeFriendRequest}>
           Unfriend
         </button>
@@ -123,6 +145,12 @@ const buttonStyle: React.CSSProperties = {
         <button style={buttonStyle} onClick={handleAcceptFriendRequest}>
           Accept Friend Request
         </button>
+      )}
+      {/* 'x' to revoke friend request */}
+      {friendStatus === 'sent' && (
+        <div style={revokeButtonStyle} onClick={handleRevokeFriendRequest}>
+          x
+        </div>
       )}
     </div>
           </div>
