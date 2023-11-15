@@ -24,6 +24,7 @@
     "contentful": "^9.2.5",
     "cors": "^2.8.5",
     "d3": "^7.8.5",
+    "d3-dsv": "^3.0.1",
     "date-fns": "^2.30.0",
     "fetch-absolute": "^1.0.0",
     "graphql-tools": "^8.3.6",
@@ -45,6 +46,8 @@
   },
   "devDependencies": {
     "@testing-library/cypress": "^9.0.0",
+    "@types/d3": "^7.4.2",
+    "@types/d3-dsv": "^3.0.5",
     "@types/mongodb": "^4.0.7",
     "@types/node": "^18.16.16",
     "@types/react": "^17.0.60",
