@@ -23,17 +23,11 @@ import SearchBar from '../components/SearchBar';
 import ProfileDisplayCase from '../components/ProfileDisplayCase';
 import ProfileCard from '../components/ProfileCard';
 
-type ProfileCardProps = {
-  name: string;
-  state: string;
-  email: string;
-  profilePicture: string;
-  badges: BadgeInfoProps[];
-  useBadges?: boolean;
-  friendStatus: string; // Add friendStatus prop
-  onFriendRequest: () => void; // Add onFriendRequest prop
-  onRevokeFriendRequest: () => void; // Add onRevokeFriendRequest prop
-  style?: React.CSSProperties;
+type ProfileProps = {
+  error: string | null;
+  account: VolunteerAccount | null;
+  drives: BookDrive[] | null;
+  broadcasts: Broadcast[];
 };
 type BadgeInfoProps = {
   isEarned: boolean,
@@ -41,7 +35,7 @@ type BadgeInfoProps = {
   name: string,
   description: string,
 }
-const profile_search: NextPage<ProfileProps> = ({ error, broadcasts, account, drives }) => {
+const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives }) => {
   console.log("Profile Page");
 
   const handleFriendRequest = () => {

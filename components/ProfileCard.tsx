@@ -8,12 +8,15 @@ type BadgeInfoProps = {
 };
 
 type ProfileCardProps = {
-  name: string;
+    name: string;
   state: string;
   email: string;
   profilePicture: string;
   badges: BadgeInfoProps[];
-  useBadges?: boolean; // Make useBadges optional
+  useBadges?: boolean;
+  friendStatus: string; // Add friendStatus prop
+  onFriendRequest: () => void; // Add onFriendRequest prop
+  onRevokeFriendRequest: () => void; // Add onRevokeFriendRequest prop
   style?: React.CSSProperties;
 };
 
