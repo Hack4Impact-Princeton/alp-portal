@@ -8,6 +8,9 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CommentIcon from "@mui/icons-material/Comment";
 import { useState, useRef, useEffect } from 'react'
 
+import Input from '@mui/material/Input';
+import InputAdornment from '@mui/material/InputAdornment';
+
 import { nanoid } from 'nanoid'
 import autoAnimate from '@formkit/auto-animate'
 import { format, formatDistance, formatRelative, subDays } from 'date-fns'
@@ -61,6 +64,25 @@ const PostContainer: React.FC<PostProps> = ({ post }) => {
 
   const handleShowAddComment = () => {
       setShowAddComment(!showAddComment);
+  }
+
+  const handleAddComment = () => {
+      // TODO hook this up to the auth provider
+      // and then push it to the db
+
+      const newComment: Comments = {
+          email: "TODO",
+          date: new Date().toLocaleDateString(),
+          text: newCommentText,
+          upvotes: 0,
+          downvotes: 0,
+          comment_id: nanoid(),
+          username: "TODO"
+      }
+
+      console.log(newComment);
+
+      setNewCommentText('');
   }
 
   useEffect(() => {
@@ -201,6 +223,7 @@ const PostContainer: React.FC<PostProps> = ({ post }) => {
                         }}
                     />*/}
                     <input type="text" placeholder="Say something..."
+                        // TODO should this be resizing, as a textarea instead? input might not be right
                         value={newCommentText}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             setNewCommentText(e.target.value);
@@ -217,15 +240,35 @@ const PostContainer: React.FC<PostProps> = ({ post }) => {
                         border: "2px solid #EEEEEE", // TODO
                     }}
                     />
-                    <SendIcon style={{
-                        //move it to be inside the right of the input
-                        position: "absolute",
-                        right: "1.6rem",
-                        color: "#848484", // TODO
-                        backgroundColor: "lightorange",
-                        borderRadius: "50%",
-                        //padding: "0.2rem",
-                    }}/>
+
+                    {/*<InputWithIcon />*/}
+                    <div
+                        style={{
+                            //move it to be inside the right of the input
+                            position: "absolute",
+                            right: "1.6rem",
+                            //color: "#F5F5F5", // TODO these should be css vars
+                            color: "white",
+                            backgroundColor: "#F3D39A", // ^^
+                            borderRadius: "50%",
+                            padding: "0.2rem",
+                            width: "1.5rem",
+                            height: "1.5rem",
+                            textAlign: "center",
+                            verticalAlign: "middle",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                        onClick={handleAddComment}
+                    >
+                        <SendIcon
+                            style={{
+                                fontSize: "1rem",
+                                marginLeft: "0.1rem",
+                            }}
+                        />
+                    </div>
                 </div>
               }
             {showComments && post.comments.map((comment) => {
