@@ -10,6 +10,7 @@ import getVolunteerAccountModel, {
   VolunteerAccount,
 } from "../models/VolunteerAccount";
 import getBookDriveModel, { BookDrive } from "../models/BookDrive";
+import { getStates } from "../lib/enums";
 
 const Leaderboard: NextPage = () => {
   return (
@@ -66,9 +67,67 @@ export const getServerSideProps = async (context: any) => {
     const allVolunteers: VolunteerAccount[] = (await VolunteerAccount.find(
       {}
     )) as VolunteerAccount[];
-    const myAccount = allVolunteers.find(
+    /*const myAccount = allVolunteers.find(
       (obj) => obj.email == session.user?.email
-    );
+    );*/
+    const BookDrive: mongoose.Model<BookDrive> = getBookDriveModel();
+    const allBookDrives: BookDrive[] = (await BookDrive.find(
+      {}
+    )) as BookDrive[];
+    const states = getStates();
+    const currMonth = new Date().getMonth();
+    const currYear = new Date().getFullYear();
+
+    const inSeason = (id: string): boolean => {
+      const currDrive = allBookDrives.find((drive) => drive.driveCode == id);
+      if (currDrive == null) return false;
+      if (currDrive.status == 2) {
+        if (currDrive.completedDate.getFullYear() != currYear) {
+          return false;
+        }
+        if (
+          (currMonth <= 7 && currDrive.completedDate.getMonth() <= 7) ||
+          (currMonth > 7 && currDrive.completedDate.getMonth() > 7)
+        )
+          return true;
+      }
+      return false;
+    };
+
+    let leaderboardData = [];
+    let myLeaderboard;
+    for (const v of allVolunteers) {
+      if (v.allDrives == 0) continue;
+      const userName = v.fname + " " + v.lname[0];
+      const userState = states.find((state) => state.index === v.location);
+      const totalDrives = v.allDrives;
+      let seasonalDrives = 0;
+      for (const d of v.driveIds) {
+        if (inSeason(d)) {
+          seasonalDrives += 1;
+        }
+      }
+      leaderboardData.push({
+        userName: userName,
+        userState: userState,
+        totalDrives: totalDrives,
+        seasonalDrives: seasonalDrives,
+      });
+      if (v.email == session.user?.email) {
+        myLeaderboard = {
+          userName: userName,
+          userState: userState,
+          totalDrives: totalDrives,
+          seasonalDrives: seasonalDrives,
+        };
+      }
+    }
+    return {
+      props: {
+        leaderboardData: leaderboardData,
+        myLeaderboard: myLeaderboard,
+      },
+    };
   } catch (e: Error | any) {
     const errorStr =
       e.message === "Cannot read properties of null (reading 'user')"
