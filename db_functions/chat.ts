@@ -1,4 +1,4 @@
-import { Message} from '../models/Chat'
+import { Message } from '../models/Chat'
 import genUniqueId from '../lib/idGen'
 
 const createChat = async(participantAEmail: string, participantBEmail: string)  => {

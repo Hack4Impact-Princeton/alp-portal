@@ -13,7 +13,7 @@ export interface Comments {
 
 export interface Posts {
   title: string;
-  post_id: number;
+  post_id: string;
   email: string;
   date: string;
   text: string;
@@ -33,7 +33,7 @@ const CommentSchema = new Schema<Comments>({
 const PostSchema = new Schema<Posts>(
   {
     title: { type: String },
-    post_id: { type: Number },
+    post_id: { type: String },
     email: { type: String },
     date: { type: String },
     text: { type: String },
@@ -45,7 +45,9 @@ const PostSchema = new Schema<Posts>(
 );
 
 function getPostModel() {
+  //console.log(mongoose.model("Post", PostSchema));
   if ("Post" in mongoose.models) return mongoose.models.Post;
   return mongoose.model("Post", PostSchema);
 }
+
 export default getPostModel;

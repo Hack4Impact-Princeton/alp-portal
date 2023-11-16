@@ -7,16 +7,21 @@ import { Button, Link, IconButton, TextField } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CommentIcon from "@mui/icons-material/Comment";
 import { useState, useRef, useEffect } from 'react'
-
-import Input from '@mui/material/Input';
-import InputAdornment from '@mui/material/InputAdornment';
+import Popover from '@mui/material/Popover';
 
 import { nanoid } from 'nanoid'
 import autoAnimate from '@formkit/auto-animate'
 import { format, formatDistance, formatRelative, subDays } from 'date-fns'
+import getVolunteerAccountModel, {
+  VolunteerAccount,
+} from "../../models/VolunteerAccount";
+
+import { deletePost } from "../../db_functions/forum";
 
 type PostProps = {
   post: Posts;
+  user?: VolunteerAccount;
+  isOwner?: boolean;
 };
 
 
@@ -46,13 +51,15 @@ const GEN_DUMMY_COMMENTS = (n: number) => {
   return comments;
 }
 
-const PostContainer: React.FC<PostProps> = ({ post }) => {
+const PostContainer: React.FC<PostProps> = ({ post, user, isOwner }) => {
 
   const [showComments, setShowComments] = useState(false);
   const [showAddComment, setShowAddComment] = useState(false);
   const [newCommentText, setNewCommentText] = useState('');
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const parent = useRef(null)
+  const popover = useRef(null)
 
   useEffect(() => {
     post.comments = GEN_DUMMY_COMMENTS(4);
@@ -84,6 +91,42 @@ const PostContainer: React.FC<PostProps> = ({ post }) => {
 
       setNewCommentText('');
   }
+
+  const myPostActions = [
+      {
+          label: 'Delete Post',
+          action: () => {
+              console.log('deleteing comment!');
+              console.log(post);
+              //deletePost(post.post_id);
+          }
+      },
+  ];
+
+  const globalPostActions = [
+      {
+          label: 'Some Action',
+          action: () => {
+            console.log(user);
+          }
+      },
+      {
+          label: 'Another Action!',
+          action: () => {
+          }
+      },
+  ]
+
+  const handleShowCommentActions = () => {
+      setAnchorEl(anchorEl == null? popover.current : null);
+  }
+
+  const handleCloseCommentActions = () => {
+      setAnchorEl(null);
+  }
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'popover' : undefined;
 
   useEffect(() => {
     parent.current && autoAnimate(parent.current)
@@ -146,8 +189,57 @@ const PostContainer: React.FC<PostProps> = ({ post }) => {
             <h2>{post.email}</h2>
             <p style={{ fontStyle: "italic" }}>{post.date}</p>
           </Grid2>
-          <Grid2 container xs={1}>
-            <MoreVertIcon sx={{ position: "absolute", top: 0, right: 0 }} />
+
+          <Grid2 container xs={1}
+              onClick={handleShowCommentActions}
+              ref={popover}
+          >
+              <MoreVertIcon sx={{ position: "absolute", top: 0, right: 0 }} />
+              <Popover
+                  id={id}
+                  open={open}
+                  anchorEl={anchorEl}
+                  onClose={handleCloseCommentActions}
+                  anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'left',
+                  }}
+                  style={{ marginTop: "30px" }}
+              >
+                  <div
+                      style={{
+                          //marginTop: "20px",
+                          display: "flex",
+                          flexDirection: "column",
+                          //padding: "10px"
+                          width: "150px"
+                      }}
+                  >
+                    { isOwner && myPostActions.map((button, index) => (
+                          <button
+                              key={index}
+                              onClick={button.action}
+                              className="popover-button"
+                          >
+                              {button.label}
+                          </button>
+                      ))}
+                    { isOwner &&
+                      <svg height="1">
+                            <line x1="0" y1="0" x2="100%" y2="0" stroke="gray" strokeWidth="1" />
+                        </svg>
+                    }
+                      {globalPostActions.map((button, index) => (
+                          <button
+                              key={index}
+                              onClick={button.action}
+                              className={"popover-button"}
+                          >
+                              {button.label}
+                          </button>
+                      ))}
+                  </div>
+              </Popover>
           </Grid2>
         </Grid2>
         <Grid2

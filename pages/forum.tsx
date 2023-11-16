@@ -31,9 +31,10 @@ type PostProps = {
   allPosts: Posts[];
   friendsPosts: Posts[];
   myPosts: Posts[];
+  user: VolunteerAccount;
 };
 
-const Forum: NextPage<PostProps> = ({ allPosts, friendsPosts, myPosts }) => {
+const Forum: NextPage<PostProps> = ({ allPosts, friendsPosts, myPosts, user }) => {
   const [active, setActive] = useState("friends");
   return (
     <div>
@@ -144,9 +145,10 @@ const Forum: NextPage<PostProps> = ({ allPosts, friendsPosts, myPosts }) => {
                   })}
                 {active == "my" &&
                   myPosts.map((post) => {
+                  console.log("hh", post)
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
-                        <PostContainer post={post} />
+                        <PostContainer post={post} user={user} isOwner={true} />
                       </div>
                     );
                   })}
@@ -216,6 +218,7 @@ export const getServerSideProps = async (context: any) => {
         friendsPosts: JSON.parse(JSON.stringify(friendsPosts)),
         allPosts: JSON.parse(JSON.stringify(allPosts)),
         myPosts: JSON.parse(JSON.stringify(myPosts)),
+        user: JSON.parse(JSON.stringify(account)),
       },
     };
   } catch (e: Error | any) {
