@@ -30,7 +30,7 @@ export interface Chat {
     id: string, // unique id of the chat conversation
     participantAEmail: string, // email of participant A
     participantBEmail: string, // email of participant B
-    messages: [typeof MessageSchema], // array of messages
+    messages: Message[], // array of messages
 }
 const ChatSchema = new Schema<Chat>({
     id: {type: String, required: true},
