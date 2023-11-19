@@ -131,6 +131,9 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives }) 
           <Grid container display="flex" padding={1} sx={{ pl: 20 }} rowSpacing={2}>
         <Grid item xs={12} sm={7} display="flex" flexDirection="column">
            <SearchBar users={users} onQueryChange={handleQueryChange} onBackToForum={() => {}} />
+           <Link href="/forum">
+              <a style={{ color: 'blue', cursor: 'pointer', marginTop: '50px', marginLeft: '100px' }}>Back to Forum</a>
+            </Link>
              <ul>
             {filteredUsers.map((user, index) => {
               // Define state and profilePicture locally for each user
@@ -155,12 +158,15 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives }) 
               );
             })}
           </ul>
+          
         </Grid>
-        <Grid item xs={12} sm={5} mt={6} style={{ position: 'absolute', left: '250px', top: '200px' }}>
+        
+        <Grid item xs={12} sm={5} mt={6} style={{marginLeft: '100px' }}>
           <ProfileDisplayCase profiles={profiles} useBadges={true} />
-
         </Grid>
+
       </Grid>
+      
     </Grid>
     
     );
