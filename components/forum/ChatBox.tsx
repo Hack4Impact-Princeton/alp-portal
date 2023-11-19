@@ -11,13 +11,7 @@ const ChatBox: React.FC<{
         chat: Chat;
     }[]>>, chatIndex: number
 }> = ({ user, otherUser, chatInfo, chatIndex, setCurrChatInfo }) => {
-    // const [messages, setMessages] = useState(chat.messages)
     const [currMessage, setCurrMessage] = useState("")
-    // console.log("messages", messages)
-
-    // useEffect(() => {
-    //     setMessages(chat.messages)
-    // }, [chat])
 
     const createMessage = async () => {
         const { data, error, success } = await sendMessage(user.email, otherUser.email, currMessage, chatInfo[chatIndex].chat.id)
@@ -27,9 +21,6 @@ const ChatBox: React.FC<{
             return
         } else if (!data) console.log("where is the data")
         if (data) {
-            console.log("data", data)
-            console.log("adding this last message to messages", data[data.length - 1])
-            // setMessages(data)
             chatInfo[chatIndex].chat.messages = data
             setCurrChatInfo(chatInfo => [...chatInfo])
         }
