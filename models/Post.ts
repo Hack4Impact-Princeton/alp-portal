@@ -13,7 +13,8 @@ export interface Comments {
 
 export interface Posts {
   title: string;
-  post_id: number;
+  post_id: string;
+  username: string;
   email: string;
   date: string;
   text: string;
@@ -24,6 +25,7 @@ export interface Posts {
 
 const CommentSchema = new Schema<Comments>({
   email: { type: String },
+  username: { type: String },
   date: { type: String },
   text: { type: String },
   upvotes: { type: Number },
@@ -33,7 +35,8 @@ const CommentSchema = new Schema<Comments>({
 const PostSchema = new Schema<Posts>(
   {
     title: { type: String },
-    post_id: { type: Number },
+    post_id: { type: String },
+    username: { type: String },
     email: { type: String },
     date: { type: String },
     text: { type: String },
