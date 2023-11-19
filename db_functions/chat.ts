@@ -1,12 +1,16 @@
 import { Message} from '../models/Chat'
 import genUniqueId from '../lib/idGen'
-
-const createChat = async(participantAEmail: string, participantBEmail: string)  => {
+import { VolunteerAccount } from '../models/VolunteerAccount'
+import getChatModel, {Chat} from '../models/Chat'
+import getVolunteerAccountModel from '../models/VolunteerAccount'
+import mongoose from 'mongoose'
+const createChat = async(participantBEmail: string, participantA: VolunteerAccount)  => {
     try {
-        const body = {
-            participantAEmail,
+        const chatId = genUniqueId()
+        const body = {  
+            participantAEmail: participantA.email,
             participantBEmail,
-            id: genUniqueId(),
+            id: chatId,
             messages: []
         }
         const res = await fetch(`/api/chat/${body.id}`, {
@@ -15,8 +19,31 @@ const createChat = async(participantAEmail: string, participantBEmail: string)  
         })
         if (!res) throw new Error("Internal Server Error")
         const resJson = await res.json()
-        if (!res.ok) throw new Error(`Something went wrong creating a chat between ${participantAEmail} and ${participantBEmail}`)
-        return {success: true, data: resJson.data}
+        const newChatId = resJson.data.id
+        if (!res.ok) throw new Error(`Something went wrong creating a chat between ${participantA.email} and ${participantBEmail}`)
+        const participantBRes = await fetch(`/api/volunteeraccounts/${participantBEmail}`)
+        const participantBResJson = await participantBRes.json()
+        const participantB = participantBResJson.data
+        if (!participantBRes.ok) {
+            throw new Error(`participant with email ${participantBEmail} does not exist`)
+        }
+        let participantBUpdatedChatIds = []
+        if (participantB.chatIds) {
+            participantBUpdatedChatIds = participantB.chatIds
+        }
+        participantBUpdatedChatIds.push(newChatId)
+        participantA.chatIds.push(newChatId)
+        const updateBChatIdRes = await fetch(`/api/volunteeraccounts/${participantBEmail}`, {
+            method: "PATCH",
+            body: JSON.stringify(participantB)
+        })
+        if (!updateBChatIdRes.ok) throw new Error(`Something went wrong updating the participants chatid list with email ${participantBEmail}`)
+        const updateAChatIdRes = await fetch(`/api/volunteeraccounts/${participantA.email}`, {
+            method: "PATCH",
+            body: JSON.stringify(participantA)
+        }) 
+        if (!updateAChatIdRes.ok) throw new Error(`Something went wrong updating the participants chatid list with email ${participantA.email}`)
+        return {success: true, chat: resJson.data, otherUser: participantB}
     } catch (e: Error | any) {
         console.error(e)
         return {success: false, data: e}
@@ -49,11 +76,46 @@ export const sendMessage = async(senderEmail: string, receiverEmail: string, mes
         if (!editRes) throw new Error("Internal Server Error")
         const editResJson = await editRes.json()
         if (!editRes.ok) throw new Error(editResJson.data)
-        return {success: true, data: editResJson.data}
+        return {success: true, data: editResJson.data.messages as Message[]}
     } catch (e: Error | any) {
         console.error(e)
         return {success: false, error: e}
     }
+}
+
+export const isChatUpdated = async(chatId: string, length: number) => {
+    try {   
+        const res = await fetch(`/api/chat/isUpdated/${chatId}?length=${length}`, {
+            method: "GET",
+        })
+        if (res.status === 204) return {modified: false}
+        const resJson = await res.json()
+        if (res.status === 500) return {error: resJson.error}
+        else {
+            console.log("returning the messages:")
+            console.log("Messages: ", resJson.messages)
+        return {modified: true, messages: resJson.messages as Message[]}
+        }
+    } catch (e: Error | any) {
+        console.error(e)
+        return {error: e}
+    }
+}
+
+export async function generateChatInfo(account: VolunteerAccount): Promise<{ otherUser: VolunteerAccount, chat: Chat }[] | Error> {
+    const ChatModel: mongoose.Model<Chat> = getChatModel()
+    const VolunteerAccountModel: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel()
+    console.log(account.chatIds)
+    const promises = account.chatIds.map(async (chatId) => {
+        const chat = await ChatModel.findOne({ id: chatId }) as Chat
+        if (!chat) throw new Error(`chat with id ${chatId} not found`)
+        const otherUserEmail = chat!.participantAEmail === account.email ? chat!.participantBEmail : chat!.participantAEmail
+        const otherUser = await VolunteerAccountModel.findOne({ email: otherUserEmail }) as VolunteerAccount
+        if (!otherUser) throw new Error(`user with email ${otherUserEmail} not found`)
+        // console.log("returning this chat", chat)
+        return { otherUser: otherUser, chat: chat }
+    })
+    return await Promise.all(promises)
 }
 
 export default createChat
