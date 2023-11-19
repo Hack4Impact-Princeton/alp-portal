@@ -1,14 +1,31 @@
 import * as React from "react";
 import {
   Table,
-  TableCell,
   TableContainer,
   TableHead,
   TableRow,
   TableBody,
+  Paper,
 } from "@mui/material";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 
 import Grid2 from "@mui/material/Unstable_Grid2";
+import { styled } from "@mui/material/styles";
+
+const StyledTableCell = styled(TableCell)(() => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: "#F3D39A",
+    color: "#5F5F5F",
+    fontStyle: "bold",
+    fontSize: 20,
+    // borderRight: "1px solid #C9C9C9",
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+    fontColor: "#5F5F5F",
+    //borderRight: "1px solid #C9C9C9",
+  },
+}));
 
 type dataType = {
   userName: string;
@@ -22,27 +39,44 @@ type TableProps = {
 };
 
 const LeaderTable: React.FC<TableProps> = ({ data, boardType }) => {
+  console.log(data);
+  console.log(typeof data);
+
   return (
     <Grid2>
-      <TableContainer>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <TableContainer component={Paper}>
+        <Table aria-label="simple table">
           <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell align="right">State</TableCell>
-              <TableCell align="right"># Drives</TableCell>
+            <TableRow sx={{ fontStyle: "bold" }}>
+              <StyledTableCell sx={{ width: "200px" }}>
+                <h4>Name</h4>
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                <h4>State</h4>
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                <h4># Drives</h4>
+              </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {data.map((d) => (
               <TableRow
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                key={d.userName}
               >
-                <TableCell component="th" scope="row">
-                  {d.userName}
-                </TableCell>
-                <TableCell align="right">{d.userState}</TableCell>
-                <TableCell align="right">{d.seasonalDrives}</TableCell>
+                <StyledTableCell component="th" scope="row">
+                  <p>{d.userName}</p>
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  <p>{d.userState}</p>
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  <p>
+                    {" "}
+                    {boardType == "seasonal" ? d.seasonalDrives : d.totalDrives}
+                  </p>
+                </StyledTableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -11,8 +11,24 @@ import getVolunteerAccountModel, {
 } from "../models/VolunteerAccount";
 import getBookDriveModel, { BookDrive } from "../models/BookDrive";
 import { getStates } from "../lib/enums";
+import LeaderTable from "../components/leaderboard/LeaderTable";
+import { NumberLiteralType } from "typescript";
 
-const Leaderboard: NextPage = () => {
+type objtype = {
+  userName: string;
+  userState: string;
+  totalDrives: number;
+  seasonalDrives: number;
+};
+type LeaderboardProps = {
+  leaderboardData: objtype[];
+  myLeaderboard: objtype[];
+};
+
+const Leaderboard: NextPage<LeaderboardProps> = ({
+  leaderboardData,
+  myLeaderboard,
+}) => {
   return (
     <div>
       <Navbar active="leaderboard" />
@@ -39,6 +55,35 @@ const Leaderboard: NextPage = () => {
           >
             LEADERBOARD
           </h1>
+        </Grid2>
+        <Grid2 container flexDirection={"row"}>
+          <Grid2 width={"40%"}>
+            <h1 style={{ color: "#FE9834", marginLeft: 3 }}>This Season</h1>
+            <Grid2
+              sx={{
+                backgroundColor: "#F3D39A",
+                color: "#5F5F5F",
+                padding: 1,
+                paddingLeft: 2,
+                borderRadius: 1,
+                borderColor: "#C9C9C9",
+                margin: 1,
+              }}
+            >
+              <h3>
+                Me: {myLeaderboard[0].seasonalDrives} drives completed this
+                season
+              </h3>
+            </Grid2>
+            <LeaderTable data={leaderboardData} boardType={"seasonal"} />
+          </Grid2>
+          <Grid2 width={"40%"}>
+            <h1 style={{ color: "#FE9834", marginLeft: 3 }}>Overall</h1>
+            <Grid2>
+              <h3>Me: {myLeaderboard[0].totalDrives} drives completed</h3>
+            </Grid2>
+            <LeaderTable data={leaderboardData} boardType={"all"} />
+          </Grid2>
         </Grid2>
       </Grid2>
     </div>
@@ -95,7 +140,7 @@ export const getServerSideProps = async (context: any) => {
     };
 
     let leaderboardData = [];
-    let myLeaderboard;
+    let myLeaderboard = [];
     for (const v of allVolunteers) {
       if (v.allDrives == 0) continue;
       const userName = v.fname + " " + v.lname[0];
@@ -109,17 +154,19 @@ export const getServerSideProps = async (context: any) => {
       }
       leaderboardData.push({
         userName: userName,
-        userState: userState,
+        userState: userState ? userState.name : "",
         totalDrives: totalDrives,
         seasonalDrives: seasonalDrives,
       });
+      //console.log(leaderboardData);
       if (v.email == session.user?.email) {
-        myLeaderboard = {
+        myLeaderboard.push({
           userName: userName,
-          userState: userState,
+          userState: userState ? userState.name : "",
           totalDrives: totalDrives,
           seasonalDrives: seasonalDrives,
-        };
+        });
+        console.log("myleaderboard", myLeaderboard);
       }
     }
     return {
