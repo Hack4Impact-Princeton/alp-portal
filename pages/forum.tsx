@@ -26,6 +26,7 @@ import getVolunteerAccountModel, {
   VolunteerAccount,
 } from "../models/VolunteerAccount";
 import FriendList from "../components/forum/FriendList";
+import { useRouter } from 'next/router';
 
 type PostProps = {
   allPosts: Posts[];
@@ -36,6 +37,17 @@ type PostProps = {
 
 const Forum: NextPage<PostProps> = ({ allPosts, friendsPosts, myPosts, user }) => {
   const [active, setActive] = useState("friends");
+
+  const router = useRouter();
+
+  const refreshData = () => {
+    // nextjs + mongo is being wacky rn, and only trigger the ssr when both of these are called?
+    // replace with proper sol later
+    router.replace(router.asPath);
+    //router.reload();
+    router.push(router.asPath);
+  }
+
   return (
     <div>
       <Grid2>
@@ -130,7 +142,12 @@ const Forum: NextPage<PostProps> = ({ allPosts, friendsPosts, myPosts, user }) =
                   friendsPosts.map((post) => {
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
-                        <PostContainer post={post} />
+                        <PostContainer
+                          post={post}
+                          user={user}
+                          isOwner={false}
+                          refreshPosts={refreshData}
+                        />
                       </div>
                     );
                   })}
@@ -139,16 +156,25 @@ const Forum: NextPage<PostProps> = ({ allPosts, friendsPosts, myPosts, user }) =
                   allPosts.map((post) => {
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
-                        <PostContainer post={post} />
+                        <PostContainer
+                          post={post}
+                          user={user}
+                          isOwner={false}
+                          refreshPosts={refreshData}
+                        />
                       </div>
                     );
                   })}
                 {active == "my" &&
                   myPosts.map((post) => {
-                  console.log("hh", post)
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
-                        <PostContainer post={post} user={user} isOwner={true} />
+                        <PostContainer
+                          post={post}
+                          user={user}
+                          isOwner={true}
+                          refreshPosts={refreshData}
+                        />
                       </div>
                     );
                   })}

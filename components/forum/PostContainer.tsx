@@ -8,6 +8,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CommentIcon from "@mui/icons-material/Comment";
 import { useState, useRef, useEffect } from 'react'
 import Popover from '@mui/material/Popover';
+import { useRouter } from 'next/router';
 
 import { nanoid } from 'nanoid'
 import autoAnimate from '@formkit/auto-animate'
@@ -21,7 +22,11 @@ import { deletePost } from "../../db_functions/forum";
 type PostProps = {
   post: Posts;
   user?: VolunteerAccount;
-  isOwner?: boolean;
+  isOwner?: boolean; // TODO note: this should probably be
+                     // done on a per-post level, so people can del
+                     // their own posts on any page,
+                     // but currently this is what matches the design specs
+  refreshPosts: () => void;
 };
 
 
@@ -51,7 +56,7 @@ const GEN_DUMMY_COMMENTS = (n: number) => {
   return comments;
 }
 
-const PostContainer: React.FC<PostProps> = ({ post, user, isOwner }) => {
+const PostContainer: React.FC<PostProps> = ({ post, user, isOwner, refreshPosts }) => {
 
   const [showComments, setShowComments] = useState(false);
   const [showAddComment, setShowAddComment] = useState(false);
@@ -96,9 +101,8 @@ const PostContainer: React.FC<PostProps> = ({ post, user, isOwner }) => {
       {
           label: 'Delete Post',
           action: () => {
-              console.log('deleteing comment!');
-              console.log(post);
-              //deletePost(post.post_id);
+              deletePost(post.post_id);
+              refreshPosts();
           }
       },
   ];
