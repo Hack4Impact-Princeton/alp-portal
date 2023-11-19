@@ -37,6 +37,8 @@ type PostProps = {
   myPosts: Posts[];
   chatInfo: { chat: Chat, otherUser: VolunteerAccount }[];
   account: VolunteerAccount,
+  username: string;
+  email: string;
 };
 
 const Forum: NextPage<PostProps> = ({
@@ -48,9 +50,8 @@ const Forum: NextPage<PostProps> = ({
   chatInfo,
   account
 }) => {
-  username: string;
-  email: string;
-  
+
+
   const [active, setActive] = useState("friends");
   const [myPostsList, setmyPostsList] = useState<Posts[]>(myPosts);
   const [allPostsList, setallPostsList] = useState<Posts[]>(allPosts);
@@ -254,8 +255,8 @@ export const getServerSideProps = async (context: any) => {
       }
     });
 
-      console.log("friends posts", friendsPosts);
-      console.log("my posts", myPosts);
+    console.log("friends posts", friendsPosts);
+    console.log("my posts", myPosts);
 
     const chatInfo = await generateChatInfo(account)
 
