@@ -49,18 +49,18 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePi
     marginBottom: '10px',
   };
 
-const badgesContainerStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column', // Arrange badges vertically
-  alignItems: 'flex-start', // Align badges to start (left)
-  marginBottom: '10px',
-};
+  const badgesContainerStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column', // Arrange badges vertically
+    alignItems: 'flex-start', // Align badges to start (left)
+    marginBottom: '10px',
+  };
 
-const buttonsContainerStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-};
+  const buttonsContainerStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  };
 
   const getButtonColor = () => {
     switch (friendStatus) {
@@ -114,66 +114,64 @@ const buttonsContainerStyle: React.CSSProperties = {
     setShowRevokeButton(true);
   };
 
-return (
+  return (
     <div style={cardStyle}>
       <img src={profilePicture} alt="Profile" style={imageStyle} />
       <div style={contentStyle}>
         <p>{name}</p>
         <p>{state}</p>
         <p>{email}</p>
-        {useBadges && (
-          <>
-            <h3>Badges:</h3>
-            <div style={badgesContainerStyle}>
-              {badges.map((badge, index) => (
-                <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '10px' }}>
-                  {badge.isEarned ? (
-                    <img src="https://cdn-icons-png.flaticon.com/512/1435/1435715.png" alt="Unlocked Badge" style={{ width: '40px', height: '40px', marginBottom: '5px' }} />
-                  ) : (
-                    <img src="https://cdn-icons-png.flaticon.com/512/1435/1435722.png" alt="Locked Badge" style={{ width: '40px', height: '40px', marginBottom: '5px', filter: 'grayscale(100%)' }} />
-                  )}
-                  <div style={{ textAlign: 'center' }}>
-                    <p style={{ margin: 0, fontWeight: 'bold' }}>{badge.name}</p>
-                    <p style={{ margin: 0, fontSize: '12px' }}>{badge.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-        <div style={buttonsContainerStyle}>
-          {friendStatus === 'none' && (
-            <button onClick={handleSendFriendRequest} style={buttonStyle}>
-              Send Friend Request
-            </button>
-          )}
-          {friendStatus === 'sent' && (
-            <div style={{ position: 'relative', width: '100%' }}>
-              <div style={revokeButtonStyle}>
-                Revoke
-                <span
-                  style={revokeIconStyle}
-                  onClick={() => {
-                    handleRevokeFriendRequest();
-                    setFriendStatus('none');
-                  }}
-                >
-                  x
-                </span>
+      </div>
+      {useBadges && (
+        <div style={badgesContainerStyle}>
+          {badges.map((badge, index) => (
+            <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', margin: '10px' }}>
+              {/* Badge rendering code */}
+              {badge.isEarned ? (
+                <img src="https://cdn-icons-png.flaticon.com/512/1435/1435715.png" alt="Unlocked Badge" style={{ width: '40px', height: '40px', marginBottom: '5px' }} />
+              ) : (
+                <img src="https://cdn-icons-png.flaticon.com/512/1435/1435722.png" alt="Locked Badge" style={{ width: '40px', height: '40px', marginBottom: '5px', filter: 'grayscale(100%)' }} />
+              )}
+              <div style={{ textAlign: 'center' }}>
+                <p style={{ margin: 0, fontWeight: 'bold' }}>{badge.name}</p>
+                <p style={{ margin: 0, fontSize: '12px' }}>{badge.description}</p>
               </div>
             </div>
-          )}
-          {(friendStatus === 'received' || friendStatus === 'friends') && showRevokeButton && (
-            <button style={buttonStyle} onClick={handleRevokeFriendRequest}>
-              Unfriend
-            </button>
-          )}
-          {friendStatus === 'received' && (
-            <button style={buttonStyle} onClick={handleAcceptFriendRequest}>
-              Accept Friend Request
-            </button>
-          )}
+          ))}
         </div>
+      )}
+      <div style={buttonsContainerStyle}>
+        {friendStatus === 'none' && (
+          <button onClick={handleSendFriendRequest} style={buttonStyle}>
+            Send Friend Request
+          </button>
+        )}
+        {friendStatus === 'sent' && (
+          <div style={{ position: 'relative', width: '100%' }}>
+            <div style={revokeButtonStyle}>
+              Revoke
+              <span
+                style={revokeIconStyle}
+                onClick={() => {
+                  handleRevokeFriendRequest();
+                  setFriendStatus('none');
+                }}
+              >
+                x
+              </span>
+            </div>
+          </div>
+        )}
+        {(friendStatus === 'received' || friendStatus === 'friends') && showRevokeButton && (
+          <button style={buttonStyle} onClick={handleRevokeFriendRequest}>
+            Unfriend
+          </button>
+        )}
+        {friendStatus === 'received' && (
+          <button style={buttonStyle} onClick={handleAcceptFriendRequest}>
+            Accept Friend Request
+          </button>
+        )}
       </div>
     </div>
   );
