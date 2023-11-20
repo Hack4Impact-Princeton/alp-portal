@@ -49,20 +49,18 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePi
     marginBottom: '10px',
   };
 
-  const badgesContainerStyle: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'flex-start',
-    marginBottom: '10px',
-  };
+const badgesContainerStyle: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column', // Arrange badges vertically
+  alignItems: 'flex-start', // Align badges to start (left)
+  marginBottom: '10px',
+};
 
-  const buttonsContainerStyle: React.CSSProperties = {
-    marginTop: '10px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  };
+const buttonsContainerStyle: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+};
 
   const getButtonColor = () => {
     switch (friendStatus) {
