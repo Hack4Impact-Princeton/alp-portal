@@ -10,6 +10,7 @@ import DownCaret from "../DownCaret";
 const ChatList: React.FC<{ chatInfo: { otherUser: VolunteerAccount, chat: Chat }[], user: VolunteerAccount }> = ({ chatInfo, user }) => {
     const [currChatInfo, setCurrChatInfo] = useState(chatInfo)
     const [currChatAndOtherUser, setCurrChatAndOtherUser] = useState<{ otherUser: VolunteerAccount, chat: Chat } | null>(null)
+    const [updatedChats, setUpdatedChats] = useState(new Array<boolean>(chatInfo.length))
     // console.log("currchatinfo", ...currChatInfo)
     useEffect(() => {
         const fetchData = async () => {
@@ -22,6 +23,7 @@ const ChatList: React.FC<{ chatInfo: { otherUser: VolunteerAccount, chat: Chat }
                     modifiedChat.messages = res.messages
                     const modifiedChatInfo = currChatInfo
                     modifiedChatInfo[index].chat = modifiedChat
+                    updatedChats[index] = true
                     setCurrChatInfo(modifiedChatInfo => [...modifiedChatInfo])
                 }
             })
@@ -34,6 +36,15 @@ const ChatList: React.FC<{ chatInfo: { otherUser: VolunteerAccount, chat: Chat }
 
         return () => clearInterval(interval);
     })
+
+    useEffect(() => {
+        if (currChatAndOtherUser) {
+            const index = findChatIndex(currChatAndOtherUser)
+            const copy = [...updatedChats]
+            copy[index] = false
+            setUpdatedChats(copy)
+        }
+    }, [currChatAndOtherUser])
 
     const divStyle = {
         display: "flex",
@@ -92,7 +103,7 @@ const ChatList: React.FC<{ chatInfo: { otherUser: VolunteerAccount, chat: Chat }
                     <ChatBox setCurrChatAndOtherUser={setCurrChatAndOtherUser} otherUser={currChatAndOtherUser.otherUser} chatIndex={findChatIndex(currChatAndOtherUser)} chatInfo={chatInfo} user={user} setCurrChatInfo={setCurrChatInfo} />
                 }
                 {!currChatAndOtherUser && currChatInfo.map(({ chat, otherUser }, index) =>
-                    <ChatPreview chat={chat} otherUser={otherUser} chatInfo={currChatInfo} chatIndex={index} user={user} key={chat.id} createChatByEmail={createChatByEmail} setCurrChatAndOtherUser={setCurrChatAndOtherUser} />
+                    <ChatPreview chat={chat} updatedChats={updatedChats} setUpdatedChats={setUpdatedChats} otherUser={otherUser} chatInfo={currChatInfo} chatIndex={index} user={user} key={chat.id} createChatByEmail={createChatByEmail} setCurrChatAndOtherUser={setCurrChatAndOtherUser} />
                 )}
             </div>
         </>
