@@ -18,6 +18,7 @@ const createChat = async(participantBEmail: string, participantA: VolunteerAccou
             body: JSON.stringify(body)
         })
         if (!res) throw new Error("Internal Server Error")
+        if (res.status === 403) throw new Error("chat with these participants already exists")
         const resJson = await res.json()
         const newChatId = resJson.data.id
         if (!res.ok) throw new Error(`Something went wrong creating a chat between ${participantA.email} and ${participantBEmail}`)

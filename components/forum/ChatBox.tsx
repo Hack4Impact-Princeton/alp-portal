@@ -9,10 +9,14 @@ const ChatBox: React.FC<{
     user: VolunteerAccount, otherUser: VolunteerAccount, chatInfo: { otherUser: VolunteerAccount, chat: Chat }[], setCurrChatInfo: Dispatch<SetStateAction<{
         otherUser: VolunteerAccount;
         chat: Chat;
-    }[]>>, chatIndex: number
-}> = ({ user, otherUser, chatInfo, chatIndex, setCurrChatInfo }) => {
+    }[]>>, chatIndex: number, setCurrChatAndOtherUser: Dispatch<SetStateAction<{ otherUser: VolunteerAccount, chat: Chat } | null>>
+}> = ({ user, otherUser, chatInfo, chatIndex, setCurrChatInfo, setCurrChatAndOtherUser }) => {
+    console.log("chatindex", chatIndex)
+    console.log("chat", chatInfo)
     // const [messages, setMessages] = useState(chat.messages)
     const [currMessage, setCurrMessage] = useState("")
+    const [chat, setChat] = useState(chatInfo[chatIndex])
+
     // console.log("messages", messages)
 
     // useEffect(() => {
@@ -38,7 +42,10 @@ const ChatBox: React.FC<{
 
     return (
         <>
-            <h1>{`Conversation with ${otherUser.fname} ${otherUser.lname[0]}`}</h1>
+            <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
+                <p onClick={() => setCurrChatAndOtherUser(null)}>Back</p>
+                <h1>{`${otherUser.fname} ${otherUser.lname[0]}`}</h1>
+            </div>
             <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end", width: "90%", padding: 15, height: "80%", border: "1.5px solid black", borderRadius: "5%" }}>
                 {chatInfo[chatIndex].chat.messages && chatInfo[chatIndex].chat.messages.map(message =>
                     <MessageComponent message={message} isCurrUserMessage={user.email === message.senderEmail} key={message.id} />
