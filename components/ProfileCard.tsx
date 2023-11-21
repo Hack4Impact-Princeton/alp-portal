@@ -30,18 +30,18 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePi
     marginBottom: '10px',
     width: '300px',
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column', // Change to column to align elements vertically
     alignItems: 'flex-start',
-    backgroundColor: '#f9f9f9'
   };
 
   const contentStyle: React.CSSProperties = {
     marginLeft: '10px',
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: 'flex-start',
     flex: 1, // Let the content take the available space
   };
+
 
   const imageStyle: React.CSSProperties = {
     width: '100px', // Adjust the width as needed
@@ -51,16 +51,35 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePi
 
   const badgesContainerStyle: React.CSSProperties = {
     display: 'flex',
-    flexDirection: 'column', // Arrange badges vertically
-    alignItems: 'flex-start', // Align badges to start (left)
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
     marginBottom: '10px',
   };
 
-  const buttonsContainerStyle: React.CSSProperties = {
+  const userInfoStyle: React.CSSProperties = {
+    marginLeft: '10px',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
   };
+
+  const userInfoItemStyle: React.CSSProperties = {
+    marginBottom: '5px',
+  };
+
+  const badgesAndButtonsContainerStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column', // Stack badges and buttons in a column
+    marginLeft: '10px', // Add margin to separate user information and badges/buttons
+  };
+  const buttonsContainerStyle: React.CSSProperties = {
+    marginTop: '10px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  };
+
 
   const getButtonColor = () => {
     switch (friendStatus) {
@@ -114,19 +133,21 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePi
     setShowRevokeButton(true);
   };
 
-  return (
-    <div style={cardStyle}>
+return (
+  <div style={cardStyle}>
+    <div style={contentStyle}>
       <img src={profilePicture} alt="Profile" style={imageStyle} />
-      <div style={contentStyle}>
-        <p>{name}</p>
-        <p>{state}</p>
-        <p>{email}</p>
+      <div style = {userInfoStyle}>   
+      <p style = {userInfoItemStyle}>{name}</p>
+      <p style = {userInfoItemStyle}>{state}</p>
+      <p style = {userInfoItemStyle}>{email}</p>
+      </div>
       </div>
       {useBadges && (
-        <div style={badgesContainerStyle}>
+        <div style={badgesAndButtonsContainerStyle}>
+            <div style= {badgesContainerStyle}>
           {badges.map((badge, index) => (
-            <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', margin: '10px' }}>
-              {/* Badge rendering code */}
+            <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '10px' }}>
               {badge.isEarned ? (
                 <img src="https://cdn-icons-png.flaticon.com/512/1435/1435715.png" alt="Unlocked Badge" style={{ width: '40px', height: '40px', marginBottom: '5px' }} />
               ) : (
@@ -138,6 +159,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePi
               </div>
             </div>
           ))}
+        </div>
         </div>
       )}
       <div style={buttonsContainerStyle}>
@@ -174,7 +196,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePi
         )}
       </div>
     </div>
-  );
+);
 };
 
 export default ProfileCard;
