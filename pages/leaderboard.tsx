@@ -13,6 +13,7 @@ import getBookDriveModel, { BookDrive } from "../models/BookDrive";
 import { getStates } from "../lib/enums";
 import LeaderTable from "../components/leaderboard/LeaderTable";
 import { NumberLiteralType } from "typescript";
+import Podium from "../components/leaderboard/Podium";
 
 type objtype = {
   userName: string;
@@ -29,6 +30,12 @@ const Leaderboard: NextPage<LeaderboardProps> = ({
   leaderboardData,
   myLeaderboard,
 }) => {
+  const seasonalBoard = leaderboardData.sort(function (a, b) {
+    return b.seasonalDrives - a.seasonalDrives;
+  });
+  const allTimeBoard = leaderboardData.sort(function (a, b) {
+    return b.totalDrives - a.totalDrives;
+  });
   return (
     <div>
       <Navbar active="leaderboard" />
@@ -75,14 +82,41 @@ const Leaderboard: NextPage<LeaderboardProps> = ({
                 season
               </h3>
             </Grid2>
-            <LeaderTable data={leaderboardData} boardType={"seasonal"} />
+            <Grid2
+              sx={{
+                padding: 1,
+                borderRadius: 1,
+              }}
+            >
+              <Podium data={seasonalBoard} boardType={"seasonal"} />
+            </Grid2>
+            <LeaderTable data={seasonalBoard} boardType={"seasonal"} />
           </Grid2>
           <Grid2 width={"40%"}>
             <h1 style={{ color: "#FE9834", marginLeft: 3 }}>Overall</h1>
-            <Grid2>
-              <h3>Me: {myLeaderboard[0].totalDrives} drives completed</h3>
+            <Grid2
+              sx={{
+                backgroundColor: "#F3D39A",
+                color: "#5F5F5F",
+                padding: 1,
+                paddingLeft: 2,
+                borderRadius: 1,
+                borderColor: "#C9C9C9",
+                margin: 1,
+              }}
+            >
+              <h3>Me: {myLeaderboard[0].totalDrives} total drives completed</h3>
             </Grid2>
-            <LeaderTable data={leaderboardData} boardType={"all"} />
+            <Grid2
+              sx={{
+                padding: 1,
+                borderRadius: 1,
+              }}
+            >
+              <Podium data={allTimeBoard} boardType={"all"} />
+            </Grid2>
+
+            <LeaderTable data={allTimeBoard} boardType={"all"} />
           </Grid2>
         </Grid2>
       </Grid2>

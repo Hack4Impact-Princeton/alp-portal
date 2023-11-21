@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import {
   Table,
   TableContainer,
@@ -42,13 +43,18 @@ const LeaderTable: React.FC<TableProps> = ({ data, boardType }) => {
   console.log(data);
   console.log(typeof data);
 
+  // const [rank, setRank] = useState(0);
+  const rank = [];
   return (
     <Grid2>
       <TableContainer component={Paper}>
         <Table aria-label="simple table">
           <TableHead>
             <TableRow sx={{ fontStyle: "bold" }}>
-              <StyledTableCell sx={{ width: "200px" }}>
+              <StyledTableCell sx={{ width: "75px" }}>
+                <h4>Rank</h4>
+              </StyledTableCell>
+              <StyledTableCell sx={{ width: "150px" }}>
                 <h4>Name</h4>
               </StyledTableCell>
               <StyledTableCell align="center">
@@ -60,11 +66,14 @@ const LeaderTable: React.FC<TableProps> = ({ data, boardType }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((d) => (
+            {data.map((d, rank) => (
               <TableRow
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 key={d.userName}
               >
+                <StyledTableCell component="th" scope="row">
+                  <p>{rank + 1}</p>
+                </StyledTableCell>
                 <StyledTableCell component="th" scope="row">
                   <p>{d.userName}</p>
                 </StyledTableCell>
