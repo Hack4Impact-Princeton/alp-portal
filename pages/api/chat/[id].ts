@@ -41,6 +41,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     runValidators: true,
                 })
                 if (!chat) throw new Error(`Failure to update chat with id ${id}`)
+                console.log("returning these chat messages", chat.messages)
                 return res.status(200).json({success: true, data: chat})
             } catch (e : Error | any) {
                 console.error(e)
