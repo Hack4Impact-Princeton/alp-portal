@@ -13,27 +13,22 @@ const testCloudinary: NextPage<props> = ({}) => {
         if (!event.target.files) return
         setSelectedFile(event.target.files[0]);
     }
-    const textHandler = async (event : React.ChangeEvent<HTMLInputElement>) => {
-        if (!event.target.value) return
-        setPublicID(event.target.value);
-    }
     const handleUpload = async () => {
         if (!selectedFile) return
         console.log(selectedFile)
-        const url = await imageUpload(selectedFile, publicID)
+        const url = await imageUpload(selectedFile)
         console.log(url)
         setSelectedURL(url)
     }
     const handleDelete = async ()=> {
         if(URL == "") return
-        imageDelete(publicID)
+        imageDelete(URL)
     }
 
     return (
         <div>
             <div>
                 <input type="file" name="file" onChange={changeHandler} />
-                <input type="text" name="text" onChange={textHandler} />
                 <button onClick={handleUpload}>upload here</button>
             </div>
             <div>

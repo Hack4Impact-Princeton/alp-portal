@@ -1,12 +1,11 @@
 import crypto from "crypto"
 const unsignedUploadPreset = 'nlgprs4r'
 
-const imageUpload = async (file: File, publicID: string) => {
+const imageUpload = async (file: File) => {
     try {
         let url = ''
         let data = new FormData()
         data.append("file", file)
-        data.append("public_id", publicID)
         data.append("upload_preset", unsignedUploadPreset)
         await fetch("https://api.cloudinary.com/v1_1/alp-portal/upload", {
             method: 'POST',
@@ -32,17 +31,25 @@ const generateSHA1 = (data: any) => {
     return hash.digest("hex");
   };
   
-  const generateSignature = (publicId: string, apiSecret: string | undefined, timestamp: string) => {
+const generateSignature = (publicId: string | null, apiSecret: string | undefined, timestamp: string) => {
     return `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
-  };
+};
 
-const imageDelete = async (publicId : string) => {
+const getPublicIdFromUrl = (url : string) => {
+    const regex = /\/v\d+\/([^/]+)\.\w{3,4}$/
+    const match = url.match(regex);
+    return match ? match[1] : null;
+};
+
+const imageDelete = async (URL : string) => {
     try {
         console.log("here")
         const cloudName = "alp-portal";
         const apiKey = "272711192725652";
         const apiSecret = "6X7Fj1EPJa2YqOgGqiE7mvL5Ras";  
         const timestamp = new Date().getTime().toString();
+        const publicId = getPublicIdFromUrl(URL)
+        if (!publicId) return
         const signature = generateSHA1(generateSignature(publicId, apiSecret, timestamp)).toString();
         const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`;
         let data = new FormData()
@@ -61,4 +68,7 @@ const imageDelete = async (publicId : string) => {
         return ``
     }
 }
+
+
+
 export {imageUpload, imageDelete}
