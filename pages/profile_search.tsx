@@ -42,7 +42,21 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives }) 
     // Handle the logic for sending a friend request
     console.log('Friend request sent');
   };
+ const backButtonStyle: React.CSSProperties = {
+    color: '#FE9834',
+    cursor: 'pointer',
+    marginTop: '50px',
+    marginLeft: '100px',
+    marginBottom: '-50px', 
+    textDecoration: 'none', // Remove default link underline
+    display: 'flex',
+    alignItems: 'center', // Center items vertically
+  };
 
+  const backIconStyle: React.CSSProperties = {
+    marginRight: '8px', // Adjust the right margin
+    fontSize: '1.2em', // Set the font size for the "<" symbol
+  };
   const handleRevokeFriendRequest = () => {
     // Handle the logic for revoking a friend request
     console.log('Friend request revoked');
@@ -131,9 +145,11 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives }) 
           <Grid container display="flex" padding={1} sx={{ pl: 20 }} rowSpacing={2}>
         <Grid item xs={12} sm={7} display="flex" flexDirection="column">
            <SearchBar users={users} onQueryChange={handleQueryChange} onBackToForum={() => {}} />
-           <Link href="/forum">
-              <a style={{ color: 'blue', cursor: 'pointer', marginTop: '50px', marginLeft: '100px' }}>Back to Forum</a>
-            </Link>
+            <Link href="/forum">
+        <a style={backButtonStyle}>
+          <span style={backIconStyle}>&lt;</span> Back to Forum
+        </a>
+      </Link>
              <ul>
             {filteredUsers.map((user, index) => {
               // Define state and profilePicture locally for each user

@@ -24,15 +24,16 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePi
   const [friendStatus, setFriendStatus] = React.useState<string>('none');
   const [showRevokeButton, setShowRevokeButton] = React.useState<boolean>(false);
 
-  const cardStyle: React.CSSProperties = {
-    border: '1px solid #ddd',
-    padding: '10px',
-    marginBottom: '10px',
-    width: '300px',
-    display: 'flex',
-    flexDirection: 'column', // Change to column to align elements vertically
-    alignItems: 'flex-start',
-  };
+ const cardStyle: React.CSSProperties = {
+  border: '1px solid #ddd',
+  padding: '10px',
+  marginBottom: '10px',
+  width: '300px',
+  display: 'flex',
+  flexDirection: 'column', // Change to column to align elements vertically
+  alignItems: 'flex-start',
+  backgroundColor: '#f2f2f2', // Add a light gray background color
+};
 
   const contentStyle: React.CSSProperties = {
     marginLeft: '10px',
