@@ -1,4 +1,4 @@
-const UpCaret: React.FC<{onClick: () => void, bgColor: string}> = ({onClick, bgColor}) => {
+const UpCaret: React.FC<{onClick: () => void, bgColor?: string}> = ({onClick, bgColor}) => {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width="34" height="38" viewBox="0 0 34 38" fill="none" onClick={onClick} style={{cursor: "pointer"}}>
         <g clipPath="url(#clip0_877_424)">
