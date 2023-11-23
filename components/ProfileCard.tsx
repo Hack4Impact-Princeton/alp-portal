@@ -14,11 +14,9 @@ type ProfileCardProps = {
   profilePicture: string;
   badges: BadgeInfoProps[];
   useBadges?: boolean;
-  friendStatus: string;
-  onFriendRequest: () => void;
-  onRevokeFriendRequest: () => void;
   style?: React.CSSProperties;
 };
+
 
 const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePicture, badges, useBadges = true }) => {
   const [friendStatus, setFriendStatus] = React.useState<string>('none');

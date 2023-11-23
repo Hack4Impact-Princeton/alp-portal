@@ -16,6 +16,7 @@ type ProfileInfoProps = {
   email: string;
   profilePicture: string;
   badges: BadgeInfoProps[];
+  useBadges?: boolean;
 };
 
 const ProfileDisplayCase: React.FC<{ profiles: ProfileInfoProps[]; useBadges?: boolean }> = ({ profiles, useBadges = true }) => {
@@ -24,7 +25,7 @@ const ProfileDisplayCase: React.FC<{ profiles: ProfileInfoProps[]; useBadges?: b
       <Grid xs={12}><h2 style={{ textAlign: 'left', marginBottom: '10px' }}></h2></Grid>
       <Grid container xs={12} style={{ display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap', paddingLeft: '10px', gap: '20px' }}>
         {profiles.map((profile, index) => (
-          <ProfileCard key={index} useBadges={useBadges} {...profile} />
+           <ProfileDisplayCase profiles={profiles} useBadges={true} />
         ))}
       </Grid>
     </Grid>
