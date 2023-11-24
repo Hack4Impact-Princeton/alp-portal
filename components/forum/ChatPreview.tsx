@@ -3,7 +3,7 @@ import { Chat } from "../../models/Chat";
 import { VolunteerAccount } from "../../models/VolunteerAccount";
 import CircularIcon from "../CircularIcon";
 
-const ChatPreview: React.FC<{ chat: Chat, user: VolunteerAccount, otherUser: VolunteerAccount, updatedChats: boolean[], setUpdatedChats: Dispatch<SetStateAction<boolean[]>>, createChatByEmail: (email: string) => void, setCurrChatAndOtherUser: Dispatch<SetStateAction<{ otherUser: VolunteerAccount; chat: Chat } | null>>, chatIndex: number, chatInfo: { otherUser: VolunteerAccount, chat: Chat }[] }> = ({ chatIndex, chatInfo, user, otherUser, createChatByEmail, setCurrChatAndOtherUser, updatedChats, setUpdatedChats }) => {
+const ChatPreview: React.FC<{ chat: Chat, user: VolunteerAccount, otherUser: VolunteerAccount, updatedChats?: boolean[], setUpdatedChats?: Dispatch<SetStateAction<boolean[]>>, createChatByEmail: (email: string) => void, setCurrChatAndOtherUser: Dispatch<SetStateAction<{ otherUser: VolunteerAccount; chat: Chat } | null>>, chatIndex: number, chatInfo: { otherUser: VolunteerAccount, chat: Chat }[] }> = ({ chatIndex, chatInfo, user, otherUser, setCurrChatAndOtherUser }) => {
     let lastMessage = null
     let lastMessageString = ""
     const chat = chatInfo[chatIndex].chat
@@ -51,7 +51,7 @@ const ChatPreview: React.FC<{ chat: Chat, user: VolunteerAccount, otherUser: Vol
                     </div>
                 }
             </div>
-            {updatedChats[chatIndex] &&
+            {(chat.participantAEmail === user.email ? (!chat.seenByParticipantA && lastMessage) : (!chat.seenByParticipantB && lastMessage)) &&
                 <div style={{ display: "flex", marginLeft: "auto", marginRight: "3px" }}>
                     <CircularIcon diameter={"12"} bgColor="#FE9835" />
                 </div>

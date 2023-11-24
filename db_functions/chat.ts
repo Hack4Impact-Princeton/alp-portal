@@ -72,8 +72,10 @@ export const sendMessage = async(senderEmail: string, receiverEmail: string, mes
         const newMessageList = [...resJson.data.messages, newMessage]
         const editRes = await fetch(`/api/chat/${chatId}`, {
             method: "PATCH",
-            body: JSON.stringify({messages: newMessageList})
+            body: JSON.stringify({messages: newMessageList, updatedAt: Date.now(), seenByParticipantA: senderEmail === resJson.data.participantAEmail ? true : false, seenByParticipantB: senderEmail === resJson.data.participantBEMail ? true : false})
         })
+        console.log("setting seenbyparticipantA to ", senderEmail === resJson.data.participantAEmail)
+        console.log("setting seenbyparticipantB to ", senderEmail === resJson.data.participantBEmail)
         if (!editRes) throw new Error("Internal Server Error")
         const editResJson = await editRes.json()
         if (!editRes.ok) throw new Error(editResJson.data)
@@ -93,9 +95,9 @@ export const isChatUpdated = async(chatId: string, length: number) => {
         const resJson = await res.json()
         if (res.status === 500) return {error: resJson.error}
         else {
-            console.log("returning the messages:")
-            console.log("Messages: ", resJson.messages)
-        return {modified: true, messages: resJson.messages as Message[]}
+            // console.log("returning the messages:")
+            // console.log("Messages: ", resJson.messages)
+        return {modified: true, messages: resJson.messages as Message[], updatedAt: resJson.updatedAt as Date, seenByParticipantA: resJson.seenByParticipantA, seenByParticipantB: resJson.seenByParticipantB}
         }
     } catch (e: Error | any) {
         console.error(e)
@@ -106,7 +108,7 @@ export const isChatUpdated = async(chatId: string, length: number) => {
 export async function generateChatInfo(account: VolunteerAccount): Promise<{ otherUser: VolunteerAccount, chat: Chat }[] | Error> {
     const ChatModel: mongoose.Model<Chat> = getChatModel()
     const VolunteerAccountModel: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel()
-    console.log(account.chatIds)
+    // console.log(account.chatIds)
     const promises = account.chatIds.map(async (chatId) => {
         const chat = await ChatModel.findOne({ id: chatId }) as Chat
         if (!chat) throw new Error(`chat with id ${chatId} not found`)
@@ -116,7 +118,8 @@ export async function generateChatInfo(account: VolunteerAccount): Promise<{ oth
         // console.log("returning this chat", chat)
         return { otherUser: otherUser, chat: chat }
     })
-    return await Promise.all(promises)
+    const unsortedChats = await Promise.all(promises)
+    return unsortedChats.sort((a, b) => b.chat.updatedAt.getTime() - a.chat.updatedAt.getTime())
 }
 
 export default createChat

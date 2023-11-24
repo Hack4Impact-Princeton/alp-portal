@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import getChatModel, {Chat} from "../../../../models/Chat";
 import mongoose from 'mongoose'
+
 const handler = async(req: NextApiRequest, res: NextApiResponse) => {
     try {
         const id = req.query.id
@@ -12,8 +13,9 @@ const handler = async(req: NextApiRequest, res: NextApiResponse) => {
         const ChatModel: mongoose.Model<Chat> = getChatModel()
         const chat = await ChatModel.findOne({id: id})
         if (!chat) throw new Error(`Chat with id ${id} not found`)
+        // console.log("chat in isupdated: seenbyParticipantA ", chat.seenByParticipantA)
         if (chat.messages.length > length) {
-            return res.status(200).json({messages: chat.messages})
+            return res.status(200).json({messages: chat.messages, lastUpdatedDate: chat.updatedAt, seenByParticipantA: chat.seenByParticipantA, seenByParticipantB: chat.seenByParticipantB})
         } else return res.status(204).end()
     } catch (e: Error | any) {
         console.error(e)

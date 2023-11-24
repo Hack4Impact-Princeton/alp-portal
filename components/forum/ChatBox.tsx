@@ -33,8 +33,10 @@ const ChatBox: React.FC<{
         if (data) {
             console.log("data", data)
             console.log("adding this last message to messages", data[data.length - 1])
-            // setMessages(data)
             chatInfo[chatIndex].chat.messages = data
+            const updatedChat = chatInfo.splice(chatIndex, 1)[0]
+            chatInfo.unshift(updatedChat)
+            // chatIndex = 0
             setCurrChatInfo(chatInfo => [...chatInfo])
         }
         setCurrMessage("")

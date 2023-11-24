@@ -32,7 +32,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         case 'GET':
             try {
                 const chat = await ChatModel.findOne({ id: id })
-                console.log(chat)
+                // console.log(chat)
                 if (!chat) return res.status(400).json({ success: false, data: `No chat found with id ${id}` })
                 return res.status(200).json({ success: true, data: chat })
             } catch (e: Error | any) {
@@ -42,12 +42,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         case 'PATCH':
             try {
                 const update = JSON.parse(req.body)
+                if (!update.seenByParticipantA && !update.seenbyParticipantB) {
+                    console.error("SOMETHING IS WRONG!!!!!")
+                }
                 const chat = await ChatModel.findOneAndUpdate({id: id}, update, {
                     new: true,
                     runValidators: true,
                 })
                 if (!chat) throw new Error(`Failure to update chat with id ${id}`)
-                console.log("returning these chat messages", chat.messages)
+                // console.log("returning these chat messages", chat.messages)
                 return res.status(200).json({success: true, data: chat})
             } catch (e : Error | any) {
                 console.error(e)
