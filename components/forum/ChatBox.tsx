@@ -1,9 +1,8 @@
 import { Chat } from "../../models/Chat";
 import { VolunteerAccount } from "../../models/VolunteerAccount";
-import { useState, useEffect, Dispatch, SetStateAction } from 'react'
+import { useState, Dispatch, SetStateAction } from 'react'
 import { sendMessage } from "../../db_functions/chat";
 import MessageComponent from './Message'
-import { Message } from "../../models/Chat";
 
 const ChatBox: React.FC<{
     user: VolunteerAccount, otherUser: VolunteerAccount, chatInfo: { otherUser: VolunteerAccount, chat: Chat }[], setCurrChatInfo: Dispatch<SetStateAction<{
@@ -11,32 +10,26 @@ const ChatBox: React.FC<{
         chat: Chat;
     }[]>>, chatIndex: number, setCurrChatAndOtherUser: Dispatch<SetStateAction<{ otherUser: VolunteerAccount, chat: Chat } | null>>
 }> = ({ user, otherUser, chatInfo, chatIndex, setCurrChatInfo, setCurrChatAndOtherUser }) => {
-    console.log("chatindex", chatIndex)
-    console.log("chat", chatInfo)
-    // const [messages, setMessages] = useState(chat.messages)
     const [currMessage, setCurrMessage] = useState("")
-    const [chat, setChat] = useState(chatInfo[chatIndex])
-
-    // console.log("messages", messages)
-
-    // useEffect(() => {
-    //     setMessages(chat.messages)
-    // }, [chat])
 
     const createMessage = async () => {
-        const { data, error, success } = await sendMessage(user.email, otherUser.email, currMessage, chatInfo[chatIndex].chat.id)
+        const { messages, updatedAt, seenByParticipantA, seenByParticipantB, error, success } = await sendMessage(user.email, otherUser.email, currMessage, chatInfo[chatIndex].chat.id)
         if (!success) {
             alert("something went wrong")
             console.error(error)
             return
-        } else if (!data) console.log("where is the data")
-        if (data) {
-            console.log("data", data)
-            console.log("adding this last message to messages", data[data.length - 1])
-            chatInfo[chatIndex].chat.messages = data
+        } else if (!messages) console.log("where is the data")
+        if (messages) {
+            // update currChatInfo array and currChatAndOtherUser to reflect that 
+            // a message has been send and the chat has been updated
+            const chat = chatInfo[chatIndex].chat
+            chat.messages = messages
+            chat.updatedAt = updatedAt
+            chat.seenByParticipantA = seenByParticipantA
+            chat.seenByParticipantB = seenByParticipantB
+            setCurrChatAndOtherUser({ otherUser, chat })
             const updatedChat = chatInfo.splice(chatIndex, 1)[0]
             chatInfo.unshift(updatedChat)
-            // chatIndex = 0
             setCurrChatInfo(chatInfo => [...chatInfo])
         }
         setCurrMessage("")

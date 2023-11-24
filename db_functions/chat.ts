@@ -11,7 +11,10 @@ const createChat = async(participantBEmail: string, participantA: VolunteerAccou
             participantAEmail: participantA.email,
             participantBEmail,
             id: chatId,
-            messages: []
+            messages: [],
+            updatedAt: new Date(),
+            seenByParticipantA: true,
+            seenByParticipantB: false,
         }
         const res = await fetch(`/api/chat/${body.id}`, {
             method: "POST",
@@ -72,14 +75,12 @@ export const sendMessage = async(senderEmail: string, receiverEmail: string, mes
         const newMessageList = [...resJson.data.messages, newMessage]
         const editRes = await fetch(`/api/chat/${chatId}`, {
             method: "PATCH",
-            body: JSON.stringify({messages: newMessageList, updatedAt: Date.now(), seenByParticipantA: senderEmail === resJson.data.participantAEmail, seenByParticipantB: senderEmail === resJson.data.participantBEmail})
+            body: JSON.stringify({messages: newMessageList, updatedAt: new Date(), seenByParticipantA: senderEmail === resJson.data.participantAEmail, seenByParticipantB: senderEmail === resJson.data.participantBEmail})
         })
-        // console.log("setting seenbyparticipantA to ", senderEmail === resJson.data.participantAEmail)
-        // console.log("setting seenbyparticipantB to ", senderEmail === resJson.data.participantBEmail)
         if (!editRes) throw new Error("Internal Server Error")
         const editResJson = await editRes.json()
         if (!editRes.ok) throw new Error(editResJson.data)
-        return {success: true, data: editResJson.data.messages as Message[]}
+        return {success: true, messages: editResJson.data.messages as Message[], updatedAt: editResJson.data.updatedAt, seenByParticipantA: editResJson.seenbyParticipantA, seenByParticipantB: editResJson.seenByParticipantB}
     } catch (e: Error | any) {
         console.error(e)
         return {success: false, error: e}
@@ -95,9 +96,7 @@ export const isChatUpdated = async(chatId: string, length: number) => {
         const resJson = await res.json()
         if (res.status === 500) return {error: resJson.error}
         else {
-            // console.log("returning the messages:")
-            // console.log("Messages: ", resJson.messages)
-        return {modified: true, messages: resJson.messages as Message[], updatedAt: resJson.updatedAt as Date, seenByParticipantA: resJson.seenByParticipantA, seenByParticipantB: resJson.seenByParticipantB}
+            return {modified: true, chat: resJson}
         }
     } catch (e: Error | any) {
         console.error(e)
@@ -108,17 +107,16 @@ export const isChatUpdated = async(chatId: string, length: number) => {
 export async function generateChatInfo(account: VolunteerAccount): Promise<{ otherUser: VolunteerAccount, chat: Chat }[] | Error> {
     const ChatModel: mongoose.Model<Chat> = getChatModel()
     const VolunteerAccountModel: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel()
-    // console.log(account.chatIds)
     const promises = account.chatIds.map(async (chatId) => {
         const chat = await ChatModel.findOne({ id: chatId }) as Chat
         if (!chat) throw new Error(`chat with id ${chatId} not found`)
-        const otherUserEmail = chat!.participantAEmail === account.email ? chat!.participantBEmail : chat!.participantAEmail
+        const otherUserEmail = chat.participantAEmail === account.email ? chat.participantBEmail : chat.participantAEmail
         const otherUser = await VolunteerAccountModel.findOne({ email: otherUserEmail }) as VolunteerAccount
         if (!otherUser) throw new Error(`user with email ${otherUserEmail} not found`)
-        // console.log("returning this chat", chat)
         return { otherUser: otherUser, chat: chat }
     })
     const unsortedChats = await Promise.all(promises)
+    // sort by most recently updated to least recently updated
     return unsortedChats.sort((a, b) => b.chat.updatedAt.getTime() - a.chat.updatedAt.getTime())
 }
 

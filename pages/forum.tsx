@@ -185,7 +185,7 @@ const Forum: NextPage<PostProps> = ({
             </Grid2>
             <Grid2 sx={{ width: "27vw", }}>
               <h1 style={{ color: "#FE9834" }}>Friends</h1>
-              <div style={{ position: "fixed", bottom: showChat ? -10 : -2, right: 20 }}>
+              <div style={{ position: "fixed", bottom: showChat ? -10 : -2, right: 20, zIndex: 200 }}>
 
                 <div style={{ width: 345, display: "flex", justifyContent: "space-between", paddingLeft: "15px", borderBottom: "3px solid white", paddingTop: "1px", backgroundColor: "#5F5F5F" }}>
                   <h3 style={{ color: "white", marginTop: "12px" }}>
@@ -262,7 +262,6 @@ export const getServerSideProps = async (context: any) => {
     console.log("my posts", myPosts);
 
     const chatInfo = await generateChatInfo(account)
-
     return {
       props: {
         friendsPosts: JSON.parse(JSON.stringify(friendsPosts)),
