@@ -72,10 +72,10 @@ export const sendMessage = async(senderEmail: string, receiverEmail: string, mes
         const newMessageList = [...resJson.data.messages, newMessage]
         const editRes = await fetch(`/api/chat/${chatId}`, {
             method: "PATCH",
-            body: JSON.stringify({messages: newMessageList, updatedAt: Date.now(), seenByParticipantA: senderEmail === resJson.data.participantAEmail ? true : false, seenByParticipantB: senderEmail === resJson.data.participantBEMail ? true : false})
+            body: JSON.stringify({messages: newMessageList, updatedAt: Date.now(), seenByParticipantA: senderEmail === resJson.data.participantAEmail, seenByParticipantB: senderEmail === resJson.data.participantBEmail})
         })
-        console.log("setting seenbyparticipantA to ", senderEmail === resJson.data.participantAEmail)
-        console.log("setting seenbyparticipantB to ", senderEmail === resJson.data.participantBEmail)
+        // console.log("setting seenbyparticipantA to ", senderEmail === resJson.data.participantAEmail)
+        // console.log("setting seenbyparticipantB to ", senderEmail === resJson.data.participantBEmail)
         if (!editRes) throw new Error("Internal Server Error")
         const editResJson = await editRes.json()
         if (!editRes.ok) throw new Error(editResJson.data)

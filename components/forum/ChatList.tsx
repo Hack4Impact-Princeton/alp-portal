@@ -31,6 +31,23 @@ const ChatList: React.FC<{ chatInfo: { otherUser: VolunteerAccount, chat: Chat }
                     modifiedChat.updatedAt = res.updatedAt
                     modifiedChat.seenByParticipantA = res.seenByParticipantA
                     modifiedChat.seenByParticipantB = res.seenByParticipantB
+                    if (currChatAndOtherUser?.chat.id === modifiedChat.id) {
+                        if (user.email === currChatAndOtherUser.chat.participantAEmail) {
+                            await fetch(`/api/chat/${chat.id}`, {
+                                method: "PATCH",
+                                body: JSON.stringify({ seenByParticipantA: true })
+                            })
+                            modifiedChat.seenByParticipantA = true
+                        }
+                        else {
+                            await fetch(`/api/chat/${chat.id}`, {
+                                method: "PATCH",
+                                body: JSON.stringify({ seenByParticipantB: true })
+                            })
+                            modifiedChat.seenByParticipantB = true
+                        }
+
+                    }
                     const modifiedChatInfo = currChatInfo
                     modifiedChatInfo[index].chat = modifiedChat
                     // updatedChats[index] = true
