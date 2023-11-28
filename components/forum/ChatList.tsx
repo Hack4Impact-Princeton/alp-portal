@@ -11,7 +11,7 @@ const ChatList: React.FC<{ chatInfo: { otherUser: VolunteerAccount, chat: Chat }
 
     useEffect(() => {
         const fetchData = async () => {
-            currChatInfo.map(async ({ chat, otherUser }, index) => {
+            currChatInfo.map(async ({ chat }, index) => {
                 const res = await isChatUpdated(chat.id, chat.messages.length)
                 if (res.error) console.error(res.error)
                 else if (res.modified === true && res.chat) {
