@@ -21,7 +21,6 @@ import getPostModel, { Posts } from "../models/Post";
 import { authOptions } from "./api/auth/[...nextauth]";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
-import getBroadcastModel from "../models/Broadcast";
 import getVolunteerAccountModel, {
   VolunteerAccount,
 } from "../models/VolunteerAccount";
@@ -184,6 +183,7 @@ const Forum: NextPage<PostProps> = ({
                   })}
                 {active == "my" &&
                   myPostsList.map((post) => {
+                    console.log(post);
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
                         <PostContainer post={post} />
