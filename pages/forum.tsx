@@ -25,12 +25,17 @@ import getVolunteerAccountModel, {
   VolunteerAccount,
 } from "../models/VolunteerAccount";
 import FriendList from "../components/forum/FriendList";
+import getChatModel, { Chat } from "../models/Chat";
+import ChatList from "../components/forum/ChatList";
+import { generateChatInfo } from "../db_functions/chat";
 import NewPost from "../components/forum/NewPost";
 
 type PostProps = {
   allPosts: Posts[];
   friendsPosts: Posts[];
   myPosts: Posts[];
+  chatInfo: { chat: Chat, otherUser: VolunteerAccount }[];
+  account: VolunteerAccount,
   username: string;
   email: string;
 };
@@ -41,7 +46,11 @@ const Forum: NextPage<PostProps> = ({
   myPosts,
   username,
   email,
+  chatInfo,
+  account
 }) => {
+
+
   const [active, setActive] = useState("friends");
   const [myPostsList, setmyPostsList] = useState<Posts[]>(myPosts);
   const [allPostsList, setallPostsList] = useState<Posts[]>(allPosts);
@@ -185,7 +194,8 @@ const Forum: NextPage<PostProps> = ({
             </Grid2>
             <Grid2 sx={{ width: "25vw" }}>
               <h1 style={{ color: "#FE9834" }}>Friends</h1>
-              <FriendList />
+              <ChatList chatInfo={chatInfo} user={account} />
+              {/* <FriendList /> */}
             </Grid2>
           </Grid2>
         </Grid2>
@@ -218,8 +228,9 @@ export const getServerSideProps = async (context: any) => {
     })) as VolunteerAccount;
     //const name = account.fname + " " + account.lname;
     //console.log("account", account);
-    console.log("account email", account.email);
+    // console.log("account email", account.email);
     const friendList = account.friends;
+
     const userName = account.fname + " " + account.lname;
     console.log(userName);
     const volunteerEmail = account.email;
@@ -229,7 +240,7 @@ export const getServerSideProps = async (context: any) => {
     const Posts: mongoose.Model<Posts> = getPostModel();
 
     const allPosts = (await Posts.find()) as Posts[];
-    console.log("posts", allPosts);
+    // console.log("posts", allPosts);
     let friendsPosts: Posts[] = [];
     let myPosts: Posts[] = [];
 
@@ -243,14 +254,19 @@ export const getServerSideProps = async (context: any) => {
         myPosts.push(p);
       }
     });
+
     console.log("friends posts", friendsPosts);
     console.log("my posts", myPosts);
+
+    const chatInfo = await generateChatInfo(account)
 
     return {
       props: {
         friendsPosts: JSON.parse(JSON.stringify(friendsPosts)),
         allPosts: JSON.parse(JSON.stringify(allPosts)),
         myPosts: JSON.parse(JSON.stringify(myPosts)),
+        chatInfo: JSON.parse(JSON.stringify(chatInfo)),
+        account: JSON.parse(JSON.stringify(account)),
         username: userName,
         email: volunteerEmail,
       },
