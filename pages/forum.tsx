@@ -1,35 +1,25 @@
 import { NextPage } from "next";
 import Navbar from "../components/Navbar";
 import SearchBar from "../components/forum/SearchBar";
-import Box from "@mui/material/Box";
-import PageContainer from "../components/PageContainer";
-import DriveCard from "../components/DriveCard";
+
 import Grid2 from "@mui/material/Unstable_Grid2"; // Grid version 2
 import Button from "@mui/material/Button";
 import useDynamicPadding from "../lib/useDynamicPadding";
 import { useState } from "react";
-import {
-  Link,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  Typography,
-} from "@mui/material";
 import PostContainer from "../components/forum/PostContainer";
 import getPostModel, { Posts } from "../models/Post";
 import { authOptions } from "./api/auth/[...nextauth]";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
-import getBroadcastModel from "../models/Broadcast";
 import getVolunteerAccountModel, {
   VolunteerAccount,
 } from "../models/VolunteerAccount";
-import FriendList from "../components/forum/FriendList";
 import getChatModel, { Chat } from "../models/Chat";
 import ChatList from "../components/forum/ChatList";
 import { generateChatInfo } from "../db_functions/chat";
 import NewPost from "../components/forum/NewPost";
+import UpCaret from "../components/UpCaret";
+import DownCaret from "../components/DownCaret";
 
 type PostProps = {
   allPosts: Posts[];
@@ -55,6 +45,7 @@ const Forum: NextPage<PostProps> = ({
   const [active, setActive] = useState("friends");
   const [myPostsList, setmyPostsList] = useState<Posts[]>(myPosts);
   const [allPostsList, setallPostsList] = useState<Posts[]>(allPosts);
+  const [showChat, setShowChat] = useState(false)
   const addPost = (myPost: Posts) => {
     if (!myPostsList.includes(myPost))
       setmyPostsList((prevPosts) => {
@@ -184,6 +175,7 @@ const Forum: NextPage<PostProps> = ({
                   })}
                 {active == "my" &&
                   myPostsList.map((post) => {
+                    console.log(post);
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
                         <PostContainer post={post} />
@@ -192,10 +184,22 @@ const Forum: NextPage<PostProps> = ({
                   })}
               </Grid2>
             </Grid2>
-            <Grid2 sx={{ width: "25vw" }}>
+            <Grid2 sx={{ width: "27vw", }}>
               <h1 style={{ color: "#FE9834" }}>Friends</h1>
-              <ChatList chatInfo={chatInfo} user={account} />
-              {/* <FriendList /> */}
+              <div style={{ position: "fixed", bottom: showChat ? -10 : -2, right: 20, zIndex: 200 }}>
+
+                <div style={{ width: 345, display: "flex", justifyContent: "space-between", paddingLeft: "15px", borderBottom: "3px solid white", paddingTop: "1px", backgroundColor: "#5F5F5F" }}>
+                  <h3 style={{ color: "white", marginTop: "12px" }}>
+                    Messages
+                  </h3>
+                  {!showChat &&
+                    <UpCaret bgColor="#FFFFFF" onClick={() => setShowChat(true)} />}
+                  {showChat &&
+                    <DownCaret bgColor="#FFFFFF" onClick={() => setShowChat(false)} />}
+                </div>
+
+                {showChat && <ChatList chatInfo={chatInfo} user={account} />}
+              </div>
             </Grid2>
           </Grid2>
         </Grid2>
@@ -259,7 +263,6 @@ export const getServerSideProps = async (context: any) => {
     console.log("my posts", myPosts);
 
     const chatInfo = await generateChatInfo(account)
-
     return {
       props: {
         friendsPosts: JSON.parse(JSON.stringify(friendsPosts)),
