@@ -30,14 +30,19 @@ export interface Chat {
     id: string, // unique id of the chat conversation
     participantAEmail: string, // email of participant A
     participantBEmail: string, // email of participant B
-    messages: [typeof MessageSchema], // array of messages
+    messages: Message[], // array of messages
+    updatedAt: Date,
+    seenByParticipantA: boolean,
+    seenByParticipantB: boolean,
 }
 const ChatSchema = new Schema<Chat>({
     id: {type: String, required: true},
     participantAEmail: {type: String, required: true},
     participantBEmail: {type: String, required: true},
-    messages: {type: [MessageSchema], required: true}
-
+    messages: {type: [MessageSchema], required: true},
+    updatedAt: {type: Date, default: Date.now()},
+    seenByParticipantA: {type: Boolean, default: false},
+    seenByParticipantB: {type: Boolean, default: false},
 })
 
 const getChatModel = () => {

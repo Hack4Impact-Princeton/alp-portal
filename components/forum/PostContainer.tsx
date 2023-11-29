@@ -29,14 +29,15 @@ type PostProps = {
   refreshPosts: () => void;
 };
 
-
 const genRandomDate = () => {
   const emptyDate = new Date();
   const randomDate = new Date();
-  const dateFormatter = Intl.DateTimeFormat('sv-SE');
-  const formattedRandomDate = dateFormatter.format(emptyDate.setDate(randomDate.getDate() - Math.floor(Math.random()*365)));
+  const dateFormatter = Intl.DateTimeFormat("sv-SE");
+  const formattedRandomDate = dateFormatter.format(
+    emptyDate.setDate(randomDate.getDate() - Math.floor(Math.random() * 365))
+  );
   return formattedRandomDate;
-}
+};
 
 const GEN_DUMMY_COMMENTS = (n: number) => {
   let comments: Comments[] = [];
@@ -54,7 +55,7 @@ const GEN_DUMMY_COMMENTS = (n: number) => {
     });
   }
   return comments;
-}
+};
 
 const PostContainer: React.FC<PostProps> = ({ post, user, isOwner, refreshPosts }) => {
 
@@ -72,7 +73,7 @@ const PostContainer: React.FC<PostProps> = ({ post, user, isOwner, refreshPosts 
 
   const handleViewComments = () => {
     setShowComments(!showComments);
-  }
+  };
 
   const handleShowAddComment = () => {
       setShowAddComment(!showAddComment);
@@ -133,21 +134,23 @@ const PostContainer: React.FC<PostProps> = ({ post, user, isOwner, refreshPosts 
   const id = open ? 'popover' : undefined;
 
   useEffect(() => {
-    parent.current && autoAnimate(parent.current)
-  }, [parent])
+    parent.current && autoAnimate(parent.current);
+  }, [parent]);
 
   const formatDate = (d: string) => {
-    const NATURAL_FORMATTING_DISTANCE = 30*6 // 6 months
+    const NATURAL_FORMATTING_DISTANCE = 30 * 6; // 6 months
     const date = Date.parse(d);
 
-    const diff = Math.floor((new Date().getTime() - date) / (24*60*60*1000))
+    const diff = Math.floor(
+      (new Date().getTime() - date) / (24 * 60 * 60 * 1000)
+    );
 
     if (diff <= NATURAL_FORMATTING_DISTANCE) {
-      return formatDistance(date, new Date(), { addSuffix: true })
+      return formatDistance(date, new Date(), { addSuffix: true });
     } else {
-      return format(date, 'MMMM do, yyyy');
+      return format(date, "MMMM do, yyyy");
     }
-  }
+  };
 
   return (
     <Grid2
@@ -262,12 +265,8 @@ const PostContainer: React.FC<PostProps> = ({ post, user, isOwner, refreshPosts 
         sx={{ backgroundColor: "white", margin: 0.5 }}
         //style={{ width: "100%" }}
       >
-        <div
-          style={{ width: "100%" }}
-        >
-          <div ref={parent}
-            style={{ width: "100%" }}
-          >
+        <div style={{ width: "100%" }}>
+          <div ref={parent} style={{ width: "100%" }}>
             <div>
               <IconButton>
                 <FavoriteBorderIcon />
@@ -285,7 +284,7 @@ const PostContainer: React.FC<PostProps> = ({ post, user, isOwner, refreshPosts 
                   textDecorationColor: "lightgray",
                 }}
               >
-                {`${showComments? "Hide" : "View"} all comments`}
+                {`${showComments ? "Hide" : "View"} all comments`}
               </Button>
             </div>
             { showAddComment &&
@@ -384,65 +383,68 @@ const PostContainer: React.FC<PostProps> = ({ post, user, isOwner, refreshPosts 
                       }}
                     />
 
-                  <div
-                    style={{
-                      backgroundColor: "#F5F5F5",
-                      borderRadius: "2px",
-                      width: "100%",
-                    }}
-                  >
-                    <Grid2
-                      container
-                      display="flex"
-                      flexDirection="row"
-                      sx={{
-                        position: "relative",
+                    <div
+                      style={{
+                        backgroundColor: "#F5F5F5",
+                        borderRadius: "2px",
+                        width: "100%",
                       }}
-                      paddingX="1rem"
-                      paddingTop="1rem"
                     >
                       <Grid2
                         container
-                        xs={9}
                         display="flex"
-                        flexDirection={"column"}
+                        flexDirection="row"
                         sx={{
-                          height: "100%",
-                          justifyContent: "center",
+                          position: "relative",
                         }}
+                        paddingX="1rem"
+                        paddingTop="1rem"
                       >
-                        <h2
-                          style={{
-                            fontSize: "1rem",
-                            fontWeight: "bold",
-                            color: "#4E4C4C", // TODO
+                        <Grid2
+                          container
+                          xs={9}
+                          display="flex"
+                          flexDirection={"column"}
+                          sx={{
+                            height: "100%",
+                            justifyContent: "center",
                           }}
-                        >{comment.username}</h2>
-                        <p style={{
-                          fontStyle: "italic",
-                          fontSize: "0.8rem",
-                          color: "#848484", // TODO
-                          marginTop: "6px",
-                          }}>{
-                          formatDate(comment.date)
-                        }</p>
+                        >
+                          <h2
+                            style={{
+                              fontSize: "1rem",
+                              fontWeight: "bold",
+                              color: "#4E4C4C", // TODO
+                            }}
+                          >
+                            {comment.username}
+                          </h2>
+                          <p
+                            style={{
+                              fontStyle: "italic",
+                              fontSize: "0.8rem",
+                              color: "#848484", // TODO
+                              marginTop: "6px",
+                            }}
+                          >
+                            {formatDate(comment.date)}
+                          </p>
+                        </Grid2>
                       </Grid2>
-                    </Grid2>
-                    <Grid2
-                      sx={{
-                        padding: 2,
-                      }}
-                      minWidth="100%"
-                    >
-                      <p style={{ lineHeight: 1.5 }}>{comment.text}</p>
-                    </Grid2>
+                      <Grid2
+                        sx={{
+                          padding: 2,
+                        }}
+                        minWidth="100%"
+                      >
+                        <p style={{ lineHeight: 1.5 }}>{comment.text}</p>
+                      </Grid2>
+                    </div>
                   </div>
-
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
-          </div>
+        </div>
       </Grid2>
     </Grid2>
   );
