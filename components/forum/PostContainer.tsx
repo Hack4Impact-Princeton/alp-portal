@@ -76,12 +76,16 @@ const PostContainer: React.FC<PostProps> = ({
   const popover = useRef(null);
 
   useEffect(() => {
-    post.comments = GEN_DUMMY_COMMENTS(4);
+    //post.comments = GEN_DUMMY_COMMENTS(4);
+    // sort the comments by date, most recent at the start
+    post.comments.sort((b, a) => {
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
   }, []);
 
   const addComment = (newComment: Comments) => {
     if (!post.comments.includes(newComment)) {
-      post.comments.push(newComment);
+      post.comments.unshift(newComment);
     }
   };
 

@@ -1,17 +1,13 @@
 import { Posts } from "../models/Post";
 import { Comments } from "../models/Post";
 import genUniqueId from "../lib/idGen";
-import React, { useState } from "react";
 
 export const postComment = async (newComment: Comments, post_id: string) => {
   try {
     console.log(post_id);
     const res = await fetch(`/api/posts/${post_id}`, {
-      method: "PATCH",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({ comments: [newComment] }),
+      method: "PUT",
+      body: JSON.stringify({ $push: { comments: { $each: [newComment], $position: 0 } } }),
     });
     if (!res) throw new Error("Internal server error");
     const resJson = await res.json();
