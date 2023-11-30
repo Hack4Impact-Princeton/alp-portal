@@ -26,7 +26,7 @@ type PostProps = {
                      // done on a per-post level, so people can del
                      // their own posts on any page,
                      // but currently this is what matches the design specs
-  refreshPosts: () => void;
+  refreshPosts: (post_id: string) => void;
 };
 
 const genRandomDate = () => {
@@ -103,7 +103,7 @@ const PostContainer: React.FC<PostProps> = ({ post, user, isOwner, refreshPosts 
           label: 'Delete Post',
           action: () => {
               deletePost(post.post_id);
-              refreshPosts();
+              refreshPosts(post.post_id);
           }
       },
   ];
