@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import Router from 'next/router'
 import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Image from 'next/image';
-import {getStates} from '../../lib/enums'
+import { getStates } from '../../lib/enums'
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -16,6 +16,20 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { styled } from '@mui/material/styles';
+
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+  });
 
 const Signup = () => {
     const states = getStates()
@@ -27,10 +41,16 @@ const Signup = () => {
     const [password, setPassword] = useState("")
     const [location, setLocation] = useState(1)
     const [showPassword, setShowPassword] = useState(false);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+    const fileHandler = async (event : React.ChangeEvent<HTMLInputElement>) => {
+        if (!event.target.files) return
+        setSelectedFile(event.target.files[0]);
+    }
 
     const validateEmail = (input: string) => {
-      const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-      return emailRegex.test(input);
+        const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+        return emailRegex.test(input);
     };
 
     const handleSetFName = (fName: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,22 +71,22 @@ const Signup = () => {
     }
     const handleTogglePassword = () => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
-      };
+    };
 
-    const signUpHandler = async () => {   
+    const signUpHandler = async () => {
         try {
             // set timeout for reseting error fields
             setSubmit(true)
             setTimeout(() => {
                 setSubmit(false)
-              }, 4000);
+            }, 4000);
 
             const bcrypt = require("bcryptjs");
             const salt = bcrypt.genSaltSync(10);
-            const hashedPwd = (password == '')?'':bcrypt.hashSync(password, salt);
+            const hashedPwd = (password == '') ? '' : bcrypt.hashSync(password, salt);
             const data = { fname: fname, lname: lname, email: email, pwhash: hashedPwd, location: location }
             // return if empty field
-            for (let entry in data) 
+            for (let entry in data)
                 if (entry == '') return;
             const dupAccount = await fetch(`../api/volunteeraccounts/${encodeURIComponent(email)}`).then(res => res.json())
             if (!isValidEmail) {
@@ -88,8 +108,8 @@ const Signup = () => {
                 email: email,
                 password: password,
                 redirect: false,
-              })
-              if (signInRes?.ok) Router.push(`../dash-volunteer`)
+            })
+            if (signInRes?.ok) Router.push(`../dash-volunteer`)
             console.log("success")
         } catch (e) {
             console.error(e)
@@ -106,9 +126,9 @@ const Signup = () => {
                 width: '100%',
                 height: '25%',
             }}>
-                <Image className="auth-logo" src="/logo-long.png" width={956*0.3} height={295*0.3} alt="ALP-logo" style={{
-                        marginBottom: "10 !important",
-                }}/>
+                <Image className="auth-logo" src="/logo-long.png" width={956 * 0.3} height={295 * 0.3} alt="ALP-logo" style={{
+                    marginBottom: "10 !important",
+                }} />
                 <h2 className='auth-heading'>Sign up to volunteer with the African Library Project!</h2>
             </Grid2>
             <Grid2>
@@ -118,58 +138,64 @@ const Signup = () => {
                             width: 300,
                             height: 300,
                         }}>
-                            <TextField fullWidth required error={submit && fname==''} id="fname" label="First Name" variant="outlined" 
-                            value={fname} onChange={handleSetFName} 
+                        <TextField fullWidth required error={submit && fname == ''} id="fname" label="First Name" variant="outlined"
+                            value={fname} onChange={handleSetFName}
                             sx={{
                                 mt: 2,
                                 mb: 1
                             }} />
-                            <TextField fullWidth required error={submit && lname==''} id="lname" label="Last Name" variant="outlined"
-                                value={lname} onChange={handleSetLName} 
-                                sx={{
-                                    mb: 1
-                                }}/>
-                            <TextField fullWidth required error={submit && email==''} id="email" label="Email" variant="outlined"
-                                value={email} onChange={handleSetEmail} 
-                                sx={{
-                                    mb: 1
-                                }} />
-                            <TextField fullWidth required id="password" label="Password" variant="outlined"
-                          type={showPassword ? 'text' : 'password'}
-                          value={password}
-                          onChange={handleSetPassword}
-                          InputProps={{
-                              endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={handleTogglePassword}>
-                                         {showPassword ? <VisibilityOff /> : <Visibility />}
-                                   </IconButton>
-                               </InputAdornment>
-                              ),
-                           }}
-                          sx={{
-                         mb: 1,
-                          }}
+                        <TextField fullWidth required error={submit && lname == ''} id="lname" label="Last Name" variant="outlined"
+                            value={lname} onChange={handleSetLName}
+                            sx={{
+                                mb: 1
+                            }} />
+                        <TextField fullWidth required error={submit && email == ''} id="email" label="Email" variant="outlined"
+                            value={email} onChange={handleSetEmail}
+                            sx={{
+                                mb: 1
+                            }} />
+                        <TextField fullWidth required id="password" label="Password" variant="outlined"
+                            type={showPassword ? 'text' : 'password'}
+                            value={password}
+                            onChange={handleSetPassword}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton onClick={handleTogglePassword}>
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
+                            sx={{
+                                mb: 1,
+                            }}
                         />
-                        <FormControl sx={{ width: 300}}>
-                        <InputLabel id="state-label">State</InputLabel>
-                            <Select 
-                            onChange={handleSetLocation}
-                            input={<OutlinedInput label="State" />}
-                           >
-                        {
-                            states.map((state) => (
-                               <MenuItem key={state.index} value={state.index} >{state.name}</MenuItem> 
-                            ))
-                        }
-                    </Select>
-                    </FormControl>
-                    <br></br>
-                    <Button variant="contained"
-                                onClick={signUpHandler}
-                                sx={{
-                                    marginTop: 1,
-                                }}>Signup</Button>
+                        <FormControl sx={{ width: 300 }}>
+                            <InputLabel id="state-label">State</InputLabel>
+                            <Select
+                                onChange={handleSetLocation}
+                                input={<OutlinedInput label="State" />}
+                            >
+                                {
+                                    states.map((state) => (
+                                        <MenuItem key={state.index} value={state.index} >{state.name}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
+                        <br></br>
+                        <br></br>
+                        <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
+                                Upload Profile Picture
+                                <VisuallyHiddenInput type="file" onChange={fileHandler}/>
+                        </Button>
+                        <br></br>
+                        <Button variant="contained"
+                            onClick={signUpHandler}
+                            sx={{
+                                marginTop: 1,
+                            }}>Signup</Button>
                     </Box>
                 </Grid2>
             </Grid2>

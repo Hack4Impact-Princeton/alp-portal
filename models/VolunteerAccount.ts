@@ -16,6 +16,7 @@ export type VolunteerAccount = {
     badges: number,
     broadcasts: string[],
     chatIds: string[],
+    pfpLink: string
 }
 
 export const VolunteerAccountSchema = new Schema<VolunteerAccount>({
@@ -68,6 +69,10 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>({
     },
     chatIds: {
         type: [String]
+    },
+    pfpLink:  {
+        type: String,
+        default: ""
     }
 }, {collection: 'volunteerAccounts'})
 
