@@ -29,13 +29,7 @@ type ProfileProps = {
   drives: BookDrive[] | null;
   broadcasts: Broadcast[];
 };
-type BadgeInfoProps = {
-  isEarned: boolean,
-  level: number,
-  name: string,
-  description: string,
-}
-const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives }) => {
+const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives, error }) => {
   console.log("Profile Page");
 
   const handleFriendRequest = () => {
@@ -61,73 +55,158 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives }) 
     // Handle the logic for revoking a friend request
     console.log('Friend request revoked');
   };
- const profiles = [
+const profiles = [
   {
     name: 'John Doe',
     state: 'California',
     email: 'john@example.com',
     profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     badges: [
-      { isEarned: true, level: 1},
-      { isEarned: false, level: 2},
-      // Add more badges as needed
+      { isEarned: true, level: 1, name: 'Badge 1', description: 'Badge 1 description' },
+      { isEarned: false, level: 2, name: 'Badge 2', description: 'Badge 2 description' },
     ],
   },
   {
+    name: 'Jane Doe',
+    state: 'New York',
+    email: 'jane@example.com',
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    badges: [
+      { isEarned: true, level: 1, name: 'Badge 3', description: 'Badge 3 description' },
+      { isEarned: false, level: 2, name: 'Badge 4', description: 'Badge 4 description' },
+    ],
+  },
+    {
     name: 'John Doe',
-    state: 'a',
+    state: 'California',
     email: 'john@example.com',
     profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     badges: [
-      { isEarned: true, level: 1 },
-      { isEarned: false, level: 2},
-      // Add more badges as needed
+      { isEarned: true, level: 1, name: 'Badge 1', description: 'Badge 1 description' },
+      { isEarned: false, level: 2, name: 'Badge 2', description: 'Badge 2 description' },
     ],
   },
   {
+    name: 'Jane Doe',
+    state: 'New York',
+    email: 'jane@example.com',
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    badges: [
+      { isEarned: true, level: 1, name: 'Badge 3', description: 'Badge 3 description' },
+      { isEarned: false, level: 2, name: 'Badge 4', description: 'Badge 4 description' },
+    ],
+  },
+    {
     name: 'John Doe',
-    state: 'asdfasdf',
+    state: 'California',
     email: 'john@example.com',
     profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     badges: [
-      { isEarned: true, level: 1 },
-      { isEarned: false, level: 2 },
-      // Add more badges as needed
+      { isEarned: true, level: 1, name: 'Badge 1', description: 'Badge 1 description' },
+      { isEarned: false, level: 2, name: 'Badge 2', description: 'Badge 2 description' },
     ],
   },
   {
+    name: 'Jane Doe',
+    state: 'New York',
+    email: 'jane@example.com',
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    badges: [
+      { isEarned: true, level: 1, name: 'Badge 3', description: 'Badge 3 description' },
+      { isEarned: false, level: 2, name: 'Badge 4', description: 'Badge 4 description' },
+    ],
+  },
+    {
     name: 'John Doe',
-    state: 'asdfasdf',
+    state: 'California',
     email: 'john@example.com',
     profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     badges: [
-      { isEarned: true, level: 1 },
-      { isEarned: false, level: 2 },
-      // Add more badges as needed
+      { isEarned: true, level: 1, name: 'Badge 1', description: 'Badge 1 description' },
+      { isEarned: false, level: 2, name: 'Badge 2', description: 'Badge 2 description' },
     ],
   },
   {
+    name: 'Jane Doe',
+    state: 'New York',
+    email: 'jane@example.com',
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    badges: [
+      { isEarned: true, level: 1, name: 'Badge 3', description: 'Badge 3 description' },
+      { isEarned: false, level: 2, name: 'Badge 4', description: 'Badge 4 description' },
+    ],
+  },
+    {
     name: 'John Doe',
-    state: 'asdfasdf',
+    state: 'California',
     email: 'john@example.com',
     profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     badges: [
-      { isEarned: true, level: 1 },
-      { isEarned: false, level: 2},
-      // Add more badges as needed
+      { isEarned: true, level: 1, name: 'Badge 1', description: 'Badge 1 description' },
+      { isEarned: false, level: 2, name: 'Badge 2', description: 'Badge 2 description' },
     ],
   },
   {
+    name: 'Jane Doe',
+    state: 'New York',
+    email: 'jane@example.com',
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    badges: [
+      { isEarned: true, level: 1, name: 'Badge 3', description: 'Badge 3 description' },
+      { isEarned: false, level: 2, name: 'Badge 4', description: 'Badge 4 description' },
+    ],
+  },
+    {
     name: 'John Doe',
-    state: 'asdfasdf',
+    state: 'California',
     email: 'john@example.com',
     profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     badges: [
-      { isEarned: true, level: 1},
-      { isEarned: false, level: 2},
-      // Add more badges as needed
+      { isEarned: true, level: 1, name: 'Badge 1', description: 'Badge 1 description' },
+      { isEarned: false, level: 2, name: 'Badge 2', description: 'Badge 2 description' },
+    ],
+  },
+  {
+    name: 'Jane Doe',
+    state: 'New York',
+    email: 'jane@example.com',
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    badges: [
+      { isEarned: true, level: 1, name: 'Badge 3', description: 'Badge 3 description' },
+      { isEarned: false, level: 2, name: 'Badge 4', description: 'Badge 4 description' },
+    ],
+  },
+    {
+    name: 'John Doe',
+    state: 'California',
+    email: 'john@example.com',
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    badges: [
+      { isEarned: true, level: 1, name: 'Badge 1', description: 'Badge 1 description' },
+      { isEarned: false, level: 2, name: 'Badge 2', description: 'Badge 2 description' },
+    ],
+  },
+  {
+    name: 'Jane Doe',
+    state: 'New York',
+    email: 'jane@example.com',
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    badges: [
+      { isEarned: true, level: 1, name: 'Badge 3', description: 'Badge 3 description' },
+      { isEarned: false, level: 2, name: 'Badge 4', description: 'Badge 4 description' },
+    ],
+  },
+    {
+    name: 'Jane Doe',
+    state: 'New York',
+    email: 'jane@example.com',
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    badges: [
+      { isEarned: true, level: 1, name: 'Badge 3', description: 'Badge 3 description' },
+      { isEarned: false, level: 2, name: 'Badge 4', description: 'Badge 4 description' },
     ],
   }
+  
   // Add more profiles as needed
 ];
   if (account) {
@@ -165,9 +244,6 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives }) 
                     email={user.email}
                     profilePicture={profilePicture}
                     badges={user.badges}
-                    friendStatus={friendStatus}
-                    onFriendRequest={handleFriendRequest}
-                    onRevokeFriendRequest={handleRevokeFriendRequest}
                     style={{ marginRight: '20px', marginBottom: '20px' }}
                   />
                 </li>

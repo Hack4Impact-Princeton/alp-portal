@@ -18,54 +18,54 @@ type ProfileCardProps = {
 };
 
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePicture, badges, useBadges = true }) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePicture, badges, useBadges = true, style }) => {
   const [friendStatus, setFriendStatus] = React.useState<string>('none');
   const [showRevokeButton, setShowRevokeButton] = React.useState<boolean>(false);
 
- const cardStyle: React.CSSProperties = {
-  border: '1px solid #ddd',
-  padding: '10px',
-  marginBottom: '10px',
-  width: '300px',
-  display: 'flex',
-  flexDirection: 'column', // Change to column to align elements vertically
-  alignItems: 'flex-start',
-  backgroundColor: '#f2f2f2', // Add a light gray background color
-};
+  const cardStyle: React.CSSProperties = {
+    border: '1px solid #ddd',
+    padding: '10px',
+    marginBottom: '10px',
+    width: '300px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    backgroundColor: '#f2f2f2',
+    ...style, // Add the provided style
+  };
 
   const contentStyle: React.CSSProperties = {
-    marginLeft: '10px',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-start',
-    flex: 1, // Let the content take the available space
   };
 
-
   const imageStyle: React.CSSProperties = {
-    width: '100px', // Adjust the width as needed
+    width: '100px',
     height: 'auto',
     marginBottom: '10px',
   };
 
   const badgesContainerStyle: React.CSSProperties = {
     display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'flex-start',
-    marginBottom: '10px',
+    gap: '10px',
   };
 
-  const userInfoStyle: React.CSSProperties = {
-    marginLeft: '10px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-  };
+ const userInfoStyle: React.CSSProperties = {
+  marginLeft: '10px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  maxHeight: '60px', // Set a maximum height for the email container
+  overflow: 'hidden',
+};
 
-  const userInfoItemStyle: React.CSSProperties = {
-    marginBottom: '5px',
-  };
+const userInfoItemStyle: React.CSSProperties = {
+  marginBottom: '5px',
+  textOverflow: 'ellipsis', // Add ellipsis for overflowed text
+  whiteSpace: 'nowrap', // Prevent text from wrapping
+  overflow: 'hidden',
+};
 
   const badgesAndButtonsContainerStyle: React.CSSProperties = {
     display: 'flex',
