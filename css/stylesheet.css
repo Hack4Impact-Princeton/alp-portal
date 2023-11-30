@@ -87,4 +87,19 @@ html, body {
 }
 #state-label{
     text-align: left
-    }
+}
+
+/*TODO dedicated file for componenet based css, ala nextjs css modules? */
+.popover-button {
+    /*TODO this is not styled yet.*/
+    margin: 5px;
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    background: #ECECEC; 
+    transition: 0.2s;
+}
+
+.popover-button:hover {
+    background: #FDEDCF;
+}

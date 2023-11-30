@@ -22,6 +22,7 @@ export type VolunteerAccount = {
     friends: string[],
     badges: BadgeInfoProps[];
     broadcasts: string[],
+    chatIds: string[],
 }
 
 export const VolunteerAccountSchema = new Schema<VolunteerAccount>({
@@ -72,6 +73,9 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>({
     },
     broadcasts: {
         type: [String],
+    },
+    chatIds: {
+        type: [String]
     }
 }, {collection: 'volunteerAccounts'})
 

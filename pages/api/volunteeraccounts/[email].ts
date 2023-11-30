@@ -40,6 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     driveIds: [],
                     friends: [],
                     broadcasts: [],
+                    chatIds: [],
                 })
                 console.log(newVolunteerAccount.startDate)
                 const account = await newVolunteerAccount.save()
