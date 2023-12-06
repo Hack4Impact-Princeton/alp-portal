@@ -7,7 +7,9 @@ export const postComment = async (newComment: Comments, post_id: string) => {
     console.log(post_id);
     const res = await fetch(`/api/posts/${post_id}`, {
       method: "PUT",
-      body: JSON.stringify({ $push: { comments: { $each: [newComment], $position: 0 } } }),
+      body: JSON.stringify({
+        $push: { comments: { $each: [newComment], $position: 0 } },
+      }),
     });
     if (!res) throw new Error("Internal server error");
     const resJson = await res.json();
@@ -59,3 +61,4 @@ export const deletePost = async (postId: string) => {
   }
 };
 export default postComment;
+//comment
