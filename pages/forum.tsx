@@ -49,13 +49,11 @@ const Forum: NextPage<PostProps> = ({
   const [showChat, setShowChat] = useState(false);
   const router = useRouter();
 
-  const refreshData = () => {
-    // nextjs + mongo is being wacky rn, and only trigger the ssr when both of these are called?
-    // replace with proper sol later
-    router.replace(router.asPath);
-    //router.reload();
-    router.push(router.asPath);
+  const refreshData = (post_id: string) => {
+    setmyPostsList(myPostsList.filter((post) => post.post_id !== post_id));
+    setallPostsList(allPostsList.filter((post) => post.post_id !== post_id));
   };
+
   const addPost = (myPost: Posts) => {
     if (!myPostsList.includes(myPost))
       setmyPostsList((prevPosts) => {
@@ -167,6 +165,7 @@ const Forum: NextPage<PostProps> = ({
                 flexDirection={"column"}
               >
                 {active == "friends" &&
+                  friendsPosts != undefined &&
                   friendsPosts.map((post) => {
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
