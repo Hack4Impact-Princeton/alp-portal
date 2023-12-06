@@ -15,7 +15,7 @@ import getVolunteerAccountModel, {
   VolunteerAccount,
 } from "../models/VolunteerAccount";
 import FriendList from "../components/forum/FriendList";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import getChatModel, { Chat } from "../models/Chat";
 import ChatList from "../components/forum/ChatList";
 import { generateChatInfo } from "../db_functions/chat";
@@ -27,13 +27,12 @@ type PostProps = {
   allPosts: Posts[];
   friendsPosts: Posts[];
   myPosts: Posts[];
-  chatInfo: { chat: Chat, otherUser: VolunteerAccount }[];
-  account: VolunteerAccount,
+  chatInfo: { chat: Chat; otherUser: VolunteerAccount }[];
+  account: VolunteerAccount;
   username: string;
   email: string;
 };
 
- 
 const Forum: NextPage<PostProps> = ({
   allPosts,
   friendsPosts,
@@ -41,19 +40,19 @@ const Forum: NextPage<PostProps> = ({
   username,
   email,
   chatInfo,
-  account
+  account,
 }) => {
-
   const [active, setActive] = useState("friends");
 
   const [myPostsList, setmyPostsList] = useState<Posts[]>(myPosts);
   const [allPostsList, setallPostsList] = useState<Posts[]>(allPosts);
-  const [showChat, setShowChat] = useState(false)
+  const [showChat, setShowChat] = useState(false);
+  const router = useRouter();
 
   const refreshData = (post_id: string) => {
     setmyPostsList(myPostsList.filter((post) => post.post_id !== post_id));
     setallPostsList(allPostsList.filter((post) => post.post_id !== post_id));
-  }
+  };
 
   const addPost = (myPost: Posts) => {
     if (!myPostsList.includes(myPost))
@@ -166,7 +165,8 @@ const Forum: NextPage<PostProps> = ({
                 flexDirection={"column"}
               >
                 {active == "friends" &&
-                  friendsPosts != undefined && friendsPosts.map((post) => {
+                  friendsPosts != undefined &&
+                  friendsPosts.map((post) => {
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
                         <PostContainer
@@ -174,6 +174,8 @@ const Forum: NextPage<PostProps> = ({
                           user={account}
                           isOwner={false}
                           refreshPosts={refreshData}
+                          email={email}
+                          username={username}
                         />
                       </div>
                     );
@@ -188,6 +190,8 @@ const Forum: NextPage<PostProps> = ({
                           user={account}
                           isOwner={false}
                           refreshPosts={refreshData}
+                          username={username}
+                          email={email}
                         />
                       </div>
                     );
@@ -202,24 +206,50 @@ const Forum: NextPage<PostProps> = ({
                           user={account}
                           isOwner={true}
                           refreshPosts={refreshData}
+                          username={username}
+                          email={email}
                         />
                       </div>
                     );
                   })}
               </Grid2>
             </Grid2>
-            <Grid2 sx={{ width: "27vw", }}>
+            <Grid2 sx={{ width: "27vw" }}>
               <h1 style={{ color: "#FE9834" }}>Friends</h1>
-              <div style={{ position: "fixed", bottom: showChat ? -10 : -2, right: 20, zIndex: 200 }}>
-
-                <div style={{ width: 345, display: "flex", justifyContent: "space-between", paddingLeft: "15px", borderBottom: "3px solid white", paddingTop: "1px", backgroundColor: "#5F5F5F" }}>
+              <div
+                style={{
+                  position: "fixed",
+                  bottom: showChat ? -10 : -2,
+                  right: 20,
+                  zIndex: 200,
+                }}
+              >
+                <div
+                  style={{
+                    width: 345,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    paddingLeft: "15px",
+                    borderBottom: "3px solid white",
+                    paddingTop: "1px",
+                    backgroundColor: "#5F5F5F",
+                  }}
+                >
                   <h3 style={{ color: "white", marginTop: "12px" }}>
                     Messages
                   </h3>
-                  {!showChat &&
-                    <UpCaret bgColor="#FFFFFF" onClick={() => setShowChat(true)} />}
-                  {showChat &&
-                    <DownCaret bgColor="#FFFFFF" onClick={() => setShowChat(false)} />}
+                  {!showChat && (
+                    <UpCaret
+                      bgColor="#FFFFFF"
+                      onClick={() => setShowChat(true)}
+                    />
+                  )}
+                  {showChat && (
+                    <DownCaret
+                      bgColor="#FFFFFF"
+                      onClick={() => setShowChat(false)}
+                    />
+                  )}
                 </div>
 
                 {showChat && <ChatList chatInfo={chatInfo} user={account} />}
@@ -286,7 +316,7 @@ export const getServerSideProps = async (context: any) => {
     console.log("friends posts", friendsPosts);
     console.log("my posts", myPosts);
 
-    const chatInfo = await generateChatInfo(account)
+    const chatInfo = await generateChatInfo(account);
     return {
       props: {
         friendsPosts: JSON.parse(JSON.stringify(friendsPosts)),
