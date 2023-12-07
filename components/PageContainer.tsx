@@ -99,7 +99,7 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
         signOut();
         window.location.href = '/';
     }
-    return (
+   return (
     <>
       <Grid>
         <Navbar active={currPage}></Navbar>
@@ -130,33 +130,39 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
                 sx={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
               >
                 <Box p={2}>
-                  <Typography variant="h2">Broadcasts</Typography>
-                  {/* Add buttons to filter friends and broadcasts */}
-                  <Button
+                  <Typography variant="h6" sx={{ color: '#fe9834' }}>Inbox</Typography>
+                  {/* Add buttons to filter friend requests and broadcasts */}
+                    <Button
                     variant="contained"
                     disableElevation
                     sx={{
-                      borderRadius: 0,
-                      backgroundColor: activeFilter === "all" ? "#F3D39A" : "#F5F5F5",
-                      color: "#5F5F5F",
+                        borderRadius: 0,
+                        backgroundColor: activeFilter === "all" ? "#F3D39A" : "#F5F5F5",
+                        color: "#5F5F5F",
+                        mx: 0.5, // Margin on the left and right
+                        my: 1, // Margin on the top and bottom
+                        fontWeight: activeFilter === "all" ? "bold" : "normal", // Bold when active
                     }}
                     onClick={() => handleFilterClick("all")}
-                  >
+                    >
                     Broadcasts
-                  </Button>
-                <Button
+                    </Button>
+                    <Button
                     variant="contained"
                     disableElevation
                     sx={{
-                      borderRadius: 0,
-                      backgroundColor: activeFilter === "friends" ? "#F3D39A" : "#F5F5F5",
-                      color: "#5F5F5F",
+                        borderRadius: 0,
+                        backgroundColor: activeFilter === "friends" ? "#F3D39A" : "#F5F5F5",
+                        color: "#5F5F5F",
+                        mx: 0.5, // Margin on the left and right
+                        my: 1, // Margin on the top and bottom
+                        fontWeight: activeFilter === "friends" ? "bold" : "normal", // Bold when active
                     }}
                     onClick={() => handleFilterClick("friends")}
-                  >
-                    Friends Requests
-                  </Button>
-                  {/* Add more filters as needed */}
+                    >
+                    Friend Requests
+                    </Button>
+                                    {/* Add more filters as needed */}
                   {broadcasts?.map((broadcast, index) => (
                     <Collapse in={visibleBroadcasts[index]} key={index} sx={{ transition: '0.3s' }}>
                       <Box sx={{
@@ -165,6 +171,7 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
                         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
                         border: '1px solid #d89600',
                         padding: '12px',
+                        mb: 2, // Add margin-bottom for space
                       }}>
                         <Typography variant="body1" sx={{ cursor: 'pointer', flex: 1 }} onClick={() => handleBroadcastClick(index)}>
                           {broadcast.message}
