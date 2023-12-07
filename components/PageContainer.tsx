@@ -11,10 +11,12 @@ import React, {useState} from 'react';
 import { Popover, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Broadcast } from "../models/Broadcast";
+import { Switch } from '@mui/material';
+
 
 type PageContainerProps = {
     fName: String;
-    currPage: "dash-volunteer" | "profile" | "instruction-steps" | "h4i-team" | "forum" | "leaderboard";
+    currPage: "dash-volunteer" | "profile" | "instruction-steps" | "h4i-team" | "forum" | "leaderboard" | "profile_search";
     broadcasts ?: Broadcast[];
 }
 
@@ -84,6 +86,11 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
         }
         case "leaderboard": {
             pageName = "Leaderboard";
+            fontsize = "90px";
+            break;
+        }
+        case "profile_search": {
+            pageName = "Profile Search";
             fontsize = "90px";
             break;
         }
