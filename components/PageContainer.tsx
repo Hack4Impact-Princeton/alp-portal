@@ -119,19 +119,19 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
               <InboxIconButton color="inherit" onClick={handleOpenPopover}>
                 <InboxIcon></InboxIcon>
               </InboxIconButton>
-              <Popover
+                <Popover
                 open={popoverOpen}
                 anchorEl={anchorEl}
                 onClose={handleClosePopover}
                 anchorOrigin={{
-                  vertical: 66.5,
-                  horizontal: 'right',
+                    vertical: 66.5,
+                    horizontal: 'right',
                 }}
                 sx={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
-              >
+                >
                 <Box p={2}>
-                  <Typography variant="h6" sx={{ color: '#fe9834' }}>Inbox</Typography>
-                  {/* Add buttons to filter friend requests and broadcasts */}
+                    <Typography variant="h6" sx={{ color: '#fe9834' }}>Inbox</Typography>
+                    {/* Add buttons to filter friend requests and broadcasts */}
                     <Button
                     variant="contained"
                     disableElevation
@@ -162,25 +162,32 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
                     >
                     Friend Requests
                     </Button>
-                                    {/* Add more filters as needed */}
-                  {broadcasts?.map((broadcast, index) => (
+                    {/* Add more filters as needed */}
+                    {activeFilter === "all" && broadcasts?.map((broadcast, index) => (
                     <Collapse in={visibleBroadcasts[index]} key={index} sx={{ transition: '0.3s' }}>
-                      <Box sx={{
+                        <Box sx={{
                         width: '300px',
                         borderRadius: '10px',
                         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
                         border: '1px solid #d89600',
                         padding: '12px',
                         mb: 2, // Add margin-bottom for space
-                      }}>
+                        }}>
                         <Typography variant="body1" sx={{ cursor: 'pointer', flex: 1 }} onClick={() => handleBroadcastClick(index)}>
-                          {broadcast.message}
+                            {broadcast.message}
                         </Typography>
-                      </Box>
+                        </Box>
                     </Collapse>
-                  ))}
+                    ))}
+                    {/* Add rendering logic for friend requests */}
+                    {activeFilter === "friends" && (
+                    // Add logic here to render friend requests
+                    <div>
+                        {/* ... Friend requests rendering logic ... */}
+                    </div>
+                    )}
                 </Box>
-              </Popover>
+                </Popover>
             </Grid>
             <Grid xs={3}><WhiteTextButton variant="text" className="signout" onClick={handleSignOut}> Sign Out </WhiteTextButton></Grid>
             <Grid xs={2}><img src="/alp-logo.png" alt="alp-logo" height="55px"></img></Grid>
