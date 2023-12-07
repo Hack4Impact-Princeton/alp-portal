@@ -22,6 +22,7 @@ import { generateChatInfo } from "../db_functions/chat";
 import NewPost from "../components/forum/NewPost";
 import UpCaret from "../components/UpCaret";
 import DownCaret from "../components/DownCaret";
+import RequestList from "../components/forum/RequestList";
 
 type PostProps = {
   allPosts: Posts[];
@@ -43,6 +44,7 @@ const Forum: NextPage<PostProps> = ({
   account,
 }) => {
   const [active, setActive] = useState("friends");
+  const [friendBtn, setFriendBtn] = useState("requests");
 
   const [myPostsList, setmyPostsList] = useState<Posts[]>(myPosts);
   const [allPostsList, setallPostsList] = useState<Posts[]>(allPosts);
@@ -216,6 +218,41 @@ const Forum: NextPage<PostProps> = ({
             </Grid2>
             <Grid2 sx={{ width: "27vw" }}>
               <h1 style={{ color: "#FE9834" }}>Friends</h1>
+              <Grid2>
+                <Button
+                  variant="contained"
+                  disableElevation
+                  sx={{
+                    borderRadius: 0,
+                    backgroundColor:
+                      friendBtn === "friends" ? "#F3D39A" : "#F5F5F5",
+                    color: "#5F5F5F",
+                  }}
+                  onClick={() => setActive("friends")}
+                >
+                  Friends
+                </Button>
+                <Button
+                  variant="contained"
+                  disableElevation
+                  sx={{
+                    borderRadius: 0,
+                    backgroundColor:
+                      friendBtn === "requests" ? "#F3D39A" : "#F5F5F5",
+                    color: "#5F5F5F",
+                  }}
+                  onClick={() => setActive("requests")}
+                >
+                  Requests
+                </Button>
+              </Grid2>
+              <Grid2>
+                {friendBtn == "requests" && (
+                  <div>
+                    <RequestList />
+                  </div>
+                )}
+              </Grid2>
               <div
                 style={{
                   position: "fixed",
