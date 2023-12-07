@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Switch,
   FormGroup,
@@ -22,6 +22,49 @@ import { Posts } from "../../models/Post";
 import genUniqueId from "../../lib/idGen";
 import { format } from "date-fns";
 import { BuildTwoTone } from "@mui/icons-material";
+
+import { createEditor } from 'slate'
+import { Slate, Editable, withReact } from 'slate-react'
+import { BaseEditor, Descendant } from 'slate'
+import { ReactEditor } from 'slate-react'
+
+import RichEditor from './RichEditor'
+
+type CustomElement = { type: 'paragraph'; children: CustomText[] }
+type CustomText = { text: string }
+
+declare module 'slate' {
+  interface CustomTypes {
+    Editor: BaseEditor & ReactEditor
+    Element: CustomElement
+    Text: CustomText
+  }
+}
+
+
+
+//import { Editor } from 'slate-react'
+//import InsertImages from 'slate-drop-or-paste-images'
+
+//const plugins = [
+//  InsertImages({
+//    extensions: ['png'],
+//    insertImage: (change, file) => {
+//      return change.insertBlock({
+//        type: 'image',
+//        isVoid: true,
+//        data: { file }
+//      })
+//    }
+//  })
+//]
+
+const initialValue = [
+  {
+    type: 'paragraph',
+    children: [{ text: 'A line of text in a paragraph.' }],
+  },
+]
 
 const style = {
   position: "absolute" as "absolute",
@@ -48,8 +91,17 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
     setTimeout(() => {
       setOpen(false);
     }, 200);
+
+
   const [submit, setSubmit] = useState(false);
+
+
+
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    console.log("message", message);
+  }, [message]);
 
   const sendPost = async () => {
     try {
@@ -150,7 +202,9 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
             }}
             flexDirection={"column"}
           >
-            <TextField
+
+
+            {/*<TextField
               required
               error={submit && message == ""}
               label="What do you want to talk about?"
@@ -161,18 +215,13 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setMessage(e.target.value)
               }
+            />*/}
+
+
+            <RichEditor
+              onChange={setMessage}
             />
-            <Grid2 display="flex" flexDirection={"row"} sx={{ marginTop: 2 }}>
-              <Button>
-                <ImageOutlinedIcon />
-              </Button>
-              <Button>
-                <UploadFileOutlinedIcon />
-              </Button>
-              <Button>
-                <LinkOutlinedIcon />
-              </Button>
-            </Grid2>
+
           </Grid2>
           <Grid2 container flexDirection={"row"} alignItems={"center"}>
             <Grid2 xs={2}>
@@ -197,3 +246,15 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
 };
 
 export default NewPost;
+
+
+
+
+
+
+
+
+
+
+
+
