@@ -31,6 +31,7 @@ type PostProps = {
   account: VolunteerAccount,
   username: string;
   email: string;
+  refreshPosts: (post_id: string) => void;
 };
 
  
