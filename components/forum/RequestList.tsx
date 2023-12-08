@@ -10,6 +10,14 @@ type RequestListProps = {
   allAccounts: VolunteerAccount[];
 };
 
+interface FriendInfo {
+  email: string;
+  fname: string;
+  lname: string;
+  state: { name: string; index: number };
+  // Add or modify properties as needed
+}
+
 const RequestList: React.FC<RequestListProps> = ({
   friendRequests,
   myEmail,
@@ -18,7 +26,7 @@ const RequestList: React.FC<RequestListProps> = ({
   const reqEmailSet = new Set(friendRequests);
   const states = getStates();
 
-  const friendInfo = allAccounts
+  const friendInfo: FriendInfo[] = allAccounts
     .map((account) =>
       reqEmailSet.has(account.email)
         ? {
@@ -30,14 +38,19 @@ const RequestList: React.FC<RequestListProps> = ({
           }
         : null
     )
-    .filter((item) => item !== null);
+    .filter((item) => item !== null) as FriendInfo[];
+
+  const [friendInfoList, setFriendInfoList] =
+    useState<FriendInfo[]>(friendInfo);
+
+  const updateFriendReqs = (friendReq: FriendInfo) => {};
 
   return (
     <>
       <Grid2>
         <h3>beginning of friend requests</h3>
-        {friendInfo &&
-          friendInfo.map((user) =>
+        {friendInfoList &&
+          friendInfoList.map((user) =>
             user ? (
               <RequestPreview
                 fname={user.fname}
