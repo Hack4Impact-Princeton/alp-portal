@@ -117,48 +117,61 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives, er
 
     return (
       <Grid>
-        <PageContainer broadcasts = {broadcasts} fName={account.fname} currPage="profile_search" />
-          <Grid container display="flex" padding={1} sx={{ pl: 20 }} rowSpacing={2}>
-        <Grid item xs={12} sm={7} display="flex" flexDirection="column">
-            
-            <SearchBar users={users} onQueryChange={handleQueryChange} onBackToForum={() => {}} />
+        <PageContainer
+          broadcasts={broadcasts}
+          fName={account.fname}
+          currPage="profile_search"
+        />
+        <Grid
+          container
+          display="flex"
+          padding={1}
+          sx={{ pl: 20 }}
+          rowSpacing={2}
+        >
+          <Grid item xs={12} sm={7} display="flex" flexDirection="column">
+            <SearchBar
+              users={users}
+              onQueryChange={handleQueryChange}
+              onBackToForum={() => {}}
+            />
+          </Grid>
+          <Grid item xs={12} sm={7} display="flex" flexDirection="column">
             <Link href="/forum">
-        <a style={backButtonStyle}>
-          <span style={backIconStyle}>&lt;</span> Back to Forum
-        </a>
-      </Link>
-             <ul>
-            {filteredUsers.map((user, index) => {
-              // Define state and profilePicture locally for each user
-              const state: string = 'Colorado'; // Define your state here
-              const profilePicture: string = 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug'; // Define your profile picture URL here
-
-              // Use the ProfileCard component here
-              return (
-                <li key={index}>
-                  <ProfileCard
-                    name={`${user.fname} ${user.lname}`}
-                    state={state}
-                    email={user.email}
-                    profilePicture={profilePicture}
-                    badges={user.badges}
-                    style={{ marginRight: '20px', marginBottom: '20px' }}
-                  />
-                </li>
-              );
-            })}
-          </ul>
+              <a style={backButtonStyle}>
+                <span style={backIconStyle}>&lt;</span> Back to Forum
+              </a>
+            </Link>
           
-        </Grid>
-        
-        <Grid item xs={12} sm={5} mt={6} style={{marginLeft: '100px' }}>
-          <ProfileDisplayCase profiles={filteredProfiles} useBadges={true} />
-        </Grid>
+            <ul>
+              {filteredUsers.map((user, index) => {
+                // Define state and profilePicture locally for each user
+                const state: string = "Colorado"; // Define your state here
+                const profilePicture: string =
+                  "https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug"; // Define your profile picture URL here
 
+                // Use the ProfileCard component here
+                return (
+                  <li key={index}>
+                    <ProfileCard
+                      name={`${user.fname} ${user.lname}`}
+                      state={state}
+                      email={user.email}
+                      profilePicture={profilePicture}
+                      badges={user.badges}
+                      style={{ marginRight: "20px", marginBottom: "20px" }}
+                    />
+                  </li>
+                );
+              })}
+            </ul>
+          </Grid>
+
+          <Grid item xs={12} sm={5} mt={6} style={{ marginLeft: "100px" }}>
+            <ProfileDisplayCase profiles={filteredProfiles} useBadges={true} />
+          </Grid>
+        </Grid>
       </Grid>
-      
-    </Grid>
-    
     );
   } else {
     return (
