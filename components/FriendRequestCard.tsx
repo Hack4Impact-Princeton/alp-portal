@@ -1,0 +1,63 @@
+import React from 'react';
+import Avatar from '@mui/material/Avatar';
+import Badge from '@mui/material/Badge';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+
+type FriendRequestCardProps = {
+  profilePicture: string; // URL of the profile picture
+  name: string;
+  email: string;
+  date: string; // Date of the friend request
+  state: string; // State of the friend request (e.g., pending, approved, rejected)
+  onApprove: () => void; // Callback function when the approve button is clicked
+  onReject: () => void; // Callback function when the reject button is clicked
+};
+
+const FriendRequestCard: React.FC<FriendRequestCardProps> = ({
+  profilePicture,
+  name,
+  email,
+  date,
+  state,
+  onApprove,
+  onReject,
+}) => {
+  return (
+    <Card>
+      <CardContent style={{ display: 'flex', alignItems: 'center' }}>
+        <Badge
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          badgeContent={state === 'pending' ? 'New' : state.charAt(0).toUpperCase() + state.slice(1)}
+          color={state === 'pending' ? 'primary' : 'default'}
+        >
+          <Avatar alt={name} src={profilePicture} />
+        </Badge>
+        <div style={{ marginLeft: '10px' }}> {/* Add margin to separate profile picture and information */}
+          <Typography variant="h6">{name}</Typography>
+          <Typography variant="subtitle1">{email}</Typography>
+          <Typography variant="caption" color="textSecondary">
+            Requested on {date}
+          </Typography>
+        </div>
+      </CardContent>
+      <CardActions>
+        {state === 'pending' && (
+          <>
+            <Button size="small" color="primary" onClick={onApprove}>
+              Approve
+            </Button>
+            <Button size="small" color="secondary" onClick={onReject}>
+              Reject
+            </Button>
+          </>
+        )}
+      </CardActions>
+    </Card>
+  );
+};
+
+export default FriendRequestCard;

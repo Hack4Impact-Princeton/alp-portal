@@ -11,14 +11,36 @@ import React, {useState} from 'react';
 import { Popover, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Broadcast } from "../models/Broadcast";
+import FriendRequestCard from '../components/FriendRequestCard';
+import { FriendRequest } from '../components/FriendRequest'; 
+
 
 type PageContainerProps = {
     fName: String;
     currPage: "dash-volunteer" | "profile" | "instruction-steps" | "h4i-team" | "forum" | "leaderboard";
     broadcasts ?: Broadcast[];
+    friendRequests?: FriendRequest[];
 }
 
-const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcasts }) => {
+const testFriendRequests: FriendRequest[] = [
+  {
+    profilePicture: 'url_to_profile_picture_1',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    date: '2023-12-06', // Replace with an actual date
+    state: 'pending',
+  },
+  {
+    profilePicture: 'url_to_profile_picture_2',
+    name: 'Jane Smith',
+    email: 'jane.smith@example.com',
+    date: '2023-12-05', // Replace with an actual date
+    state: 'approved',
+  },
+  // Add more friend request objects as needed
+];
+
+const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcasts, friendRequests }) => {
   const leftPaddingValue = useDynamicPadding(635, 775, "29vw", "20vw", "15vw")
   const WhiteTextButton = styled(Button)<ButtonProps>(() => ({
     color: 'white',
@@ -40,13 +62,6 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
   const handleFilterClick = (filter: string) => {
     setActiveFilter(filter);
   };
-// const broadcasts = [
-//     { message: 'Broadcast 1; click me like popping buble wrap' },
-//     { message: 'Broadcast 2; click on me too!!' },
-//     { message: 'Broadcast 3; mEEEE THREEEEEEE' },
-//   ];
-
-
 
     const handleClosePopover = () => {
         setPopoverOpen(false);
@@ -179,13 +194,21 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
                         </Box>
                     </Collapse>
                     ))}
-                    {/* Add rendering logic for friend requests */}
-                    {activeFilter === "friends" && (
-                    // Add logic here to render friend requests
-                    <div>
-                        {/* ... Friend requests rendering logic ... */}
+                  {/* Render FriendRequests component when filter is 'friends' */}
+                    {activeFilter === "friends" && testFriendRequests.map((request, index) => (
+                        <div key={index} style={{ marginBottom: '10px' }}>
+                    <FriendRequestCard
+                        key={index}
+                        profilePicture={request.profilePicture}
+                        name={request.name}
+                        email={request.email}
+                        date={request.date}
+                        state={request.state}
+                        onApprove={() => handleApproveFriendRequest(index)} // Replace with your actual handler
+                        onReject={() => handleRejectFriendRequest(index)} // Replace with your actual handler
+                    />
                     </div>
-                    )}
+                    ))}
                 </Box>
                 </Popover>
             </Grid>
