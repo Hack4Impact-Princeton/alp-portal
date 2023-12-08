@@ -101,19 +101,23 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives, er
     const users: VolunteerAccount[] = [ /* Add your user data here */ ];
 
     const handleQueryChange = (query: string, filteredUsers: VolunteerAccount[]) => {
-      if (query.trim() === '') {
+      /*if (query.trim() === '') {
         setFilteredProfiles([]); // If the query is empty, set filteredProfiles to an empty array
-      } else {
-        const filteredProfiles = allProfiles.filter((profile) =>
-          profile.name.toLowerCase().includes(query.toLowerCase())
-        );
+      } else {*/
+      const filteredProfiles = allProfiles.filter((profile) =>
+        profile.name.toLowerCase().includes(query.toLowerCase())
+      );
 
-        setFilteredProfiles(filteredProfiles);
-      }
+      setFilteredProfiles(filteredProfiles);
+      //}
       
     };
     //console.log(allAccounts)
     console.log(filteredProfiles)
+
+    
+    const numbers = Array.from({ length: 9 }, (_, i) => i + 1); // Generate an array of numbers from 1 to 9
+
 
     return (
       <Grid>
@@ -127,7 +131,7 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives, er
           display="flex"
           padding={1}
           sx={{ pl: 20 }}
-          rowSpacing={2}
+          rowSpacing={3}
         >
           <Grid item xs={12} sm={7} display="flex" flexDirection="column">
             <SearchBar
@@ -142,34 +146,33 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives, er
                 <span style={backIconStyle}>&lt;</span> Back to Forum
               </a>
             </Link>
-          
-            <ul>
-              {filteredUsers.map((user, index) => {
-                // Define state and profilePicture locally for each user
-                const state: string = "Colorado"; // Define your state here
-                const profilePicture: string =
-                  "https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug"; // Define your profile picture URL here
-
-                // Use the ProfileCard component here
-                return (
-                  <li key={index}>
-                    <ProfileCard
-                      name={`${user.fname} ${user.lname}`}
-                      state={state}
-                      email={user.email}
-                      profilePicture={profilePicture}
-                      badges={user.badges}
-                      style={{ marginRight: "20px", marginBottom: "20px" }}
-                    />
-                  </li>
-                );
-              })}
-            </ul>
           </Grid>
+        </Grid>
 
-          <Grid item xs={12} sm={5} mt={6} style={{ marginLeft: "100px" }}>
+        <Grid
+          container
+          display="flex"
+          padding={1}
+          sx={{ pl: 20, margin: "10 10px" }}
+          spacing={3}
+        >
+          <Grid
+            item
+            xs={12}
+            sm={5}
+            mt={6}
+            sx={{ pl: 20, margin: "0 100px" }}
+          >
             <ProfileDisplayCase profiles={filteredProfiles} useBadges={true} />
           </Grid>
+        </Grid>
+
+        <Grid container spacing={10} style={{ marginLeft: "100px" }}>
+          {numbers.map((number) => (
+            <Grid item key={number} xs={4} sx={{ margin: "0 10px" }}>
+              {number}
+            </Grid>
+          ))}
         </Grid>
       </Grid>
     );
