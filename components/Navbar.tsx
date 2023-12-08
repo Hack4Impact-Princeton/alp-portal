@@ -5,6 +5,7 @@ import FlagIcon from '@mui/icons-material/Flag';
 import Person2Icon from '@mui/icons-material/Person2';
 import HomeIcon from '@mui/icons-material/Home';
 import ShareIcon from '@mui/icons-material/Share';
+import SearchIcon from '@mui/icons-material/Search';
 import FilterFramesIcon from '@mui/icons-material/FilterFrames';
 
 
@@ -18,7 +19,7 @@ const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
   });
 
 type NavbarProps = {
-    active: "dash-volunteer" | "profile" | "leaderboard" | "h4i-team" | "forum" | "instruction-steps" | null;
+    active: "dash-volunteer" | "profile" | "leaderboard" | "h4i-team" | "forum" | "instruction-steps" | "profile_search" | null;
 }
 const Navbar: React.FC<NavbarProps> = ({active}) => {
     return(
@@ -117,6 +118,20 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                             <ChatBubbleIcon fontSize = 'large' sx = {{color:
                             '#9C9C9C',}}>
                             </ChatBubbleIcon>
+                        </ListItemIcon>
+                    </ListItemButton>
+                </CustomWidthTooltip>
+                </ListItem>
+            </Link>
+            <Link href = "/profile_search">
+                <ListItem key = "Profile_search">
+                <CustomWidthTooltip title="Profile Search" placement="right" arrow>
+
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <SearchIcon fontSize = 'large' sx = {{color:
+                            '#9C9C9C',}}>
+                            </SearchIcon>
                         </ListItemIcon>
                     </ListItemButton>
                 </CustomWidthTooltip>
