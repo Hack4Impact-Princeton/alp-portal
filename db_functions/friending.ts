@@ -48,6 +48,7 @@ const approveFriendRequest = async (email1: string, email2: string) => {
       method: "PATCH",
       body: JSON.stringify({ friends: friendsArray1 }),
     });
+    const done = await removeFriendRequest(email1, email2);
 
     if (!res1.ok)
       throw new Error("Something went wrong adding friend2 to friend1s array");
@@ -193,6 +194,6 @@ export const checkFriendStatus = async (email1: string, email2: string) => {
   }
 };
 
-approveFriendRequest("test2@test.com", "test3@test.com");
+//approveFriendRequest("test2@test.com", "test3@test.com");
 
 export default approveFriendRequest;

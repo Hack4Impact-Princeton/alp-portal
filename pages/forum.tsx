@@ -23,6 +23,7 @@ import NewPost from "../components/forum/NewPost";
 import UpCaret from "../components/UpCaret";
 import DownCaret from "../components/DownCaret";
 import RequestList from "../components/forum/RequestList";
+import { use } from "chai";
 
 type PostProps = {
   allPosts: Posts[];
@@ -32,6 +33,8 @@ type PostProps = {
   account: VolunteerAccount;
   username: string;
   email: string;
+  friendRequests: string[];
+  allVolunteers: VolunteerAccount[];
 };
 
 const Forum: NextPage<PostProps> = ({
@@ -42,6 +45,8 @@ const Forum: NextPage<PostProps> = ({
   email,
   chatInfo,
   account,
+  friendRequests,
+  allVolunteers,
 }) => {
   const [active, setActive] = useState("friends");
   const [friendBtn, setFriendBtn] = useState("requests");
@@ -228,7 +233,7 @@ const Forum: NextPage<PostProps> = ({
                       friendBtn === "friends" ? "#F3D39A" : "#F5F5F5",
                     color: "#5F5F5F",
                   }}
-                  onClick={() => setActive("friends")}
+                  onClick={() => setFriendBtn("friends")}
                 >
                   Friends
                 </Button>
@@ -241,15 +246,20 @@ const Forum: NextPage<PostProps> = ({
                       friendBtn === "requests" ? "#F3D39A" : "#F5F5F5",
                     color: "#5F5F5F",
                   }}
-                  onClick={() => setActive("requests")}
+                  onClick={() => setFriendBtn("requests")}
                 >
                   Requests
                 </Button>
               </Grid2>
               <Grid2>
+                {friendBtn == "friends" && <div>friendList</div>}
                 {friendBtn == "requests" && (
                   <div>
-                    <RequestList />
+                    <RequestList
+                      friendRequests={friendRequests}
+                      myEmail={email}
+                      allAccounts={allVolunteers}
+                    />
                   </div>
                 )}
               </Grid2>
@@ -318,9 +328,15 @@ export const getServerSideProps = async (context: any) => {
     }
     const VolunteerAccount: mongoose.Model<VolunteerAccount> =
       getVolunteerAccountModel();
-    const account: VolunteerAccount = (await VolunteerAccount.findOne({
+    const allVolunteers: VolunteerAccount[] = (await VolunteerAccount.find(
+      {}
+    )) as VolunteerAccount[];
+    const account: VolunteerAccount = allVolunteers.find(
+      (volunteer) => volunteer.email === session.user?.email
+    ) as VolunteerAccount;
+    /*const account: VolunteerAccount = (await VolunteerAccount.findOne({
       email: session.user?.email,
-    })) as VolunteerAccount;
+    })) as VolunteerAccount;*/
     //const name = account.fname + " " + account.lname;
     //console.log("account", account);
     // console.log("account email", account.email);
@@ -363,7 +379,8 @@ export const getServerSideProps = async (context: any) => {
         account: JSON.parse(JSON.stringify(account)),
         username: userName,
         email: volunteerEmail,
-        user: JSON.parse(JSON.stringify(account)),
+        friendRequests: JSON.parse(JSON.stringify(account.friendRequests)),
+        allVolunteers: JSON.parse(JSON.stringify(allVolunteers)),
       },
     };
   } catch (e: Error | any) {

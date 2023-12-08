@@ -4,13 +4,23 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DoneIcon from "@mui/icons-material/Done";
 import CloseIcon from "@mui/icons-material/Close";
 import { IconButton } from "@mui/material";
+import approveFriendRequest from "../../db_functions/friending";
 
 type ReqProps = {
-  name: string;
+  fname: string;
+  lname: string;
   state: string;
+  myEmail: string;
+  reqEmail: string;
 };
 
-const RequestPreview: React.FC<{}> = () => {
+const RequestPreview: React.FC<ReqProps> = ({
+  fname,
+  lname,
+  state,
+  myEmail,
+  reqEmail,
+}) => {
   return (
     <Grid2
       display="flex"
@@ -32,14 +42,16 @@ const RequestPreview: React.FC<{}> = () => {
       <Grid2
         display="flex"
         flexDirection="column"
-        sx={{ height: "100%", justifyContent: "center", pr: "30%" }}
+        sx={{ height: "100%", justifyContent: "center" }}
       >
-        <h3>name</h3>
-        <p>State</p>
+        <h3>
+          {fname} {lname}.
+        </h3>
+        <p>{state}</p>
       </Grid2>
       <Grid2 display="flex" sx={{ height: "100%", justifyContent: "center" }}>
         <Grid2>
-          <IconButton>
+          <IconButton onClick={() => approveFriendRequest(myEmail, reqEmail)}>
             <DoneIcon />
           </IconButton>
         </Grid2>
