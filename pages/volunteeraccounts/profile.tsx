@@ -1,6 +1,6 @@
 import getVolunteerAccountModel, { VolunteerAccount } from "../../models/VolunteerAccount";
 import dbConnect from '../../lib/dbConnect';
-import { Grid } from "@mui/material";
+import { Grid, IconButton } from "@mui/material";
 import Box from '@mui/material/Box';
 import PageContainer from "../../components/PageContainer";
 import { useState } from 'react';
@@ -14,6 +14,8 @@ import mongoose from 'mongoose';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import getBroadcastModel, { Broadcast } from "../../models/Broadcast";
+import { PhotoCamera } from "@mui/icons-material";
+import { imageDelete, imagePfpUpload } from "../../db_functions/imageDB";
 
 type ProfileProps = {
   error: string | null;
@@ -120,14 +122,40 @@ const BookDrivesCompletedGraph = () => {
 };
 
 const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives }) => {
+  const [pfpURL, setpfpURL] = useState<string>((account)?account.pfpLink:"https://icons.iconarchive.com/icons/pictogrammers/material/512/account-circle-icon.png")
+
+  const changeHandler = async (event : React.ChangeEvent<HTMLInputElement>) => {
+      if (!event.target.files) return
+      const file = event.target.files[0]
+      if (!account) return
+      // get account info
+      let data = await fetch(`/api/volunteeraccounts/${account.email}`, {
+        method: "GET"
+      }).then((response) => response.json()).then((response)=> response.data);
+
+      // set new pfp
+      const url = await imagePfpUpload(file)
+      setpfpURL(url)
+      // delete old pfp
+      if (data.pfpLink) await imageDelete(data.pfpLink)
+      // throw it back up to the cloud
+      data.pfpLink = url
+      console.log(url)
+      console.log(data)
+      const response = await fetch(`/api/volunteeraccounts/${account.email}`, {
+        method: "PATCH",
+        body: JSON.stringify(data)
+      }).then((response) => response.json())
+      console.log("upload: ", response)
+
+  }
   console.log("Profile Page");
   // if the account is not null, that means that everything is working
   // otherwise render the error message page
   if (account) {
-    console.log("ACCOUNT: ", account);
     return (
       <Grid>
-        <PageContainer broadcasts = {broadcasts} fName={account.fname} currPage="profile" />
+        <PageContainer broadcasts={broadcasts} fName={account.fname} currPage="profile" />
         <Grid container display="flex" padding={1} sx={{ pl: 20 }} rowSpacing={2}>
           <Grid item xs={12} sm={7} display="flex" flexDirection="column" >
             <Box
@@ -152,17 +180,34 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                   justifyContent: 'center',
                 }}
               >
-                <img
-                  src="https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug"
-                  alt="Profile Image"
+                <div
                   style={{
+                    display: "flex",
+                    flexDirection: "column",
                     borderRadius: 'auto',
                     width: '50%',
                     height: 'auto',
                   }}
-                />
+                >
+                  <img
+                    src={pfpURL}
+                    alt="Profile Image"
+                    style={{
+
+                    }}
+                  />
+                  <div>
+                    <input accept="image/*" id="icon-button-file"
+                      type="file" style={{ display: 'none' }} onChange={changeHandler}  />
+                    <label htmlFor="icon-button-file">
+                      <IconButton color="primary" aria-label="upload picture"
+                      component="span">
+                        <PhotoCamera />
+                      </IconButton>
+                    </label>
+                  </div>
+                </div>
               </div>
-              
               <div
                 style={{
                   width: '65%',
@@ -173,9 +218,9 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                   paddingLeft: '4px',
                 }}
               >
-                <p style={{fontWeight: 800, fontSize: 30, marginBottom: 2, color: "#5F5F5F"}}>{`${account.fname} ${account.lname}`}</p>
-                <p style={{fontWeight: 500, marginBottom: 2, color: "#5F5F5F"}}>{account.email}</p>
-                <p style={{fontWeight: 500, color: "#5F5F5F"}}>{`# of Bookdrives completed: ${drives!.length}`}</p>
+                <p style={{ fontWeight: 800, fontSize: 30, marginBottom: 2, color: "#5F5F5F" }}>{`${account.fname} ${account.lname}`}</p>
+                <p style={{ fontWeight: 500, marginBottom: 2, color: "#5F5F5F" }}>{account.email}</p>
+                <p style={{ fontWeight: 500, color: "#5F5F5F" }}>{`# of Bookdrives completed: ${drives!.length}`}</p>
               </div>
             </Box>
             <BookDrivesCompletedGraph />
@@ -230,12 +275,12 @@ export const getServerSideProps = async (context: any) => {
       }
     }
     const email = session.user.email
-    
+
     await dbConnect()
     const VolunteerAccount: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel()
     const BookDrive: mongoose.Model<BookDrive> = getBookDriveModel()
     const volunteerAccount: VolunteerAccount | null = await VolunteerAccount.findOne({ email: email });
-    if(!volunteerAccount) throw new Error("Volunteer account not found")
+    if (!volunteerAccount) throw new Error("Volunteer account not found")
     // findsall completed bookDrives that correspond to the volunteer account
     const promises = volunteerAccount!.driveIds.map(async (driveId: string) => await BookDrive.find({ driveCode: driveId, status: BookDriveStatus.Completed }));
     // you have to resolve these promises before continuing
@@ -243,7 +288,7 @@ export const getServerSideProps = async (context: any) => {
     // you have to flatten the array otherwise it will have a weird shape.
     const drives: BookDrive[] | null = resolvedPromises.flat()
     const Broadcast: mongoose.Model<Broadcast> = getBroadcastModel();
-    
+
     console.log(volunteerAccount.broadcasts);
     const bPromises = volunteerAccount.broadcasts.map((broadcastId) => {
       const res = Broadcast.findOne({ id: broadcastId });

@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { useState } from "react";
-import {imageUpload, imageDelete} from "../../db_functions/imageDB"
+import {imagePfpUpload, imageDelete, imageUpload} from "../../db_functions/imageDB"
 type props = {
 
 }

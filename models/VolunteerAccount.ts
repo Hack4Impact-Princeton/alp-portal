@@ -72,7 +72,7 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>({
     },
     pfpLink:  {
         type: String,
-        default: ""
+        default: "https://res.cloudinary.com/alp-portal/image/upload/c_thumb,g_face,h_150,w_150/srjcceedx4zjrvwz6eqa.png"
     }
 }, {collection: 'volunteerAccounts'})
 

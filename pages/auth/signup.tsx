@@ -41,12 +41,6 @@ const Signup = () => {
     const [password, setPassword] = useState("")
     const [location, setLocation] = useState(1)
     const [showPassword, setShowPassword] = useState(false);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-    const fileHandler = async (event : React.ChangeEvent<HTMLInputElement>) => {
-        if (!event.target.files) return
-        setSelectedFile(event.target.files[0]);
-    }
 
     const validateEmail = (input: string) => {
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -184,12 +178,6 @@ const Signup = () => {
                                 }
                             </Select>
                         </FormControl>
-                        <br></br>
-                        <br></br>
-                        <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
-                                Upload Profile Picture
-                                <VisuallyHiddenInput type="file" onChange={fileHandler}/>
-                        </Button>
                         <br></br>
                         <Button variant="contained"
                             onClick={signUpHandler}
