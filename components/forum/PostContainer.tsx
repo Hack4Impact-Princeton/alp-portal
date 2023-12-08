@@ -292,6 +292,7 @@ const PostContainer: React.FC<PostProps> = ({
             readOnly={true}
             initialValue={post.text}
             onChange={() => {}} // yeah these should be default args
+            post_id={post.post_id}
           />
 
         </Grid2>

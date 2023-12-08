@@ -84,8 +84,8 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
   const handleClose = () =>
     setTimeout(() => {
       setOpen(false);
+      setMessage("");
     }, 200);
-
 
   const [submit, setSubmit] = useState(false);
 
@@ -122,6 +122,7 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
       return { success: false, error: e };
     }
   };
+
   const onPostClick = () => {
     sendPost();
     handleClose();

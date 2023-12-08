@@ -46,9 +46,7 @@ import { imageUpload } from "../../db_functions/imageDB";
  *
  */
 
-import { ImageElement } from './custom-types.d'
-
-const RichEditor = ({ onChange, readOnly, initialValue }) => {
+const RichEditor = ({ onChange, readOnly, initialValue, post_id }) => {
 
   const editor = useMemo(
     () => withImages(withHistory(withReact(createEditor()))),
@@ -70,8 +68,7 @@ const RichEditor = ({ onChange, readOnly, initialValue }) => {
           }
       }
 
-  }, [])
-
+  }, [post_id])
 
   const onDrop = useCallback(async acceptedFiles => {
       const url = await imageUpload(acceptedFiles[0])
@@ -218,7 +215,7 @@ const withImages = editor => {
 
 const insertImage = (editor, url) => {
   const text = { text: '' }
-  const image: ImageElement = { type: 'image', url, children: [text] }
+  const image = { type: 'image', url, children: [text] }
   Transforms.insertNodes(editor, image)
   // insert a blank line after the image
   Transforms.insertNodes(editor, { type: 'paragraph', children: [{ text: '' }] })
