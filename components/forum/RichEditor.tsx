@@ -1,12 +1,13 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect, useCallback, useState } from 'react'
 import imageExtensions from 'image-extensions'
 import isUrl from 'is-url'
 import isHotkey from 'is-hotkey'
-import { Transforms, createEditor, Descendant, Editor } from 'slate'
+import { Node, Transforms, createEditor, Descendant, Editor } from 'slate'
 import Grid2 from "@mui/material/Unstable_Grid2";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import UploadFileOutlinedIcon from "@mui/icons-material/UploadFileOutlined";
 import LinkOutlinedIcon from "@mui/icons-material/LinkOutlined";
+import { useDropzone } from 'react-dropzone'
 import {
   Slate,
   Editable,
@@ -31,30 +32,70 @@ import {
   Fab,
 } from "@mui/material";
 
+import DeleteIcon from '@mui/icons-material/Delete';
+import { imageUpload } from "../../db_functions/imageDB";
+
 /*
  * TODO
  *
- * let the images be dragged in
- * images deleted
- * hyperlinkk
- * save this to the db
- * render these all out in the comments
+ * [x] let the images be dragged in
+ * ~~images deleted~~
+ * ~~hyperlinkk~~
+ * [x] save this to the db
+ * [x] render these all out in the comments
  *
  */
 
-
-//import { Button, Icon, Toolbar } from '../components' // TODO 
 import { ImageElement } from './custom-types.d'
 
-const RichEditor = ({ onChange }) => {
+const RichEditor = ({ onChange, readOnly, initialValue }) => {
+
   const editor = useMemo(
     () => withImages(withHistory(withReact(createEditor()))),
     []
   )
 
+  const [processedInitialValue, setProcessedInitialValue] = React.useState([])
+
+  useEffect(() => { // to ensure backwards compatitibility...
+      if (!readOnly) return 
+      if (typeof initialValue === 'string') {
+          try {
+              const parsed = JSON.parse(initialValue)
+              setProcessedInitialValue(parsed)
+              editor.children = parsed // hacky
+          } catch (e) {
+              setProcessedInitialValue([{ type: 'paragraph', children: [{ text: initialValue }] }])
+              editor.children = [{ type: 'paragraph', children: [{ text: initialValue }] }] // hacky!
+          }
+      }
+
+  }, [])
+
+
+  const onDrop = useCallback(async acceptedFiles => {
+      const url = await imageUpload(acceptedFiles[0])
+      insertImage(editor, url)
+  }, [])
+
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({
+      onDrop,
+      noClick: true,
+      accept: {
+          'image/png': ['.png'],
+          'image/jpeg': ['.jpg', '.jpeg'],
+          'image/gif': ['.gif'],
+      }
+  })
+
   return (
-      <>
-          <Slate editor={editor} initialValue={initialValue}
+      <> 
+          <div
+              {...getRootProps()}
+              className={css`
+              `}
+          >
+          <Slate editor={editor} initialValue={readOnly? processedInitialValue : initialValue}
               onChange={value => {
                   const isAstChange = editor.operations.some(
                       op => 'set_selection' !== op.type
@@ -64,22 +105,15 @@ const RichEditor = ({ onChange }) => {
                       onChange(content)
                   }
               }}
-
-      >
-          {/*<Toolbar>
-             <InsertImageButton />
-             </Toolbar>*/}
+          >
           <Editable
+              readOnly={readOnly}
               onKeyDown={event => {
                   if (isHotkey('mod+a', event)) {
                       event.preventDefault()
                       Transforms.select(editor, [])
                   }
               }}
-
-              //onChange={(value) => {
-              //    console.log("value", value)
-              //}}
 
               renderElement={props => <Element {...props} />}
               placeholder="What do you want to talk about?"
@@ -97,21 +131,52 @@ const RichEditor = ({ onChange }) => {
 
                   `}
           />
-      </Slate>
+
+          { !readOnly && isDragActive &&
+          <div
+              className={css`
+                  font-size: 0.7rem;
+                  `}
+          >
+              <input {...getInputProps()} />
+              &nbsp;
+              {
+                  isDragActive?
+                      <p
+                          className={css`
+                              text-align: center;
+                              color: grey;
+                              `
+                          }
+                      >Drop the files here ...</p>: 
+                          <p
+                              className={css`
+                                  text-align: center;
+                                  color: grey;
+                                  `}
+                          >You can drag files here...</p>
+
+              }
+          </div>
+          }
+          </Slate>
+              {/*{ !readOnly &&
           <Grid2 display="flex" flexDirection={"row"} sx={{ marginTop: 2 }}>
               <Button>
                   <ImageOutlinedIcon />
               </Button>
-              {/*<Button>
+              [><Button>
                  <UploadFileOutlinedIcon />
-                 </Button>*/}
-              {/*<Button>
+                 </Button><]
+              [><Button>
                   <LinkOutlinedIcon 
                       onClick={() => {
                       }}
                   />
-              </Button>*/}
+              </Button><]
           </Grid2>
+          }*/}
+          </div>
       </>
   )
 }
@@ -160,17 +225,17 @@ const insertImage = (editor, url) => {
 }
 
 const Element = props => {
-  const { attributes, children, element } = props
+  const { attributes, children, element, readOnly } = props
 
   switch (element.type) {
     case 'image':
-      return <Image {...props} />
+      return <Image {...props} readOnly={readOnly} />
     default:
       return <p {...attributes}>{children}</p>
   }
 }
 
-const Image = ({ attributes, children, element }) => {
+const Image = ({ attributes, children, element, readOnly }) => {
   const editor = useSlateStatic()
   const path = ReactEditor.findPath(editor, element)
 
@@ -193,47 +258,28 @@ const Image = ({ attributes, children, element }) => {
             max-width: 100%;
             max-height: 20em;
             box-shadow: ${selected && focused ? '0 0 0 3px #B4D5FF' : 'none'};
-          `}
+            `}
         />
-        <div
-          //active
-            onClick={() => {
-                Transforms.removeNodes(editor, { at: path })
-                console.log("getting clicked")
-            }}
-            className={css`
-            display: ${focused && selected? 'inline' : 'none'};
-            position: absolute;
-            top: 0.5em;
-            left: 0.5em;
-            background-color: white;
-          `}
-        >
-          <IconButton>delete</IconButton> {/* TODO */}
-        </div>
+          {readOnly && <div
+              //active
+              onClick={() => {
+                  Transforms.removeNodes(editor, { at: path })
+                  console.log("getting clicked")
+              }}
+              className={css`
+                  //display: ${focused && selected? 'inline' : 'none'};
+                  display: inline;
+                  position: absolute;
+                  top: 0.5em;
+                  left: 0.5em;
+                  `}
+          >
+              <Fab size="small" color="dark" aria-label="delete" >
+                  <DeleteIcon />
+              </Fab>
+          </div>}
       </div>
     </div>
-  )
-}
-
-const InsertImageButton = () => {
-  const editor = useSlateStatic()
-  return (
-      <>
-    {/*<Button
-      onMouseDown={event => {
-        event.preventDefault()
-        const url = window.prompt('Enter the URL of the image:')
-        if (url && !isImageUrl(url)) {
-          alert('URL is not an image')
-          return
-        }
-        url && insertImage(editor, url)
-      }}
-    >
-      <Icon>image</Icon>
-    </Button>*/}
-          </>
   )
 }
 
@@ -243,18 +289,6 @@ const isImageUrl = url => {
   const ext = new URL(url).pathname.split('.').pop()
   return imageExtensions.includes(ext)
 }
-
-const initialValue: Descendant[] = [
-  {
-    type: 'paragraph',
-    children: [
-      {
-        text: '',
-      },
-    ],
-  },
-]
-
 
 const myDecorator = ([node, path]) => {
   const nodeText = node.text;

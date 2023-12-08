@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       try {
         /* get post_id and update */
         const update = JSON.parse(req.body)
-        const post = await Post.findOneAndUpdate({post_id : post_id}, update, { 
+        const post = await Post.findOneAndUpdate({post_id : post_id}, update, {
           new: true,
           runValidators: true,
         })
@@ -52,7 +52,7 @@ export default async function handler(req, res) {
             return res.status(400).json({ success: false })
           }
           const newPost = new Post(parsedData);
-          if (!newPost) 
+          if (!newPost)
             return res.status(400).json({ success: false })
           newPost.save(function (err, post) {
             if (err) return console.error(err);
@@ -80,4 +80,10 @@ export default async function handler(req, res) {
       res.status(400).json({ success: false })
       break
   }
+}
+
+export const config = {
+  api: {
+    responseLimit: '8mb',
+  },
 }

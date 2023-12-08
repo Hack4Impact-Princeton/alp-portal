@@ -59,12 +59,6 @@ declare module 'slate' {
 //  })
 //]
 
-const initialValue = [
-  {
-    type: 'paragraph',
-    children: [{ text: 'A line of text in a paragraph.' }],
-  },
-]
 
 const style = {
   position: "absolute" as "absolute",
@@ -95,13 +89,7 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
 
   const [submit, setSubmit] = useState(false);
 
-
-
   const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    console.log("message", message);
-  }, [message]);
 
   const sendPost = async () => {
     try {
@@ -139,6 +127,18 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
     handleClose();
     console.log("pressed");
   };
+
+
+  const initialValue: Descendant[] = [
+    {
+      type: 'paragraph',
+      children: [
+        {
+          text: '',
+        },
+      ],
+    },
+  ]
 
   return (
     <Grid2>
@@ -220,6 +220,8 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
 
             <RichEditor
               onChange={setMessage}
+              readOnly={false}
+              initialValue={initialValue}
             />
 
           </Grid2>
