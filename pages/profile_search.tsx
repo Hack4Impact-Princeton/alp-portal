@@ -22,15 +22,17 @@ import { BookDriveStatus } from "../lib/enums";
 import SearchBar from '../components/SearchBar';
 import ProfileDisplayCase from '../components/ProfileDisplayCase';
 import ProfileCard from '../components/ProfileCard';
+import { getStates } from "../lib/enums";
 
 type ProfileProps = {
   error: string | null;
   account: VolunteerAccount | null;
   drives: BookDrive[] | null;
   broadcasts: Broadcast[];
+  allAccounts: VolunteerAccount[];
 };
-const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives, error }) => {
-  console.log("Profile Page");
+const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives, error, allAccounts }) => {
+  //console.log("Profile Page");
 
   const handleFriendRequest = () => {
     // Handle the logic for sending a friend request
@@ -55,160 +57,38 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives, er
     // Handle the logic for revoking a friend request
     console.log('Friend request revoked');
   };
-const profiles = [
-  {
-    name: 'John Doe',
-    state: 'California',
-    email: 'john@example.com',
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+
+  const states = getStates();
+  console.log(states)
+
+  const testProfiles = allAccounts.map((account) => ({
+    name: `${account.fname} ${account.lname}`,
+    state: "California",//states.find((state)=> state.index === account.location),
+    //state: states.find(state => state.index === account.location),
+    email: `${account.email}`,
+    profilePicture:
+      "https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug",
     badges: [
-      { isEarned: true, level: 1, name: 'Badge 1', description: 'Badge 1 description' },
-      { isEarned: false, level: 2, name: 'Badge 2', description: 'Badge 2 description' },
+      {
+        isEarned: true,
+        level: 1,
+        name: "Badge 1",
+        description: "Badge 1 description",
+      },
+      {
+        isEarned: false,
+        level: 2,
+        name: "Badge 2",
+        description: "Badge 2 description",
+      },
     ],
-  },
-  {
-    name: 'Jane Doe',
-    state: 'New York',
-    email: 'jane@example.com',
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    badges: [
-      { isEarned: true, level: 1, name: 'Badge 3', description: 'Badge 3 description' },
-      { isEarned: false, level: 2, name: 'Badge 4', description: 'Badge 4 description' },
-    ],
-  },
-    {
-    name: 'John Doe',
-    state: 'California',
-    email: 'john@example.com',
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    badges: [
-      { isEarned: true, level: 1, name: 'Badge 1', description: 'Badge 1 description' },
-      { isEarned: false, level: 2, name: 'Badge 2', description: 'Badge 2 description' },
-    ],
-  },
-  {
-    name: 'Jane Doe',
-    state: 'New York',
-    email: 'jane@example.com',
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    badges: [
-      { isEarned: true, level: 1, name: 'Badge 3', description: 'Badge 3 description' },
-      { isEarned: false, level: 2, name: 'Badge 4', description: 'Badge 4 description' },
-    ],
-  },
-    {
-    name: 'John Doe',
-    state: 'California',
-    email: 'john@example.com',
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    badges: [
-      { isEarned: true, level: 1, name: 'Badge 1', description: 'Badge 1 description' },
-      { isEarned: false, level: 2, name: 'Badge 2', description: 'Badge 2 description' },
-    ],
-  },
-  {
-    name: 'Jane Doe',
-    state: 'New York',
-    email: 'jane@example.com',
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    badges: [
-      { isEarned: true, level: 1, name: 'Badge 3', description: 'Badge 3 description' },
-      { isEarned: false, level: 2, name: 'Badge 4', description: 'Badge 4 description' },
-    ],
-  },
-    {
-    name: 'John Doe',
-    state: 'California',
-    email: 'john@example.com',
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    badges: [
-      { isEarned: true, level: 1, name: 'Badge 1', description: 'Badge 1 description' },
-      { isEarned: false, level: 2, name: 'Badge 2', description: 'Badge 2 description' },
-    ],
-  },
-  {
-    name: 'Jane Doe',
-    state: 'New York',
-    email: 'jane@example.com',
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    badges: [
-      { isEarned: true, level: 1, name: 'Badge 3', description: 'Badge 3 description' },
-      { isEarned: false, level: 2, name: 'Badge 4', description: 'Badge 4 description' },
-    ],
-  },
-    {
-    name: 'John Doe',
-    state: 'California',
-    email: 'john@example.com',
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    badges: [
-      { isEarned: true, level: 1, name: 'Badge 1', description: 'Badge 1 description' },
-      { isEarned: false, level: 2, name: 'Badge 2', description: 'Badge 2 description' },
-    ],
-  },
-  {
-    name: 'Jane Doe',
-    state: 'New York',
-    email: 'jane@example.com',
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    badges: [
-      { isEarned: true, level: 1, name: 'Badge 3', description: 'Badge 3 description' },
-      { isEarned: false, level: 2, name: 'Badge 4', description: 'Badge 4 description' },
-    ],
-  },
-    {
-    name: 'John Doe',
-    state: 'California',
-    email: 'john@example.com',
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    badges: [
-      { isEarned: true, level: 1, name: 'Badge 1', description: 'Badge 1 description' },
-      { isEarned: false, level: 2, name: 'Badge 2', description: 'Badge 2 description' },
-    ],
-  },
-  {
-    name: 'Jane Doe',
-    state: 'New York',
-    email: 'jane@example.com',
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    badges: [
-      { isEarned: true, level: 1, name: 'Badge 3', description: 'Badge 3 description' },
-      { isEarned: false, level: 2, name: 'Badge 4', description: 'Badge 4 description' },
-    ],
-  },
-    {
-    name: 'John Doe',
-    state: 'California',
-    email: 'john@example.com',
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    badges: [
-      { isEarned: true, level: 1, name: 'Badge 1', description: 'Badge 1 description' },
-      { isEarned: false, level: 2, name: 'Badge 2', description: 'Badge 2 description' },
-    ],
-  },
-  {
-    name: 'Jane Doe',
-    state: 'New York',
-    email: 'jane@example.com',
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    badges: [
-      { isEarned: true, level: 1, name: 'Badge 3', description: 'Badge 3 description' },
-      { isEarned: false, level: 2, name: 'Badge 4', description: 'Badge 4 description' },
-    ],
-  },
-    {
-    name: 'Jane Doe',
-    state: 'New York',
-    email: 'jane@example.com',
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    badges: [
-      { isEarned: true, level: 1, name: 'Badge 3', description: 'Badge 3 description' },
-      { isEarned: false, level: 2, name: 'Badge 4', description: 'Badge 4 description' },
-    ],
-  }
+  }));
+
+  console.log(testProfiles)
+
   
-  // Add more profiles as needed
-];
+  //userState = states.find((state) => state.index === v.location);
+  
   if (account) {
     console.log("ACCOUNT: ", account);
     const [filteredUsers, setFilteredUsers] = useState<VolunteerAccount[]>([]);
@@ -217,6 +97,7 @@ const profiles = [
     const handleQueryChange = (query: string, filteredUsers: VolunteerAccount[]) => {
       setFilteredUsers(filteredUsers);
     };
+    console.log(allAccounts)
 
     return (
       <Grid>
@@ -254,7 +135,7 @@ const profiles = [
         </Grid>
         
         <Grid item xs={12} sm={5} mt={6} style={{marginLeft: '100px' }}>
-          <ProfileDisplayCase profiles={profiles} useBadges={true} />
+          <ProfileDisplayCase profiles={testProfiles} useBadges={true} />
         </Grid>
 
       </Grid>
@@ -302,6 +183,8 @@ export const getServerSideProps = async (context: any) => {
     // you have to flatten the array otherwise it will have a weird shape.
     const drives: BookDrive[] | null = resolvedPromises.flat()
     const Broadcast: mongoose.Model<Broadcast> = getBroadcastModel();
+
+    const allAccounts = (await VolunteerAccount.find({})) as VolunteerAccount[];
     
     console.log(volunteerAccount.broadcasts);
     const bPromises = volunteerAccount.broadcasts.map((broadcastId) => {
@@ -310,7 +193,17 @@ export const getServerSideProps = async (context: any) => {
       else return res;
     });
     const broadcasts = (await Promise.all(bPromises)) as Broadcast[];
-    return { props: { broadcasts: JSON.parse(JSON.stringify(broadcasts)), account: JSON.parse(JSON.stringify(volunteerAccount)) as VolunteerAccount, drives: JSON.parse(JSON.stringify(drives)) as BookDrive, error: null } }
+    return {
+      props: {
+        broadcasts: JSON.parse(JSON.stringify(broadcasts)),
+        account: JSON.parse(
+          JSON.stringify(volunteerAccount)
+        ) as VolunteerAccount,
+        drives: JSON.parse(JSON.stringify(drives)) as BookDrive,
+        allAccounts: JSON.parse(JSON.stringify(allAccounts)),
+        error: null,
+      },
+    };
   } catch (e: Error | any) {
     console.error(e)
     // if the specific error message occurs it's because the user has not logged in
