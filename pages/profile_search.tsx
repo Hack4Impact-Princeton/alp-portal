@@ -59,12 +59,9 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives, er
   };
 
   const states = getStates();
-  console.log(states)
-
-  const testProfiles = allAccounts.map((account) => ({
+  const allProfiles = allAccounts.map((account) => ({
     name: `${account.fname} ${account.lname}`,
-    state: "California",//states.find((state)=> state.index === account.location),
-    //state: states.find(state => state.index === account.location),
+    state: states[account.location-1].name,
     email: `${account.email}`,
     profilePicture:
       "https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug",
@@ -83,28 +80,48 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives, er
       },
     ],
   }));
-
-  console.log(testProfiles)
-
-  
-  //userState = states.find((state) => state.index === v.location);
   
   if (account) {
     console.log("ACCOUNT: ", account);
     const [filteredUsers, setFilteredUsers] = useState<VolunteerAccount[]>([]);
+    const [filteredProfiles, setFilteredProfiles] = useState<
+      Array<{
+        name: string;
+        state: string;
+        email: string;
+        profilePicture: string;
+        badges: Array<{
+          isEarned: boolean;
+          level: number;
+          name: string;
+          description: string;
+        }>;
+      }>
+    >([]);
     const users: VolunteerAccount[] = [ /* Add your user data here */ ];
 
     const handleQueryChange = (query: string, filteredUsers: VolunteerAccount[]) => {
-      setFilteredUsers(filteredUsers);
+      if (query.trim() === '') {
+        setFilteredProfiles([]); // If the query is empty, set filteredProfiles to an empty array
+      } else {
+        const filteredProfiles = allProfiles.filter((profile) =>
+          profile.name.toLowerCase().includes(query.toLowerCase())
+        );
+
+        setFilteredProfiles(filteredProfiles);
+      }
+      
     };
-    console.log(allAccounts)
+    //console.log(allAccounts)
+    console.log(filteredProfiles)
 
     return (
       <Grid>
         <PageContainer broadcasts = {broadcasts} fName={account.fname} currPage="profile_search" />
           <Grid container display="flex" padding={1} sx={{ pl: 20 }} rowSpacing={2}>
         <Grid item xs={12} sm={7} display="flex" flexDirection="column">
-           <SearchBar users={users} onQueryChange={handleQueryChange} onBackToForum={() => {}} />
+            
+            <SearchBar users={users} onQueryChange={handleQueryChange} onBackToForum={() => {}} />
             <Link href="/forum">
         <a style={backButtonStyle}>
           <span style={backIconStyle}>&lt;</span> Back to Forum
@@ -135,7 +152,7 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives, er
         </Grid>
         
         <Grid item xs={12} sm={5} mt={6} style={{marginLeft: '100px' }}>
-          <ProfileDisplayCase profiles={testProfiles} useBadges={true} />
+          <ProfileDisplayCase profiles={filteredProfiles} useBadges={true} />
         </Grid>
 
       </Grid>
