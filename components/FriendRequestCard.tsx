@@ -14,7 +14,7 @@ type FriendRequestCardProps = {
   date: string; // Date of the friend request
   state: string; // State of the friend request (e.g., pending, approved, rejected)
   requeststate? : string;
-  index?: number; // Index of the friend request
+  index: number; // Index of the friend request
   onApprove: (index: number) => void; // Callback function when the approve button is clicked
   onReject: (index: number) => void; // Callback function when the reject button is clicked
   onActionCompleted: (message: string) => void; // Callback function when an action (approve/reject) is completed
