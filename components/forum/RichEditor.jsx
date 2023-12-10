@@ -85,6 +85,23 @@ const RichEditor = ({ onChange, readOnly, initialValue, post_id }) => {
       }
   })
 
+    const handlePaste = (e) => {
+        const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+        for (const item of items) {
+            if (item.type.indexOf("image") === 0) {
+                e.preventDefault();
+                const blob = item.getAsFile();
+                const reader = new FileReader();
+                reader.onloadend = async function () {
+                    const url = await imageUpload(blob)
+                    insertImage(editor, url)
+                };
+                reader.readAsDataURL(blob);
+                console.log("image pasted");
+            }
+        }
+    }
+
   return (
       <> 
           <div
@@ -111,6 +128,8 @@ const RichEditor = ({ onChange, readOnly, initialValue, post_id }) => {
                       Transforms.select(editor, [])
                   }
               }}
+
+              onPaste={handlePaste}
 
               renderElement={props => <Element {...props} />}
               placeholder="What do you want to talk about?"
