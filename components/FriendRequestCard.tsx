@@ -13,8 +13,8 @@ type FriendRequestCardProps = {
   email: string;
   date: string; // Date of the friend request
   state: string; // State of the friend request (e.g., pending, approved, rejected)
-  requeststate : string;
-  index: number; // Index of the friend request
+  requeststate? : string;
+  index?: number; // Index of the friend request
   onApprove: (index: number) => void; // Callback function when the approve button is clicked
   onReject: (index: number) => void; // Callback function when the reject button is clicked
   onActionCompleted: (message: string) => void; // Callback function when an action (approve/reject) is completed
@@ -39,7 +39,7 @@ const FriendRequestCard: React.FC<FriendRequestCardProps> = ({
       <CardContent style={{ display: 'flex', alignItems: 'center' }}>
         <Badge
           anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-          badgeContent={requeststate === 'pending' ? 'New' : state.charAt(0).toUpperCase() + state.slice(1)}
+          badgeContent={requeststate === 'pending' ? 'New' : ' '}
           color={requeststate === 'pending' ? 'primary' : 'default'}
         >
           <Avatar variant= "square" alt={name} src={profilePicture} sx={{ width: 80, height: 80 }} />

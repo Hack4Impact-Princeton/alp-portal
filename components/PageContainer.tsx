@@ -40,91 +40,98 @@ const testFriendRequests: FriendRequest[] = [
     email: 'jane.smith@example.com',
     date: '2023-12-05', // Replace with an actual date
     state: 'CO',
-    requeststate: 'pending',
-    index: 1, // Index for the second item
   },
-    {
+  {
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    date: '2023-12-06', // Replace with an actual date
+    state: 'FL',
+    requeststate: 'pending',
+    index: 0, // Index for the first item
+  },
+  {
     profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     name: 'Jane Smith',
     email: 'jane.smith@example.com',
     date: '2023-12-05', // Replace with an actual date
     state: 'CO',
+  },{
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    date: '2023-12-06', // Replace with an actual date
+    state: 'FL',
     requeststate: 'pending',
-    index: 1, // Index for the second item
+    index: 0, // Index for the first item
   },
-    {
+  {
     profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     name: 'Jane Smith',
     email: 'jane.smith@example.com',
     date: '2023-12-05', // Replace with an actual date
     state: 'CO',
+  },{
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    date: '2023-12-06', // Replace with an actual date
+    state: 'FL',
     requeststate: 'pending',
-    index: 1, // Index for the second item
+    index: 0, // Index for the first item
   },
-    {
+  {
     profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     name: 'Jane Smith',
     email: 'jane.smith@example.com',
     date: '2023-12-05', // Replace with an actual date
     state: 'CO',
+  },{
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    date: '2023-12-06', // Replace with an actual date
+    state: 'FL',
     requeststate: 'pending',
-    index: 1, // Index for the second item
+    index: 0, // Index for the first item
   },
-    {
+  {
     profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     name: 'Jane Smith',
     email: 'jane.smith@example.com',
     date: '2023-12-05', // Replace with an actual date
     state: 'CO',
+  },{
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    date: '2023-12-06', // Replace with an actual date
+    state: 'FL',
     requeststate: 'pending',
-    index: 1, // Index for the second item
+    index: 0, // Index for the first item
   },
-    {
+  {
     profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     name: 'Jane Smith',
     email: 'jane.smith@example.com',
     date: '2023-12-05', // Replace with an actual date
     state: 'CO',
+  },{
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    date: '2023-12-06', // Replace with an actual date
+    state: 'FL',
     requeststate: 'pending',
-    index: 1, // Index for the second item
+    index: 0, // Index for the first item
   },
-    {
+  {
     profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     name: 'Jane Smith',
     email: 'jane.smith@example.com',
     date: '2023-12-05', // Replace with an actual date
     state: 'CO',
-    requeststate: 'pending',
-    index: 1, // Index for the second item
   },
-    {
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    name: 'Jane Smith',
-    email: 'jane.smith@example.com',
-    date: '2023-12-05', // Replace with an actual date
-    state: 'CO',
-    requeststate: 'pending',
-    index: 1, // Index for the second item
-  },
-    {
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    name: 'Jane Smith',
-    email: 'jane.smith@example.com',
-    date: '2023-12-05', // Replace with an actual date
-    state: 'CO',
-    requeststate: 'pending',
-    index: 1, // Index for the second item
-  },
-    {
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    name: 'Jane Smith',
-    email: 'jane.smith@example.com',
-    date: '2023-12-05', // Replace with an actual date
-    state: 'CO',
-    requeststate: 'pending',
-    index: 1, // Index for the second item
-  },
-
   // Add more friend request objects as needed
 ];
 
