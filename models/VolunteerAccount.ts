@@ -23,6 +23,7 @@ export type VolunteerAccount = {
     badges: BadgeInfoProps[];
     broadcasts: string[],
     chatIds: string[],
+    pfpLink: string
 }
 
 export const VolunteerAccountSchema = new Schema<VolunteerAccount>({
@@ -76,6 +77,10 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>({
     },
     chatIds: {
         type: [String]
+    },
+    pfpLink:  {
+        type: String,
+        default: "https://res.cloudinary.com/alp-portal/image/upload/c_thumb,g_face,h_150,w_150/srjcceedx4zjrvwz6eqa.png"
     }
 }, {collection: 'volunteerAccounts'})
 
