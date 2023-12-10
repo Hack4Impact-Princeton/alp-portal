@@ -12,7 +12,7 @@ import { Popover, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Broadcast } from "../models/Broadcast";
 import FriendRequestCard from '../components/FriendRequestCard';
-import { FriendRequest } from '../components/FriendRequest'; 
+import FriendRequest from '../components/FriendRequest'; 
 
 
 type PageContainerProps = {
@@ -28,14 +28,16 @@ const testFriendRequests: FriendRequest[] = [
     name: 'John Doe',
     email: 'john.doe@example.com',
     date: '2023-12-06', // Replace with an actual date
-    state: 'pending',
+    requeststate : 'pending',
+    state: 'FL',
   },
   {
     profilePicture: 'url_to_profile_picture_2',
     name: 'Jane Smith',
     email: 'jane.smith@example.com',
     date: '2023-12-05', // Replace with an actual date
-    state: 'approved',
+    requeststate: 'pending',
+    state: 'CO'
   },
   // Add more friend request objects as needed
 ];
@@ -204,6 +206,7 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
                         email={request.email}
                         date={request.date}
                         state={request.state}
+                        requeststate = {request.requeststate}
                         onApprove={() => handleApproveFriendRequest(index)} // Replace with your actual handler
                         onReject={() => handleRejectFriendRequest(index)} // Replace with your actual handler
                     />

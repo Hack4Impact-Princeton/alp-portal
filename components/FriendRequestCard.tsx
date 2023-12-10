@@ -13,6 +13,7 @@ type FriendRequestCardProps = {
   email: string;
   date: string; // Date of the friend request
   state: string; // State of the friend request (e.g., pending, approved, rejected)
+  requeststate : string;
   onApprove: () => void; // Callback function when the approve button is clicked
   onReject: () => void; // Callback function when the reject button is clicked
 };
@@ -23,16 +24,19 @@ const FriendRequestCard: React.FC<FriendRequestCardProps> = ({
   email,
   date,
   state,
+  requeststate,
   onApprove,
   onReject,
 }) => {
+  // Format the date
+  const formattedDate = new Date(date).toLocaleDateString(); 
   return (
     <Card>
       <CardContent style={{ display: 'flex', alignItems: 'center' }}>
         <Badge
           anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-          badgeContent={state === 'pending' ? 'New' : state.charAt(0).toUpperCase() + state.slice(1)}
-          color={state === 'pending' ? 'primary' : 'default'}
+          badgeContent={requeststate === 'pending' ? 'New' : state.charAt(0).toUpperCase() + state.slice(1)}
+          color={requeststate === 'pending' ? 'primary' : 'default'}
         >
           <Avatar alt={name} src={profilePicture} />
         </Badge>
@@ -40,17 +44,21 @@ const FriendRequestCard: React.FC<FriendRequestCardProps> = ({
           <Typography variant="h6">{name}</Typography>
           <Typography variant="subtitle1">{email}</Typography>
           <Typography variant="caption" color="textSecondary">
-            Requested on {date}
+            {formattedDate} | {state}
           </Typography>
         </div>
       </CardContent>
       <CardActions>
-        {state === 'pending' && (
+        {requeststate === 'pending' && (
           <>
-            <Button size="small" color="primary" onClick={onApprove}>
+            <Button size="small"
+              style={{ backgroundColor: '#F3D39A', color: 'black' }}
+             color="primary" onClick={onApprove}>
               Approve
             </Button>
-            <Button size="small" color="secondary" onClick={onReject}>
+            <Button size="small"              
+            style={{ backgroundColor: '#F3D39A', color: 'black' }}
+            color="secondary" onClick={onReject}>
               Reject
             </Button>
           </>
