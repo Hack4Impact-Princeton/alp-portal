@@ -223,6 +223,7 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
               onChange={setMessage}
               readOnly={false}
               initialValue={initialValue}
+              post_id={""}
             />
 
           </Grid2>
