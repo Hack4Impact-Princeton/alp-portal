@@ -7,6 +7,7 @@ type FriendRequest = {
   date: string;
   state: string;
   requeststate : string;
+  index: number;
 };
 
 export default FriendRequest;

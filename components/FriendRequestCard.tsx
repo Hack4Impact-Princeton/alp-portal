@@ -14,8 +14,10 @@ type FriendRequestCardProps = {
   date: string; // Date of the friend request
   state: string; // State of the friend request (e.g., pending, approved, rejected)
   requeststate : string;
-  onApprove: () => void; // Callback function when the approve button is clicked
-  onReject: () => void; // Callback function when the reject button is clicked
+  index: number; // Index of the friend request
+  onApprove: (index: number) => void; // Callback function when the approve button is clicked
+  onReject: (index: number) => void; // Callback function when the reject button is clicked
+  onActionCompleted: (message: string) => void; // Callback function when an action (approve/reject) is completed
 };
 
 const FriendRequestCard: React.FC<FriendRequestCardProps> = ({
@@ -25,8 +27,10 @@ const FriendRequestCard: React.FC<FriendRequestCardProps> = ({
   date,
   state,
   requeststate,
+  index,
   onApprove,
   onReject,
+  onActionCompleted
 }) => {
   // Format the date
   const formattedDate = new Date(date).toLocaleDateString(); 
@@ -38,9 +42,9 @@ const FriendRequestCard: React.FC<FriendRequestCardProps> = ({
           badgeContent={requeststate === 'pending' ? 'New' : state.charAt(0).toUpperCase() + state.slice(1)}
           color={requeststate === 'pending' ? 'primary' : 'default'}
         >
-          <Avatar alt={name} src={profilePicture} />
+          <Avatar variant= "square" alt={name} src={profilePicture} sx={{ width: 80, height: 80 }} />
         </Badge>
-        <div style={{ marginLeft: '10px' }}> {/* Add margin to separate profile picture and information */}
+        <div style={{ marginLeft: '10px', flex: 1 }}> {/* Add margin to separate profile picture and information */}
           <Typography variant="h6">{name}</Typography>
           <Typography variant="subtitle1">{email}</Typography>
           <Typography variant="caption" color="textSecondary">
@@ -48,17 +52,36 @@ const FriendRequestCard: React.FC<FriendRequestCardProps> = ({
           </Typography>
         </div>
       </CardContent>
-      <CardActions>
+      <CardActions style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'  }}>
         {requeststate === 'pending' && (
           <>
             <Button size="small"
-              style={{ backgroundColor: '#F3D39A', color: 'black' }}
-             color="primary" onClick={onApprove}>
+              fullWidth
+              style={{
+                borderRadius: 0,
+                backgroundColor: '#F3D39A',
+                color: '#5F5F5F',
+                margin: '0px 4px', // Updated margin
+                fontWeight: 'bold', // Bold when active
+              }}
+              onClick={() => {
+                onApprove(index);
+                onActionCompleted('Friend request approved.');
+              }}>
               Approve
             </Button>
             <Button size="small"              
-            style={{ backgroundColor: '#F3D39A', color: 'black' }}
-            color="secondary" onClick={onReject}>
+              fullWidth
+              style={{
+                borderRadius: 0,
+                backgroundColor: '#F3D39A',
+                color: '#5F5F5F',
+                margin: '0 2px', // Updated margin
+                fontWeight: 'bold', // Bold when active
+              }}onClick={() => {
+                onReject(index);
+                onActionCompleted('Friend request rejected.');
+              }}>
               Reject
             </Button>
           </>

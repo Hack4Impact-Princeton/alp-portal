@@ -7,12 +7,14 @@ import Navbar from '../components/Navbar'
 import { signOut } from "next-auth/react"
 import useDynamicPadding from '../lib/useDynamicPadding';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Popover, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Broadcast } from "../models/Broadcast";
 import FriendRequestCard from '../components/FriendRequestCard';
 import FriendRequest from '../components/FriendRequest'; 
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 
 type PageContainerProps = {
@@ -24,21 +26,105 @@ type PageContainerProps = {
 
 const testFriendRequests: FriendRequest[] = [
   {
-    profilePicture: 'url_to_profile_picture_1',
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     name: 'John Doe',
     email: 'john.doe@example.com',
     date: '2023-12-06', // Replace with an actual date
-    requeststate : 'pending',
     state: 'FL',
+    requeststate: 'pending',
+    index: 0, // Index for the first item
   },
   {
-    profilePicture: 'url_to_profile_picture_2',
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
     name: 'Jane Smith',
     email: 'jane.smith@example.com',
     date: '2023-12-05', // Replace with an actual date
+    state: 'CO',
     requeststate: 'pending',
-    state: 'CO'
+    index: 1, // Index for the second item
   },
+    {
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    name: 'Jane Smith',
+    email: 'jane.smith@example.com',
+    date: '2023-12-05', // Replace with an actual date
+    state: 'CO',
+    requeststate: 'pending',
+    index: 1, // Index for the second item
+  },
+    {
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    name: 'Jane Smith',
+    email: 'jane.smith@example.com',
+    date: '2023-12-05', // Replace with an actual date
+    state: 'CO',
+    requeststate: 'pending',
+    index: 1, // Index for the second item
+  },
+    {
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    name: 'Jane Smith',
+    email: 'jane.smith@example.com',
+    date: '2023-12-05', // Replace with an actual date
+    state: 'CO',
+    requeststate: 'pending',
+    index: 1, // Index for the second item
+  },
+    {
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    name: 'Jane Smith',
+    email: 'jane.smith@example.com',
+    date: '2023-12-05', // Replace with an actual date
+    state: 'CO',
+    requeststate: 'pending',
+    index: 1, // Index for the second item
+  },
+    {
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    name: 'Jane Smith',
+    email: 'jane.smith@example.com',
+    date: '2023-12-05', // Replace with an actual date
+    state: 'CO',
+    requeststate: 'pending',
+    index: 1, // Index for the second item
+  },
+    {
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    name: 'Jane Smith',
+    email: 'jane.smith@example.com',
+    date: '2023-12-05', // Replace with an actual date
+    state: 'CO',
+    requeststate: 'pending',
+    index: 1, // Index for the second item
+  },
+    {
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    name: 'Jane Smith',
+    email: 'jane.smith@example.com',
+    date: '2023-12-05', // Replace with an actual date
+    state: 'CO',
+    requeststate: 'pending',
+    index: 1, // Index for the second item
+  },
+    {
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    name: 'Jane Smith',
+    email: 'jane.smith@example.com',
+    date: '2023-12-05', // Replace with an actual date
+    state: 'CO',
+    requeststate: 'pending',
+    index: 1, // Index for the second item
+  },
+    {
+    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
+    name: 'Jane Smith',
+    email: 'jane.smith@example.com',
+    date: '2023-12-05', // Replace with an actual date
+    state: 'CO',
+    requeststate: 'pending',
+    index: 1, // Index for the second item
+  },
+
   // Add more friend request objects as needed
 ];
 
@@ -56,7 +142,9 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [visibleBroadcasts, setVisibleBroadcasts] = useState(Array(broadcasts?.length).fill(true));
   const [activeFilter, setActiveFilter] = useState("all"); // Added state for the active filter
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [visibleFriendRequests, setVisibleFriendRequests] = useState([...testFriendRequests]);
   const handleOpenPopover = () => {
     setPopoverOpen(true);
   };
@@ -75,6 +163,28 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
     updatedVisibility[index] = !updatedVisibility[index];
     setVisibleBroadcasts(updatedVisibility);
   };
+
+  const handleApproveFriendRequest = (index: number) => {
+    const updatedFriendRequests = [...visibleFriendRequests];
+    updatedFriendRequests[index].requeststate = 'approved';
+    setVisibleFriendRequests(updatedFriendRequests.filter(request => request.requeststate !== 'approved'));
+    setSnackbarMessage('Friend request has been approved!');
+    setSnackbarOpen(true);
+  };
+
+  const handleRejectFriendRequest = (index: number) => {
+    const updatedFriendRequests = [...visibleFriendRequests];
+    updatedFriendRequests[index].requeststate = 'rejected';
+    setVisibleFriendRequests(updatedFriendRequests.filter(request => request.requeststate !== 'rejected'));
+    setSnackbarMessage('Friend request has been rejected!');
+    setSnackbarOpen(true);
+  };
+
+    const handleActionCompleted = (message: string) => {
+    setSnackbarMessage(message);
+    setSnackbarOpen(true);
+  };
+
 
     let pageName = "";
     let fontsize = "";
@@ -116,6 +226,14 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
         signOut();
         window.location.href = '/';
     }
+    useEffect(() => {
+    if (snackbarOpen) {
+      const timeoutId = setTimeout(() => {
+        setSnackbarOpen(false);
+      }, 6000); // Adjust the duration as needed
+      return () => clearTimeout(timeoutId);
+    }
+  }, [snackbarOpen]);
    return (
     <>
       <Grid>
@@ -196,22 +314,24 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
                         </Box>
                     </Collapse>
                     ))}
-                  {/* Render FriendRequests component when filter is 'friends' */}
-                    {activeFilter === "friends" && testFriendRequests.map((request, index) => (
-                        <div key={index} style={{ marginBottom: '10px' }}>
-                    <FriendRequestCard
-                        key={index}
-                        profilePicture={request.profilePicture}
-                        name={request.name}
-                        email={request.email}
-                        date={request.date}
-                        state={request.state}
-                        requeststate = {request.requeststate}
-                        onApprove={() => handleApproveFriendRequest(index)} // Replace with your actual handler
-                        onReject={() => handleRejectFriendRequest(index)} // Replace with your actual handler
-                    />
-                    </div>
-                    ))}
+                        {activeFilter === 'friends' &&
+                            visibleFriendRequests.map((request, index) => (
+                            <div key={index} style={{ marginBottom: '10px' }}>
+                                <FriendRequestCard
+                                key={index}
+                                profilePicture={request.profilePicture}
+                                name={request.name}
+                                email={request.email}
+                                date={request.date}
+                                state={request.state}
+                                index={request.index}
+                                requeststate={request.requeststate}
+                                onApprove={() => handleApproveFriendRequest(index)}
+                                onReject={() => handleRejectFriendRequest(index)}
+                                onActionCompleted={handleActionCompleted}
+                                />
+                            </div>
+                            ))}
                 </Box>
                 </Popover>
             </Grid>
@@ -228,6 +348,16 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
         }}></Box>
         <h1 style={{ textAlign: "left", fontSize: fontsize, paddingRight: 10 }}>{pageName}</h1>
       </Grid>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <MuiAlert elevation={6} variant="filled" severity="success">
+          {snackbarMessage}
+        </MuiAlert>
+      </Snackbar>
     </>
   );
 }
