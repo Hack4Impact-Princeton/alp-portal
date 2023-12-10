@@ -14,7 +14,6 @@ import { getServerSession } from "next-auth";
 import getVolunteerAccountModel, {
   VolunteerAccount,
 } from "../models/VolunteerAccount";
-import FriendList from "../components/forum/FriendList";
 import { useRouter } from "next/router";
 import getChatModel, { Chat } from "../models/Chat";
 import ChatList from "../components/forum/ChatList";
@@ -23,6 +22,8 @@ import NewPost from "../components/forum/NewPost";
 import UpCaret from "../components/UpCaret";
 import DownCaret from "../components/DownCaret";
 import RequestList from "../components/forum/RequestList";
+import FriendsList from "../components/forum/FriendsList";
+
 import { use } from "chai";
 
 type PostProps = {
@@ -252,13 +253,21 @@ const Forum: NextPage<PostProps> = ({
                 </Button>
               </Grid2>
               <Grid2>
-                {friendBtn == "friends" && <div>friendList</div>}
+                {friendBtn == "friends" && (
+                  <div>
+                    <FriendsList
+                      myFriends={account.friends}
+                      myEmail={email}
+                      allVolunteers={allVolunteers}
+                    />
+                  </div>
+                )}
                 {friendBtn == "requests" && (
                   <div>
                     <RequestList
                       friendRequests={friendRequests}
                       myEmail={email}
-                      allAccounts={allVolunteers}
+                      allVolunteers={allVolunteers}
                     />
                   </div>
                 )}

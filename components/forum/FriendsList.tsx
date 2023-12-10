@@ -5,7 +5,7 @@ import { VolunteerAccount } from "../../models/VolunteerAccount";
 import { getStates } from "../../lib/enums";
 
 type RequestListProps = {
-  friendRequests: string[];
+  myFriends: string[];
   myEmail: string;
   allVolunteers: VolunteerAccount[];
 };
@@ -20,17 +20,17 @@ interface FriendInfo {
 }
 
 const RequestList: React.FC<RequestListProps> = ({
-  friendRequests,
+  myFriends,
   myEmail,
   allVolunteers,
 }) => {
   //console.log("volunteers ", allVolunteers);
-  const reqEmailSet = new Set(friendRequests);
+  const myFriendSet = new Set(myFriends);
   const states = getStates();
 
   const friendInfo: FriendInfo[] = allVolunteers
     .map((account) =>
-      reqEmailSet.has(account.email)
+      myFriendSet.has(account.email)
         ? {
             email: account.email,
             fname: account.fname,
@@ -56,7 +56,7 @@ const RequestList: React.FC<RequestListProps> = ({
   return (
     <>
       <Grid2 style={{ backgroundColor: "#F5F5F5", height: "400px" }}>
-        {reqEmailSet.size === 0 && <p>No friend requests yet</p>}
+        {myFriendSet.size === 0 && <p>No friend yet</p>}
         {friendInfoList &&
           friendInfoList.map((user) =>
             user ? (
@@ -66,8 +66,8 @@ const RequestList: React.FC<RequestListProps> = ({
                 state={user.state ? user.state.name : ""}
                 myEmail={myEmail}
                 reqEmail={user.email}
-                updateFunction={updateFriendReqs}
-                request={true}
+                updateFunction={() => {}}
+                request={false}
               />
             ) : null
           )}
