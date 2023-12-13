@@ -198,7 +198,6 @@ const Forum: NextPage<PostProps> = ({
                   })}
                 {active == "my" &&
                   myPostsList.map((post) => {
-                    console.log(post);
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
                         <PostContainer
