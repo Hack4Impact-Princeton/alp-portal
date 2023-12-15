@@ -80,7 +80,7 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>({
     },
     pfpLink:  {
         type: String,
-        default: "https://res.cloudinary.com/alp-portal/image/upload/c_thumb,g_face,h_150,w_150/srjcceedx4zjrvwz6eqa.png"
+        default: "https://res.cloudinary.com/alp-portal/image/upload/c_thumb,g_face,h_150,w_150/rzjgu7qrlfhgefei5v4g"
     }
 }, {collection: 'volunteerAccounts'})
 
