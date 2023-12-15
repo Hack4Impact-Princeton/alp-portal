@@ -1,4 +1,4 @@
-import { Message} from '../models/Chat'
+import { Message } from '../models/Chat'
 import genUniqueId from '../lib/idGen'
 import { VolunteerAccount } from '../models/VolunteerAccount'
 import getChatModel, {Chat} from '../models/Chat'

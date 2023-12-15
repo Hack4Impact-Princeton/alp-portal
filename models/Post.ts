@@ -47,8 +47,30 @@ const PostSchema = new Schema<Posts>(
   { collection: "posts" }
 );
 
+// TODO not dry
+const DeletedPostSchema = new Schema<Posts>(
+  {
+    title: { type: String },
+    post_id: { type: String },
+    email: { type: String },
+    date: { type: String },
+    text: { type: String },
+    upvotes: { type: [String] },
+    downvotes: { type: [String] },
+    comments: { type: [CommentSchema] },
+  },
+  { collection: "deletedPosts" }
+);
+
 function getPostModel() {
   if ("Post" in mongoose.models) return mongoose.models.Post;
   return mongoose.model("Post", PostSchema);
 }
+
+function getDeletedPostModel() {
+  if ("DeletedPost" in mongoose.models) return mongoose.models.DeletedPost;
+  return mongoose.model("DeletedPost", DeletedPostSchema);
+}
+
 export default getPostModel;
+export { getDeletedPostModel };

@@ -2,17 +2,34 @@ import Grid2 from "@mui/material/Unstable_Grid2";
 import { Posts, Comments } from "../../models/Post";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { Button, Link, IconButton } from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
+import { Button, Link, IconButton, TextField } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CommentIcon from "@mui/icons-material/Comment";
 import { useState, useRef, useEffect } from "react";
+import Popover from "@mui/material/Popover";
+import { useRouter } from "next/router";
 
 import { nanoid } from "nanoid";
 import autoAnimate from "@formkit/auto-animate";
 import { format, formatDistance, formatRelative, subDays } from "date-fns";
+import getVolunteerAccountModel, {
+  VolunteerAccount,
+} from "../../models/VolunteerAccount";
+import RichEditor from "./RichEditor";
+
+import postComment, { deletePost } from "../../db_functions/forum";
 
 type PostProps = {
   post: Posts;
+  user?: VolunteerAccount;
+  isOwner?: boolean; // TODO note: this should probably be
+  // done on a per-post level, so people can del
+  // their own posts on any page,
+  // but currently this is what matches the design specs
+  refreshPosts: (post_id: string) => void;
+  email: string;
+  username: string;
 };
 
 const genRandomDate = () => {
@@ -43,17 +60,98 @@ const GEN_DUMMY_COMMENTS = (n: number) => {
   return comments;
 };
 
-const PostContainer: React.FC<PostProps> = ({ post }) => {
+const PostContainer: React.FC<PostProps> = ({
+  post,
+  user,
+  isOwner,
+  refreshPosts,
+  username,
+  email,
+}) => {
   const [showComments, setShowComments] = useState(false);
+  const [showAddComment, setShowAddComment] = useState(false);
+  const [newCommentText, setNewCommentText] = useState("");
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
   const parent = useRef(null);
+  const popover = useRef(null);
 
   useEffect(() => {
-    post.comments = GEN_DUMMY_COMMENTS(4);
+    //post.comments = GEN_DUMMY_COMMENTS(4);
+    // sort the comments by date, most recent at the start
+    post.comments.sort((b, a) => {
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
   }, []);
+
+  const addComment = (newComment: Comments) => {
+    if (!post.comments.includes(newComment)) {
+      post.comments.unshift(newComment);
+    }
+  };
 
   const handleViewComments = () => {
     setShowComments(!showComments);
   };
+
+  const handleShowAddComment = () => {
+    setShowAddComment(!showAddComment);
+  };
+
+  const handleAddComment = () => {
+    // TODO hook this up to the auth provider
+    // and then push it to the db
+
+    const newComment: Comments = {
+      email: email,
+      date: new Date().toLocaleDateString(),
+      text: newCommentText,
+      upvotes: 0,
+      downvotes: 0,
+      comment_id: nanoid(),
+      username: username,
+    };
+    console.log(post.post_id);
+    postComment(newComment, post.post_id);
+    addComment(newComment);
+    console.log(newComment);
+
+    setNewCommentText("");
+  };
+
+  const myPostActions = [
+    {
+      label: "Delete Post",
+      action: () => {
+        deletePost(post.post_id);
+        refreshPosts(post.post_id);
+      },
+    },
+  ];
+
+  const globalPostActions = [
+    {
+      label: "Some Action",
+      action: () => {
+        console.log(user);
+      },
+    },
+    {
+      label: "Another Action!",
+      action: () => {},
+    },
+  ];
+
+  const handleShowCommentActions = () => {
+    setAnchorEl(anchorEl == null ? popover.current : null);
+  };
+
+  const handleCloseCommentActions = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "popover" : undefined;
 
   useEffect(() => {
     parent.current && autoAnimate(parent.current);
@@ -118,8 +216,67 @@ const PostContainer: React.FC<PostProps> = ({ post }) => {
             <h2>{post.email}</h2>
             <p style={{ fontStyle: "italic" }}>{post.date}</p>
           </Grid2>
-          <Grid2 container xs={1}>
+
+          <Grid2
+            container
+            xs={1}
+            onClick={handleShowCommentActions}
+            ref={popover}
+          >
             <MoreVertIcon sx={{ position: "absolute", top: 0, right: 0 }} />
+            <Popover
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handleCloseCommentActions}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              style={{ marginTop: "30px" }}
+            >
+              <div
+                style={{
+                  //marginTop: "20px",
+                  display: "flex",
+                  flexDirection: "column",
+                  //padding: "10px"
+                  width: "150px",
+                }}
+              >
+                {isOwner &&
+                  myPostActions.map((button, index) => (
+                    <button
+                      key={index}
+                      onClick={button.action}
+                      className="popover-button"
+                    >
+                      {button.label}
+                    </button>
+                  ))}
+                {isOwner && (
+                  <svg height="1">
+                    <line
+                      x1="0"
+                      y1="0"
+                      x2="100%"
+                      y2="0"
+                      stroke="gray"
+                      strokeWidth="1"
+                    />
+                  </svg>
+                )}
+                {globalPostActions.map((button, index) => (
+                  <button
+                    key={index}
+                    onClick={button.action}
+                    className={"popover-button"}
+                  >
+                    {button.label}
+                  </button>
+                ))}
+              </div>
+            </Popover>
           </Grid2>
         </Grid2>
         <Grid2
@@ -129,7 +286,15 @@ const PostContainer: React.FC<PostProps> = ({ post }) => {
             padding: 2,
           }}
         >
-          <p style={{ lineHeight: 1.5 }}>{post.text}</p>
+
+          {/*<p style={{ lineHeight: 1.5 }}>{post.text}</p>*/}
+          <RichEditor
+            readOnly={true}
+            initialValue={post.text}
+            onChange={() => {}} // yeah these should be default args
+            post_id={post.post_id}
+          />
+
         </Grid2>
       </Grid2>
       <Grid2
@@ -145,7 +310,7 @@ const PostContainer: React.FC<PostProps> = ({ post }) => {
                 <FavoriteBorderIcon />
               </IconButton>
               <IconButton>
-                <CommentIcon />
+                <CommentIcon onClick={handleShowAddComment} />
               </IconButton>
               <Button
                 onClick={handleViewComments}
@@ -160,6 +325,88 @@ const PostContainer: React.FC<PostProps> = ({ post }) => {
                 {`${showComments ? "Hide" : "View"} all comments`}
               </Button>
             </div>
+            {showAddComment && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  margin: "1rem",
+                  width: "100%",
+                  alignItems: "center",
+                }}
+              >
+                <AccountCircleIcon
+                  sx={{ fontSize: "4vw" }}
+                  style={{
+                    color: "#848484", // TODO
+                  }}
+                />
+
+                {/*<TextField
+                        id="outlined-controlled"
+                        label=""
+                        value={newCommentText}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            setNewCommentText(e.target.value);
+                        }}
+                        placeholder="Say something..."
+                        style={{
+                            width: "100%",
+                            marginRight: "2rem",
+                            borderRadius: "10000px",
+                        }}
+                    />*/}
+                <input
+                  type="text"
+                  placeholder="Say something..."
+                  // TODO should this be resizing, as a textarea instead? input might not be right
+                  value={newCommentText}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setNewCommentText(e.target.value);
+                  }}
+                  style={{
+                    width: "100%",
+                    marginRight: "2rem",
+                    marginLeft: "0rem",
+                    borderRadius: "30px",
+                    paddingRight: "1rem",
+                    paddingLeft: "1rem",
+                    height: "2.5rem",
+                    outline: "none !important",
+                    border: "2px solid #EEEEEE", // TODO
+                  }}
+                />
+
+                {/*<InputWithIcon />*/}
+                <div
+                  style={{
+                    //move it to be inside the right of the input
+                    position: "absolute",
+                    right: "1.6rem",
+                    //color: "#F5F5F5", // TODO these should be css vars
+                    color: "white",
+                    backgroundColor: "#F3D39A", // ^^
+                    borderRadius: "50%",
+                    padding: "0.2rem",
+                    width: "1.5rem",
+                    height: "1.5rem",
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  onClick={handleAddComment}
+                >
+                  <SendIcon
+                    style={{
+                      fontSize: "1rem",
+                      marginLeft: "0.1rem",
+                    }}
+                  />
+                </div>
+              </div>
+            )}
             {showComments &&
               post.comments.map((comment) => {
                 return (
