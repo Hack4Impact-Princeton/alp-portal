@@ -3,8 +3,11 @@ import { Chat } from "../../models/Chat";
 import { VolunteerAccount } from "../../models/VolunteerAccount";
 import ChatBox from "./ChatBox";
 import { useEffect, useState } from 'react'
+import DownCaret from "../DownCaret";
+import UpCaret from "../UpCaret";
 import ChatPreview from "./ChatPreview";
-const ChatList: React.FC<{ chatInfo: { otherUser: VolunteerAccount, chat: Chat }[], user: VolunteerAccount }> = ({ chatInfo, user }) => {
+import { Dispatch, SetStateAction } from "react";
+const ChatList: React.FC<{ chatInfo: { otherUser: VolunteerAccount, chat: Chat }[], user: VolunteerAccount, showChat: boolean, setShowChat: Dispatch<SetStateAction<boolean>> }> = ({ chatInfo, user, showChat, setShowChat }) => {
 
     const [currChatInfo, setCurrChatInfo] = useState(chatInfo)
     const [currChatAndOtherUser, setCurrChatAndOtherUser] = useState<{ otherUser: VolunteerAccount, chat: Chat } | null>(null)
@@ -113,35 +116,53 @@ const ChatList: React.FC<{ chatInfo: { otherUser: VolunteerAccount, chat: Chat }
         return -1
     }
     return (
-        <>
-            <div style={{
-                display: "flex",
-                flexDirection: "column",
-                backgroundColor: "#5F5F5F",
-                width: "98.5%",
-                height: "fit-content",
-                maxHeight: '500px',
-                overflowY: 'auto',
-                scrollbarWidth: 'none', // For Firefox
-                WebkitOverflowScrolling: 'touch', // For smooth scrolling on iOS
-                msOverflowStyle: 'none', // For IE 10+
-                marginBottom: "10px",
-                paddingTop: "5px"
-            }}>
-                {currChatAndOtherUser &&
+        <div style={{ display: "flex", alignItems: "flex-end", borderTopLeftRadius: "10px", borderTopRightRadius: "10px" }}>
+            {currChatAndOtherUser &&
+                <div style={{ maxHeight: 500, width: 350, height: "wrap-content", backgroundColor: "#5F5F5F", marginRight: 30, borderTopRightRadius: "10px", borderTopLeftRadius: "10px" }}>
+
                     <ChatBox setCurrChatAndOtherUser={setCurrChatAndOtherUser}
                         otherUser={currChatAndOtherUser.otherUser}
                         chatIndex={findChatIndex(currChatAndOtherUser)}
                         chatInfo={currChatInfo} user={user}
                         setCurrChatInfo={setCurrChatInfo} />
-                }
-                {!currChatAndOtherUser && currChatInfo.map(({ chat, otherUser }, index) =>
-                    <ChatPreview chat={chat} otherUser={otherUser} chatInfo={currChatInfo}
-                        chatIndex={index} user={user} key={chat.id} createChatByEmail={createChatByEmail}
-                        setCurrChatAndOtherUser={setCurrChatAndOtherUser} />
-                )}
+                </div>
+            }
+            <div style={{ maxHeight: 500, height: "wrap-content", borderRadius: "25px" }}>
+
+                <div style={{ width: "100%", display: "flex", justifySelf: "flex-end", alignSelf: "start", justifyContent: "space-between", paddingLeft: "15px", borderBottom: "3px solid white", paddingTop: "1px", backgroundColor: "#5F5F5F", borderTopRightRadius: "10px", borderTopLeftRadius: "10px" }} onClick={() => setShowChat(showChat => !showChat)}>
+                    <h3 style={{ color: "white", marginTop: "12px" }}>
+                        Messages
+                    </h3>
+                    {!showChat &&
+                        <UpCaret bgColor="#FFFFFF" onClick={() => setShowChat(true)} />}
+                    {showChat &&
+                        <DownCaret bgColor="#FFFFFF" onClick={() => setShowChat(false)} />}
+                </div>
+                <div style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    backgroundColor: "#5F5F5F",
+                    width: 345,
+                    height: "fit-content",
+                    maxHeight: '500px',
+                    overflowY: 'auto',
+                    scrollbarWidth: 'none', // For Firefox
+                    WebkitOverflowScrolling: 'touch', // For smooth scrolling on iOS
+                    msOverflowStyle: 'none', // For IE 10+
+                    paddingTop: "5px",
+                }}>
+                    {showChat &&
+
+                        currChatInfo.map(({ chat, otherUser }, index) =>
+                            <ChatPreview chat={chat} otherUser={otherUser} chatInfo={currChatInfo}
+                                chatIndex={index} user={user} key={chat.id} createChatByEmail={createChatByEmail}
+                                setCurrChatAndOtherUser={setCurrChatAndOtherUser} />
+                        )
+
+                    }
+                </div>
             </div>
-        </>
+        </div>
     )
 }
 export default ChatList
