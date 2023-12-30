@@ -16,6 +16,7 @@ import { format, formatDistance, formatRelative, subDays } from "date-fns";
 import getVolunteerAccountModel, {
   VolunteerAccount,
 } from "../../models/VolunteerAccount";
+import RichEditor from "./RichEditor";
 
 import postComment, { deletePost } from "../../db_functions/forum";
 
@@ -285,7 +286,15 @@ const PostContainer: React.FC<PostProps> = ({
             padding: 2,
           }}
         >
-          <p style={{ lineHeight: 1.5 }}>{post.text}</p>
+
+          {/*<p style={{ lineHeight: 1.5 }}>{post.text}</p>*/}
+          <RichEditor
+            readOnly={true}
+            initialValue={post.text}
+            onChange={() => {}} // yeah these should be default args
+            post_id={post.post_id}
+          />
+
         </Grid2>
       </Grid2>
       <Grid2

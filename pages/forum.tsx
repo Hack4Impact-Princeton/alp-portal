@@ -36,6 +36,7 @@ type PostProps = {
   email: string;
   friendRequests: string[];
   allVolunteers: VolunteerAccount[];
+  refreshPosts: (post_id: string) => void;
 };
 
 const Forum: NextPage<PostProps> = ({
@@ -206,7 +207,6 @@ const Forum: NextPage<PostProps> = ({
                   })}
                 {active == "my" &&
                   myPostsList.map((post) => {
-                    console.log(post);
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
                         <PostContainer
@@ -275,49 +275,14 @@ const Forum: NextPage<PostProps> = ({
                   </div>
                 )}
               </Grid2>
-              <div
-                style={{
-                  position: "fixed",
-                  bottom: showChat ? -10 : -2,
-                  right: 20,
-                  zIndex: 200,
-                }}
-              >
-                <div
-                  style={{
-                    width: 345,
-                    display: "flex",
-                    justifyContent: "space-between",
-                    paddingLeft: "15px",
-                    borderBottom: "3px solid white",
-                    paddingTop: "1px",
-                    backgroundColor: "#5F5F5F",
-                  }}
-                >
-                  <h3 style={{ color: "white", marginTop: "12px" }}>
-                    Messages
-                  </h3>
-                  {!showChat && (
-                    <UpCaret
-                      bgColor="#FFFFFF"
-                      onClick={() => setShowChat(true)}
-                    />
-                  )}
-                  {showChat && (
-                    <DownCaret
-                      bgColor="#FFFFFF"
-                      onClick={() => setShowChat(false)}
-                    />
-                  )}
-                </div>
-
-                {showChat && <ChatList chatInfo={chatInfo} user={account} />}
+              <div style={{ display: "flex", flexDirection: "column", position: "fixed", bottom: showChat ? 0 : -7, right: 20, zIndex: 200, cursor: "pointer" }} >
+                <ChatList chatInfo={chatInfo} user={account} showChat={showChat} setShowChat={setShowChat} />
               </div>
             </Grid2>
           </Grid2>
         </Grid2>
       </Grid2>
-    </div>
+    </div >
   );
 };
 

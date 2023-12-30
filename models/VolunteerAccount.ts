@@ -9,22 +9,24 @@ type BadgeInfoProps = {
 };
 
 export type VolunteerAccount = {
-  fname: string;
-  lname: string;
-  alp_id: number;
-  ageBucket: number;
-  email: string;
-  pwhash: string;
-  location: number;
-  startDate: String;
-  allDrives: number;
-  driveIds: Types.Array<string>;
-  friends: string[];
-  badges: BadgeInfoProps[];
-  broadcasts: string[];
-  chatIds: string[];
-  friendRequests: string[];
-};
+    fname: string,
+    lname: string,
+    alp_id: number,
+    ageBucket: number,
+    email: string,
+    pwhash: string,
+    location: number,
+    startDate: String,
+    allDrives: number,
+    driveIds: Types.Array<string>,
+    friends: string[],
+    badges: BadgeInfoProps[];
+    broadcasts: string[],
+    chatIds: string[],
+    pfpLink: string,
+    friendRequests: string[];
+}
+
 
 export const VolunteerAccountSchema = new Schema<VolunteerAccount>(
   {
@@ -82,9 +84,12 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>(
     friendRequests: {
       type: [String],
     },
-  },
-  { collection: "volunteerAccounts" }
-);
+    pfpLink:  {
+        type: String,
+        default: "https://res.cloudinary.com/alp-portal/image/upload/c_thumb,g_face,h_150,w_150/rzjgu7qrlfhgefei5v4g"
+    }
+}, {collection: 'volunteerAccounts'})
+
 
 function getVolunteerAccountModel() {
   if ("VolunteerAccount" in mongoose.models) {
