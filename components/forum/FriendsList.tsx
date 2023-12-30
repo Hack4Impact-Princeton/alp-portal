@@ -55,8 +55,8 @@ const RequestList: React.FC<RequestListProps> = ({
 
   return (
     <>
-      <Grid2 style={{ backgroundColor: "#F5F5F5", height: "400px" }}>
-        {myFriendSet.size === 0 && <p>No friend yet</p>}
+      <Grid2 style={{ backgroundColor: "#F5F5F5", height: "450px", overflow:"auto" }}>
+        {myFriendSet.size === 0 && <Grid2 sx={{p:2}}><p>Add some friends!</p></Grid2>}
         {friendInfoList &&
           friendInfoList.map((user) =>
             user ? (

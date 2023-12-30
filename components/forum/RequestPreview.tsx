@@ -1,4 +1,4 @@
-import Grid2 from "@mui/material/Unstable_Grid2";
+import Grid from "@mui/material/Grid";
 import { useEffect, useState } from "react";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DoneIcon from "@mui/icons-material/Done";
@@ -29,7 +29,7 @@ const RequestPreview: React.FC<ReqProps> = ({
 }) => {
   return (
     <div style={{ borderColor: "black", borderWidth: 4, borderRadius: 1 }}>
-      <Grid2
+      <Grid
         display="flex"
         sx={{
           backgroundColor: "#F5F5F5",
@@ -37,32 +37,35 @@ const RequestPreview: React.FC<ReqProps> = ({
           padding: 1,
         }}
         container
-        justifyContent={"space-between"}
+       
         alignContent={"center"}
       >
-        <Grid2
+        <Grid
+          xs={3}
           display="flex"
-          sx={{ height: "100%", justifyContent: "center", pl: "3%" }}
+          sx={{ height: "100%", justifyContent: "center"}}
         >
           <AccountCircleIcon sx={{ fontSize: "4vw" }} />
-        </Grid2>
-        <Grid2
+        </Grid>
+        <Grid
+          xs={5}
           display="flex"
           flexDirection="column"
-          sx={{ height: "100%", justifyContent: "center" }}
+          sx={{ height: "100%", justifyContent: "center"}}
         >
           <h3>
             {fname} {lname}.
           </h3>
           <p>{state}</p>
-        </Grid2>
+        </Grid>
         {request && (
-          <Grid2
+          <Grid
+            xs={4}
             display="flex"
-            sx={{ height: "100%", justifyContent: "center" }}
+            sx={{ height: "100%", justifyContent: "center",alignItems:"center" }}
           >
-            <Grid2>
-              <IconButton
+            <Grid xs={6} display={'flex'} justifyContent={'center'}>
+              <IconButton sx={{backgroundColor:"#5F5F5F", color:"#FFFFFF"}} size={"small"}
                 onClick={() => {
                   approveFriendRequest(myEmail, reqEmail);
                   updateFunction(reqEmail);
@@ -70,20 +73,22 @@ const RequestPreview: React.FC<ReqProps> = ({
               >
                 <DoneIcon />
               </IconButton>
-            </Grid2>
-            <Grid2>
-              <IconButton>
+            </Grid>
+            <Grid xs={4} display ={'flex'} justifyContent={'center'}>
+              <IconButton sx={{backgroundColor:"#5F5F5F", color:"#FFFFFF"}} size={"small"}
+                onClick={() => {
+                  removeFriendRequest(myEmail, reqEmail);
+                  updateFunction(reqEmail);
+                }}
+              >
                 <CloseIcon
-                  onClick={() => {
-                    removeFriendRequest(myEmail, reqEmail);
-                    updateFunction(reqEmail);
-                  }}
+                  
                 />
               </IconButton>
-            </Grid2>
-          </Grid2>
+            </Grid>
+          </Grid>
         )}
-      </Grid2>
+      </Grid>
     </div>
   );
 };
