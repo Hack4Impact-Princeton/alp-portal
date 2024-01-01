@@ -1,5 +1,5 @@
-import mongoose from 'mongoose'
-import {Schema, Types} from 'mongoose'
+import mongoose from "mongoose";
+import { Schema, Types } from "mongoose";
 
 type BadgeInfoProps = {
   isEarned: boolean;
@@ -23,60 +23,66 @@ export type VolunteerAccount = {
     badges: BadgeInfoProps[];
     broadcasts: string[],
     chatIds: string[],
-    pfpLink: string
+    pfpLink: string,
+    friendRequests: string[];
 }
 
-export const VolunteerAccountSchema = new Schema<VolunteerAccount>({
+
+export const VolunteerAccountSchema = new Schema<VolunteerAccount>(
+  {
     fname: {
-        type: String,
-        required: true,
-        default: "default_fname"
+      type: String,
+      required: true,
+      default: "default_fname",
     },
     lname: {
-        type: String,
-        required: true,
-        default: "default_lname"
+      type: String,
+      required: true,
+      default: "default_lname",
     },
     alp_id: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true,
     },
     ageBucket: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true,
     },
     email: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     pwhash: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     location: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true,
     },
     startDate: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     allDrives: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true,
     },
     driveIds: [String],
     friends: [String],
     badges: {
-        type: [Object],  // Use [Object] to indicate an array of objects
-        required: true,
-        default: [],
+      type: [Object], // Use [Object] to indicate an array of objects
+      required: true,
+      default: [],
     },
     broadcasts: {
-        type: [String],
+      type: [String],
     },
     chatIds: {
-        type: [String]
+      type: [String],
+    },
+    friendRequests: {
+      type: [String],
     },
     pfpLink:  {
         type: String,
@@ -86,11 +92,9 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>({
 
 
 function getVolunteerAccountModel() {
-    if ("VolunteerAccount" in mongoose.models) {
-        return mongoose.models.VolunteerAccount
-    }
-    return mongoose.model("VolunteerAccount", VolunteerAccountSchema)
+  if ("VolunteerAccount" in mongoose.models) {
+    return mongoose.models.VolunteerAccount;
+  }
+  return mongoose.model("VolunteerAccount", VolunteerAccountSchema);
 }
-export default getVolunteerAccountModel
-
-
+export default getVolunteerAccountModel;

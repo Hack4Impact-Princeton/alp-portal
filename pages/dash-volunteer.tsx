@@ -146,7 +146,7 @@ const DashVolunteer: NextPage<{
         <PageContainer
           fName={account.fname}
           currPage="dash-volunteer"
-          broadcasts = {broadcasts}
+          broadcasts={broadcasts}
         ></PageContainer>
         {/* Necessary box for padding the page body, no overlap with Navbar */}
         <Box

@@ -14,7 +14,6 @@ import { getServerSession } from "next-auth";
 import getVolunteerAccountModel, {
   VolunteerAccount,
 } from "../models/VolunteerAccount";
-import FriendList from "../components/forum/FriendList";
 import { useRouter } from "next/router";
 import getChatModel, { Chat } from "../models/Chat";
 import ChatList from "../components/forum/ChatList";
@@ -22,6 +21,10 @@ import { generateChatInfo } from "../db_functions/chat";
 import NewPost from "../components/forum/NewPost";
 import UpCaret from "../components/UpCaret";
 import DownCaret from "../components/DownCaret";
+import RequestList from "../components/forum/RequestList";
+import FriendsList from "../components/forum/FriendsList";
+
+import { use } from "chai";
 
 type PostProps = {
   allPosts: Posts[];
@@ -31,6 +34,8 @@ type PostProps = {
   account: VolunteerAccount;
   username: string;
   email: string;
+  friendRequests: string[];
+  allVolunteers: VolunteerAccount[];
   refreshPosts: (post_id: string) => void;
 };
 
@@ -42,8 +47,11 @@ const Forum: NextPage<PostProps> = ({
   email,
   chatInfo,
   account,
+  friendRequests,
+  allVolunteers,
 }) => {
   const [active, setActive] = useState("friends");
+  const [friendBtn, setFriendBtn] = useState("requests");
 
   const [myPostsList, setmyPostsList] = useState<Posts[]>(myPosts);
   const [allPostsList, setallPostsList] = useState<Posts[]>(allPosts);
@@ -104,7 +112,7 @@ const Forum: NextPage<PostProps> = ({
                 container
                 flexDirection={"row"}
                 alignItems={"center"}
-                sx={{ marginBottom: 2 }}
+                sx={{ marginBottom: 1.5 }}
               >
                 <h1 style={{ color: "#FE9834", marginRight: 10 }}>Posts</h1>
                 <NewPost username={username} email={email} addPost={addPost} />
@@ -214,8 +222,59 @@ const Forum: NextPage<PostProps> = ({
                   })}
               </Grid2>
             </Grid2>
-            <Grid2 sx={{ width: "27vw" }}>
-              <h1 style={{ color: "#FE9834" }}>Friends</h1>
+            <Grid2 sx={{ width: "27vw",pt:3 }}>
+              <Grid2>
+                <h1 style={{ color: "#FE9834" }}>Friends</h1>
+              </Grid2>
+              <Grid2 sx={{marginTop:2}} >
+                <Button
+                  variant="contained"
+                  disableElevation
+                  sx={{
+                    borderRadius: 0,
+                    backgroundColor:
+                      friendBtn === "friends" ? "#F3D39A" : "#F5F5F5",
+                    color: "#5F5F5F",
+                    mr:2
+                  }}
+                  onClick={() => setFriendBtn("friends")}
+                >
+                  Friends
+                </Button>
+                <Button
+                  variant="contained"
+                  disableElevation
+                  sx={{
+                    borderRadius: 0,
+                    backgroundColor:
+                      friendBtn === "requests" ? "#F3D39A" : "#F5F5F5",
+                    color: "#5F5F5F",
+                  }}
+                  onClick={() => setFriendBtn("requests")}
+                >
+                  Requests
+                </Button>
+              </Grid2>
+              <Grid2 sx={{marginTop:1}}>
+                {friendBtn == "friends" && (
+                  <div>
+                    <FriendsList
+                      myFriends={account.friends}
+                      myEmail={email}
+                      allVolunteers={allVolunteers}
+                    />
+                  </div>
+                )}
+                {friendBtn == "requests" && (
+                  <div>
+                    <RequestList
+                      friendRequests={friendRequests}
+                      myEmail={email}
+                      allVolunteers={allVolunteers}
+                    />
+                  </div>
+                )}
+              </Grid2>
               <div style={{ display: "flex", flexDirection: "column", position: "fixed", bottom: showChat ? 0 : -7, right: 20, zIndex: 200, cursor: "pointer" }} >
                 <ChatList chatInfo={chatInfo} user={account} showChat={showChat} setShowChat={setShowChat} />
               </div>
@@ -246,9 +305,15 @@ export const getServerSideProps = async (context: any) => {
     }
     const VolunteerAccount: mongoose.Model<VolunteerAccount> =
       getVolunteerAccountModel();
-    const account: VolunteerAccount = (await VolunteerAccount.findOne({
+    const allVolunteers: VolunteerAccount[] = (await VolunteerAccount.find(
+      {}
+    )) as VolunteerAccount[];
+    const account: VolunteerAccount = allVolunteers.find(
+      (volunteer) => volunteer.email === session.user?.email
+    ) as VolunteerAccount;
+    /*const account: VolunteerAccount = (await VolunteerAccount.findOne({
       email: session.user?.email,
-    })) as VolunteerAccount;
+    })) as VolunteerAccount;*/
     //const name = account.fname + " " + account.lname;
     //console.log("account", account);
     // console.log("account email", account.email);
@@ -291,7 +356,8 @@ export const getServerSideProps = async (context: any) => {
         account: JSON.parse(JSON.stringify(account)),
         username: userName,
         email: volunteerEmail,
-        user: JSON.parse(JSON.stringify(account)),
+        friendRequests: JSON.parse(JSON.stringify(account.friendRequests)),
+        allVolunteers: JSON.parse(JSON.stringify(allVolunteers)),
       },
     };
   } catch (e: Error | any) {
