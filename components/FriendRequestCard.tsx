@@ -6,34 +6,37 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import approveFriendRequest, {
+  removeFriendRequest,
+} from "../db_functions/friending";
 
 type FriendRequestCardProps = {
   profilePicture: string; // URL of the profile picture
   name: string;
-  email: string;
-  date: string; // Date of the friend request
+  reqEmail: string;
+  //date: string; // Date of the friend request
   state: string; // State of the friend request (e.g., pending, approved, rejected)
+  myEmail: string;
   requeststate? : string;
-  index: number; // Index of the friend request
-  onApprove: (index: number) => void; // Callback function when the approve button is clicked
-  onReject: (index: number) => void; // Callback function when the reject button is clicked
+  //index: number; // Index of the friend request
+  onApprove: (reqEmail: string) => void; // Callback function when the approve button is clicked
+  onReject: (reqEmail: string) => void; // Callback function when the reject button is clicked
   onActionCompleted: (message: string) => void; // Callback function when an action (approve/reject) is completed
 };
 
 const FriendRequestCard: React.FC<FriendRequestCardProps> = ({
   profilePicture,
   name,
-  email,
-  date,
+  reqEmail,
   state,
+  myEmail,
   requeststate,
-  index,
   onApprove,
   onReject,
   onActionCompleted
 }) => {
   // Format the date
-  const formattedDate = new Date(date).toLocaleDateString(); 
+  //const formattedDate = new Date(date).toLocaleDateString(); 
   return (
     <Card>
       <CardContent style={{ display: 'flex', alignItems: 'center' }}>
@@ -46,9 +49,9 @@ const FriendRequestCard: React.FC<FriendRequestCardProps> = ({
         </Badge>
         <div style={{ marginLeft: '10px', flex: 1 }}> {/* Add margin to separate profile picture and information */}
           <Typography variant="h6">{name}</Typography>
-          <Typography variant="subtitle1">{email}</Typography>
+          <Typography variant="subtitle1">{reqEmail}</Typography>
           <Typography variant="caption" color="textSecondary">
-            {formattedDate} | {state}
+            {"Date here"} | {state}
           </Typography>
         </div>
       </CardContent>
@@ -65,7 +68,8 @@ const FriendRequestCard: React.FC<FriendRequestCardProps> = ({
                 fontWeight: 'bold', // Bold when active
               }}
               onClick={() => {
-                onApprove(index);
+                onApprove(reqEmail);
+                approveFriendRequest(myEmail, reqEmail);
                 onActionCompleted('Friend request approved.');
               }}>
               Approve
@@ -79,7 +83,8 @@ const FriendRequestCard: React.FC<FriendRequestCardProps> = ({
                 margin: '0 2px', // Updated margin
                 fontWeight: 'bold', // Bold when active
               }}onClick={() => {
-                onReject(index);
+                onReject(reqEmail);
+                removeFriendRequest(myEmail, reqEmail);
                 onActionCompleted('Friend request rejected.');
               }}>
               Reject

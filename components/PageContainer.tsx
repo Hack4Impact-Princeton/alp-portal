@@ -16,45 +16,32 @@ import FriendRequest from '../components/FriendRequest';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { Switch } from '@mui/material';
+import { VolunteerAccount } from "../models/VolunteerAccount";
+import { getStates } from "../lib/enums";
 
+
+interface FriendInfo {
+  email: string;
+  fname: string;
+  lname: string;
+  state: { name: string; index: number };
+  pfp: string;
+
+  // Add or modify properties as needed
+}
 
 type PageContainerProps = {
     fName: String;
+    userEmail?: string;
     currPage: "dash-volunteer" | "profile" | "instruction-steps" | "h4i-team" | "forum" | "leaderboard" | "profile_search";
     broadcasts ?: Broadcast[];
-    friendRequests?: FriendRequest[];
+    friendRequests?: string[];
+    allVolunteers?: VolunteerAccount[];
 }
 
-const testFriendRequests: FriendRequest[] = [
-  {
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    date: '2023-12-06', // Replace with an actual date
-    state: 'FL',
-    requeststate: 'pending',
-    index: 0, // Index for the first item
-  },
-  {
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    name: 'Jane Smith',
-    email: 'jane.smith@example.com',
-    date: '2023-12-05', // Replace with an actual date
-    state: 'CO',
-    index: 1
-  },
-  {
-    profilePicture: 'https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug',
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    date: '2023-12-06', // Replace with an actual date
-    state: 'FL',
-    requeststate: 'pending',
-    index: 2, // Index for the first item
-  }
-]
 
-const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcasts, friendRequests }) => {
+
+const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPage, broadcasts, friendRequests, allVolunteers }) => {
   const leftPaddingValue = useDynamicPadding(635, 775, "29vw", "20vw", "15vw")
   const WhiteTextButton = styled(Button)<ButtonProps>(() => ({
     color: 'white',
@@ -70,7 +57,39 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
   const [activeFilter, setActiveFilter] = useState("all"); // Added state for the active filter
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [visibleFriendRequests, setVisibleFriendRequests] = useState([...testFriendRequests]);
+  //const [visibleFriendRequests, setVisibleFriendRequests] = useState([...testFriendRequests]);
+  // friend request stuff
+  const reqEmailSet = new Set(friendRequests);
+  const states = getStates();
+  let friendInfo:FriendInfo[] = []
+  const myEmail = userEmail || "";
+  const [friendInfoList, setFriendInfoList] =
+      useState<FriendInfo[]>([]);
+  if (allVolunteers){
+    friendInfo = allVolunteers
+    .map((account) =>
+      reqEmailSet.has(account.email)
+        ? {
+            email: account.email,
+            fname: account.fname,
+            lname: account.lname[0],
+            state: states.find((state) => state.index === account.location),
+            pfp: account.pfpLink,
+            // Add or modify properties as needed
+          }
+        : null
+    )
+    .filter((item) => item !== null) as FriendInfo[];
+  }
+
+  /*const updateFriendReqs = (friendReqEmail: string) => {
+    setTimeout(() => {
+      setFriendInfoList(
+        friendInfoList.filter((item) => item.email != friendReqEmail)
+      );
+    }, 200);
+  };*/
+
   const handleOpenPopover = () => {
     setPopoverOpen(true);
   };
@@ -90,18 +109,22 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
     setVisibleBroadcasts(updatedVisibility);
   };
 
-  const handleApproveFriendRequest = (index: number) => {
-    const updatedFriendRequests = [...visibleFriendRequests];
-    updatedFriendRequests[index].requeststate = 'approved';
-    setVisibleFriendRequests(updatedFriendRequests.filter(request => request.requeststate !== 'approved'));
+  const handleApproveFriendRequest = (friendReqEmail: string) => {
+    setTimeout(() => {
+      setFriendInfoList(
+        friendInfoList.filter((item) => item.email != friendReqEmail)
+      );
+    }, 200);
     setSnackbarMessage('Friend request has been approved!');
     setSnackbarOpen(true);
   };
 
-  const handleRejectFriendRequest = (index: number) => {
-    const updatedFriendRequests = [...visibleFriendRequests];
-    updatedFriendRequests[index].requeststate = 'rejected';
-    setVisibleFriendRequests(updatedFriendRequests.filter(request => request.requeststate !== 'rejected'));
+  const handleRejectFriendRequest = (friendReqEmail: string) => {
+    setTimeout(() => {
+      setFriendInfoList(
+        friendInfoList.filter((item) => item.email != friendReqEmail)
+      );
+    }, 200);
     setSnackbarMessage('Friend request has been rejected!');
     setSnackbarOpen(true);
   };
@@ -158,6 +181,8 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
         window.location.href = '/';
     }
     useEffect(() => {
+      setFriendInfoList(friendInfo);
+
     if (snackbarOpen) {
       const timeoutId = setTimeout(() => {
         setSnackbarOpen(false);
@@ -165,6 +190,9 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
       return () => clearTimeout(timeoutId);
     }
   }, [snackbarOpen]);
+
+
+
    return (
     <>
       <Grid>
@@ -246,19 +274,18 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage, broadcas
                     </Collapse>
                     ))}
                         {activeFilter === 'friends' &&
-                            visibleFriendRequests.map((request, index) => (
+                            friendInfoList.map((request, index) => (
                             <div key={index} style={{ marginBottom: '10px' }}>
                                 <FriendRequestCard
                                 key={index}
-                                profilePicture={request.profilePicture}
-                                name={request.name}
-                                email={request.email}
-                                date={request.date}
-                                state={request.state}
-                                index={request.index}
-                                requeststate={request.requeststate}
-                                onApprove={() => handleApproveFriendRequest(index)}
-                                onReject={() => handleRejectFriendRequest(index)}
+                                profilePicture={request.pfp}
+                                name={request.fname}
+                                reqEmail={request.email}
+                                state={request.state.name}
+                                myEmail={myEmail}
+                                requeststate='pending'
+                                onApprove={() => handleApproveFriendRequest(request.email)}
+                                onReject={() => handleRejectFriendRequest(request.email)}
                                 onActionCompleted={handleActionCompleted}
                                 />
                             </div>

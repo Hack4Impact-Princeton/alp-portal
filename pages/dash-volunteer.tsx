@@ -34,7 +34,9 @@ const DashVolunteer: NextPage<{
   broadcasts: Broadcast[];
   account: VolunteerAccount | null;
   error: Error | null;
-}> = ({ driveData, account, error, broadcasts }) => {
+  friendRequests: string[];
+  allVolunteers: VolunteerAccount[];
+}> = ({ driveData, account, error, broadcasts,friendRequests,allVolunteers }) => {
   console.log(account);
   const drives = driveData.map((driveDatum) => driveDatum.drive);
   console.log("drives", drives);
@@ -145,8 +147,11 @@ const DashVolunteer: NextPage<{
       <Grid2>
         <PageContainer
           fName={account.fname}
+          userEmail={account.email}
           currPage="dash-volunteer"
           broadcasts={broadcasts}
+          friendRequests={friendRequests}
+          allVolunteers={allVolunteers}
         ></PageContainer>
         {/* Necessary box for padding the page body, no overlap with Navbar */}
         <Box
@@ -575,12 +580,15 @@ export async function getServerSideProps(context: any) {
       };
     }
     const email = session.user?.email;
-    let account: VolunteerAccount;
+    //let account: VolunteerAccount;
     const VolunteerAccount: mongoose.Model<VolunteerAccount> =
       getVolunteerAccountModel();
-    account = (await VolunteerAccount.findOne({
-      email: email,
-    })) as VolunteerAccount;
+    const allVolunteers: VolunteerAccount[] = (await VolunteerAccount.find(
+        {}
+      )) as VolunteerAccount[];
+    const account: VolunteerAccount = allVolunteers.find(
+        (volunteer) => volunteer.email === session.user?.email
+      ) as VolunteerAccount;
     const BookDrive: mongoose.Model<BookDrive> = getBookDriveModel();
     const driveList = account.driveIds;
     const ReactivationRequestModel: mongoose.Model<ReactivationRequest> =
@@ -618,6 +626,9 @@ export async function getServerSideProps(context: any) {
         driveData: driveData ? JSON.parse(JSON.stringify(driveData)) : null,
         broadcasts: JSON.parse(JSON.stringify(broadcasts)),
         account: JSON.parse(JSON.stringify(account)),
+        friendRequests: JSON.parse(JSON.stringify(account.friendRequests)),
+        allVolunteers: JSON.parse(JSON.stringify(allVolunteers)),
+
       },
     };
   } catch (e: Error | any) {
