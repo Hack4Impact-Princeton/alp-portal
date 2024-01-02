@@ -180,9 +180,10 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
         signOut();
         window.location.href = '/';
     }
-    useEffect(() => {
+    useEffect(()=> {      
       setFriendInfoList(friendInfo);
-
+    }, [])
+    useEffect(() => {
     if (snackbarOpen) {
       const timeoutId = setTimeout(() => {
         setSnackbarOpen(false);
