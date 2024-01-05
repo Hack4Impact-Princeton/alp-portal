@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import RequestPreview from "./RequestPreview";
 import { VolunteerAccount } from "../../models/VolunteerAccount";
 import { getStates } from "../../lib/enums";
+import { ChildFriendly } from "@mui/icons-material";
+
 
 type RequestListProps = {
   friendRequests: string[];
@@ -11,6 +13,7 @@ type RequestListProps = {
 };
 
 interface FriendInfo {
+  pfp: string;
   email: string;
   fname: string;
   lname: string;
@@ -32,11 +35,11 @@ const RequestList: React.FC<RequestListProps> = ({
     .map((account) =>
       reqEmailSet.has(account.email)
         ? {
+            pfp: account.pfpLink,
             email: account.email,
             fname: account.fname,
             lname: account.lname[0],
             state: states.find((state) => state.index === account.location),
-            // Add or modify properties as needed
           }
         : null
     )
@@ -63,6 +66,7 @@ const RequestList: React.FC<RequestListProps> = ({
           friendInfoList.map((user) =>
             user ? (
               <RequestPreview
+                pfp={user.pfp}
                 fname={user.fname}
                 lname={user.lname}
                 state={user.state ? user.state.name : ""}

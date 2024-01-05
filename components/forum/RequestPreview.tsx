@@ -7,8 +7,10 @@ import { IconButton } from "@mui/material";
 import approveFriendRequest, {
   removeFriendRequest,
 } from "../../db_functions/friending";
+import FriendRequestCard from "../FriendRequestCard";
 
 type ReqProps = {
+  pfp: string;
   fname: string;
   lname: string;
   state: string;
@@ -27,6 +29,8 @@ const RequestPreview: React.FC<ReqProps> = ({
   updateFunction,
   request,
 }) => {
+  const [showFriendRequestCard, setShowFriendRequestCard] = useState(false);
+
   return (
     <div style={{ borderColor: "black", borderWidth: 4, borderRadius: 1 }}>
       <Grid
@@ -37,21 +41,26 @@ const RequestPreview: React.FC<ReqProps> = ({
           padding: 1,
         }}
         container
-       
         alignContent={"center"}
       >
         <Grid
           xs={3}
           display="flex"
-          sx={{ height: "100%", justifyContent: "center"}}
+          sx={{ height: "100%", justifyContent: "center" }}
         >
-          <AccountCircleIcon sx={{ fontSize: "4vw" }} />
+          {/* Step 3: Make the name clickable */}
+          <span
+            style={{ cursor: "pointer" }}
+            onClick={() => setShowFriendRequestCard(true)}
+          >
+            <AccountCircleIcon sx={{ fontSize: "4vw" }} />
+          </span>
         </Grid>
         <Grid
           xs={5}
           display="flex"
           flexDirection="column"
-          sx={{ height: "100%", justifyContent: "center"}}
+          sx={{ height: "100%", justifyContent: "center" }}
         >
           <h3>
             {fname} {lname}.
@@ -62,10 +71,38 @@ const RequestPreview: React.FC<ReqProps> = ({
           <Grid
             xs={4}
             display="flex"
-            sx={{ height: "100%", justifyContent: "center",alignItems:"center" }}
+            sx={{
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            <Grid xs={6} display={'flex'} justifyContent={'center'}>
-              <IconButton sx={{backgroundColor:"#5F5F5F", color:"#FFFFFF"}} size={"small"}
+            {showFriendRequestCard && (
+              <FriendRequestCard
+                profilePicture={pfp}
+                name={`${fname} ${lname}`}
+                reqEmail={reqEmail}
+                state={state}
+                myEmail={myEmail}
+                requeststate={'pending'} // Assuming initial state is pending
+                onApprove={(email) => {
+                  approveFriendRequest(myEmail, email);
+                  updateFunction(email);
+                }}
+                onReject={(email) => {
+                  removeFriendRequest(myEmail, email);
+                  updateFunction(email);
+                }}
+                onActionCompleted={(message) => {
+                  console.log(message);
+                  setShowFriendRequestCard(false); // Hide the card after action completion
+                }}
+              />
+            )}
+            <Grid xs={6} display={"flex"} justifyContent={"center"}>
+              <IconButton
+                sx={{ backgroundColor: "#5F5F5F", color: "#FFFFFF" }}
+                size={"small"}
                 onClick={() => {
                   approveFriendRequest(myEmail, reqEmail);
                   updateFunction(reqEmail);
@@ -74,16 +111,16 @@ const RequestPreview: React.FC<ReqProps> = ({
                 <DoneIcon />
               </IconButton>
             </Grid>
-            <Grid xs={4} display ={'flex'} justifyContent={'center'}>
-              <IconButton sx={{backgroundColor:"#5F5F5F", color:"#FFFFFF"}} size={"small"}
+            <Grid xs={4} display={"flex"} justifyContent={"center"}>
+              <IconButton
+                sx={{ backgroundColor: "#5F5F5F", color: "#FFFFFF" }}
+                size={"small"}
                 onClick={() => {
                   removeFriendRequest(myEmail, reqEmail);
                   updateFunction(reqEmail);
                 }}
               >
-                <CloseIcon
-                  
-                />
+                <CloseIcon />
               </IconButton>
             </Grid>
           </Grid>

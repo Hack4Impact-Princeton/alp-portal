@@ -11,6 +11,7 @@ type RequestListProps = {
 };
 
 interface FriendInfo {
+  pfp:  string;
   email: string;
   fname: string;
   lname: string;
@@ -61,6 +62,7 @@ const RequestList: React.FC<RequestListProps> = ({
           friendInfoList.map((user) =>
             user ? (
               <RequestPreview
+              pfp = {user.pfp}
                 fname={user.fname}
                 lname={user.lname}
                 state={user.state ? user.state.name : ""}
