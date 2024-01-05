@@ -78,7 +78,12 @@ const Signup = () => {
             const bcrypt = require("bcryptjs");
             const salt = bcrypt.genSaltSync(10);
             const hashedPwd = (password == '') ? '' : bcrypt.hashSync(password, salt);
-            const data = { fname: fname, lname: lname, email: email, pwhash: hashedPwd, location: location }
+            const drives = await fetch(`../api/bookDrive/all`).then(res => res.json())
+            const name = fname + ' ' + lname
+            let driveIDs = []
+            for (let drive in drives)
+                if (drives[drive].organizer == name) driveIDs.push(drives[drive].driveCode)
+            const data = { fname: fname, lname: lname, email: email, pwhash: hashedPwd, location: location, driveIds : driveIDs }
             // return if empty field
             for (let entry in data)
                 if (entry == '') return;
