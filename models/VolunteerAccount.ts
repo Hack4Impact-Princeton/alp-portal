@@ -1,6 +1,13 @@
 import mongoose from 'mongoose'
 import {Schema, Types} from 'mongoose'
 
+type BadgeInfoProps = {
+  isEarned: boolean;
+  level: number;
+  name: string;
+  description: string;
+};
+
 export type VolunteerAccount = {
     fname: string,
     lname: string,
@@ -13,9 +20,10 @@ export type VolunteerAccount = {
     allDrives: number,
     driveIds: Types.Array<string>,
     friends: string[],
-    badges: number,
+    badges: BadgeInfoProps[];
     broadcasts: string[],
     chatIds: string[],
+    pfpLink: string
 }
 
 export const VolunteerAccountSchema = new Schema<VolunteerAccount>({
@@ -60,14 +68,19 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>({
     driveIds: [String],
     friends: [String],
     badges: {
-        type: Number,
-        required: true
+        type: [Object],  // Use [Object] to indicate an array of objects
+        required: true,
+        default: [],
     },
     broadcasts: {
         type: [String],
     },
     chatIds: {
         type: [String]
+    },
+    pfpLink:  {
+        type: String,
+        default: "https://res.cloudinary.com/alp-portal/image/upload/c_thumb,g_face,h_150,w_150/srjcceedx4zjrvwz6eqa.png"
     }
 }, {collection: 'volunteerAccounts'})
 

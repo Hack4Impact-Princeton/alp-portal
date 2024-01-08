@@ -14,6 +14,8 @@ import { getServerSession } from "next-auth";
 import getVolunteerAccountModel, {
   VolunteerAccount,
 } from "../models/VolunteerAccount";
+import FriendList from "../components/forum/FriendList";
+import { useRouter } from "next/router";
 import getChatModel, { Chat } from "../models/Chat";
 import ChatList from "../components/forum/ChatList";
 import { generateChatInfo } from "../db_functions/chat";
@@ -25,10 +27,11 @@ type PostProps = {
   allPosts: Posts[];
   friendsPosts: Posts[];
   myPosts: Posts[];
-  chatInfo: { chat: Chat, otherUser: VolunteerAccount }[];
-  account: VolunteerAccount,
+  chatInfo: { chat: Chat; otherUser: VolunteerAccount }[];
+  account: VolunteerAccount;
   username: string;
   email: string;
+  refreshPosts: (post_id: string) => void;
 };
 
 const Forum: NextPage<PostProps> = ({
@@ -38,14 +41,20 @@ const Forum: NextPage<PostProps> = ({
   username,
   email,
   chatInfo,
-  account
+  account,
 }) => {
-
-
   const [active, setActive] = useState("friends");
+
   const [myPostsList, setmyPostsList] = useState<Posts[]>(myPosts);
   const [allPostsList, setallPostsList] = useState<Posts[]>(allPosts);
-  const [showChat, setShowChat] = useState(false)
+  const [showChat, setShowChat] = useState(false);
+  const router = useRouter();
+
+  const refreshData = (post_id: string) => {
+    setmyPostsList(myPostsList.filter((post) => post.post_id !== post_id));
+    setallPostsList(allPostsList.filter((post) => post.post_id !== post_id));
+  };
+
   const addPost = (myPost: Posts) => {
     if (!myPostsList.includes(myPost))
       setmyPostsList((prevPosts) => {
@@ -157,10 +166,18 @@ const Forum: NextPage<PostProps> = ({
                 flexDirection={"column"}
               >
                 {active == "friends" &&
+                  friendsPosts != undefined &&
                   friendsPosts.map((post) => {
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
-                        <PostContainer post={post} />
+                        <PostContainer
+                          post={post}
+                          user={account}
+                          isOwner={false}
+                          refreshPosts={refreshData}
+                          email={email}
+                          username={username}
+                        />
                       </div>
                     );
                   })}
@@ -169,7 +186,14 @@ const Forum: NextPage<PostProps> = ({
                   allPostsList.map((post) => {
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
-                        <PostContainer post={post} />
+                        <PostContainer
+                          post={post}
+                          user={account}
+                          isOwner={false}
+                          refreshPosts={refreshData}
+                          username={username}
+                          email={email}
+                        />
                       </div>
                     );
                   })}
@@ -177,13 +201,20 @@ const Forum: NextPage<PostProps> = ({
                   myPostsList.map((post) => {
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
-                        <PostContainer post={post} />
+                        <PostContainer
+                          post={post}
+                          user={account}
+                          isOwner={true}
+                          refreshPosts={refreshData}
+                          username={username}
+                          email={email}
+                        />
                       </div>
                     );
                   })}
               </Grid2>
             </Grid2>
-            <Grid2 sx={{ width: "27vw", }}>
+            <Grid2 sx={{ width: "27vw" }}>
               <h1 style={{ color: "#FE9834" }}>Friends</h1>
               <div style={{ display: "flex", flexDirection: "column", position: "fixed", bottom: showChat ? 0 : -7, right: 20, zIndex: 200, cursor: "pointer" }} >
                 <ChatList chatInfo={chatInfo} user={account} showChat={showChat} setShowChat={setShowChat} />
@@ -250,7 +281,7 @@ export const getServerSideProps = async (context: any) => {
     console.log("friends posts", friendsPosts);
     console.log("my posts", myPosts);
 
-    const chatInfo = await generateChatInfo(account)
+    const chatInfo = await generateChatInfo(account);
     return {
       props: {
         friendsPosts: JSON.parse(JSON.stringify(friendsPosts)),
@@ -260,6 +291,7 @@ export const getServerSideProps = async (context: any) => {
         account: JSON.parse(JSON.stringify(account)),
         username: userName,
         email: volunteerEmail,
+        user: JSON.parse(JSON.stringify(account)),
       },
     };
   } catch (e: Error | any) {
