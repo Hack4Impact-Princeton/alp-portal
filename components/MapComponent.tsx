@@ -131,12 +131,11 @@ const MapComponent: React.FC<MapComponentProps> = ({ drives }) => {
     const matchingDrives: BookDrive[] | undefined = drives ? drives.filter((drive) => drive.country === africanCountries[i]) : undefined
     // adds numBooks of each matching drive to the numbooks value of the
     // current country
-    if (matchingDrives) matchingDrives.forEach((drive) => countryData[i].value += drive.cb.booksCurrent)
+    if (matchingDrives) matchingDrives.forEach((drive) => countryData[i].value += drive.booksGoal)
     if (countryData[i].value > maxVal) maxVal = countryData[i].value
     // sets the booksSent value for the map markers
     userMarkers[africanCountries[i]].booksSent = countryData[i].value
   }
-
   const getColor = (value: number): string => {
     if (value == 0) return `rgb(255, 250, 250)`
     // Calculate the color based on the value (number of books sent)
@@ -244,7 +243,6 @@ const MapComponent: React.FC<MapComponentProps> = ({ drives }) => {
                   // finds current country and its correspoding information
                   const country = geo.properties.GEOUNIT;
                   const countryInfo = countryData.find((data) => data.country === country);
-                  console.log(geo.properties.GEOUNIT)
                   return (
                     <React.Fragment key={index}><Geography
                       key={geo.rsmKey}
@@ -263,7 +261,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ drives }) => {
             </Geographies></>
             {africanCountries.map((country, index) => (
               <React.Fragment key={index}><Marker key={index} coordinates={[userMarkers[country].longitude, userMarkers[country].latitude]}>
-                <circle r={2} fill="#000000" />
+                <circle r={2} fill="#5F5F5F" />
                 <text textAnchor="middle" y={userMarkers[country].yLabelOffset} x={userMarkers[country].xLabelOffset} style={{ fontFamily: 'system-ui', fill: '#000', fontWeight: 650, fontSize: 7 }}>
                   {`${userMarkers[country].name}: ${userMarkers[country].booksSent}`}
                 </text>

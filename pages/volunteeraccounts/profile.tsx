@@ -122,31 +122,31 @@ const BookDrivesCompletedGraph = () => {
 };
 
 const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives }) => {
-  const [pfpURL, setpfpURL] = useState<string>((account)?account.pfpLink:"https://icons.iconarchive.com/icons/pictogrammers/material/512/account-circle-icon.png")
+  const [pfpURL, setpfpURL] = useState<string>((account) ? account.pfpLink : "https://icons.iconarchive.com/icons/pictogrammers/material/512/account-circle-icon.png")
 
-  const changeHandler = async (event : React.ChangeEvent<HTMLInputElement>) => {
-      if (!event.target.files) return
-      const file = event.target.files[0]
-      if (!account) return
-      // get account info
-      let data = await fetch(`/api/volunteeraccounts/${account.email}`, {
-        method: "GET"
-      }).then((response) => response.json()).then((response)=> response.data);
+  const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files) return
+    const file = event.target.files[0]
+    if (!account) return
+    // get account info
+    let data = await fetch(`/api/volunteeraccounts/${account.email}`, {
+      method: "GET"
+    }).then((response) => response.json()).then((response) => response.data);
 
-      // set new pfp
-      const url = await imagePfpUpload(file)
-      setpfpURL(url)
-      // delete old pfp
-      if (data.pfpLink) await imageDelete(data.pfpLink)
-      // throw it back up to the cloud
-      data.pfpLink = url
-      console.log(url)
-      console.log(data)
-      const response = await fetch(`/api/volunteeraccounts/${account.email}`, {
-        method: "PATCH",
-        body: JSON.stringify(data)
-      }).then((response) => response.json())
-      console.log("upload: ", response)
+    // set new pfp
+    const url = await imagePfpUpload(file)
+    setpfpURL(url)
+    // delete old pfp
+    if (data.pfpLink) await imageDelete(data.pfpLink)
+    // throw it back up to the cloud
+    data.pfpLink = url
+    console.log(url)
+    console.log(data)
+    const response = await fetch(`/api/volunteeraccounts/${account.email}`, {
+      method: "PATCH",
+      body: JSON.stringify(data)
+    }).then((response) => response.json())
+    console.log("upload: ", response)
 
   }
   console.log("Profile Page");
@@ -198,10 +198,10 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                   />
                   <div>
                     <input accept="image/*" id="icon-button-file"
-                      type="file" style={{ display: 'none' }} onChange={changeHandler}  />
+                      type="file" style={{ display: 'none' }} onChange={changeHandler} />
                     <label htmlFor="icon-button-file">
                       <IconButton color="primary" aria-label="upload picture"
-                      component="span">
+                        component="span">
                         <PhotoCamera />
                       </IconButton>
                     </label>
@@ -282,7 +282,7 @@ export const getServerSideProps = async (context: any) => {
     const volunteerAccount: VolunteerAccount | null = await VolunteerAccount.findOne({ email: email });
     if (!volunteerAccount) throw new Error("Volunteer account not found")
     // findsall completed bookDrives that correspond to the volunteer account
-    const promises = volunteerAccount!.driveIds.map(async (driveId: string) => await BookDrive.find({ driveCode: driveId, status: BookDriveStatus.Completed }));
+    const promises = volunteerAccount.driveIds.map(async (driveId: string) => await BookDrive.find({ driveCode: driveId, status: BookDriveStatus.Completed }));
     // you have to resolve these promises before continuing
     const resolvedPromises = await Promise.all(promises);
     // you have to flatten the array otherwise it will have a weird shape.
@@ -296,7 +296,7 @@ export const getServerSideProps = async (context: any) => {
       else return res;
     });
     const broadcasts = (await Promise.all(bPromises)) as Broadcast[];
-    return { props: { broadcasts: JSON.parse(JSON.stringify(broadcasts)), account: JSON.parse(JSON.stringify(volunteerAccount)) as VolunteerAccount, drives: JSON.parse(JSON.stringify(drives)) as BookDrive, error: null } }
+    return { props: { broadcasts: JSON.parse(JSON.stringify(broadcasts)), account: JSON.parse(JSON.stringify(volunteerAccount)) as VolunteerAccount, drives: JSON.parse(JSON.stringify(drives)) as BookDrive[], error: null } }
   } catch (e: Error | any) {
     console.error(e)
     // if the specific error message occurs it's because the user has not logged in
