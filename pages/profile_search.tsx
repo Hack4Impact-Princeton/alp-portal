@@ -166,15 +166,6 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives, er
         </Grid>
         </Grid>
 
-        
-
-        <Grid container spacing={10} style={{ marginLeft: "100px" }}>
-          {numbers.map((number) => (
-            <Grid item key={number} xs={4} sx={{ margin: "0 10px" }}>
-              {number}
-            </Grid>
-          ))}
-        </Grid>
       </Grid>
     );
   } else {
