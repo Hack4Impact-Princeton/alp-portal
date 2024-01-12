@@ -129,7 +129,7 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives, er
         <Grid
           container
           display="flex"
-          padding={1}
+          padding={2}
           sx={{ pl: 20 }}
           rowSpacing={3}
         >
@@ -147,13 +147,11 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives, er
               </a>
             </Link>
           </Grid>
-        </Grid>
-
-        <Grid
+          <Grid
           container
           display="flex"
           padding={1}
-          sx={{ pl: 20, margin: "10 10px" }}
+          sx={{ pl:5 }}
           spacing={3}
         >
           <Grid
@@ -161,11 +159,14 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives, er
             xs={12}
             sm={5}
             mt={6}
-            sx={{ pl: 20, margin: "0 100px" }}
+            sx={{  margin: "25 0px" }}
           >
             <ProfileDisplayCase profiles={filteredProfiles} useBadges={true} />
           </Grid>
         </Grid>
+        </Grid>
+
+        
 
         <Grid container spacing={10} style={{ marginLeft: "100px" }}>
           {numbers.map((number) => (
