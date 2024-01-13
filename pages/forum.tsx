@@ -31,6 +31,7 @@ type PostProps = {
   account: VolunteerAccount;
   username: string;
   email: string;
+  allAccounts: VolunteerAccount[];
 };
 
 const Forum: NextPage<PostProps> = ({
@@ -41,6 +42,7 @@ const Forum: NextPage<PostProps> = ({
   email,
   chatInfo,
   account,
+  allAccounts
 }) => {
   const [active, setActive] = useState("friends");
 
@@ -95,7 +97,7 @@ const Forum: NextPage<PostProps> = ({
             </h1>
           </Grid2>
           <Grid2 sx={{ justifyContent: "left" }}>
-            <SearchBar />
+            <SearchBar allAccounts={allAccounts}/>
           </Grid2>
           <Grid2 container flexDirection="row" spacing={4}>
             <Grid2 sx={{ width: "50vw" }}>
@@ -284,6 +286,7 @@ export const getServerSideProps = async (context: any) => {
     const account: VolunteerAccount = (await VolunteerAccount.findOne({
       email: session.user?.email,
     })) as VolunteerAccount;
+    const allAccounts = await VolunteerAccount.find({}) as VolunteerAccount[]
     //const name = account.fname + " " + account.lname;
     //console.log("account", account);
     // console.log("account email", account.email);
@@ -324,6 +327,7 @@ export const getServerSideProps = async (context: any) => {
         myPosts: JSON.parse(JSON.stringify(myPosts)),
         chatInfo: JSON.parse(JSON.stringify(chatInfo)),
         account: JSON.parse(JSON.stringify(account)),
+        allAccounts: JSON.parse(JSON.stringify(allAccounts)),
         username: userName,
         email: volunteerEmail,
         user: JSON.parse(JSON.stringify(account)),
