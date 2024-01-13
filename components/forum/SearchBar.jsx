@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import InputLabel from "@mui/material/InputLabel";
+import { useRouter } from 'next/router'
 
 const filterData = (query, data) => {
   if (!query) {
@@ -26,9 +27,21 @@ const data = [
   "Dublin",
 ];
 
-const Bar = ({ setSearchQuery }) => (
-  <form>
+const Bar = ({ searchQuery, setSearchQuery }) => {
+  const router = useRouter()
+  const handleKeyPress = (event) => {
+    console.log("helloo")
+    if (event.key === 'Enter' && searchQuery !== '') {
+      console.log("we did it")
+      // console.log(router.pathName)
+      router.push(`/profile_search?searchQuery=${searchQuery}`, "/profile_search")
+    }
+  }
+
+  return (
+    // <form>
     <TextField
+      onKeyDown={handleKeyPress}
       id="search-bar"
       className="text"
       onInput={(e) => {
@@ -41,15 +54,16 @@ const Bar = ({ setSearchQuery }) => (
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
-            <IconButton type="submit" aria-label="search">
+            <IconButton type="submit" aria-label="search" onClick={() => router.push(`/profile_search?searchQuery=${searchQuery}`, "/profile_search")}>
               <SearchIcon style={{ fill: "gray" }} />
             </IconButton>
           </InputAdornment>
         ),
       }}
     />
-  </form>
-);
+    // </form>
+  );
+}
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const dataFiltered = filterData(searchQuery, data);
