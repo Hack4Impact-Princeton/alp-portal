@@ -62,7 +62,6 @@ const RequestList: React.FC<RequestListProps> = ({
           friendInfoList.map((user) =>
             user ? (
               <RequestPreview
-              pfp = {user.pfp}
                 fname={user.fname}
                 lname={user.lname}
                 state={user.state ? user.state.name : ""}
