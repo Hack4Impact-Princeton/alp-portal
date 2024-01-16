@@ -80,7 +80,7 @@ export const sendMessage = async(senderEmail: string, receiverEmail: string, mes
         if (!editRes) throw new Error("Internal Server Error")
         const editResJson = await editRes.json()
         if (!editRes.ok) throw new Error(editResJson.data)
-        return {success: true, messages: editResJson.data.messages as Message[], updatedAt: editResJson.data.updatedAt, seenByParticipantA: editResJson.seenbyParticipantA, seenByParticipantB: editResJson.seenByParticipantB}
+        return {success: true, messages: editResJson.data.messages as Message[], updatedAt: editResJson.data.updatedAt, seenByParticipantA: senderEmail === resJson.data.participantAEmail, seenByParticipantB: senderEmail === resJson.data.participantBEmail}
     } catch (e: Error | any) {
         console.error(e)
         return {success: false, error: e}
