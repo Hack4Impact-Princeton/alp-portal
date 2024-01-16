@@ -102,7 +102,6 @@ const RequestList: React.FC<RequestListProps> = ({
                   reqEmail={user.email}
                   updateFunction={updateFriendReqs}
                   request={true}
-                  onClick={() => setSelectedFriendRequest(user.email)}
                 />
               </div>
             ) : null
