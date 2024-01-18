@@ -102,7 +102,7 @@ const PostContainer: React.FC<PostProps> = ({
   const handleAddComment = () => {
     // TODO hook this up to the auth provider
     // and then push it to the db
-    // if (!user) return
+    if (!user) return
 
     const newComment: Comments = {
       email: email,
