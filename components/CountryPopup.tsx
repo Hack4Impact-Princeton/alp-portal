@@ -5,7 +5,7 @@ type CountryPopupProps = {
     data: CountryData | undefined;
 }
 export const CountryPopup: React.FC<CountryPopupProps> = ({ data }) => {
-     if (data) return (
+    if (data) return (
         <Box sx={{
             width: "100%",
             height: data ? "auto" : "36px",
@@ -14,10 +14,11 @@ export const CountryPopup: React.FC<CountryPopupProps> = ({ data }) => {
             marginRight: "10px",
             marginLeft: "10px",
             flexDirection: "column",
-            paddingTop: 1,
-            backgroundColor: "#F5F5F5"
+            paddingTop: .5,
+            backgroundColor: "#F5F5F5",
+            borderRadius: "10px"
         }}>
-            <div style={{ paddingLeft: 2 }}>
+            <div style={{ paddingLeft: 5 }}>
                 <p style={{ textAlign: "left", fontWeight: 800, textDecoration: "underline", marginBottom: 4 }}>{data ? `${data.country}:` : ""}</p>
                 <p style={{ textAlign: "left" }}>{data ? `Books donated: ${data.value}` : ""}</p>
             </div>

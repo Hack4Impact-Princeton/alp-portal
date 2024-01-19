@@ -6,8 +6,7 @@ import MessageComponent from './Message'
 import { TextareaAutosize } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send'
 import CircularIcon from "../CircularIcon";
-import formatDistance from "date-fns/formatDistance";
-import format from "date-fns/format";
+
 const ChatBox: React.FC<{
     user: VolunteerAccount, otherUser: VolunteerAccount, chatInfo: { otherUser: VolunteerAccount, chat: Chat }[], setCurrChatInfo: Dispatch<SetStateAction<{
         otherUser: VolunteerAccount;
@@ -27,22 +26,26 @@ const ChatBox: React.FC<{
         if (messages) {
             // update currChatInfo array and currChatAndOtherUser to reflect that 
             // a message has been send and the chat has been updated
-            const chat = chatInfo[chatIndex].chat
-            chat.messages = messages
-            chat.updatedAt = updatedAt
-            chat.seenByParticipantA = seenByParticipantA
-            chat.seenByParticipantB = seenByParticipantB
-            setCurrChatAndOtherUser({ otherUser, chat })
-            const updatedChat = chatInfo.splice(chatIndex, 1)[0]
-            chatInfo.unshift(updatedChat)
-            setCurrChatInfo(chatInfo => [...chatInfo])
+            const updatedChatAndOtherUser = {
+                chat: {
+                    ...chatInfo[chatIndex].chat,
+                    messages, updatedAt, seenByParticipantA, seenByParticipantB
+                },
+                otherUser
+            }
+            const updatedChatInfo = [
+                updatedChatAndOtherUser,
+                ...chatInfo.slice(0, chatIndex),
+                ...chatInfo.slice(chatIndex + 1)
+            ]
+            setCurrChatInfo(updatedChatInfo)
         }
         setCurrMessage("")
         if (messageContainerRef.current) {
             messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight
         }
-    }
 
+    }
 
     // TODO make it so that when the tab key is pressed, it focuses on the sendIcon
     const handleEnterKeyPressed = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -68,7 +71,6 @@ const ChatBox: React.FC<{
         <path d="M18 6L6 18M6 6l12 12" />
     </svg>
 
-    // TODO fix the rounding
     return (
         <div style={{ height: "wrap-content", display: "flex", flexDirection: "column", maxHeight: 500 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "end", padding: 6, height: "43px", borderBottom: "3px solid white", backgroundColor: "#5F5F5F", borderTopRightRadius: "10px", borderTopLeftRadius: "10px" }}>
@@ -78,7 +80,7 @@ const ChatBox: React.FC<{
             <div ref={messageContainerRef}
                 style={{ display: "flex", flexDirection: "column", alignSelf: "center", alignItems: "center", width: "100%", paddingRight: 7, paddingLeft: 7, paddingTop: 20, paddingBottom: 10, borderRadius: "5%", overflowY: "auto", height: "fit-content", cursor: "default" }}>
 
-                {chatInfo[chatIndex].chat.messages && chatInfo[chatIndex].chat.messages.map(message =>
+                {chatInfo[chatIndex].chat && chatInfo[chatIndex].chat.messages && chatInfo[chatIndex].chat.messages.map(message =>
                     <MessageComponent message={message} isCurrUserMessage={user.email === message.senderEmail} key={message.id} otherUserName={`${otherUser.fname} ${otherUser.lname[0]}`} />
                 )}
             </div>
@@ -133,9 +135,6 @@ const ChatBox: React.FC<{
                             }}
                         />
                     </div>
-                    {/* <TextareaAutosize maxRows={8} minRows={1} cols={35} style={{ resize: "none" }} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCurrMessage(e.target.value)} value={currMessage} placeholder={"Type your message here"} /> */}
-                    {/* <input type="text" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCurrMessage(e.target.value)} value={currMessage} placeholder={"Type your message here"} /> */}
-                    {/* <button onClick={createMessage}>Send</button> */}
                 </div>
             </form>
         </div>

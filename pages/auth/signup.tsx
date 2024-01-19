@@ -29,7 +29,7 @@ const VisuallyHiddenInput = styled('input')({
     left: 0,
     whiteSpace: 'nowrap',
     width: 1,
-  });
+});
 
 const Signup = () => {
     const states = getStates()
@@ -112,16 +112,17 @@ const Signup = () => {
     return (
         <Grid2 container className="auth-bg" justifyContent="center" textAlign="center" direction="column"
             sx={{
-                width: '100vw',
-                height: '100vh',
+                width: '100%',
+                height: '100%',
             }}>
             <Grid2 sx={{
-                marginTop: '25px',
                 width: '100%',
                 height: '25%',
             }}>
+
                 <Image className="auth-logo" src="/logo-long.png" width={956 * 0.3} height={295 * 0.3} alt="ALP-logo" style={{
-                    marginBottom: "10 !important",
+                    marginBottom: "0 !important",
+                    border: "1.5px solid black"
                 }} />
                 <h2 className='auth-heading'>Sign up to volunteer with the African Library Project!</h2>
             </Grid2>
@@ -135,18 +136,18 @@ const Signup = () => {
                         <TextField fullWidth required error={submit && fname == ''} id="fname" label="First Name" variant="outlined"
                             value={fname} onChange={handleSetFName}
                             sx={{
-                                mt: 2,
-                                mb: 1
+                                mb: 1, border: "2px solid #5F5F5F", borderRadius: 2, backgroundColor: "#F5F5F5"
                             }} />
                         <TextField fullWidth required error={submit && lname == ''} id="lname" label="Last Name" variant="outlined"
                             value={lname} onChange={handleSetLName}
                             sx={{
-                                mb: 1
+                                mb: 1, border: "2px solid #5F5F5F", borderRadius: 2, backgroundColor: "#F5F5F5"
                             }} />
                         <TextField fullWidth required error={submit && email == ''} id="email" label="Email" variant="outlined"
                             value={email} onChange={handleSetEmail}
                             sx={{
-                                mb: 1
+                                mb: 1, border: "2px solid #5F5F5F", borderRadius: 2, backgroundColor: "#F5F5F5"
+
                             }} />
                         <TextField fullWidth required id="password" label="Password" variant="outlined"
                             type={showPassword ? 'text' : 'password'}
@@ -163,9 +164,10 @@ const Signup = () => {
                             }}
                             sx={{
                                 mb: 1,
+                                border: "2px solid #5F5F5F", borderRadius: 2, backgroundColor: "#F5F5F5"
                             }}
                         />
-                        <FormControl sx={{ width: 300 }}>
+                        <FormControl sx={{ width: 300, border: "2px solid #5F5F5F", borderRadius: 2, backgroundColor: "#F5F5F5" }}>
                             <InputLabel id="state-label">State</InputLabel>
                             <Select
                                 onChange={handleSetLocation}
@@ -181,9 +183,14 @@ const Signup = () => {
                         <br></br>
                         <Button variant="contained"
                             onClick={signUpHandler}
+                            color="inherit"
                             sx={{
                                 marginTop: 1,
-                            }}>Signup</Button>
+                                border: "3px solid #5F5F5F",
+                                borderRadius: 2,
+                                color: "black",
+                                fontWeight: 500
+                            }}>Sign up</Button>
                     </Box>
                 </Grid2>
             </Grid2>

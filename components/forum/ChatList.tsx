@@ -2,16 +2,13 @@ import createChat, { isChatUpdated } from "../../db_functions/chat";
 import { Chat } from "../../models/Chat";
 import { VolunteerAccount } from "../../models/VolunteerAccount";
 import ChatBox from "./ChatBox";
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Dispatch, SetStateAction } from 'react'
 import DownCaret from "../DownCaret";
 import UpCaret from "../UpCaret";
 import ChatPreview from "./ChatPreview";
-import { Dispatch, SetStateAction } from "react";
 const ChatList: React.FC<{ chatInfo: { otherUser: VolunteerAccount, chat: Chat }[], user: VolunteerAccount, showChat: boolean, setShowChat: Dispatch<SetStateAction<boolean>> }> = ({ chatInfo, user, showChat, setShowChat }) => {
-
     const [currChatInfo, setCurrChatInfo] = useState(chatInfo)
     const [currChatAndOtherUser, setCurrChatAndOtherUser] = useState<{ otherUser: VolunteerAccount, chat: Chat } | null>(null)
-
     useEffect(() => {
         const fetchData = async () => {
             currChatInfo.map(async ({ chat, otherUser }, index) => {
@@ -42,10 +39,10 @@ const ChatList: React.FC<{ chatInfo: { otherUser: VolunteerAccount, chat: Chat }
                     setCurrChatInfo(modifiedChatInfo => [...modifiedChatInfo])
                 }
             })
-            console.log("fetching data")
+            console.log("checking for a chat update")
         };
         fetchData();
-        const interval = setInterval(fetchData, 2000);
+        const interval = setInterval(fetchData, 5000);
         return () => clearInterval(interval);
     })
 
@@ -102,16 +99,10 @@ const ChatList: React.FC<{ chatInfo: { otherUser: VolunteerAccount, chat: Chat }
             setCurrChatAndOtherUser(chatInfo[0])
         }
     }
+
     const findChatIndex = (chatObj: { otherUser: VolunteerAccount, chat: Chat }) => {
-        let lo = 0
-        let hi = currChatInfo.length - 1
-        while (lo <= hi) {
-            let mid = (lo + hi) >> 1
-            console.log(mid)
-            if (currChatInfo[mid].chat.id === chatObj.chat.id) return mid
-            if (new Date(currChatInfo[mid].chat.updatedAt).getTime() < new Date(chatObj.chat.updatedAt).getTime()) {
-                hi = mid - 1
-            } else lo = mid + 1
+        for (let i = 0; i < currChatInfo.length; i++) {
+            if (currChatInfo[i].chat.id === chatObj.chat.id) return i;
         }
         return -1
     }
@@ -119,7 +110,6 @@ const ChatList: React.FC<{ chatInfo: { otherUser: VolunteerAccount, chat: Chat }
         <div style={{ display: "flex", alignItems: "flex-end", borderTopLeftRadius: "10px", borderTopRightRadius: "10px" }}>
             {currChatAndOtherUser &&
                 <div style={{ maxHeight: 500, width: 350, height: "wrap-content", backgroundColor: "#5F5F5F", marginRight: 30, borderTopRightRadius: "10px", borderTopLeftRadius: "10px" }}>
-
                     <ChatBox setCurrChatAndOtherUser={setCurrChatAndOtherUser}
                         otherUser={currChatAndOtherUser.otherUser}
                         chatIndex={findChatIndex(currChatAndOtherUser)}
@@ -128,7 +118,6 @@ const ChatList: React.FC<{ chatInfo: { otherUser: VolunteerAccount, chat: Chat }
                 </div>
             }
             <div style={{ maxHeight: 500, height: "wrap-content", borderRadius: "25px" }}>
-
                 <div style={{ width: "100%", display: "flex", justifySelf: "flex-end", alignSelf: "start", justifyContent: "space-between", paddingLeft: "15px", borderBottom: "3px solid white", paddingTop: "1px", backgroundColor: "#5F5F5F", borderTopRightRadius: "10px", borderTopLeftRadius: "10px" }} onClick={() => setShowChat(showChat => !showChat)}>
                     <h3 style={{ color: "white", marginTop: "12px" }}>
                         Messages
@@ -152,13 +141,11 @@ const ChatList: React.FC<{ chatInfo: { otherUser: VolunteerAccount, chat: Chat }
                     paddingTop: "5px",
                 }}>
                     {showChat &&
-
                         currChatInfo.map(({ chat, otherUser }, index) =>
                             <ChatPreview chat={chat} otherUser={otherUser} chatInfo={currChatInfo}
                                 chatIndex={index} user={user} key={chat.id} createChatByEmail={createChatByEmail}
                                 setCurrChatAndOtherUser={setCurrChatAndOtherUser} />
                         )
-
                     }
                 </div>
             </div>

@@ -38,8 +38,8 @@ export interface CountryData {
 }
 
 // url of the topojson map
-const geoUrl =
-  "https://raw.githubusercontent.com/deldersveld/topojson/master/continents/africa.json"
+const geoUrl = "/africa_better.json"
+// "https://raw.githubusercontent.com/deldersveld/topojson/master/continents/africa.json"
 
 
 // hard coded values of markers 
@@ -103,19 +103,19 @@ const geoUrl =
 */
 const userMarkers: UserMarkerDict<UserMarker> = {
   'Botswana': { name: 'Botswana', longitude: 24.6849, latitude: -22.3285, booksSent: 0, xLabelOffset: 8, yLabelOffset: 7 },
- 
-  
+
+
   'Ghana': { name: 'Ghana', longitude: -1.0232, latitude: 6.9465, booksSent: 0, xLabelOffset: -2, yLabelOffset: 14 },
-  
+
   'Kenya': { name: 'Kenya', longitude: 38.9062, latitude: -1.0236, booksSent: 0, xLabelOffset: 18, yLabelOffset: 8 },
   'Lesotho': { name: 'Lesotho', longitude: 28.2336, latitude: -29.6099, booksSent: 0, xLabelOffset: 21, yLabelOffset: 2 },
-  
+
   'Malawi': { name: 'Malawi', longitude: 34.3015, latitude: -13.2543, booksSent: 0, xLabelOffset: 22, yLabelOffset: 1.5 },
-  
+
   'South Africa': { name: 'South Africa', longitude: 22.7482, latitude: -33.0373, booksSent: 0, xLabelOffset: 26, yLabelOffset: 2 },
-  
+
   'Uganda': { name: 'Uganda', longitude: 32.2903, latitude: 1.3733, booksSent: 0, xLabelOffset: -21, yLabelOffset: 2 },
-  
+
 };
 
 const MapComponent: React.FC<MapComponentProps> = ({ drives }) => {
@@ -123,7 +123,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ drives }) => {
   let countryData: CountryData[] = africanCountries.map(() => ({ country: "", value: 0 }))
   // drives refers to the completed bookDrives
   // refers to number of books sent to country with most number of books
-  let maxVal: number = 0 
+  let maxVal: number = 0
   for (let i = 0; i < africanCountries.length; i++) {
     // sets the country field to the corresponding african country name
     countryData[i].country = africanCountries[i]
@@ -131,12 +131,11 @@ const MapComponent: React.FC<MapComponentProps> = ({ drives }) => {
     const matchingDrives: BookDrive[] | undefined = drives ? drives.filter((drive) => drive.country === africanCountries[i]) : undefined
     // adds numBooks of each matching drive to the numbooks value of the
     // current country
-    if (matchingDrives) matchingDrives.forEach((drive) => countryData[i].value += drive.cb.booksCurrent)
+    if (matchingDrives) matchingDrives.forEach((drive) => countryData[i].value += drive.booksGoal)
     if (countryData[i].value > maxVal) maxVal = countryData[i].value
     // sets the booksSent value for the map markers
     userMarkers[africanCountries[i]].booksSent = countryData[i].value
   }
-
   const getColor = (value: number): string => {
     if (value == 0) return `rgb(255, 250, 250)`
     // Calculate the color based on the value (number of books sent)
@@ -167,7 +166,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ drives }) => {
 
 
   return (
-    <div style={{ position: 'relative', height: "100%", display: "flex", flexDirection: "column"}}>
+    <div style={{ position: 'relative', height: "100%", display: "flex", flexDirection: "column" }}>
       <div className="controls" style={{
         display: "flex",
         flexDirection: 'row',
@@ -233,46 +232,47 @@ const MapComponent: React.FC<MapComponentProps> = ({ drives }) => {
           </svg>
         </button>
       </div>
-      <div style={{ alignItems: "center", height: "87.5%", width: "100%"}}>
-        <><ComposableMap projection="geoMercator" style={{height: "100%", width: "100%"}} viewBox={"320 165 250 250"}>
+      <div style={{ alignItems: "center", height: "87.5%", width: "100%" }}>
+        <><ComposableMap projection="geoMercator" style={{ height: "100%", width: "100%" }} viewBox={"320 165 250 250"}>
           <><ZoomableGroup zoom={position.zoom}
             center={[position.coordinates[0], position.coordinates[1]]}
             onMoveEnd={() => setPosition(position)}>
             <><Geographies geography={geoUrl}>
               {({ geographies }) =>
-                geographies.map((geo) => {
+                geographies.map((geo, index) => {
                   // finds current country and its correspoding information
-                  const country = geo.properties.geounit;
+                  const country = geo.properties.GEOUNIT;
                   const countryInfo = countryData.find((data) => data.country === country);
                   return (
-                    <><Geography style={{}}
+                    <React.Fragment key={index}><Geography
                       key={geo.rsmKey}
                       geography={geo}
-                      fill={countryInfo ? getColor(countryInfo.value) : '#ababab'}
-                      stroke="#494949"
+                      fill={countryInfo ? getColor(countryInfo.value) : getColor(0)}
+                      stroke="#000000"
+                      strokeWidth={.5}
                       onMouseEnter={() => {
                         // sets the state of the current country in popup box
                         setCountryPopupInfo(countryInfo)
                       }}
-                    /></>
+                    /></React.Fragment>
                   );
                 })
               }
             </Geographies></>
             {africanCountries.map((country, index) => (
-              <><Marker key={index} coordinates={[userMarkers[country].longitude, userMarkers[country].latitude]}>
-                <circle r={2} fill="#000000" />
+              <React.Fragment key={index}><Marker key={index} coordinates={[userMarkers[country].longitude, userMarkers[country].latitude]}>
+                <circle r={2} fill="#5F5F5F" />
                 <text textAnchor="middle" y={userMarkers[country].yLabelOffset} x={userMarkers[country].xLabelOffset} style={{ fontFamily: 'system-ui', fill: '#000', fontWeight: 650, fontSize: 7 }}>
                   {`${userMarkers[country].name}: ${userMarkers[country].booksSent}`}
                 </text>
-              </Marker></>
+              </Marker></React.Fragment>
             ))}
 
           </ZoomableGroup></>
         </ComposableMap></>
       </div>
-      
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-end", height: "wrap-content"}}>
+
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-end", height: "wrap-content" }}>
         <CountryPopup data={countryPopupInfo} />
 
       </div>
