@@ -11,6 +11,7 @@ type RequestListProps = {
 };
 
 interface FriendInfo {
+  pfp:  string;
   email: string;
   fname: string;
   lname: string;
