@@ -2,11 +2,13 @@ import mongoose from "mongoose";
 import { Schema, Types } from "mongoose";
 
 type BadgeInfoProps = {
-  isEarned: boolean;
+  badgeID: number;
   level: number;
-  name: string;
-  description: string;
 };
+
+export type BadgeType = {
+  Organizer: number, Profile: number, Connector: number, Supporter: number, Leader: number, Participation: number
+}
 
 export type VolunteerAccount = {
     fname: string,
@@ -20,11 +22,17 @@ export type VolunteerAccount = {
     allDrives: number,
     driveIds: Types.Array<string>,
     friends: string[],
-    badges: BadgeInfoProps[];
+    badges: BadgeType;
     broadcasts: string[],
     chatIds: string[],
     pfpLink: string,
     friendRequests: string[];
+    affiliation: string,
+    hobbies: string[],
+    favoriteBook: string,
+    commentsPosted: number
+    commentsReceived: number
+    posts: number
 }
 
 
@@ -71,9 +79,30 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>(
     driveIds: [String],
     friends: [String],
     badges: {
-      type: [Object], // Use [Object] to indicate an array of objects
-      required: true,
-      default: [],
+      Organizer: {
+        type : Number,
+        default: 0
+      }, 
+      Profile: {
+        type : Number,
+        default: 0
+      }, 
+      Connector: {
+        type : Number,
+        default: 0
+      },  
+      Supporter: {
+        type : Number,
+        default: 0
+      }, 
+      Leader: {
+        type : Number,
+        default: 0
+      }, 
+      Participation: {
+        type : Number,
+        default: 0
+      }
     },
     broadcasts: {
       type: [String],
@@ -87,6 +116,23 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>(
     pfpLink:  {
         type: String,
         default: "https://res.cloudinary.com/alp-portal/image/upload/c_thumb,g_face,h_150,w_150/rzjgu7qrlfhgefei5v4g"
+    },
+    affiliation: {
+      type: String,
+      default: ""
+    },
+    hobbies: {
+      type: [String],
+      default: []
+    },
+    favoriteBook: {
+      type: String,
+      default: ""
+    },
+    commentsPosted: {
+      type: Number,
+      required: true,
+      default: 0
     }
 }, {collection: 'volunteerAccounts'})
 

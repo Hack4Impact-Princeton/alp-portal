@@ -142,6 +142,7 @@ const profile_search: NextPage<ProfileProps> = ({broadcasts, account, drives, er
           </Grid>
           <Grid item xs={12} sm={7} display="flex" flexDirection="column">
             <Link href="/forum">
+
               <a style={backButtonStyle}>
                 <span style={backIconStyle}>&lt;</span> Back to Forum
               </a>
