@@ -243,7 +243,7 @@ const profiles = [
                     state={state}
                     email={user.email}
                     profilePicture={profilePicture}
-                    badges={user.badges}
+                    //badges={user.badges}
                     style={{ marginRight: '20px', marginBottom: '20px' }}
                   />
                 </li>

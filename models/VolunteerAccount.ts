@@ -6,6 +6,10 @@ type BadgeInfoProps = {
   level: number;
 };
 
+export type BadgeType = {
+  Organizer: number, Profile: number, Connector: number, Supporter: number, Leader: number, Participation: number
+}
+
 export type VolunteerAccount = {
     fname: string,
     lname: string,
@@ -18,7 +22,7 @@ export type VolunteerAccount = {
     allDrives: number,
     driveIds: Types.Array<string>,
     friends: string[],
-    badges: {Organizer: number, Profile: number, Connector: number, Supporter: number, Leader: number, Participation: number};
+    badges: BadgeType;
     broadcasts: string[],
     chatIds: string[],
     pfpLink: string,

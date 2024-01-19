@@ -1,24 +1,19 @@
 import React from 'react';
+import {BadgeType} from '../models/VolunteerAccount'
 
-type BadgeInfoProps = {
-  isEarned: boolean;
-  level: number;
-  name: string;
-  description: string;
-};
 
 type ProfileCardProps = {
   name: string;
   state: string;
   email: string;
   profilePicture: string;
-  badges: BadgeInfoProps[];
+ // badges: BadgeType;
   useBadges?: boolean;
   style?: React.CSSProperties;
 };
 
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePicture, badges, useBadges = true, style }) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePicture, /*badges,*/ useBadges = true, style }) => {
   const [friendStatus, setFriendStatus] = React.useState<string>('none');
   const [showRevokeButton, setShowRevokeButton] = React.useState<boolean>(false);
 
@@ -142,7 +137,7 @@ return (
       <p style = {userInfoItemStyle}>{email}</p>
       </div>
       </div>
-      {useBadges && (
+      {/*useBadges && (
         <div style={badgesAndButtonsContainerStyle}>
             <div style= {badgesContainerStyle}>
           {badges.map((badge, index) => (
@@ -157,10 +152,10 @@ return (
                 <p style={{ margin: 0, fontSize: '12px' }}>{badge.description}</p>
               </div>
             </div>
-          ))}
+              ))}
         </div>
         </div>
-      )}
+              )*/}
       <div style={buttonsContainerStyle}>
         {friendStatus === 'none' && (
           <button onClick={handleSendFriendRequest} style={buttonStyle}>

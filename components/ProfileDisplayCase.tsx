@@ -2,6 +2,7 @@
 import React from 'react';
 import { Grid } from '@mui/material';
 import ProfileCard from './ProfileCard';
+import {BadgeType} from '../models/VolunteerAccount'
 
 type BadgeInfoProps = {
   isEarned: boolean;
@@ -33,7 +34,7 @@ const ProfileDisplayCase: React.FC<{ profiles: ProfileInfoProps[]; useBadges?: b
               state={profile.state}
               email={profile.email}
               profilePicture={profile.profilePicture}
-              badges={profile.badges}
+              //badges={profile.badges}
               useBadges={useBadges}
             />
           </Grid>
