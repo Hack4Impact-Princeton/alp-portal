@@ -1,13 +1,13 @@
 import getVolunteerAccountModel, { VolunteerAccount } from "../../models/VolunteerAccount";
 import dbConnect from '../../lib/dbConnect';
-import { Grid, IconButton } from "@mui/material";
+import { Grid, IconButton, Button, TextField, FormControl, InputLabel, Select, OutlinedInput, MenuItem, SelectChangeEvent } from "@mui/material";
 import Box from '@mui/material/Box';
 import PageContainer from "../../components/PageContainer";
-import { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { signOut } from "next-auth/react";
 import MapComponent from '../../components/MapComponent';
 import Link from 'next/link';
-import { BookDriveStatus } from "../../lib/enums";
+import { BookDriveStatus, getStates } from "../../lib/enums";
 import getBookDriveModel, { BookDrive } from "../../models/BookDrive";
 import { NextPage } from 'next';
 import mongoose from 'mongoose';
@@ -16,7 +16,7 @@ import { authOptions } from "../api/auth/[...nextauth]";
 import getBroadcastModel, { Broadcast } from "../../models/Broadcast";
 import { PhotoCamera } from "@mui/icons-material";
 import { imageDelete, imagePfpUpload } from "../../db_functions/imageDB";
-
+import CircularIcon from "../../components/CircularIcon";
 type ProfileProps = {
   error: string | null;
   account: VolunteerAccount | null;
@@ -123,7 +123,7 @@ const BookDrivesCompletedGraph = () => {
 
 const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives }) => {
   const [pfpURL, setpfpURL] = useState<string>((account) ? account.pfpLink : "https://icons.iconarchive.com/icons/pictogrammers/material/512/account-circle-icon.png")
-
+  const states = getStates()
   const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return
     const file = event.target.files[0]
@@ -152,6 +152,18 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
   console.log("Profile Page");
   // if the account is not null, that means that everything is working
   // otherwise render the error message page
+  const toggleShowEditProfileModal = (val: boolean) => {
+    if (val) editProfileRef?.current?.showModal()
+    else editProfileRef?.current?.close()
+
+  }
+  const editProfileRef = useRef<HTMLDialogElement>(null)
+  const [name, setName] = useState(`${account!.fname} ${account!.lname}`)
+  const [location, setLocation] = useState(account!.location)
+  const [email, setEmail] = useState(account!.email)
+  const [affiliation, setAffiliation] = useState("")
+  const [favBook, setFavBook] = useState("")
+
   if (account) {
     return (
       <Grid>
@@ -221,10 +233,129 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                 <p style={{ fontWeight: 800, fontSize: 30, marginBottom: 2, color: "#5F5F5F" }}>{`${account.fname} ${account.lname}`}</p>
                 <p style={{ fontWeight: 500, marginBottom: 2, color: "#5F5F5F" }}>{account.email}</p>
                 <p style={{ fontWeight: 500, color: "#5F5F5F" }}>{`# of Bookdrives completed: ${drives!.length}`}</p>
+                <p style={{ marginTop: 16, color: "blue", fontWeight: 600, cursor: "pointer" }} onClick={() => toggleShowEditProfileModal(true)}>Edit Profile</p>
               </div>
+
             </Box>
             <BookDrivesCompletedGraph />
             <BadgeDisplayCase />
+            <dialog
+              ref={editProfileRef}
+              style={{
+                height: "70%",
+                width: "50%",
+                borderRadius: "3%",
+                padding: 0,
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              <Grid
+                display={"flex"}
+                flexDirection={"column"}
+                justifyContent={"space-between"}
+                alignItems={"center"}
+                alignSelf={"flex-start"}
+                height={"100%"}
+                sx={{
+                  backgroundColor: "#F5F5F5",
+                  width: "100%",
+                  height: "100%",
+                }}
+              >
+                <Grid
+                  display="flex"
+                  flexDirection="row"
+                  alignItems="center"
+                  justifyContent={"space-between"}
+                  width="100%"
+                  sx={{ marginTop: 1 }}
+                >
+                  <p
+                    style={{
+                      color: "#5F5F5F",
+                      fontWeight: 600,
+                      fontSize: 20,
+                      width: "90%",
+                      marginLeft: "5%",
+                    }}
+                  >
+                    Edit Profile
+                  </p>
+                  <p style={{ cursor: "pointer", marginRight: 7, fontWeight: "600" }} onClick={() => toggleShowEditProfileModal(false)}>x</p>
+
+                </Grid>
+                <Grid flexDirection="row">
+                  <Grid flexDirection="column">
+                    <img src={pfpURL} />
+                    <Button>Upload new</Button>
+                    <Grid flexDirection={"column"} sx={{padding: 2}}>
+                      <input type="text" placeholder={"name"} style={{width: "85%"}} value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}/>
+                      <FormControl sx={{ width: 300, border: "2px solid #5F5F5F", borderRadius: 2, backgroundColor: "#F5F5F5", zIndex: 1000 }}>
+                        <InputLabel id="state-label">State</InputLabel>
+                        <Select
+                          onChange={(e: SelectChangeEvent<string>) => setLocation(parseInt(e.target.value))}
+                          input={<OutlinedInput label="State" />}
+                        >
+                          {
+                            states.map((state) => (
+                              <MenuItem key={state.index} value={state.index} sx={{zIndex: 1000001}}>{state.name}</MenuItem>
+                            ))
+                          }
+                        </Select>
+                      </FormControl>
+                      <input type="text" placeholder={"email"} style={{width: "85%"}} value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}/>
+                    </Grid>
+                  </Grid>
+
+                </Grid>
+                <TextField
+                  multiline
+                  autoFocus
+                  required
+                  placeholder="message"
+                  rows={7}
+                  sx={{
+                    width: "85%",
+                    marginBottom: "5px",
+                    backgroundColor: "#FFFFFF",
+                    color: "#FE9384",
+                    borderColor: "#FE9834",
+                  }}
+
+                />
+                <Grid
+                  display="flex"
+                  flexDirection="row"
+                  justifyContent="space-around"
+                  alignItems="center"
+                  sx={{ width: "50%" }}
+                >
+                  <Button
+                    sx={{
+                      backgroundColor: "#F3D39A",
+                      "&:hover": { backgroundColor: "#D3A874" },
+                      fontWeight: 550,
+                      color: "#5F5F5F",
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    sx={{
+                      backgroundColor: "#F3D39A",
+                      "&:hover": { backgroundColor: "#D3A874" },
+                      fontWeight: 550,
+                      color: "#5F5F5F",
+                    }}
+                  >
+                    Submit
+                  </Button>
+                </Grid>
+              </Grid>
+            </dialog>
           </Grid>
           <Grid item xs={12} sm={5} height={"418px"}>
             <Box
