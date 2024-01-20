@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { useState } from "react";
-import {imageUpload, imageDelete} from "../../db_functions/imageDB"
+import {imagePfpUpload, imageDelete, imageUpload} from "../../db_functions/imageDB"
 type props = {
 
 }
@@ -16,7 +16,7 @@ const testCloudinary: NextPage<props> = ({}) => {
     const handleUpload = async () => {
         if (!selectedFile) return
         console.log(selectedFile)
-        const url = await imageUpload(selectedFile)
+    const url = await imageUpload(selectedFile)
         console.log(url)
         setSelectedURL(url)
     }

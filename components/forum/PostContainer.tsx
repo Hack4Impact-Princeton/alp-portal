@@ -16,8 +16,10 @@ import { format, formatDistance, formatRelative, subDays } from "date-fns";
 import getVolunteerAccountModel, {
   VolunteerAccount,
 } from "../../models/VolunteerAccount";
+import RichEditor from "./RichEditor";
 
 import postComment, { deletePost } from "../../db_functions/forum";
+import { updateSupporterBadge } from "../../db_functions/badges";
 
 type PostProps = {
   post: Posts;
@@ -100,6 +102,7 @@ const PostContainer: React.FC<PostProps> = ({
   const handleAddComment = () => {
     // TODO hook this up to the auth provider
     // and then push it to the db
+    if (!user) return
 
     const newComment: Comments = {
       email: email,
@@ -113,6 +116,7 @@ const PostContainer: React.FC<PostProps> = ({
     console.log(post.post_id);
     postComment(newComment, post.post_id);
     addComment(newComment);
+    updateSupporterBadge(user.email);
     console.log(newComment);
 
     setNewCommentText("");
@@ -285,7 +289,15 @@ const PostContainer: React.FC<PostProps> = ({
             padding: 2,
           }}
         >
-          <p style={{ lineHeight: 1.5 }}>{post.text}</p>
+
+          {/*<p style={{ lineHeight: 1.5 }}>{post.text}</p>*/}
+          <RichEditor
+            readOnly={true}
+            initialValue={post.text}
+            onChange={() => {}} // yeah these should be default args
+            post_id={post.post_id}
+          />
+
         </Grid2>
       </Grid2>
       <Grid2
