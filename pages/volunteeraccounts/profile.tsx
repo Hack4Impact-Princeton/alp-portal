@@ -124,12 +124,13 @@ const BookDrivesCompletedGraph = () => {
 const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives }) => {
   const [pfpURL, setpfpURL] = useState<string>((account) ? account.pfpLink : "https://icons.iconarchive.com/icons/pictogrammers/material/512/account-circle-icon.png")
   const states = getStates()
+  const [currAccount, setCurrAccount] = useState(account)
   const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return
     const file = event.target.files[0]
-    if (!account) return
+    if (!currAccount) return
     // get account info
-    let data = await fetch(`/api/volunteeraccounts/${account.email}`, {
+    let data = await fetch(`/api/volunteeraccounts/${currAccount.email}`, {
       method: "GET"
     }).then((response) => response.json()).then((response) => response.data);
 
@@ -142,7 +143,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
     data.pfpLink = url
     console.log(url)
     console.log(data)
-    const response = await fetch(`/api/volunteeraccounts/${account.email}`, {
+    const response = await fetch(`/api/volunteeraccounts/${currAccount.email}`, {
       method: "PATCH",
       body: JSON.stringify(data)
     }).then((response) => response.json())
@@ -154,20 +155,48 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
   // otherwise render the error message page
   const toggleShowEditProfileModal = (val: boolean) => {
     if (val) editProfileRef?.current?.showModal()
-    else editProfileRef?.current?.close()
+    else {
+      editProfileRef?.current?.close()
+      setName(`${currAccount!.fname} ${currAccount!.lname}`)
+      setLocation(currAccount!.location)
+      setEmail(currAccount!.email)
+    }
 
   }
   const editProfileRef = useRef<HTMLDialogElement>(null)
-  const [name, setName] = useState(`${account!.fname} ${account!.lname}`)
-  const [location, setLocation] = useState(account!.location)
-  const [email, setEmail] = useState(account!.email)
+  const [name, setName] = useState(`${currAccount!.fname} ${currAccount!.lname}`)
+  const [location, setLocation] = useState(currAccount!.location)
+  const [email, setEmail] = useState(currAccount!.email)
   const [affiliation, setAffiliation] = useState("")
   const [favBook, setFavBook] = useState("")
+  const editProfile = async () => {
+    // TODO you would maybe have to change all of the bookdrives with those emails
+    const update = {
+      fname: name.split(" ")[0],
+      lname: name.split(" ")[1],
+      location: location,
+      email: email,
+    }
+    const newAccount: VolunteerAccount = {
+      ...currAccount!,
+      ...update,
+    }
+    const res = await fetch(`/api/volunteeraccounts/${currAccount!.email}`, {
+      method: "PATCH",
+      body: JSON.stringify(update)
+    })
+    if (!res.ok) {
+      alert("profile modification failed")
+      return
+    }
+    setCurrAccount(newAccount)
+    toggleShowEditProfileModal(false)
 
-  if (account) {
+  }
+  if (currAccount) {
     return (
       <Grid>
-        <PageContainer broadcasts={broadcasts} fName={account.fname} currPage="profile" />
+        <PageContainer broadcasts={broadcasts} fName={currAccount.fname} currPage="profile" />
         <Grid container display="flex" padding={1} sx={{ pl: 20 }} rowSpacing={2}>
           <Grid item xs={12} sm={7} display="flex" flexDirection="column" >
             <Box
@@ -230,8 +259,8 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                   paddingLeft: '4px',
                 }}
               >
-                <p style={{ fontWeight: 800, fontSize: 30, marginBottom: 2, color: "#5F5F5F" }}>{`${account.fname} ${account.lname}`}</p>
-                <p style={{ fontWeight: 500, marginBottom: 2, color: "#5F5F5F" }}>{account.email}</p>
+                <p style={{ fontWeight: 800, fontSize: 30, marginBottom: 2, color: "#5F5F5F" }}>{`${currAccount.fname} ${currAccount.lname}`}</p>
+                <p style={{ fontWeight: 500, marginBottom: 2, color: "#5F5F5F" }}>{currAccount.email}</p>
                 <p style={{ fontWeight: 500, color: "#5F5F5F" }}>{`# of Bookdrives completed: ${drives!.length}`}</p>
                 <p style={{ marginTop: 16, color: "blue", fontWeight: 600, cursor: "pointer" }} onClick={() => toggleShowEditProfileModal(true)}>Edit Profile</p>
               </div>
@@ -291,8 +320,8 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                   <Grid flexDirection="column">
                     <img src={pfpURL} />
                     <Button>Upload new</Button>
-                    <Grid flexDirection={"column"} sx={{padding: 2}}>
-                      <input type="text" placeholder={"name"} style={{width: "85%"}} value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}/>
+                    <Grid flexDirection={"column"} sx={{ padding: 2 }}>
+                      <input type="text" placeholder={"name"} style={{ width: "85%" }} value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
                       <FormControl sx={{ width: 300, border: "2px solid #5F5F5F", borderRadius: 2, backgroundColor: "#F5F5F5", zIndex: 1000 }}>
                         <InputLabel id="state-label">State</InputLabel>
                         <Select
@@ -301,12 +330,12 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                         >
                           {
                             states.map((state) => (
-                              <MenuItem key={state.index} value={state.index} sx={{zIndex: 1000001}}>{state.name}</MenuItem>
+                              <MenuItem key={state.index} value={state.index} sx={{ zIndex: 1000001 }}>{state.name}</MenuItem>
                             ))
                           }
                         </Select>
                       </FormControl>
-                      <input type="text" placeholder={"email"} style={{width: "85%"}} value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}/>
+                      <input type="text" placeholder={"email"} style={{ width: "85%" }} value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} />
                     </Grid>
                   </Grid>
 
@@ -340,6 +369,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                       fontWeight: 550,
                       color: "#5F5F5F",
                     }}
+                    onClick={() => toggleShowEditProfileModal(false)}
                   >
                     Cancel
                   </Button>
@@ -350,6 +380,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                       fontWeight: 550,
                       color: "#5F5F5F",
                     }}
+                    onClick={editProfile}
                   >
                     Submit
                   </Button>
