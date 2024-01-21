@@ -1,7 +1,7 @@
 
-const CircularIcon: React.FC<{ stringContent?: string | null, reactNodeContent?: React.ReactNode | null, bgColor: string, fgColor?: string, diameter?: string, onClick?: () => void }> = ({ stringContent, reactNodeContent, bgColor, fgColor, diameter, onClick }) => {
+const CircularIcon: React.FC<{ stringContent?: string | null, reactNodeContent?: React.ReactNode | null, bgColor: string, fgColor?: string, diameter?: string, viewBox?: string, onClick?: () => void }> = ({ stringContent, reactNodeContent, bgColor, fgColor, diameter, viewBox, onClick }) => {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" onClick={onClick} width={diameter ? diameter : "28"} height={diameter ? diameter : "28"} viewBox="0 0 28 28" fill="none">
+        <svg xmlns="http://www.w3.org/2000/svg" onClick={onClick} width={diameter ? diameter : "28"} height={diameter ? diameter : "28"} viewBox={viewBox ? viewBox : "0 0 28 28"} fill="none">
             <circle cx="14" cy="14" r="14" fill={bgColor} />
             {reactNodeContent && reactNodeContent}
             {stringContent &&
