@@ -1,13 +1,10 @@
 import React from 'react'
 import { useState } from 'react';
-import dbConnect from "../../lib/dbConnect";
-import mongoose from 'mongoose'
 import Image from 'next/image';
 import Link from 'next/link';
 import Router from 'next/router';
 import { NextPage } from 'next';
 import { signIn } from 'next-auth/react'
-
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
@@ -15,11 +12,7 @@ import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { styled } from "@mui/material/styles";
-import MuiButton from "@mui/material/Button";
 
-import getVolunteerAccountModel from "../../models/VolunteerAccount";
-import { VolunteerAccount } from '../../models/VolunteerAccount';
 
 // type LoginProps = {
 //   accounts: VolunteerAccount[];
@@ -100,42 +93,43 @@ const Login: NextPage = () => {
     }
     else {
       alert("Email or password is incorrect. Please try again")
-      console.log(`something went wrong: ${res.error}`) 
+      console.log(`something went wrong: ${res.error}`)
     }
   }
 
 
   return (
+
     <Grid2 container className="auth-bg" justifyContent="center" textAlign="center" direction="column"
       sx={{
         width: '100vw',
         height: '100vh',
       }}>
       <Grid2 sx={{
-        marginTop: '25px',
         width: '100%',
-        height: '25%',
+        height: 'wrap-content',
       }}>
         <Image className="auth-logo" src="/logo-long.png" width={956 * 0.3} height={295 * 0.3} alt="ALP-logo" style={{
           marginBottom: "10 !important",
         }} />
-        <h2 className='auth-heading'> Volunteer Portal Login </h2>
       </Grid2>
       <Grid2>
-        <Grid2 xs display="flex" justifyContent="center">
+        <Grid2 xs display="flex" justifyContent="center" sx={{ marginTop: 3 }}>
           <Box
             sx={{
               width: 400,
-              height: 225,
+              height: "wrap-content",
             }}>
-            <TextField fullWidth required className="email" id="email" label="Email" variant="outlined"
+            <TextField size="small" fullWidth color="warning" required className="email" id="email" label="email" variant="filled"
               value={email}
               onChange={handleSetEmail}
               sx={{
-                mt: 2,
-                mb: 2
+                mb: 2,
+                backgroundColor: "white",
+                border: "3px solid #FE9834",
+                borderRadius: 2
               }} />
-            <TextField fullWidth required className="password" id="password" label="Password" variant="outlined"
+            <TextField size="small" fullWidth color="warning" required className="password" id="password" label="password" variant="filled"
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={handleSetPassword}
@@ -151,41 +145,53 @@ const Login: NextPage = () => {
               sx={{
                 mt: 2,
                 mb: 2,
+                backgroundColor: "white",
+                border: "3px solid #FE9834",
+                borderRadius: 2
               }}
             />
 
             <Button variant="contained"
               onClick={() => handleSubmit(false)}
-              style={{
-                backgroundColor: '#3b1e1e',
+              sx={{
+                backgroundColor: 'black',
+                "&:hover": { backgroundColor: "#444444" },
                 marginTop: 2,
-                
-              
+                marginBottom: 5,
+                width: "48%"
               }}>Volunteer Login</Button>
             <Button variant="contained"
               onClick={() => handleSubmit(true)}
-              style={{
-                backgroundColor: '#3b1e1e',
+              sx={{
+                backgroundColor: 'black',
+                "&:hover": { backgroundColor: "#444444" },
                 marginTop: 2,
-                marginLeft: 10,
-                
+                marginLeft: 2,
+                marginBottom: 5,
+                width: "48%"
               }}>Admin Login</Button>
-            
-            
-            
+
+
+
           </Box>
 
         </Grid2>
-
-        <Link href='signup'>Create An Account?</Link>
-        <Box sx={{
-          marginTop: 1,
-        }}></Box>
-        
-        <Link href='resetpassword'>Forgot Password?</Link>
+        <br></br>
+        <Link href='signup' passHref={true}>
+          <a style={{ color: "white", textDecoration: "none" }}>
+            Create An Account
+          </a>
+        </Link>
+        <br />
+        <br />
+        <Link href='resetpassword' passHref={true}>
+          <a style={{ textDecoration: "none", color: "white" }}>
+            Forgot Password?
+          </a>
+        </Link>
 
       </Grid2>
-    </Grid2>
+    </Grid2 >
   )
 }
 
