@@ -3,7 +3,7 @@ import dbConnect from '../../lib/dbConnect';
 import { Grid, IconButton, Button, TextField, FormControl, InputLabel, Select, OutlinedInput, MenuItem, SelectChangeEvent } from "@mui/material";
 import Box from '@mui/material/Box';
 import PageContainer from "../../components/PageContainer";
-import React, { useState, useRef, Dispatch, SetStateAction } from 'react';
+import React, { useState, useRef, Dispatch, SetStateAction, useEffect } from 'react';
 import { signOut } from "next-auth/react";
 import MapComponent from '../../components/MapComponent';
 import Link from 'next/link';
@@ -169,12 +169,17 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
   const [pfpURL, setpfpURL] = useState<string>((account) ? account.pfpLink : "https://icons.iconarchive.com/icons/pictogrammers/material/512/account-circle-icon.png")
   const states = getStates()
   const [currAccount, setCurrAccount] = useState(account)
-
-  console.log("Profile Page");
+  useEffect(() => {
+    console.log(currAccount)
+  }, [currAccount])
   // if the account is not null, that means that everything is working
   // otherwise render the error message page
   const toggleShowEditProfileModal = (val: boolean) => {
-    if (val) editProfileRef?.current?.showModal()
+    if (val) {
+      setName(`${currAccount!.fname} ${currAccount!.lname}`)
+      setLocation(currAccount!.location)
+      editProfileRef?.current?.showModal()
+    }
     else {
       editProfileRef?.current?.close()
       setName(`${currAccount!.fname} ${currAccount!.lname}`)
