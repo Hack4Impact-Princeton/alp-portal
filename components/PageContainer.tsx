@@ -193,10 +193,6 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
   }, [snackbarOpen]);
 
 
-  const showEditProfileModal = () => {
-
-  }
-
   return (
     <>
       <Grid>
@@ -311,14 +307,14 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
         <div style={{ display: "flex", alignItems: "center" }}>
 
           <h1 style={{ textAlign: "left", fontSize: fontsize, paddingRight: 10, color: "#5F5F5f" }}>{pageName}</h1>
-          {pageName === 'Profile' && <div style={{ position: "relative" }}>
+          {/* {pageName === 'Profile' && <div style={{ position: "relative" }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="71" height="71" viewBox="0 0 71 71" fill="none">
               <circle cx="35.5" cy="35.5" r="35.5" fill="#5F5F5F" />
             </svg>
             <svg xmlns="http://www.w3.org/2000/svg" width="39" height="39" viewBox="0 0 39 39" fill="none" style={{ position: "absolute", top: 13, left: 15 }}>
               <path d="M39 10.2173C39.0014 9.96066 38.9523 9.70627 38.8552 9.46871C38.7582 9.23114 38.6152 9.01507 38.4345 8.83287L30.1665 0.56549C29.9843 0.384775 29.7682 0.241802 29.5306 0.144768C29.293 0.0477341 29.0386 -0.00145104 28.782 3.25904e-05C28.5254 -0.00145104 28.271 0.0477341 28.0334 0.144768C27.7958 0.241802 27.5797 0.384775 27.3975 0.56549L21.879 6.08358L0.565532 27.3955C0.384803 27.5777 0.241819 27.7938 0.144778 28.0313C0.0477376 28.2689 -0.00145115 28.5233 3.25928e-05 28.7799V37.0473C3.25928e-05 37.5644 0.205478 38.0604 0.571173 38.426C0.936869 38.7917 1.43286 38.9971 1.95003 38.9971H10.218C10.4909 39.012 10.7638 38.9693 11.0191 38.8719C11.2744 38.7745 11.5064 38.6245 11.7 38.4317L32.8965 17.1198L38.4345 11.6992C38.6125 11.5102 38.7575 11.2927 38.8635 11.0557C38.8823 10.9003 38.8823 10.7432 38.8635 10.5877C38.8726 10.497 38.8726 10.4055 38.8635 10.3148L39 10.2173ZM9.41852 35.0974H3.90003V29.5793L23.2635 10.2173L28.782 15.7354L9.41852 35.0974ZM31.5315 12.9861L26.013 7.46797L28.782 4.71868L34.281 10.2173L31.5315 12.9861Z" fill="white" />
             </svg>
-          </div>}
+          </div>} */}
         </div>
       </Grid>
       <Snackbar

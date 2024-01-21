@@ -3,7 +3,7 @@ import dbConnect from '../../lib/dbConnect';
 import { Grid, IconButton, Button, TextField, FormControl, InputLabel, Select, OutlinedInput, MenuItem, SelectChangeEvent } from "@mui/material";
 import Box from '@mui/material/Box';
 import PageContainer from "../../components/PageContainer";
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, Dispatch, SetStateAction } from 'react';
 import { signOut } from "next-auth/react";
 import MapComponent from '../../components/MapComponent';
 import Link from 'next/link';
@@ -17,6 +17,7 @@ import getBroadcastModel, { Broadcast } from "../../models/Broadcast";
 import { PhotoCamera } from "@mui/icons-material";
 import { imageDelete, imagePfpUpload } from "../../db_functions/imageDB";
 import CircularIcon from "../../components/CircularIcon";
+import Dropdown from "../../components/Dropdown";
 type ProfileProps = {
   error: string | null;
   account: VolunteerAccount | null;
@@ -121,10 +122,7 @@ const BookDrivesCompletedGraph = () => {
   );
 };
 
-const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives }) => {
-  const [pfpURL, setpfpURL] = useState<string>((account) ? account.pfpLink : "https://icons.iconarchive.com/icons/pictogrammers/material/512/account-circle-icon.png")
-  const states = getStates()
-  const [currAccount, setCurrAccount] = useState(account)
+export const ImageUpload: React.FC<{ setpfpURL: Dispatch<SetStateAction<string>>, currAccount: VolunteerAccount }> = ({ setpfpURL, currAccount }) => {
   const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return
     const file = event.target.files[0]
@@ -148,8 +146,30 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
       body: JSON.stringify(data)
     }).then((response) => response.json())
     console.log("upload: ", response)
-
   }
+  return (
+    <div>
+      <input accept="image/*" id="icon-button-file"
+        type="file" style={{ display: 'none' }} onChange={changeHandler} />
+      <label htmlFor="icon-button-file">
+        <IconButton sx={{
+          backgroundColor: "#F3D39A",
+          "&:hover": { backgroundColor: "#D3A874" },
+        }} aria-label="upload picture"
+          component="span">
+          <PhotoCamera />
+        </IconButton>
+      </label>
+    </div>
+
+  )
+}
+
+const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives }) => {
+  const [pfpURL, setpfpURL] = useState<string>((account) ? account.pfpLink : "https://icons.iconarchive.com/icons/pictogrammers/material/512/account-circle-icon.png")
+  const states = getStates()
+  const [currAccount, setCurrAccount] = useState(account)
+
   console.log("Profile Page");
   // if the account is not null, that means that everything is working
   // otherwise render the error message page
@@ -159,23 +179,19 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
       editProfileRef?.current?.close()
       setName(`${currAccount!.fname} ${currAccount!.lname}`)
       setLocation(currAccount!.location)
-      setEmail(currAccount!.email)
     }
 
   }
   const editProfileRef = useRef<HTMLDialogElement>(null)
   const [name, setName] = useState(`${currAccount!.fname} ${currAccount!.lname}`)
   const [location, setLocation] = useState(currAccount!.location)
-  const [email, setEmail] = useState(currAccount!.email)
   const [affiliation, setAffiliation] = useState("")
   const [favBook, setFavBook] = useState("")
   const editProfile = async () => {
-    // TODO you would maybe have to change all of the bookdrives with those emails
     const update = {
       fname: name.split(" ")[0],
       lname: name.split(" ")[1],
       location: location,
-      email: email,
     }
     const newAccount: VolunteerAccount = {
       ...currAccount!,
@@ -225,6 +241,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                   style={{
                     display: "flex",
                     flexDirection: "column",
+                    justifyContent: "space-between",
                     borderRadius: 'auto',
                     width: '50%',
                     height: 'auto',
@@ -234,19 +251,10 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                     src={pfpURL}
                     alt="Profile Image"
                     style={{
-
+                      marginBottom: 20
                     }}
                   />
-                  <div>
-                    <input accept="image/*" id="icon-button-file"
-                      type="file" style={{ display: 'none' }} onChange={changeHandler} />
-                    <label htmlFor="icon-button-file">
-                      <IconButton color="primary" aria-label="upload picture"
-                        component="span">
-                        <PhotoCamera />
-                      </IconButton>
-                    </label>
-                  </div>
+                  <ImageUpload setpfpURL={setpfpURL} currAccount={currAccount} />
                 </div>
               </div>
               <div
@@ -262,7 +270,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                 <p style={{ fontWeight: 800, fontSize: 30, marginBottom: 2, color: "#5F5F5F" }}>{`${currAccount.fname} ${currAccount.lname}`}</p>
                 <p style={{ fontWeight: 500, marginBottom: 2, color: "#5F5F5F" }}>{currAccount.email}</p>
                 <p style={{ fontWeight: 500, color: "#5F5F5F" }}>{`# of Bookdrives completed: ${drives!.length}`}</p>
-                <p style={{ marginTop: 16, color: "blue", fontWeight: 600, cursor: "pointer" }} onClick={() => toggleShowEditProfileModal(true)}>Edit Profile</p>
+                <p style={{ marginTop: 16, color: "#FE9834", fontWeight: 600, cursor: "pointer" }} onClick={() => toggleShowEditProfileModal(true)}>Edit Profile</p>
               </div>
 
             </Box>
@@ -271,8 +279,9 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
             <dialog
               ref={editProfileRef}
               style={{
-                height: "70%",
-                width: "50%",
+                height: "59%",
+                width: "40%",
+                minWidth: "365px",
                 borderRadius: "3%",
                 padding: 0,
                 position: "absolute",
@@ -313,76 +322,53 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                   >
                     Edit Profile
                   </p>
-                  <p style={{ cursor: "pointer", marginRight: 7, fontWeight: "600" }} onClick={() => toggleShowEditProfileModal(false)}>x</p>
+                  <p style={{ cursor: "pointer", marginRight: 16, fontWeight: "600" }} onClick={() => toggleShowEditProfileModal(false)}>x</p>
 
                 </Grid>
-                <Grid flexDirection="row">
-                  <Grid flexDirection="column">
-                    <img src={pfpURL} />
-                    <Button>Upload new</Button>
-                    <Grid flexDirection={"column"} sx={{ padding: 2 }}>
-                      <input type="text" placeholder={"name"} style={{ width: "85%" }} value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
-                      <FormControl sx={{ width: 300, border: "2px solid #5F5F5F", borderRadius: 2, backgroundColor: "#F5F5F5", zIndex: 1000 }}>
-                        <InputLabel id="state-label">State</InputLabel>
-                        <Select
-                          onChange={(e: SelectChangeEvent<string>) => setLocation(parseInt(e.target.value))}
-                          input={<OutlinedInput label="State" />}
-                        >
-                          {
-                            states.map((state) => (
-                              <MenuItem key={state.index} value={state.index} sx={{ zIndex: 1000001 }}>{state.name}</MenuItem>
-                            ))
-                          }
-                        </Select>
-                      </FormControl>
-                      <input type="text" placeholder={"email"} style={{ width: "85%" }} value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} />
-                    </Grid>
-                  </Grid>
-
-                </Grid>
-                <TextField
-                  multiline
-                  autoFocus
-                  required
-                  placeholder="message"
-                  rows={7}
-                  sx={{
-                    width: "85%",
-                    marginBottom: "5px",
-                    backgroundColor: "#FFFFFF",
-                    color: "#FE9384",
-                    borderColor: "#FE9834",
-                  }}
-
-                />
+                <div style={{ display: "flex", justifyContent: "space-around", flexDirection: "row", width: "100%", alignItems: "center", }}>
+                  <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center", width: "40%", }}>
+                    <img src={pfpURL} height={65} />
+                    <ImageUpload setpfpURL={setpfpURL} currAccount={currAccount} />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", width: "60%", height: "100%", justifyContent: "space-around", alignItems: "start", }}>
+                    <i style={{ display: "flex", alignSelf: "flex-start", fontSize: 10 }}>Name</i>
+                    <input type="text" placeholder={"name"} style={{ padding: "3px", width: "90%", height: "30px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                    <i style={{ display: "flex", alignSelf: "flex-start", fontSize: 10 }}>State</i>
+                    <Dropdown options={states} setResult={setLocation} location={location} />
+                  </div>
+                </div>
                 <Grid
                   display="flex"
-                  flexDirection="row"
+                  flexDirection="column"
                   justifyContent="space-around"
                   alignItems="center"
-                  sx={{ width: "50%" }}
+                  height="wrap-content"
+                  sx={{ width: "100%", padding: 1, }}
                 >
                   <Button
                     sx={{
-                      backgroundColor: "#F3D39A",
-                      "&:hover": { backgroundColor: "#D3A874" },
+                      backgroundColor: "#FE9834",
+                      "&:hover": { backgroundColor: "#D87800" },
                       fontWeight: 550,
-                      color: "#5F5F5F",
-                    }}
-                    onClick={() => toggleShowEditProfileModal(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    sx={{
-                      backgroundColor: "#F3D39A",
-                      "&:hover": { backgroundColor: "#D3A874" },
-                      fontWeight: 550,
-                      color: "#5F5F5F",
+                      color: "white",
+                      width: "95%",
+                      marginBottom: 1
                     }}
                     onClick={editProfile}
                   >
                     Submit
+                  </Button>
+                  <Button
+                    sx={{
+                      backgroundColor: "#5F5F5F",
+                      "&:hover": { backgroundColor: "#777777" },
+                      fontWeight: 550,
+                      color: "white",
+                      width: "95%"
+                    }}
+                    onClick={() => toggleShowEditProfileModal(false)}
+                  >
+                    Cancel
                   </Button>
                 </Grid>
               </Grid>
