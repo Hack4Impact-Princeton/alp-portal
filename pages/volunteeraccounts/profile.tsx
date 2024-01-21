@@ -299,7 +299,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
               </div>
 
             </Box>
-            <PersonalInfoCard account={account}/>
+            <PersonalInfoCard account={currAccount}/>
             <BadgeDisplayCase />
             <dialog
               ref={editProfileRef}
