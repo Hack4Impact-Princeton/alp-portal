@@ -257,7 +257,6 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
                     >
                     Friend Requests
                     </Button>
-                    {/* Add more filters as needed */}
                     {activeFilter === "all" && broadcasts?.map((broadcast, index) => (
                     <Collapse in={visibleBroadcasts[index]} key={index} sx={{ transition: '0.3s' }}>
                         <Box sx={{
