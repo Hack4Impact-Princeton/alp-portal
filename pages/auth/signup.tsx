@@ -15,20 +15,6 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { styled } from '@mui/material/styles';
-
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-});
 
 const Signup = () => {
     const states = getStates()
@@ -81,17 +67,16 @@ const Signup = () => {
             // return if empty field
             for (let entry in data)
                 if (entry == '') return;
-            const dupAccount = await fetch(`../api/volunteeraccounts/${encodeURIComponent(email)}`).then(res => res.json())
             if (!isValidEmail) {
                 console.log("Invalid email address");
                 alert("Please enter a valid email");
                 return
             }
+            const dupAccount = await fetch(`../api/volunteeraccounts/${encodeURIComponent(email)}`).then(res => res.json())
             if (dupAccount.data) {
                 alert("An account with this email already exists.")
                 return
             }
-            console.log('not duplicate account')
             const res = await fetch(`../api/volunteeraccounts/${email}`, {
                 method: "POST",
                 body: JSON.stringify(data),
@@ -103,26 +88,16 @@ const Signup = () => {
                 redirect: false,
             })
             if (signInRes?.ok) Router.push(`../dash-volunteer`)
-            console.log("success")
         } catch (e) {
             console.error(e)
         }
     }
     return (
-        <div className="auth-bg"
-            // style={{
-            //     width: '100%',
-            // }}
-            >
+        <div className="auth-bg" >
             <div style={{
-                // display: "flex",
-                // width: '100%',
                 height: 'wrap-content',
                 marginTop: "2%",
                 marginBottom: "1%",
-                // justifyContent: "center",
-                // flexShrink: 1,
-                // flexGrow: 1,
             }}>
 
                 <Image className="auth-logo" src="/logo-long.png" width={956 * 0.225} height={295 * 0.225} alt="ALP-logo" style={{

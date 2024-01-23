@@ -60,8 +60,6 @@ const ResetPassword: NextPage = () => {
             const resJson: { randNum: number } = await res.json()
             // if email sent correctly, update ui and alert user
             if (res.status == 200) {
-                // console.log(res)
-                // console.log(resJson.randNum)
                 setCodeSentTime(Date.now())
                 setShowEmail(false)
                 setShowCode(true)
@@ -78,7 +76,6 @@ const ResetPassword: NextPage = () => {
         else if (Date.now() - codeSentTime >= 600000) alert("Code has expired. Please resend code and try again")
         else {
             // if the code is correct, update ui
-            // console.log(code)
             setShowCode(false)
             setShowPassword(true)
         }
