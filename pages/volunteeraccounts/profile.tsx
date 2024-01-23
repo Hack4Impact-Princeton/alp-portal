@@ -233,12 +233,18 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
   const [favBook, setFavBook] = useState(currAccount.affiliation)
   const [hobbies, setHobbies] = useState(currAccount.hobbies)
   const editProfile = async () => {
+    const nameArr = name.trim().split(" ")
+    if (nameArr.length < 2) {
+      alert("Enter a valid first and last name")
+      return
+    }
+    setHobbies(hobbies.join(", ").trim().split(", "))
     const update = {
-      fname: name.split(" ")[0],
-      lname: name.split(" ")[1],
+      fname: nameArr[0],
+      lname: nameArr[nameArr.length-1],
       location: location,
-      affiliation: affiliation,
-      favoriteBook: favBook,
+      affiliation: affiliation.trim(),
+      favoriteBook: favBook.trim(),
       hobbies: hobbies,
     }
     const newAccount: VolunteerAccount = {
