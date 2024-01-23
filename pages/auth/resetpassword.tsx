@@ -10,7 +10,6 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Image from 'next/image'
-import { verify } from "crypto";
 import { VolunteerAccount } from "../../models/VolunteerAccount";
 
 const ResetPassword: NextPage = () => {
@@ -207,6 +206,7 @@ const ResetPassword: NextPage = () => {
                 </Grid2>
             </Grid2>
             {showCode && <p style={{ color: "white" }}>Tip: if at first you don't see the email, check your spam folder</p>}
+            <Link passHref href="/auth/login"><a style={{ color: "white", textDecoration: "none" }}>Back to login</a></Link>
         </Grid2>
     )
 
