@@ -8,7 +8,7 @@ import { signIn } from 'next-auth/react'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
-import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
+// import div from '@mui/material/Unstable_div'; // Grid version 2
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -100,21 +100,22 @@ const Login: NextPage = () => {
 
   return (
 
-    <Grid2 container className="auth-bg" justifyContent="center" textAlign="center" direction="column"
-      sx={{
-        width: '100vw',
-        height: '100vh',
-      }}>
-      <Grid2 sx={{
-        width: '100%',
+    <div className="auth-bg"
+      // style={{
+      //   width: '100vw',
+      //   height: '100vh',
+      // }}
+      >
+      <div style={{
+        // width: '100%',
         height: 'wrap-content',
       }}>
         <Image className="auth-logo" src="/logo-long.png" width={956 * 0.3} height={295 * 0.3} alt="ALP-logo" style={{
           marginBottom: "10 !important",
         }} />
-      </Grid2>
-      <Grid2>
-        <Grid2 xs display="flex" justifyContent="center" sx={{ marginTop: 3 }}>
+      </div>
+      <div>
+        <div style={{ marginTop: 3, display: "flex", justifyContent: "center" }}>
           <Box
             sx={{
               width: 400,
@@ -175,7 +176,7 @@ const Login: NextPage = () => {
 
           </Box>
 
-        </Grid2>
+        </div>
         <br></br>
         <Link href='signup' passHref={true}>
           <a style={{ color: "white", textDecoration: "none" }}>
@@ -190,8 +191,8 @@ const Login: NextPage = () => {
           </a>
         </Link>
 
-      </Grid2>
-    </Grid2 >
+      </div>
+    </div >
   )
 }
 

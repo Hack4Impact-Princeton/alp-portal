@@ -3,7 +3,6 @@ import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import React, { useState } from 'react'
 import Router from 'next/router'
-import Grid2 from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Image from 'next/image';
 import { getStates } from '../../lib/enums'
 import InputAdornment from '@mui/material/InputAdornment';
@@ -110,25 +109,30 @@ const Signup = () => {
         }
     }
     return (
-        <Grid2 container className="auth-bg" justifyContent="space-between" textAlign="center" direction="column"
-            sx={{
-                width: '100%',
-            }}>
-            <Grid2 sx={{
-                width: '100%',
+        <div className="auth-bg"
+            // style={{
+            //     width: '100%',
+            // }}
+            >
+            <div style={{
+                // display: "flex",
+                // width: '100%',
                 height: 'wrap-content',
-                mt: "4%",
-                mb: "1%"
+                marginTop: "2%",
+                marginBottom: "1%",
+                // justifyContent: "center",
+                // flexShrink: 1,
+                // flexGrow: 1,
             }}>
 
                 <Image className="auth-logo" src="/logo-long.png" width={956 * 0.225} height={295 * 0.225} alt="ALP-logo" style={{
                 }} />
-            </Grid2>
-            <Grid2 justifySelf="flex-start" flexDirection="column">
-                <Grid2 xs display="flex" flexDirection="column" justifyContent="flex-start" alignItems="start">
+            </div>
+            <div style={{ display: "flex", justifySelf: "flex-start", flexDirection: "column", flexShrink: 1 }}>
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-start", alignItems: "start" }}>
                     <Box
                         sx={{
-                            width: 300,
+                            width: 350,
                             height: "wrap-content",
                         }}>
                         <TextField size="small" fullWidth required error={submit && fname == ''} id="fname" label="first name" variant="filled"
@@ -165,7 +169,7 @@ const Signup = () => {
                                 border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
                             }}
                         />
-                        <FormControl required variant="filled" size="small" sx={{ width: 300, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>
+                        <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>
                             <InputLabel id="state-label">state</InputLabel>
                             <Select
                                 onChange={handleSetLocation}
@@ -192,14 +196,14 @@ const Signup = () => {
                                 mb: 2
                             }}>Sign up</Button>
                     </Box>
-                </Grid2>
+                </div>
                 <Link passHref style={{ color: "white" }} href="/auth/login">
                     <a style={{ color: "white", textDecoration: "none" }}>
                         Already have an account?
                     </a>
                 </Link>
-            </Grid2>
-        </Grid2>
+            </div>
+        </div>
     )
 }
 
