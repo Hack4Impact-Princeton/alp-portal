@@ -18,6 +18,10 @@ import { PhotoCamera } from "@mui/icons-material";
 import { imageDelete, imagePfpUpload } from "../../db_functions/imageDB";
 import CircularIcon from "../../components/CircularIcon";
 import Dropdown from "../../components/Dropdown";
+import InfoIcon from '@mui/icons-material/Info';
+import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+
 type ProfileProps = {
   error: string | null;
   account: VolunteerAccount | null;
@@ -102,22 +106,38 @@ const BadgeDisplayCase = () => {
   );
 };
 
-const BookDrivesCompletedGraph = () => {
-  // Sample data for the graph
-  const graphData = [
-    { month: 'Jan', completed: 5 },
-    { month: 'Feb', completed: 8 },
-    { month: 'Mar', completed: 10 },
-    // Add more data points here
-  ];
-
+const PersonalInfoCard:React.FC< {account: VolunteerAccount} > = ({account}) => {
+  const affiliation = account.affiliation.length ? <p style={{display:"inline"}}>{account.affiliation}</p> : <p style={{display:"inline",fontStyle:"italic"}}>add your affiliation!</p>
+  const hobbies = account.hobbies.length ? <p style={{display:"inline"}}>{account.hobbies.join(', ')}</p>: <p style={{display:"inline",fontStyle:"italic"}}>add your hobbies!</p>
+  const faveBook = account.favoriteBook.length ?<p style={{display:"inline"}}>{account.favoriteBook}</p> : <p style={{display:"inline",fontStyle:"italic"}}>add your favorite book!</p>
+  
   return (
     <div style={{
       border: '1.5px solid black', padding: '10px', marginBottom: '10px', display: 'flex',
-      width: '95%', backgroundColor: "#F5F5F5"
+      width: '95%', backgroundColor: "#F5F5F5",flexDirection:"column"
     }}>
-      <h2 style={{ textAlign: 'left', marginBottom: '10px', paddingRight: '10px' }}>Book Drives Completed</h2>
-      {/* Render your graph component using the graphData */}
+      <h2 style={{ textAlign: 'left', marginBottom: '10px', paddingRight: '10px' }}>Personal Information</h2>
+      <div>
+        <Grid container alignItems={"center"}>
+            <div style={{paddingLeft:5,paddingRight:8}}>
+              <InfoIcon />
+            </div>
+            <span style={{ display: 'inline' }}><p style={{fontWeight:'bold', display:'inline'}}>Affiliation: </p>{affiliation}</span>
+        </Grid>
+        <Grid container alignItems={"center"}>
+            <div style={{paddingLeft:5,paddingRight:8}}>
+              <SportsBasketballIcon />
+            </div>
+            <span style={{ display: 'inline' }}><p style={{fontWeight:'bold', display:'inline'}}>Hobbies: </p><p style={{display:'inline'}}>{hobbies}</p></span>
+        </Grid>
+        <Grid container alignItems={"center"}>
+            <div style={{paddingLeft:5,paddingRight:8}}>
+              <AutoStoriesIcon />
+            </div>
+            <span style={{display:'inline'}}><p style={{fontWeight:'bold',display:'inline'}}>Favorite Book: </p><p style={{display:'inline'}}>{faveBook}</p></span>
+        </Grid>
+        
+      </div>
     </div>
   );
 };
@@ -279,7 +299,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
               </div>
 
             </Box>
-            <BookDrivesCompletedGraph />
+            <PersonalInfoCard account={currAccount}/>
             <BadgeDisplayCase />
             <dialog
               ref={editProfileRef}
