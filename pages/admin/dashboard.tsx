@@ -40,7 +40,7 @@ type AdminDashboardProps = {
   }[]
   | null;
 };
-const fieldsToCheck = ["driveName", "driveCode", "organizer", "country"];
+const fieldsToCheck = ["driveName", "driveCode", "organizer", "country", "email"];
 
 type BookDriveT = {
   driveName: string;
@@ -239,6 +239,18 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
           console.log(
             `Uploaded book drive with code: ${bookDrives[i]["driveCode"]}`
           );
+          // add to volunteer account
+          const res = await fetch(`../api/volunteeraccounts/${bookDrives[i]["email"]}` ,{
+            method: "GET"
+          })
+          if (!res.ok) continue; // no account found
+          const account = await res.json().then(res => res.data);
+          if (bookDrives[i]["driveCode"] in account.driveIds) continue;
+          account.driveIds.push(bookDrives[i]["driveCode"])
+          const resp = await fetch(`../api/volunteeraccounts/${bookDrives[i]["email"]}` ,{
+            method: "PATCH",
+            body: JSON.stringify(account)
+          }).then(res => res.json())
         } else {
           setErrorDriveMap(
             (map) =>
@@ -255,6 +267,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
         console.log(e);
       }
     }
+
   };
 
   const updateBookDriveStatus = async (
