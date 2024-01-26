@@ -40,12 +40,13 @@
     "node-fetch": "^2.6.1",
     "nodemailer": "^6.9.3",
     "nodemon": "^2.0.20",
+    "prop-types": "15.7.2",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
     "react-drag-drop-files": "^2.3.10",
     "react-dropzone": "^14.2.3",
     "react-simple-maps": "^3.0.0",
-    "slate": "^0.101.1",
+    "slate": "^0.101.5",
     "slate-drop-or-paste-images": "^0.9.1",
     "slate-history": "^0.100.0",
     "slate-hyperscript": "^0.100.0",
@@ -65,7 +66,7 @@
     "@types/react-simple-maps": "^3.0.0",
     "cypress": "^12.17.2",
     "cypress-social-logins": "^1.14.1",
-    "react-simple-maps": "^1.0.0",
+    "react-simple-maps": "^3.0.0",
     "typescript": "5.1.3"
   }
 }

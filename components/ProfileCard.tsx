@@ -1,24 +1,19 @@
 import React from 'react';
+import {BadgeType} from '../models/VolunteerAccount'
 
-type BadgeInfoProps = {
-  isEarned: boolean;
-  level: number;
-  name: string;
-  description: string;
-};
 
 type ProfileCardProps = {
   name: string;
   state: string;
   email: string;
   profilePicture: string;
-  badges: BadgeInfoProps[];
+ // badges: BadgeType;
   useBadges?: boolean;
   style?: React.CSSProperties;
 };
 
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePicture, badges, useBadges = true, style }) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePicture, /*badges,*/ useBadges = true, style }) => {
   const [friendStatus, setFriendStatus] = React.useState<string>('none');
   const [showRevokeButton, setShowRevokeButton] = React.useState<boolean>(false);
 
@@ -31,6 +26,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePi
     flexDirection: 'column',
     alignItems: 'flex-start',
     backgroundColor: '#f2f2f2',
+    overflowWrap:'break-word',
     ...style, // Add the provided style
   };
 
@@ -38,6 +34,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePi
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-start',
+    wordWrap: 'break-word',
+    overflowWrap:'break-word',
+    maxWidth:'100%'
   };
 
   const imageStyle: React.CSSProperties = {
@@ -57,26 +56,39 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePi
   flexDirection: 'column',
   alignItems: 'flex-start',
   maxHeight: '60px', // Set a maximum height for the email container
-  overflow: 'hidden',
+  //overflow: 'hidden',
+  overflowWrap: 'break-word',
+  wordWrap:'break-word',
+  maxWidth:"100%",
 };
 
 const userInfoItemStyle: React.CSSProperties = {
   marginBottom: '5px',
   textOverflow: 'ellipsis', // Add ellipsis for overflowed text
-  whiteSpace: 'nowrap', // Prevent text from wrapping
-  overflow: 'hidden',
+  overflowWrap: 'break-word',
+  wordWrap:'break-word',
+  maxWidth:"100%",
+
+
+
+  //whiteSpace: 'nowrap', // Prevent text from wrapping
+  //overflow: 'hidden',
 };
 
   const badgesAndButtonsContainerStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column', // Stack badges and buttons in a column
     marginLeft: '10px', // Add margin to separate user information and badges/buttons
+    
   };
   const buttonsContainerStyle: React.CSSProperties = {
     marginTop: '10px',
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: 'flex-start',
+    justifyContent:'center',
+    alignContent:'center',
+    width:'100%'
   };
 
 
@@ -137,12 +149,12 @@ return (
     <div style={contentStyle}>
       <img src={profilePicture} alt="Profile" style={imageStyle} />
       <div style = {userInfoStyle}>   
-      <p style = {userInfoItemStyle}>{name}</p>
-      <p style = {userInfoItemStyle}>{state}</p>
-      <p style = {userInfoItemStyle}>{email}</p>
+        <p style = {userInfoItemStyle}>{name}</p>
+        <p style = {userInfoItemStyle}>{state}</p>
+        <p style = {userInfoItemStyle}>{email}</p>
       </div>
       </div>
-      {useBadges && (
+      {/*useBadges && (
         <div style={badgesAndButtonsContainerStyle}>
             <div style= {badgesContainerStyle}>
           {badges.map((badge, index) => (
@@ -157,15 +169,18 @@ return (
                 <p style={{ margin: 0, fontSize: '12px' }}>{badge.description}</p>
               </div>
             </div>
-          ))}
+              ))}
         </div>
         </div>
-      )}
+              )*/}
       <div style={buttonsContainerStyle}>
         {friendStatus === 'none' && (
-          <button onClick={handleSendFriendRequest} style={buttonStyle}>
-            Send Friend Request
-          </button>
+          <div>
+            <button onClick={handleSendFriendRequest} style={buttonStyle}>
+              Send Friend Request
+            </button>
+          </div>
+          
         )}
         {friendStatus === 'sent' && (
           <div style={{ position: 'relative', width: '100%' }}>
