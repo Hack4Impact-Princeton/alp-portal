@@ -156,7 +156,7 @@ export const ImageUpload: React.FC<{ setpfpURL: Dispatch<SetStateAction<string>>
     const url = await imagePfpUpload(file)
     setpfpURL(url)
     // delete old pfp
-    if (data.pfpLink) await imageDelete(data.pfpLink)
+    if (data.pfpLink && data.pfpLink != "https://res.cloudinary.com/alp-portal/image/upload/c_thumb,g_face,h_150,w_150/v3fcorkg5wlesneukfnl") await imageDelete(data.pfpLink)
     // throw it back up to the cloud
     data.pfpLink = url
     console.log(url)
