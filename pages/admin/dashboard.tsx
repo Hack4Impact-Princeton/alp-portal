@@ -46,6 +46,7 @@ type BookDriveT = {
   driveName: string;
   driveCode: string;
   organizer: string;
+  email: string;
   startDate: Date;
   country: string;
   status: number;
@@ -163,6 +164,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
               driveName: `${curBookDrive["Book Drive Name"]}`,
               driveCode: `${curBookDrive["Book Drive Code"]}`,
               organizer: `${curBookDrive["Contact: Full Name"]}`,
+              email: `${curBookDrive["Contact Email"]}`,
               startDate: new Date(),
               country: `${curBookDrive["Country Prefrence: Countries Name"]}`,
               status: 0,
