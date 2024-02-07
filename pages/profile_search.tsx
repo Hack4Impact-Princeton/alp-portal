@@ -82,15 +82,15 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
     ],
   }));
   const handleQueryChange = (query: string, filteredUsers: VolunteerAccount[]) => {
-    /*if (query.trim() === '') {
+    if (query.trim() === '') {
       setFilteredProfiles([]); // If the query is empty, set filteredProfiles to an empty array
-    } else {*/
-    const filteredProfiles = allProfiles.filter((profile) =>
-      profile.name.toLowerCase().includes(query.toLowerCase())
-    );
+    } else {
+      const filteredProfiles = allProfiles.filter((profile) =>
+        profile.name.toLowerCase().includes(query.toLowerCase())
+      );
 
-    setFilteredProfiles(filteredProfiles);
-    //}
+      setFilteredProfiles(filteredProfiles);
+    }
 
   };
 
@@ -177,7 +177,7 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
             mt={6}
             sx={{ margin: "25 0px" }}
           >
-            <ProfileDisplayCase profiles={filteredProfiles} useBadges={true} />
+            {filteredProfiles && <ProfileDisplayCase profiles={filteredProfiles} useBadges={true} />}
           </Grid>
         </Grid>
       </Grid>
