@@ -1,13 +1,13 @@
 import getVolunteerAccountModel, { VolunteerAccount } from "../../models/VolunteerAccount";
 import dbConnect from '../../lib/dbConnect';
-import { Grid, IconButton } from "@mui/material";
+import { Grid, IconButton, Button, TextField, FormControl, InputLabel, Select, OutlinedInput, MenuItem, SelectChangeEvent } from "@mui/material";
 import Box from '@mui/material/Box';
 import PageContainer from "../../components/PageContainer";
-import { useState } from 'react';
+import React, { useState, useRef, Dispatch, SetStateAction, useEffect } from 'react';
 import { signOut } from "next-auth/react";
 import MapComponent from '../../components/MapComponent';
 import Link from 'next/link';
-import { BookDriveStatus } from "../../lib/enums";
+import { BookDriveStatus, getStates } from "../../lib/enums";
 import getBookDriveModel, { BookDrive } from "../../models/BookDrive";
 import { NextPage } from 'next';
 import mongoose from 'mongoose';
@@ -16,6 +16,11 @@ import { authOptions } from "../api/auth/[...nextauth]";
 import getBroadcastModel, { Broadcast } from "../../models/Broadcast";
 import { PhotoCamera } from "@mui/icons-material";
 import { imageDelete, imagePfpUpload } from "../../db_functions/imageDB";
+import CircularIcon from "../../components/CircularIcon";
+import Dropdown from "../../components/Dropdown";
+import InfoIcon from '@mui/icons-material/Info';
+import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
 type ProfileProps = {
   error: string | null;
@@ -101,35 +106,61 @@ const BadgeDisplayCase = () => {
   );
 };
 
-const BookDrivesCompletedGraph = () => {
-  // Sample data for the graph
-  const graphData = [
-    { month: 'Jan', completed: 5 },
-    { month: 'Feb', completed: 8 },
-    { month: 'Mar', completed: 10 },
-    // Add more data points here
-  ];
+const PersonalInfoCard: React.FC<{ account: VolunteerAccount }> = ({ account }) => {
+  const affiliation = account.affiliation.length ? <p style={{ display: "inline" }}>{account.affiliation}</p> : <p style={{ display: "inline", fontStyle: "italic" }}>add your affiliation!</p>
+  const hobbies = account.hobbies.length ? <p style={{ display: "inline" }}>{account.hobbies.join(', ')}</p> : <p style={{ display: "inline", fontStyle: "italic" }}>add your hobbies!</p>
+  const faveBook = account.favoriteBook.length ? <p style={{ display: "inline" }}>{account.favoriteBook}</p> : <p style={{ display: "inline", fontStyle: "italic" }}>add your favorite book!</p>
 
   return (
     <div style={{
       border: '1.5px solid black', padding: '10px', marginBottom: '10px', display: 'flex',
-      width: '95%', backgroundColor: "#F5F5F5"
+      width: '95%', backgroundColor: "#F5F5F5", flexDirection: "column"
     }}>
-      <h2 style={{ textAlign: 'left', marginBottom: '10px', paddingRight: '10px' }}>Book Drives Completed</h2>
-      {/* Render your graph component using the graphData */}
+      <h2 style={{ textAlign: 'left', marginBottom: '10px', paddingRight: '10px' }}>Personal Information</h2>
+      <div>
+        <Grid container alignItems={"center"}>
+          <div style={{ paddingLeft: 5, paddingRight: 8 }}>
+            <InfoIcon />
+          </div>
+          <span style={{ display: 'inline' }}><p style={{ fontWeight: 'bold', display: 'inline' }}>Affiliation: </p>{affiliation}</span>
+        </Grid>
+        <Grid container alignItems={"center"}>
+          <div style={{ paddingLeft: 5, paddingRight: 8 }}>
+            <SportsBasketballIcon />
+          </div>
+          <span style={{ display: 'inline' }}><p style={{ fontWeight: 'bold', display: 'inline' }}>Hobbies: </p>{hobbies}</span>
+        </Grid>
+        <Grid container alignItems={"center"}>
+          <div style={{ paddingLeft: 5, paddingRight: 8 }}>
+            <AutoStoriesIcon />
+          </div>
+          <span style={{ display: 'inline' }}><p style={{ fontWeight: 'bold', display: 'inline' }}>Favorite Book: </p>{faveBook}</span>
+        </Grid>
+      </div>
     </div>
   );
 };
 
-const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives }) => {
-  const [pfpURL, setpfpURL] = useState<string>((account) ? account.pfpLink : "https://icons.iconarchive.com/icons/pictogrammers/material/512/account-circle-icon.png")
+const ProfileError: React.FC<{ error: string }> = ({ error }) => {
+  return (
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px", flexDirection: "column" }}>
+      <h1>{error}</h1>
+      {// when the error is not an auth error give them the button to go back
+        error !== "You must login before accessing this page" &&
+        <Link href="/dash-volunteer">
+          <button style={{ width: "50px", height: "50px", borderRadius: "20%" }}>Volunteer Dashboard</button>
+        </Link>}
+    </div>
+  )
+}
 
+export const ImageUpload: React.FC<{ setpfpURL: Dispatch<SetStateAction<string>>, currAccount: VolunteerAccount }> = ({ setpfpURL, currAccount }) => {
   const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return
     const file = event.target.files[0]
-    if (!account) return
+    if (!currAccount) return
     // get account info
-    let data = await fetch(`/api/volunteeraccounts/${account.email}`, {
+    let data = await fetch(`/api/volunteeraccounts/${currAccount.email}`, {
       method: "GET"
     }).then((response) => response.json()).then((response) => response.data);
 
@@ -137,128 +168,295 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
     const url = await imagePfpUpload(file)
     setpfpURL(url)
     // delete old pfp
-    if (data.pfpLink) await imageDelete(data.pfpLink)
+    if (data.pfpLink && data.pfpLink != "https://res.cloudinary.com/alp-portal/image/upload/c_thumb,g_face,h_150,w_150/v3fcorkg5wlesneukfnl") await imageDelete(data.pfpLink)
     // throw it back up to the cloud
     data.pfpLink = url
     console.log(url)
     console.log(data)
-    const response = await fetch(`/api/volunteeraccounts/${account.email}`, {
+    const response = await fetch(`/api/volunteeraccounts/${currAccount.email}`, {
       method: "PATCH",
       body: JSON.stringify(data)
     }).then((response) => response.json())
     console.log("upload: ", response)
-
   }
-  console.log("Profile Page");
+  return (
+    <div>
+      <input accept="image/*" id="icon-button-file"
+        type="file" style={{ display: 'none' }} onChange={changeHandler} />
+      <label htmlFor="icon-button-file">
+        <IconButton sx={{
+          backgroundColor: "#F3D39A",
+          "&:hover": { backgroundColor: "#D3A874" },
+        }} aria-label="upload picture"
+          component="span">
+          <PhotoCamera />
+        </IconButton>
+      </label>
+    </div>
+
+  )
+}
+
+const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives }) => {
+  const [pfpURL, setpfpURL] = useState<string>((account) ? account.pfpLink : "https://icons.iconarchive.com/icons/pictogrammers/material/512/account-circle-icon.png")
+  const states = getStates()
+  const [currAccount, setCurrAccount] = useState(account)
+  if (!currAccount) return <ProfileError error={error!} />
+  useEffect(() => {
+    console.log(currAccount)
+  }, [currAccount])
   // if the account is not null, that means that everything is working
   // otherwise render the error message page
-  if (account) {
-    return (
-      <Grid>
-        <PageContainer broadcasts={broadcasts} fName={account.fname} currPage="profile" />
-        <Grid container display="flex" padding={1} sx={{ pl: 20 }} rowSpacing={2}>
-          <Grid item xs={12} sm={7} display="flex" flexDirection="column" >
-            <Box
-              sx={{
-                width: "100%",
-                height: "175px",
-                border: '1.5px solid black',
+  const toggleShowEditProfileModal = (val: boolean) => {
+    if (val) {
+      setName(`${currAccount.fname} ${currAccount!.lname}`)
+      setLocation(currAccount.location)
+      setHobbies(currAccount.hobbies)
+      setAffiliation(currAccount.affiliation)
+      setFavBook(currAccount.favoriteBook)
+      editProfileRef?.current?.showModal()
+    }
+    else {
+      editProfileRef?.current?.close()
+      setName(`${currAccount.fname} ${currAccount.lname}`)
+      setLocation(currAccount.location)
+      setHobbies(currAccount.hobbies)
+      setAffiliation(currAccount.affiliation)
+      setFavBook(currAccount.favoriteBook)
+    }
+
+  }
+  const editProfileRef = useRef<HTMLDialogElement>(null)
+  const [name, setName] = useState(`${currAccount.fname} ${currAccount.lname}`)
+  const [location, setLocation] = useState(currAccount.location)
+  const [affiliation, setAffiliation] = useState(currAccount.affiliation)
+  const [favBook, setFavBook] = useState(currAccount.affiliation)
+  const [hobbies, setHobbies] = useState(currAccount.hobbies)
+  const editProfile = async () => {
+    const nameArr = name.trim().split(" ")
+    if (nameArr.length < 2) {
+      alert("Enter a valid first and last name")
+      return
+    }
+    setHobbies(hobbies.join(", ").trim().split(", "))
+    const update = {
+      fname: nameArr[0],
+      lname: nameArr[nameArr.length-1],
+      location: location,
+      affiliation: affiliation.trim(),
+      favoriteBook: favBook.trim(),
+      hobbies: hobbies,
+    }
+    const newAccount: VolunteerAccount = {
+      ...currAccount,
+      ...update,
+    }
+    const res = await fetch(`/api/volunteeraccounts/${currAccount.email}`, {
+      method: "PATCH",
+      body: JSON.stringify(update)
+    })
+    if (!res.ok) {
+      alert("profile modification failed")
+      return
+    }
+    setCurrAccount(newAccount)
+    toggleShowEditProfileModal(false)
+
+  }
+  return (
+    <Grid>
+      <PageContainer broadcasts={broadcasts} fName={currAccount.fname} currPage="profile" />
+      <Grid container display="flex" padding={1} sx={{ pl: 20 }} rowSpacing={2}>
+        <Grid item xs={12} sm={7} display="flex" flexDirection="column" >
+          <Box
+            sx={{
+              width: "100%",
+              height: "175px",
+              border: '1.5px solid black',
+              display: 'flex',
+              marginBottom: '10px',
+              '@media (min-width: 600px)': {
                 display: 'flex',
-                marginBottom: '10px',
-                '@media (min-width: 600px)': {
-                  display: 'flex',
-                  width: '95%',
-                },
-                backgroundColor: "#F5F5F5"
+                width: '95%',
+              },
+              backgroundColor: "#F5F5F5"
+            }}
+          >
+            <div
+              style={{
+                width: '35%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
               <div
                 style={{
-                  width: '35%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  borderRadius: 'auto',
+                  width: '50%',
+                  height: 'auto',
                 }}
               >
-                <div
+                <img
+                  src={pfpURL}
+                  alt="Profile Image"
                   style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    borderRadius: 'auto',
-                    width: '50%',
-                    height: 'auto',
+                    marginBottom: 20
+                  }}
+                />
+                <ImageUpload setpfpURL={setpfpURL} currAccount={currAccount} />
+              </div>
+            </div>
+            <div
+              style={{
+                width: '65%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'flex-start',
+                paddingLeft: '4px',
+              }}
+            >
+              <p style={{ fontWeight: 800, fontSize: 30, marginBottom: 2, color: "#5F5F5F" }}>{`${currAccount.fname} ${currAccount.lname}`}</p>
+              <p style={{ fontWeight: 500, marginBottom: 2, color: "#5F5F5F" }}>{currAccount.email}</p>
+              <p style={{ fontWeight: 500, color: "#5F5F5F" }}>{`# of Bookdrives completed: ${drives!.length}`}</p>
+              <p style={{ marginTop: 16, color: "#FE9834", fontWeight: 600, cursor: "pointer" }} onClick={() => toggleShowEditProfileModal(true)}>Edit Profile</p>
+            </div>
+
+          </Box>
+          <PersonalInfoCard account={currAccount} />
+          <BadgeDisplayCase />
+          <dialog
+            ref={editProfileRef}
+            style={{
+              height: "65%",
+              width: "40%",
+              minWidth: "365px",
+              borderRadius: "3%",
+              padding: 0,
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: "#f5f5f5"
+            }}
+          >
+            <Grid
+              display={"flex"}
+              flexDirection={"column"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+              alignSelf={"flex-start"}
+              height={"100%"}
+              sx={{
+                backgroundColor: "#F5F5F5",
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <Grid
+                display="flex"
+                flexDirection="row"
+                alignItems="center"
+                justifyContent={"space-between"}
+                width="100%"
+                sx={{ marginTop: 1 }}
+              >
+                <p
+                  style={{
+                    color: "#5F5F5F",
+                    fontWeight: 600,
+                    fontSize: 20,
+                    width: "90%",
+                    marginLeft: "5%",
                   }}
                 >
-                  <img
-                    src={pfpURL}
-                    alt="Profile Image"
-                    style={{
+                  Edit Profile
+                </p>
+                <p style={{ cursor: "pointer", marginRight: 16, fontWeight: "600" }} onClick={() => toggleShowEditProfileModal(false)}>x</p>
 
-                    }}
-                  />
-                  <div>
-                    <input accept="image/*" id="icon-button-file"
-                      type="file" style={{ display: 'none' }} onChange={changeHandler} />
-                    <label htmlFor="icon-button-file">
-                      <IconButton color="primary" aria-label="upload picture"
-                        component="span">
-                        <PhotoCamera />
-                      </IconButton>
-                    </label>
-                  </div>
+              </Grid>
+              <div style={{ display: "flex", justifyContent: "space-around", flexDirection: "row", width: "100%", alignItems: "center", }}>
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center", width: "40%", }}>
+                  <img src={pfpURL} height={65} />
+                  <ImageUpload setpfpURL={setpfpURL} currAccount={currAccount} />
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", width: "60%", height: "100%", justifyContent: "space-around", alignItems: "start", }}>
+                  <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>Name</i>
+                  <input type="text" placeholder={"name"} style={{ padding: "3px", width: "93%", height: "30px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                  <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>State</i>
+                  <Dropdown options={states} setResult={setLocation} location={location} />
                 </div>
               </div>
-              <div
-                style={{
-                  width: '65%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'flex-start',
-                  paddingLeft: '4px',
-                }}
-              >
-                <p style={{ fontWeight: 800, fontSize: 30, marginBottom: 2, color: "#5F5F5F" }}>{`${account.fname} ${account.lname}`}</p>
-                <p style={{ fontWeight: 500, marginBottom: 2, color: "#5F5F5F" }}>{account.email}</p>
-                <p style={{ fontWeight: 500, color: "#5F5F5F" }}>{`# of Bookdrives completed: ${drives!.length}`}</p>
+              <div style={{ display: "flex", flex: 1, minHeight: 170, paddingTop: 5, paddingBottom: 5, justifyContent: "space-around", flexDirection: "column", width: "100%", alignItems: "start", paddingLeft: "4%" }}>
+                <i style={{ marginLeft: 3, fontSize: 10 }}>Affiliation</i>
+                <input style={{ padding: 3, width: "96%", height: "30px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} type="text" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAffiliation(e.target.value)} value={affiliation} />
+                <i style={{ marginLeft: 3, fontSize: 10 }}>Hobbies</i>
+                <input style={{ padding: 3, width: "96%", height: "30px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} type="text" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setHobbies(e.target.value.split(", "))} value={hobbies.join(", ")} />
+                <i style={{ marginLeft: 3, fontSize: 10 }}>Favorite Book</i>
+                <input style={{ padding: 3, width: "96%", height: "30px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} type="text" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFavBook(e.target.value)} value={favBook} />
               </div>
-            </Box>
-            <BookDrivesCompletedGraph />
-            <BadgeDisplayCase />
-          </Grid>
-          <Grid item xs={12} sm={5} height={"418px"}>
-            <Box
-              sx={{
-                width: "100%",
-                height: "110%",
-                border: "1.5px solid black",
-                '@media (min-width: 600px)': {
-                  display: 'inline-block',
-                  width: '100%',
-                  height: '100%',
-                },
-                maxWidth: "450px",
-                backgroundColor: "#F5F5F5"
-              }}>
-              <MapComponent drives={drives ? drives : []} />
-            </Box>
-          </Grid>
+              <Grid
+                display="flex"
+                flexDirection="column"
+                justifyContent="space-around"
+                alignItems="center"
+                height="wrap-content"
+                sx={{ width: "100%", padding: 1, }}
+              >
+                <Button
+                  sx={{
+                    backgroundColor: "#FE9834",
+                    "&:hover": { backgroundColor: "#D87800" },
+                    fontWeight: 550,
+                    color: "white",
+                    width: "95%",
+                    marginBottom: 1
+                  }}
+                  onClick={editProfile}
+                >
+                  Submit
+                </Button>
+                <Button
+                  sx={{
+                    backgroundColor: "#5F5F5F",
+                    "&:hover": { backgroundColor: "#777777" },
+                    fontWeight: 550,
+                    color: "white",
+                    width: "95%"
+                  }}
+                  onClick={() => toggleShowEditProfileModal(false)}
+                >
+                  Cancel
+                </Button>
+              </Grid>
+            </Grid>
+          </dialog>
+        </Grid>
+        <Grid item xs={12} sm={5} height={"418px"}>
+          <Box
+            sx={{
+              width: "100%",
+              height: "110%",
+              border: "1.5px solid black",
+              '@media (min-width: 600px)': {
+                display: 'inline-block',
+                width: '100%',
+                height: '100%',
+              },
+              maxWidth: "450px",
+              backgroundColor: "#F5F5F5"
+            }}>
+            <MapComponent drives={drives ? drives : []} />
+          </Box>
         </Grid>
       </Grid>
-    )
-  }
-  else {
-    return (
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px", flexDirection: "column" }}>
-        <h1>{error}</h1>
-        {// when the error is not an auth error give them the button to go back
-          error !== "You must login before accessing this page" &&
-          <Link href="/dash-volunteer">
-            <button style={{ width: "50px", height: "50px", borderRadius: "20%" }}>Volunteer Dashboard</button>
-          </Link>}
-      </div>
-    )
-  }
+    </Grid>
+  )
+
 }
 
 export const getServerSideProps = async (context: any) => {
