@@ -3,6 +3,9 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import CircleIcon from "@mui/icons-material/Circle";
 import { first } from "cypress/types/lodash";
+import {Typography} from '@mui/material'
+
+
 type dataType = {
   userName: string;
   userState: string;
@@ -35,51 +38,53 @@ const Podium: React.FC<PodiumProps> = ({ data, boardType }) => {
         display={"flex"}
         justifyContent={"space-evenly"}
         alignItems={"center"}
-        marginTop={-3}
+        marginTop={-5}
+
       >
         <Grid2 paddingTop={1}>
-          <h1
-            style={{
+          <Typography
+            sx={{
               position: "relative",
               top: 30,
-              left: 5,
+              left: 2,
               color: "orange",
               zIndex: 1,
-              fontSize: 30,
+              fontSize: { xs: '18px', md: '20px', lg: '30px' } ,
             }}
           >
             2
-          </h1>
+          </Typography>
           <AccountCircleIcon sx={{ fontSize: "5vw" }} />
         </Grid2>
         <Grid2>
-          <h1
-            style={{
+        <Typography
+            sx={{
               position: "relative",
-              top: 45,
-              left: 10,
+              top: 50,
+              left: 2,
               color: "orange",
               zIndex: 1,
-              fontSize: 38,
+              fontStyle: "bold",
+              fontSize: { xs: '22px', md: '32px', lg: '40px' } ,
             }}
           >
             1
-          </h1>
+          </Typography>
           <AccountCircleIcon sx={{ fontSize: "7vw" }} />
         </Grid2>
         <Grid2 paddingTop={1}>
-          <h1
-            style={{
+        <Typography
+            sx={{
               position: "relative",
               top: 30,
-              left: 5,
+              left: 2,
               color: "orange",
               zIndex: 1,
-              fontSize: 30,
+              fontSize: { xs: '18px', md: '20px', lg: '30px' } ,
             }}
           >
             3
-          </h1>
+          </Typography>
           <AccountCircleIcon sx={{ fontSize: "5vw" }} />
         </Grid2>
       </Grid2>
