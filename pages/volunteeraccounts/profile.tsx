@@ -9,6 +9,7 @@ import MapComponent from '../../components/MapComponent';
 import Link from 'next/link';
 import { BookDriveStatus, getStates } from "../../lib/enums";
 import getBookDriveModel, { BookDrive } from "../../models/BookDrive";
+import {BadgeType} from '../models/VolunteerAccount';
 import { NextPage } from 'next';
 import mongoose from 'mongoose';
 import { getServerSession } from "next-auth/next";
@@ -27,6 +28,7 @@ type ProfileProps = {
   account: VolunteerAccount | null;
   drives: BookDrive[] | null;
   broadcasts: Broadcast[];
+  badgeLevels: string;
 }
 type BadgeInfoProps = {
   isEarned: boolean,
@@ -72,22 +74,33 @@ const BadgeInfo: React.FC<BadgeInfoProps> = ({ isEarned, level, name, descriptio
   );
 };
 
-const BadgeDisplayCase = () => {
-  const badges = [
-    {
-      isEarned: true,
-      level: 1,
-      name: 'Ivy',
-      description: 'ivy being nice for once',
-    },
-    {
-      isEarned: false,
-      level: 2,
-      name: 'ivy',
-      description: 'ivy saving us!',
-    },
-    // Add more badges here
-  ];
+const BadgeDisplayCase = ({ badgeLevels } : { badgeLevels: undefined|BadgeType} ) => {
+
+  const getBadgeIconsFromLevels = (badgeLevels: BadgeType) => {
+
+    const files = { // TODO these need to be corrected 
+      Connector: ["connector 1.png", "connector 2.png", "connector 3.png", "connector 4.png"],
+      Leader: ["leader 1.png", "leader 2.png", "leader 3.png", "leader 4.png"],
+      Organizer: ["BDO 1.png", "BDO 2.png", "BDO 3.png", "BDO 4.png"],
+      Participation: ["maverick 1.png", "maverick 2.png", "maverick 3.png", "maverick 4.png"],
+      Profile: ["leader 1.png", "leader 2.png", "leader 3.png", "leader 4.png"],
+      Supporter: ["supporter 1.png", "supporter 2.png", "supporter 3.png", "supporter 4.png"],
+    }
+
+    return Object.keys(badgeLevels).map((badgeName: string) => {
+      const level = badgeLevels[badgeName];
+      if (level === 0) {
+        return null;
+      }
+      return {
+        isEarned: true,
+        level: level,
+        name: badgeName,
+        //description: "description",
+        icon: files[badgeName][level - 1], // TODO fix type error idk
+      };
+    }).filter((badge: any) => badge !== null);
+  }
 
   return (
     <Grid container style={{
@@ -96,12 +109,23 @@ const BadgeDisplayCase = () => {
       backgroundColor: "#F5F5F5"
 
     }}>
+
       <Grid xs={12} ><h2 style={{ textAlign: 'left', marginBottom: '10px' }}>Badges</h2></Grid>
-      <Grid container xs={12} style={{ display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap', paddingLeft: '10px' }}>
-        {badges.map((badge, index) => (
-          <BadgeInfo key={index} {...badge} />
-        ))}
-      </Grid>
+
+      {badgeLevels && getBadgeIconsFromLevels(badgeLevels).map((badge: any, index: number) => (
+        <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '10px', marginTop: "0px" }}>
+          <img
+            src={`/badges/${badge.icon}`} // TODO could switch this to cloudinary
+            alt="Unlocked Badge"
+            style={{ width: '100px', height: '100px', marginBottom: '5px' }}
+          />
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ margin: 0, fontWeight: 'bold' }}>{badge.name}</p>
+            <p style={{ margin: 0, fontSize: '12px' }}>{badge.description}</p>
+          </div>
+        </div>
+      ))}
+
     </Grid>
   );
 };
@@ -197,7 +221,7 @@ export const ImageUpload: React.FC<{ setpfpURL: Dispatch<SetStateAction<string>>
   )
 }
 
-const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives }) => {
+const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives, badgeLevels }) => {
   const [pfpURL, setpfpURL] = useState<string>((account) ? account.pfpLink : "https://icons.iconarchive.com/icons/pictogrammers/material/512/account-circle-icon.png")
   const states = getStates()
   const [currAccount, setCurrAccount] = useState(account)
@@ -328,7 +352,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
 
           </Box>
           <PersonalInfoCard account={currAccount} />
-          <BadgeDisplayCase />
+          <BadgeDisplayCase badgeLevels={account?.badges} />
           <dialog
             ref={editProfileRef}
             style={{
@@ -493,16 +517,27 @@ export const getServerSideProps = async (context: any) => {
       if (!res) console.log("the bad broadcastId is", broadcastId);
       else return res;
     });
+
+
     const broadcasts = (await Promise.all(bPromises)) as Broadcast[];
-    return { props: { broadcasts: JSON.parse(JSON.stringify(broadcasts)), account: JSON.parse(JSON.stringify(volunteerAccount)) as VolunteerAccount, drives: JSON.parse(JSON.stringify(drives)) as BookDrive[], error: null } }
+
+
+
+    return { props: 
+      { broadcasts: JSON.parse(JSON.stringify(broadcasts)),
+        account: JSON.parse(JSON.stringify(volunteerAccount)) as VolunteerAccount, drives: JSON.parse(JSON.stringify(drives)) as BookDrive[], error: null } 
+    }
   } catch (e: Error | any) {
     console.error(e)
     // if the specific error message occurs it's because the user has not logged in
     let strError = e.message === "Cannot read properties of null (reading 'user')" ? "You must login before accessing this page" : `${e}`
 
-    return { props: { error: strError, account: null, drives: null } }
+    return { props: {
+      error: strError,
+      account: null,
+      drives: null,
+    } }
   }
-
 }
 
 export default Profile;
