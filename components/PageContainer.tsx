@@ -1,4 +1,4 @@
-import { Box, Drawer, Link, List, ListItem, ListItemButton, ListItemIcon,  Collapse } from '@mui/material';
+import { Box, Drawer, Link, List, ListItem, ListItemButton, ListItemIcon, Collapse } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Button, { ButtonProps } from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
@@ -7,12 +7,12 @@ import Navbar from '../components/Navbar'
 import { signOut } from "next-auth/react"
 import useDynamicPadding from '../lib/useDynamicPadding';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Popover, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Broadcast } from "../models/Broadcast";
 import FriendRequestCard from '../components/FriendRequestCard';
-import FriendRequest from '../components/FriendRequest'; 
+import FriendRequest from '../components/FriendRequest';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { Switch } from '@mui/material';
@@ -31,12 +31,12 @@ interface FriendInfo {
 }
 
 type PageContainerProps = {
-    fName: String;
-    userEmail?: string;
-    currPage: "dash-volunteer" | "profile" | "instruction-steps" | "h4i-team" | "forum" | "leaderboard" | "profile_search";
-    broadcasts ?: Broadcast[];
-    friendRequests?: string[];
-    allVolunteers?: VolunteerAccount[];
+  fName: String;
+  userEmail?: string;
+  currPage: "dash-volunteer" | "profile" | "instruction-steps" | "h4i-team" | "forum" | "leaderboard" | "profile_search";
+  broadcasts?: Broadcast[];
+  friendRequests?: string[];
+  allVolunteers?: VolunteerAccount[];
 }
 
 
@@ -61,15 +61,15 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
   // friend request stuff
   const reqEmailSet = new Set(friendRequests);
   const states = getStates();
-  let friendInfo:FriendInfo[] = []
+  let friendInfo: FriendInfo[] = []
   const myEmail = userEmail || "";
   const [friendInfoList, setFriendInfoList] =
-      useState<FriendInfo[]>([]);
-  if (allVolunteers){
+    useState<FriendInfo[]>([]);
+  if (allVolunteers) {
     friendInfo = allVolunteers
-    .map((account) =>
-      reqEmailSet.has(account.email)
-        ? {
+      .map((account) =>
+        reqEmailSet.has(account.email)
+          ? {
             email: account.email,
             fname: account.fname,
             lname: account.lname[0],
@@ -77,9 +77,9 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
             pfp: account.pfpLink,
             // Add or modify properties as needed
           }
-        : null
-    )
-    .filter((item) => item !== null) as FriendInfo[];
+          : null
+      )
+      .filter((item) => item !== null) as FriendInfo[];
   }
 
   /*const updateFriendReqs = (friendReqEmail: string) => {
@@ -98,11 +98,11 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
     setActiveFilter(filter);
   };
 
-    const handleClosePopover = () => {
-        setPopoverOpen(false);
-    };
+  const handleClosePopover = () => {
+    setPopoverOpen(false);
+  };
 
-    const handleBroadcastClick = (index: number) => {
+  const handleBroadcastClick = (index: number) => {
     // Toggle the visibility of the clicked broadcast message
     const updatedVisibility = [...visibleBroadcasts];
     updatedVisibility[index] = !updatedVisibility[index];
@@ -129,61 +129,61 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
     setSnackbarOpen(true);
   };
 
-    const handleActionCompleted = (message: string) => {
+  const handleActionCompleted = (message: string) => {
     setSnackbarMessage(message);
     setSnackbarOpen(true);
   };
 
 
-    let pageName = "";
-    let fontsize = "";
-    switch (currPage) {
-        case "dash-volunteer": {
-            pageName = "Home";
-            fontsize = "90px";
-            break;
-        }
-        case "profile": {
-            pageName = "Profile";
-            fontsize = "90px";
-            break;
-        }
-        case "instruction-steps": {
-            pageName = "Organizer Steps";
-            fontsize = "70px";
-            break;
-        }
-        case "h4i-team": {
-            pageName = "The Developer Team";
-            fontsize = "90px";
-            break;
-        }
-        case "forum": {
-            pageName = "Forum";
-            fontsize = "90px";
-            break;
-        }
-        case "leaderboard": {
-            pageName = "Leaderboard";
-            fontsize = "90px";
-            break;
-        }
-        case "profile_search": {
-            pageName = "Profile Search";
-            fontsize = "90px";
-            break;
-        }
+  let pageName = "";
+  let fontsize = "";
+  switch (currPage) {
+    case "dash-volunteer": {
+      pageName = "Home";
+      fontsize = "90px";
+      break;
     }
+    case "profile": {
+      pageName = "Profile";
+      fontsize = "90px";
+      break;
+    }
+    case "instruction-steps": {
+      pageName = "Organizer Steps";
+      fontsize = "70px";
+      break;
+    }
+    case "h4i-team": {
+      pageName = "The Developer Team";
+      fontsize = "90px";
+      break;
+    }
+    case "forum": {
+      pageName = "Forum";
+      fontsize = "90px";
+      break;
+    }
+    case "leaderboard": {
+      pageName = "Leaderboard";
+      fontsize = "90px";
+      break;
+    }
+    case "profile_search": {
+      pageName = "Profile Search";
+      fontsize = "90px";
+      break;
+    }
+  }
 
-    const handleSignOut = () => {
-        console.log("Signing out user");
-        signOut();
-        window.location.href = '/';
-    }
-    useEffect(()=> {      
-      setFriendInfoList(friendInfo);
-    }, [])
-    useEffect(() => {
+  const handleSignOut = () => {
+    console.log("Signing out user");
+    signOut();
+    window.location.href = '/';
+  }
+  useEffect(() => {
+    setFriendInfoList(friendInfo);
+  }, [])
+  useEffect(() => {
     if (snackbarOpen) {
       const timeoutId = setTimeout(() => {
         setSnackbarOpen(false);
@@ -194,14 +194,17 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
 
 
 
-   return (
+  return (
     <>
       <Grid>
         <Navbar active={currPage}></Navbar>
         <Box sx={{
           float: 'right',
-          height: '7vh',
-          width: '30.2vw',
+          height: '10vh',
+          minHeight: "65px",
+          // maxWidth: '500px',
+          width: "fit-content",
+          minWidth: "89px",
           backgroundColor: '#fe9834',
           borderRadius: '5px',
           pt: '5px'
@@ -209,90 +212,90 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
           <Grid container flex-direction="row"
             justifyContent="flex-end"
             alignItems="center">
-            <Grid xs={4}><h3>Welcome, {fName}</h3></Grid>
+            <Grid xs={4} width={"wrap-content"} mr="5px"><h3>Welcome, {fName}</h3></Grid>
             <Grid xs={2}>
               <InboxIconButton color="inherit" onClick={handleOpenPopover}>
                 <InboxIcon></InboxIcon>
               </InboxIconButton>
-                <Popover
+              <Popover
                 open={popoverOpen}
                 anchorEl={anchorEl}
                 onClose={handleClosePopover}
                 anchorOrigin={{
-                    vertical: 66.5,
-                    horizontal: 'right',
+                  vertical: 66.5,
+                  horizontal: 'right',
                 }}
                 sx={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
-                >
+              >
                 <Box p={2}>
-                    <Typography variant="h6" sx={{ color: '#fe9834' }}>Inbox</Typography>
-                    {/* Add buttons to filter friend requests and broadcasts */}
-                    <Button
+                  <Typography variant="h6" sx={{ color: '#fe9834' }}>Inbox</Typography>
+                  {/* Add buttons to filter friend requests and broadcasts */}
+                  <Button
                     variant="contained"
                     disableElevation
                     sx={{
-                        borderRadius: 0,
-                        backgroundColor: activeFilter === "all" ? "#F3D39A" : "#F5F5F5",
-                        color: "#5F5F5F",
-                        mx: 0.5, // Margin on the left and right
-                        my: 1, // Margin on the top and bottom
-                        fontWeight: activeFilter === "all" ? "bold" : "normal", // Bold when active
+                      borderRadius: 0,
+                      backgroundColor: activeFilter === "all" ? "#F3D39A" : "#F5F5F5",
+                      color: "#5F5F5F",
+                      mx: 0.5, // Margin on the left and right
+                      my: 1, // Margin on the top and bottom
+                      fontWeight: activeFilter === "all" ? "bold" : "normal", // Bold when active
                     }}
                     onClick={() => handleFilterClick("all")}
-                    >
+                  >
                     Broadcasts
-                    </Button>
-                    <Button
+                  </Button>
+                  <Button
                     variant="contained"
                     disableElevation
                     sx={{
-                        borderRadius: 0,
-                        backgroundColor: activeFilter === "friends" ? "#F3D39A" : "#F5F5F5",
-                        color: "#5F5F5F",
-                        mx: 0.5, // Margin on the left and right
-                        my: 1, // Margin on the top and bottom
-                        fontWeight: activeFilter === "friends" ? "bold" : "normal", // Bold when active
+                      borderRadius: 0,
+                      backgroundColor: activeFilter === "friends" ? "#F3D39A" : "#F5F5F5",
+                      color: "#5F5F5F",
+                      mx: 0.5, // Margin on the left and right
+                      my: 1, // Margin on the top and bottom
+                      fontWeight: activeFilter === "friends" ? "bold" : "normal", // Bold when active
                     }}
                     onClick={() => handleFilterClick("friends")}
-                    >
+                  >
                     Friend Requests
-                    </Button>
-                    {/* Add more filters as needed */}
-                    {activeFilter === "all" && broadcasts?.map((broadcast, index) => (
+                  </Button>
+                  {/* Add more filters as needed */}
+                  {activeFilter === "all" && broadcasts?.map((broadcast, index) => (
                     <Collapse in={visibleBroadcasts[index]} key={index} sx={{ transition: '0.3s' }}>
-                        <Box sx={{
+                      <Box sx={{
                         width: '300px',
                         borderRadius: '10px',
                         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
                         border: '1px solid #d89600',
                         padding: '12px',
                         mb: 2, // Add margin-bottom for space
-                        }}>
+                      }}>
                         <Typography variant="body1" sx={{ cursor: 'pointer', flex: 1 }} onClick={() => handleBroadcastClick(index)}>
-                            {broadcast.message}
+                          {broadcast.message}
                         </Typography>
-                        </Box>
+                      </Box>
                     </Collapse>
+                  ))}
+                  {activeFilter === 'friends' &&
+                    friendInfoList.map((request, index) => (
+                      <div key={index} style={{ marginBottom: '10px' }}>
+                        <FriendRequestCard
+                          key={index}
+                          profilePicture={request.pfp}
+                          name={request.fname}
+                          reqEmail={request.email}
+                          state={request.state.name}
+                          myEmail={myEmail}
+                          requeststate='pending'
+                          onApprove={() => handleApproveFriendRequest(request.email)}
+                          onReject={() => handleRejectFriendRequest(request.email)}
+                          onActionCompleted={handleActionCompleted}
+                        />
+                      </div>
                     ))}
-                        {activeFilter === 'friends' &&
-                            friendInfoList.map((request, index) => (
-                            <div key={index} style={{ marginBottom: '10px' }}>
-                                <FriendRequestCard
-                                key={index}
-                                profilePicture={request.pfp}
-                                name={request.fname}
-                                reqEmail={request.email}
-                                state={request.state.name}
-                                myEmail={myEmail}
-                                requeststate='pending'
-                                onApprove={() => handleApproveFriendRequest(request.email)}
-                                onReject={() => handleRejectFriendRequest(request.email)}
-                                onActionCompleted={handleActionCompleted}
-                                />
-                            </div>
-                            ))}
                 </Box>
-                </Popover>
+              </Popover>
             </Grid>
             <Grid xs={3}><WhiteTextButton variant="text" className="signout" onClick={handleSignOut}> Sign Out </WhiteTextButton></Grid>
             <Grid xs={2}><img src="/alp-logo.png" alt="alp-logo" height="55px"></img></Grid>
