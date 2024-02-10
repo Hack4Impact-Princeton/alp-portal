@@ -26,13 +26,13 @@ export type VolunteerAccount = {
     broadcasts: string[],
     chatIds: string[],
     pfpLink: string,
-    friendRequests: string[];
+    friendRequests: string[],
     affiliation: string,
     hobbies: string[],
     favoriteBook: string,
-    commentsPosted: number
-    commentsReceived: number
-    posts: number
+    commentsPosted: number,
+    commentsReceived: number,
+    postIDs: string[]
 }
 
 
@@ -133,6 +133,10 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>(
       type: Number,
       required: true,
       default: 0
+    },
+    postIDs: {
+      type: [String],
+      default: []
     }
 }, {collection: 'volunteerAccounts'})
 

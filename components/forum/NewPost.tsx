@@ -22,6 +22,7 @@ import { Posts } from "../../models/Post";
 import genUniqueId from "../../lib/idGen";
 import { format } from "date-fns";
 import { BuildTwoTone } from "@mui/icons-material";
+import {updateConnector} from "../../db_functions/badges"
 
 import { createEditor } from 'slate'
 import { Slate, Editable, withReact } from 'slate-react'
@@ -117,6 +118,7 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
       if (res.status !== 200) throw new Error(resJson.data);
       console.log("successfully posted", resJson.data);
       addPost(resJson.data);
+      updateConnector(email, newPost.post_id)
     } catch (e: Error | any) {
       console.error("Error posting", e);
       return { success: false, error: e };

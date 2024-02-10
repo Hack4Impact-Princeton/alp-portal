@@ -24,12 +24,14 @@ async function run() {
 
     const update = {
         $set: {
-
-            pfpLink: "https://res.cloudinary.com/alp-portal/image/upload/c_thumb,g_face,h_150,w_150/v3fcorkg5wlesneukfnl",
-            affiliation: "",
-            hobbies: [],
-            favoriteBook: "",
-            commentsPosted: 0
+          badges: {
+            Organizer: 0, 
+            Profile: 0, 
+            Connector: 0,  
+            Supporter: 0, 
+            Leader: 0, 
+            Participation: 0
+          }
         }
     }
     // Execute query
