@@ -14,6 +14,7 @@ import { getStates } from "../lib/enums";
 import LeaderTable from "../components/leaderboard/LeaderTable";
 import { NumberLiteralType } from "typescript";
 import Podium from "../components/leaderboard/Podium";
+import StarOutlinedIcon from '@mui/icons-material/StarOutlined';
 
 type objtype = {
   userName: string;
@@ -37,48 +38,64 @@ const Leaderboard: NextPage<LeaderboardProps> = ({
     return b.totalDrives - a.totalDrives;
   });
   return (
-    <div>
+    <div style={{backgroundColor:"#5F5F5F",height:"100vh",padding:0}}>
       <Navbar active="leaderboard" />
       <Grid2
         display="flex"
         flexDirection="column"
         container
         sx={{
-          pl: useDynamicPadding(635, 775, "29vw", "20vw", "15vw"),
+          pl: useDynamicPadding(635, 775, "29vw", "20vw", "13vw"),
           pt: "5vh",
           pr: "5vw",
           width: "100%",
           justifyContent: "space-between",
+          backgroundColor:"#5F5F5F"
         }}
         spacing={2}
       >
-        <Grid2>
-          <h1
-            style={{
-              color: "#5F5F5F",
-              fontSize: 70,
-              fontWeight: 600,
-            }}
-          >
-            LEADERBOARD
-          </h1>
-        </Grid2>
-        <Grid2 container flexDirection={"row"}>
-          <Grid2 width={"40%"}>
-            <h1 style={{ color: "#FE9834", marginLeft: 3 }}>This Season</h1>
+          <Grid2 display="flex" justifyContent={"center"}>
+            <StarOutlinedIcon sx={{fontSize: 50, borderColor:"orange", color: "#FE9834"}}/>
+            <StarOutlinedIcon sx={{fontSize: 50, borderColor:"orange", color: "#FE9834"}}/>
+            <StarOutlinedIcon sx={{fontSize: 50, borderColor:"orange", color: "#FE9834"}}/>
+
+            <h1
+              style={{
+                color: "white",
+                fontSize: 65,
+                fontWeight: 600,
+                textAlign:"center",
+                paddingLeft:15,
+                paddingRight:15
+              }}
+            >
+              LEADERBOARD
+            </h1>
+            <StarOutlinedIcon sx={{fontSize: 50, borderColor:"orange", color: "#FE9834"}}/>
+            <StarOutlinedIcon sx={{fontSize: 50, borderColor:"orange", color: "#FE9834"}}/>
+            <StarOutlinedIcon sx={{fontSize: 50, borderColor:"orange", color: "#FE9834"}}/>
+
+          
+         </Grid2>
+
+        
+        <Grid2 container flexDirection={"row"} justifyContent={"center"}>
+          <Grid2 width={"42%"} marginRight={5}>
+            <h1 style={{ color: "white",textAlign:"center" }}>This Season</h1>
             <Grid2
               sx={{
-                backgroundColor: "#F3D39A",
-                color: "#5F5F5F",
+                backgroundColor: "#FE9834",
+                color: "#F1F1F1",
                 padding: 1,
                 paddingLeft: 2,
                 borderRadius: 1,
-                borderColor: "#C9C9C9",
+                borderWidth:1,
+                borderColor: "#F1F1F1",
                 margin: 1,
               }}
             >
-              <h3>
-                Me: {myLeaderboard[0].seasonalDrives} drives completed this
+              <h3 style={{textAlign:"center"}}>
+                Me: {myLeaderboard[0] ? myLeaderboard[0].seasonalDrives:0} drives completed this
                 season
               </h3>
             </Grid2>
@@ -92,12 +109,12 @@ const Leaderboard: NextPage<LeaderboardProps> = ({
             </Grid2>
             <LeaderTable data={seasonalBoard} boardType={"seasonal"} />
           </Grid2>
-          <Grid2 width={"40%"}>
-            <h1 style={{ color: "#FE9834", marginLeft: 3 }}>Overall</h1>
+          <Grid2 width={"42%"}>
+            <h1 style={{ color: "white", textAlign:"center" }}>Overall</h1>
             <Grid2
               sx={{
-                backgroundColor: "#F3D39A",
-                color: "#5F5F5F",
+                backgroundColor: "#FE9834",
+                color: "#F1F1F1",
                 padding: 1,
                 paddingLeft: 2,
                 borderRadius: 1,
@@ -105,7 +122,7 @@ const Leaderboard: NextPage<LeaderboardProps> = ({
                 margin: 1,
               }}
             >
-              <h3>Me: {myLeaderboard[0].totalDrives} total drives completed</h3>
+              <h3 style={{textAlign:"center"}}>Me: {myLeaderboard[0] ? myLeaderboard[0].totalDrives: 0} total drives completed</h3>
             </Grid2>
             <Grid2
               sx={{
@@ -200,7 +217,7 @@ export const getServerSideProps = async (context: any) => {
           totalDrives: totalDrives,
           seasonalDrives: seasonalDrives,
         });
-        console.log("myleaderboard", myLeaderboard);
+        //console.log("myleaderboard", myLeaderboard);
       }
     }
     return {
