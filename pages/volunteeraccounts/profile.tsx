@@ -9,7 +9,7 @@ import MapComponent from '../../components/MapComponent';
 import Link from 'next/link';
 import { BookDriveStatus, getStates } from "../../lib/enums";
 import getBookDriveModel, { BookDrive } from "../../models/BookDrive";
-import {BadgeType} from '../models/VolunteerAccount';
+import {BadgeType} from '../../models/VolunteerAccount';
 import { NextPage } from 'next';
 import mongoose from 'mongoose';
 import { getServerSession } from "next-auth/next";
@@ -88,7 +88,7 @@ const BadgeDisplayCase = ({ badgeLevels } : { badgeLevels: undefined|BadgeType} 
     }
 
     return Object.keys(badgeLevels).map((badgeName: string) => {
-      const level = badgeLevels[badgeName];
+      const level = badgeLevels[badgeName as keyof typeof badgeLevels];
       if (level === 0) {
         return null;
       }
