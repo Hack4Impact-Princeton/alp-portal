@@ -97,7 +97,7 @@ const BadgeDisplayCase = ({ badgeLevels } : { badgeLevels: undefined|BadgeType} 
         level: level,
         name: badgeName,
         //description: "description",
-        icon: files[badgeName][level - 1], // TODO fix type error idk
+        icon: files[badgeName as keyof typeof files][level - 1],
       };
     }).filter((badge: any) => badge !== null);
   }
