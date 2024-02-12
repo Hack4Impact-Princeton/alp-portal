@@ -16,7 +16,7 @@ const testCloudinary: NextPage<props> = ({}) => {
     const handleUpload = async () => {
         if (!selectedFile) return
         console.log(selectedFile)
-    const url = await imageUpload(selectedFile)
+    const url = await imagePfpUpload(selectedFile)
         console.log(url)
         setSelectedURL(url)
     }

@@ -10,7 +10,6 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Image from 'next/image'
-import { verify } from "crypto";
 import { VolunteerAccount } from "../../models/VolunteerAccount";
 
 const ResetPassword: NextPage = () => {
@@ -60,8 +59,6 @@ const ResetPassword: NextPage = () => {
             const resJson: { randNum: number } = await res.json()
             // if email sent correctly, update ui and alert user
             if (res.status == 200) {
-                // console.log(res)
-                // console.log(resJson.randNum)
                 setCodeSentTime(Date.now())
                 setShowEmail(false)
                 setShowCode(true)
@@ -78,7 +75,6 @@ const ResetPassword: NextPage = () => {
         else if (Date.now() - codeSentTime >= 600000) alert("Code has expired. Please resend code and try again")
         else {
             // if the code is correct, update ui
-            // console.log(code)
             setShowCode(false)
             setShowPassword(true)
         }
@@ -125,74 +121,92 @@ const ResetPassword: NextPage = () => {
                         }}>
                         {showEmail &&
                             <>
-                                <label htmlFor="email">Please enter the email address associated with your account</label>
-                                <TextField fullWidth required id="email" label="Email" variant="outlined"
+                                <label style={{ color: "white" }} htmlFor="email">Please enter the email address associated with your account</label>
+                                <TextField fullWidth required color="warning" id="email" label="Email" variant="filled"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     sx={{
                                         mt: 2,
-                                        mb: 2
+                                        mb: 2,
+                                        backgroundColor: "white",
+                                        borderRadius: 2,
+                                        border: "3px solid #FE9834"
+
                                     }} />
                                 <Button variant="contained"
                                     onClick={sendCodeEmail}
                                     sx={{
                                         marginTop: 3,
+                                        backgroundColor: "black",
+                                        "&:hover": { backgroundColor: "#444444" }
                                     }}>Send Email</Button>
                             </>
                         }
                         {showCode &&
                             <>
                                 <label htmlFor="code">{`Please enter the code sent to ${email}`}</label>
-                                <TextField fullWidth
-                                    required id="code" label="Code" variant="outlined" type="number"
+                                <TextField fullWidth color="warning"
+                                    required id="code" label="Code" variant="filled" type="number"
                                     value={code} onChange={(e) => setCode(Number(e.target.value))}
                                     sx={{
                                         mt: 2,
-                                        mb: 2
+                                        mb: 2,
+                                        backgroundColor: "white",
+                                        border: "3px solid #FE9834",
+                                        borderRadius: 2
                                     }} />
                                 <Button variant="contained"
                                     onClick={verifyCode}
-                                    sx={{ marginTop: 3 }}>Submit </Button>
+                                    sx={{ marginTop: 3, backgroundColor: "black", "&:hover": { backgroundColor: "#444444" }, width: "47%" }}>Submit </Button>
                                 {showResendCode && <Button variant="contained"
                                     onClick={sendCodeEmail}
                                     sx={{
                                         marginTop: 3,
-                                        marginLeft: 3,
+                                        backgroundColor: "black",
+                                        "&:hover": { backgroundColor: "#444444" },
+                                        width: "47%",
+                                        ml: 1
                                     }}>Resend code</Button>}
                             </>
                         }
                         {showPassword &&
                             <>
                                 <label htmlFor="password">Please enter a new password</label>
-                                <TextField fullWidth
-                                    required id="password" label="Password" variant="outlined"
+                                <TextField fullWidth variant="filled" color="warning"
+                                    required id="password" label="password"
                                     type={showPasswordText ? "text" : "password"}
                                     value={password} onChange={(e) => setPassword(e.target.value)}
                                     InputProps={{
                                         endAdornment: (
-                                          <InputAdornment position="end">
-                                              <IconButton onClick={() => setShowPasswordText(!showPasswordText)}>
-                                                   {showPasswordText ? <VisibilityOff /> : <Visibility />}
-                                             </IconButton>
-                                         </InputAdornment>
+                                            <InputAdornment position="end">
+                                                <IconButton onClick={() => setShowPasswordText(!showPasswordText)}>
+                                                    {showPasswordText ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
                                         ),
-                                     }}
+                                    }}
                                     sx={{
                                         mt: 2,
-                                        mb: 2
+                                        mb: 2,
+                                        backgroundColor: "white",
+                                        border: "3px solid #FE9834",
+                                        borderRadius: 2
                                     }} />
                                 <Button variant="contained"
                                     onClick={updatePassword}
                                     sx={{
                                         marginTop: 3,
                                         marginLeft: 3,
+                                        backgroundColor: "black",
+                                        "&:hover": { backgroundColor: "#444444" }
                                     }}>Update Password</Button>
                             </>
                         }
                     </Box>
                 </Grid2>
             </Grid2>
-            {showCode && <p>Tip: if at first you don't see the email, check your spam folder</p>}
+            {showCode && <p style={{ color: "white" }}>Tip: if at first you don't see the email, check your spam folder</p>}
+            <Link passHref href="/auth/login"><a style={{ color: "white", textDecoration: "none" }}>Back to login</a></Link>
         </Grid2>
     )
 
