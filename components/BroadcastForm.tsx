@@ -104,7 +104,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
   return (
     <Grid
       container
-      spacing="10"
+      spacing={"10"}
       style={{
         display: "flex",
         flexDirection: "column",
@@ -124,16 +124,24 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
           padding: 10,
         }}
       >
-        <Grid xs={6}>
-          <label htmlFor="volunteer-picker" style={{ fontSize: 20 }}>
-            Recipients:
-          </label>
+        <Grid xs={12}>
+          <p>Recipients:</p>
+        </Grid>
+        <Grid container  style={{
+          display: "flex",
+          alignItems:"center",
+          flexDirection: "row",
+          border:"1.5px solid gray",
+
+        }}>
+      
+        <Grid item xs={5} sx={{border:"1.5px solid gray", mr:"1%"}}>
           <FormControl
             id="volunteer-picker"
-            sx={{ width: "80%", mt: 1, mb: 1 }}
+            sx={{ width: "100%"}}
           >
             <InputLabel id="volunteer-label">Volunteer</InputLabel>
-            <Select
+            <Select sx={{height:"50px"}}
               onChange={updateRecipients}
               input={<OutlinedInput label="Volunteer" />}
             >
@@ -145,6 +153,32 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
             </Select>
           </FormControl>
         </Grid>
+        <Grid item xs={4} sx={{border:"1.5px solid gray",mr:"1%"}}>
+        <Button
+          onClick={addAllRecipients}
+          variant="outlined"
+          style={{ padding: 5, cursor: "pointer", width:"100%", height:"50px" }}
+        >
+          Add all volunteers
+        </Button>
+      </Grid>
+      <Grid item xs={2.5} sx={{border:"1.5px solid gray",mr:"1%"}}>
+        <Button
+          onClick={()=> setRecipients([])}
+          variant="outlined"
+          style={{
+            display: "flex",
+            width: "100%",
+            padding: 5,
+            cursor: "pointer",
+            height:"50px"
+          }}
+        >
+          Clear all
+          </Button>
+          </Grid>
+        </Grid>
+        
         <Grid xs={12}>
           <RecipientList
             recipients={recipients}
@@ -153,6 +187,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
             onRemove={removeRecipient}
           />
         </Grid>
+
         <Grid xs={12}> </Grid>
       </Grid>
       {!showCustomBroadcast && (

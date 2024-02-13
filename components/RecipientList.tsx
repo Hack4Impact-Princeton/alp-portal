@@ -49,31 +49,6 @@ const RecipientList: React.FC<RecipientListProps> = ({
             </Grid>
           );
         })}
-      <Grid item xs={7} sx={{}}>
-        <Button
-          onClick={onAddAll}
-          variant="outlined"
-          size="large"
-          style={{ padding: 5, cursor: "pointer" }}
-        >
-          Add all volunteers
-        </Button>
-      </Grid>
-      <Grid item xs={5}>
-        <Button
-          onClick={onClear}
-          variant="outlined"
-          size="large"
-          style={{
-            display: "flex",
-            width: "fit-content%",
-            padding: 5,
-            cursor: "pointer",
-          }}
-        >
-          Clear all
-        </Button>
-      </Grid>
     </Grid>
   );
 };
