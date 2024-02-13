@@ -83,7 +83,7 @@ const BadgeDisplayCase = ({ badgeLevels } : { badgeLevels: undefined|BadgeType} 
       Leader: ["leader 1.png", "leader 2.png", "leader 3.png", "leader 4.png"],
       Organizer: ["BDO 1.png", "BDO 2.png", "BDO 3.png", "BDO 4.png"],
       Participation: ["maverick 1.png", "maverick 2.png", "maverick 3.png", "maverick 4.png"],
-      Profile: ["leader 1.png", "leader 2.png", "leader 3.png", "leader 4.png"],
+      Profile: ["friend 1.png", "friend 2.png", "friend 3.png", "friend 4.png"],
       Supporter: ["supporter 1.png", "supporter 2.png", "supporter 3.png", "supporter 4.png"],
     }
 
@@ -117,7 +117,7 @@ const BadgeDisplayCase = ({ badgeLevels } : { badgeLevels: undefined|BadgeType} 
           <img
             src={`/badges/${badge.icon}`} // TODO could switch this to cloudinary
             alt="Unlocked Badge"
-            style={{ width: '100px', height: '100px', marginBottom: '5px' }}
+            style={{ width: '150px', height: '150px', marginBottom: '5px' }}
           />
           <div style={{ textAlign: 'center' }}>
             <p style={{ margin: 0, fontWeight: 'bold' }}>{badge.name}</p>
