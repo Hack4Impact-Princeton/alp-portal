@@ -16,7 +16,7 @@ const RecipientList: React.FC<RecipientListProps> = ({
       {recipients &&
         recipients.map((recipient) => {
           return (
-            <Grid container>
+            <Grid >
               <Box
                 key={recipient}
                 display="flex"
@@ -25,24 +25,26 @@ const RecipientList: React.FC<RecipientListProps> = ({
                   alignItems: "center",
                   height: "2px",
                   padding: 2,
+                  paddingLeft:0.5,
                   width: "fit-content",
-                  border: "1.5px solid gray",
-                  mb: 1,
+                  borderRadius:"10%",
+                  margin: 0.5,
+                  backgroundColor:"white"
                 }}
               >
-                <h4 style={{ paddingRight: 10 }}>{recipient}</h4>
                 <button
                   onClick={() => onRemove(recipient)}
                   style={{
-                    backgroundColor: "red",
-                    borderRadius: "30%",
-                    color: "black",
-                    fontWeight: "1000",
+                    fontWeight: "400",
                     cursor: "pointer",
+                    textAlign:"center",
+                    border:"none"
                   }}
                 >
                   x
                 </button>
+                <p style={{ paddingLeft: 10 }}>{recipient}</p>
+                
               </Box>
             </Grid>
           );

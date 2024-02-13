@@ -126,7 +126,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
       >
         <Grid xs={6}>
           <label htmlFor="volunteer-picker" style={{ fontSize: 20 }}>
-            Choose recipients:
+            Recipients:
           </label>
           <FormControl
             id="volunteer-picker"
@@ -145,8 +145,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
             </Select>
           </FormControl>
         </Grid>
-        <Grid xs={6}>
-          <label style={{ fontSize: 20 }}>Recipients:</label>
+        <Grid xs={12}>
           <RecipientList
             recipients={recipients}
             onAddAll={addAllRecipients}
