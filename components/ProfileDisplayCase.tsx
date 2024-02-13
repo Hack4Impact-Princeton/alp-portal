@@ -17,6 +17,7 @@ type ProfileInfoProps = {
   email: string;
   profilePicture: string;
   badges: BadgeInfoProps[];
+  affiliation: string;
   useBadges?: boolean;
 };
 
@@ -33,6 +34,7 @@ const ProfileDisplayCase: React.FC<{ profiles: ProfileInfoProps[]; useBadges?: b
               name={profile.name}
               state={profile.state}
               email={profile.email}
+              affiliation = {profile.affiliation}
               profilePicture={profile.profilePicture}
               //badges={profile.badges}
               useBadges={useBadges}

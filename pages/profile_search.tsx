@@ -33,8 +33,7 @@ type ProfileProps = {
   query: string | null // represents the query parameter if the profile search page is reached from the forum page
 };
 const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, error, allAccounts, query }) => {
-  //console.log("Profile Page");
-  console.log("query", query)
+  
   const handleFriendRequest = () => {
     // Handle the logic for sending a friend request
     console.log('Friend request sent');
@@ -64,8 +63,7 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
     name: `${account.fname} ${account.lname}`,
     state: states[account.location - 1].name,
     email: `${account.email}`,
-    profilePicture:
-      "https://kellercenter.princeton.edu/sites/default/files/styles/square/public/images/2020%20Incubator%20-%2010X%20Project%20-%20Ivy%20Wang.JPG?h=3ba71f74&itok=0YopKwug",
+    profilePicture: `${account.pfpLink}`,
     badges: [
       {
         isEarned: true,
@@ -80,19 +78,23 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
         description: "Badge 2 description",
       },
     ],
+    affiliation: `${account.affiliation}`,
   }));
+  
   const handleQueryChange = (query: string, filteredUsers: VolunteerAccount[]) => {
-    /*if (query.trim() === '') {
+    if (query.trim() === '') {
       setFilteredProfiles([]); // If the query is empty, set filteredProfiles to an empty array
-    } else {*/
-    const filteredProfiles = allProfiles.filter((profile) =>
-      profile.name.toLowerCase().includes(query.toLowerCase())
-    );
+    } else {
+      const filteredProfiles = allProfiles.filter((profile) =>
+        profile.name.toLowerCase().includes(query.toLowerCase())
+      );
 
-    setFilteredProfiles(filteredProfiles);
-    //}
+      setFilteredProfiles(filteredProfiles);
+
+    }
 
   };
+  
 
 
   const [filteredUsers, setFilteredUsers] = useState<VolunteerAccount[]>([]);
@@ -108,18 +110,17 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
         name: string;
         description: string;
       }>;
+      affiliation: string
     }>
   >([]);
   const users: VolunteerAccount[] = [ /* Add your user data here */];
   // if there was a query url param (coming from forum) then it should autosearch
   useEffect(() => {
     if (query) handleQueryChange(query, [])
+
   }, [])
-  //console.log(allAccounts)
-  console.log(filteredProfiles)
 
 
-  const numbers = Array.from({ length: 9 }, (_, i) => i + 1); // Generate an array of numbers from 1 to 9
   if (!account) {
 
     return (
@@ -133,7 +134,7 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
       </div>
     );
   }
-
+  
 
   return (
     <Grid>
@@ -157,11 +158,11 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
           />
         </Grid>
         <Grid item xs={12} sm={7} display="flex" flexDirection="column" sx={{ cursor: "pointer" }}>
-          <Link href="/forum">
+         {/*<Link href="/forum" style={{border:"1px solid gray"}}>
             <a style={backButtonStyle}>
               <span style={backIconStyle}>&lt;</span> Back to Forum
             </a>
-          </Link>
+  </Link>*/}
         </Grid>
         <Grid
           container
@@ -177,7 +178,7 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
             mt={6}
             sx={{ margin: "25 0px" }}
           >
-            <ProfileDisplayCase profiles={filteredProfiles} useBadges={true} />
+            {filteredProfiles && <ProfileDisplayCase profiles={filteredProfiles} useBadges={true} />}
           </Grid>
         </Grid>
       </Grid>
@@ -190,7 +191,6 @@ export const getServerSideProps = async (context: any) => {
   try {
     // get current session and email --> account of current user
     const session = await getServerSession(context.req, context.res, authOptions)
-    // if (session) console.log("hiiii")
     if (!session || !session.user) {
       return {
         redirect: {
