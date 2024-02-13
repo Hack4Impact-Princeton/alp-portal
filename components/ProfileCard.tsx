@@ -17,9 +17,6 @@ type ProfileCardProps = {
 const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePicture, affiliation,  /*badges,*/ useBadges = true, style }) => {
   const [friendStatus, setFriendStatus] = React.useState<string>('none');
   const [showRevokeButton, setShowRevokeButton] = React.useState<boolean>(false);
-  // console.log('---------------')
-  // console.log(affiliation)
-  // console.log("---------------");
 
   const cardStyle: React.CSSProperties = {
     border: '1px solid #ddd',
