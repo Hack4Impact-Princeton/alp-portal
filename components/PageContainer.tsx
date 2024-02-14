@@ -73,7 +73,7 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
             email: account.email,
             fname: account.fname,
             lname: account.lname[0],
-            state: states.find((state) => state.index === account.location),
+            state: states.find((state) => state.index === account.state),
             pfp: account.pfpLink,
             // Add or modify properties as needed
           }
