@@ -8,6 +8,8 @@ import approveFriendRequest, {
   removeFriendRequest,
 } from "../../db_functions/friending";
 import FriendRequestCard from "../FriendRequestCard";
+import MessageIcon from '@mui/icons-material/Message';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 type ReqProps = {
   fname: string;
@@ -79,13 +81,38 @@ const RequestPreview: React.FC<ReqProps> = ({
           xs={5}
           display="flex"
           flexDirection="column"
-          sx={{ height: "100%", justifyContent: "center" }}
+          border="1.5px solid red"
+          sx={{ height: "100%", justifyContent: "center",textOverflow:'wrap' }}
         >
           <h3>
             {fname} {lname}.
           </h3>
           <p>{state}</p>
         </Grid>
+        {!request && (
+          <Grid xs={4} border="1.5px solid gray" container alignContent={"center"}>
+            <Grid xs={6} display={"flex"} justifyContent={"center"} >
+              <IconButton
+                sx={{ backgroundColor: "#5F5F5F", color: "#FFFFFF" }}
+                size={"small"}
+                onClick={() => {
+                }}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Grid>
+            <Grid xs={6} display={"flex"} justifyContent={"center"}>
+              <IconButton
+                sx={{ backgroundColor: "#5F5F5F", color: "#FFFFFF" }}
+                size={"small"}
+                onClick={() => {
+                }}
+              >
+                <MessageIcon />
+              </IconButton>
+            </Grid>
+            </Grid>
+        )}
         {request && (
           <Grid
             xs={4}
