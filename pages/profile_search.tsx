@@ -61,7 +61,7 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
   const states = getStates();
   const allProfiles = allAccounts.map((account) => ({
     name: `${account.fname} ${account.lname}`,
-    state: states[account.location - 1].name,
+    // state: states[account.location - 1].name,
     email: `${account.email}`,
     profilePicture: `${account.pfpLink}`,
     badges: [
@@ -101,7 +101,7 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
   const [filteredProfiles, setFilteredProfiles] = useState<
     Array<{
       name: string;
-      state: string;
+      // state: string;
       email: string;
       profilePicture: string;
       badges: Array<{
