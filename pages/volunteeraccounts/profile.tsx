@@ -234,7 +234,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives, b
   const toggleShowEditProfileModal = (val: boolean) => {
     if (val) {
       setName(`${currAccount.fname} ${currAccount!.lname}`)
-      setLocation(currAccount.location)
+      // setLocation(currAccount.state)
       setHobbies(currAccount.hobbies)
       setAffiliation(currAccount.affiliation)
       setFavBook(currAccount.favoriteBook)
@@ -243,7 +243,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives, b
     else {
       editProfileRef?.current?.close()
       setName(`${currAccount.fname} ${currAccount.lname}`)
-      setLocation(currAccount.location)
+      // setLocation(currAccount.state)
       setHobbies(currAccount.hobbies)
       setAffiliation(currAccount.affiliation)
       setFavBook(currAccount.favoriteBook)
@@ -252,7 +252,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives, b
   }
   const editProfileRef = useRef<HTMLDialogElement>(null)
   const [name, setName] = useState(`${currAccount.fname} ${currAccount.lname}`)
-  const [location, setLocation] = useState(currAccount.location)
+  // const [location, setLocation] = useState(currAccount.location)
   const [affiliation, setAffiliation] = useState(currAccount.affiliation)
   const [favBook, setFavBook] = useState(currAccount.affiliation)
   const [hobbies, setHobbies] = useState(currAccount.hobbies)
@@ -266,7 +266,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives, b
     const update = {
       fname: nameArr[0],
       lname: nameArr[nameArr.length-1],
-      location: location,
+      // location: location,
       affiliation: affiliation.trim(),
       favoriteBook: favBook.trim(),
       hobbies: hobbies,
@@ -412,7 +412,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives, b
                   <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>Name</i>
                   <input type="text" placeholder={"name"} style={{ padding: "3px", width: "93%", height: "30px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
                   <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>State</i>
-                  <Dropdown options={states} setResult={setLocation} location={location} />
+                  {/* <Dropdown options={states} setResult={setLocation} location={location} /> */}
                 </div>
               </div>
               <div style={{ display: "flex", flex: 1, minHeight: 170, paddingTop: 5, paddingBottom: 5, justifyContent: "space-around", flexDirection: "column", width: "100%", alignItems: "start", paddingLeft: "4%" }}>
