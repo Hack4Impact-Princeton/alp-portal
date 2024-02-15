@@ -18,6 +18,7 @@ import useExpandableElement from "../lib/useExpandableElement";
 import sendBroadcast from "../db_functions/sendBroadcast";
 import { ReactivationRequest } from "../models/ReactivationRequest";
 import { deleteReactivationRequest } from "../db_functions/reactivationReqFns";
+import { GetState } from 'react-country-state-city';
 
 const AdminSidebar: React.FC<{
   driveData: {
@@ -548,15 +549,13 @@ const AdminSidebar: React.FC<{
                     <Typography sx={{ marginRight: 1, color: "#5F5F5F" }}>
                       {new Date(shipment.date).toLocaleDateString()}
                     </Typography>
-                    <Typography sx={{ marginRight: 1, color: "#5F5F5F" }}>{`${
-                      shipment.numBooks
-                    } book${shipment.numBooks != 1 ? "s" : ""} `
-                    // ${
-                    //   shipment.received
-                    //     ? "received"
-                    //     : `shipped from ${states[volunteer.location - 1].name}`
-                    // }
-                    }</Typography>
+                    <Typography sx={{ marginRight: 1, color: "#5F5F5F" }}>
+                      {`${shipment.numBooks} book${shipment.numBooks !== 1 ? "s" : ""} ${
+                        shipment.received
+                          ? "received"
+                          : `shipped from ${volunteer.state}`
+                      }`}
+                    </Typography>
                     {!shipment.received && (
                       <Button
                         variant="contained"

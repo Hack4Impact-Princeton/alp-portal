@@ -55,6 +55,7 @@ const RequestList: React.FC<RequestListProps> = ({
             email: account.email,
             fname: account.fname,
             lname: account.lname[0],
+            state: { name: states.find((state) => state.index === account.state)?.name || "", index: account.state },
             // state: states.find((state) => state.index === account.location),
           }
         : null

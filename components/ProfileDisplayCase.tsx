@@ -1,5 +1,5 @@
 // ProfileDisplayCase.tsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 import ProfileCard from './ProfileCard';
 import {BadgeType} from '../models/VolunteerAccount'
@@ -13,13 +13,14 @@ type BadgeInfoProps = {
 
 type ProfileInfoProps = {
   name: string;
-  // state: string;
+  state: string;
   email: string;
   profilePicture: string;
   badges: BadgeInfoProps[];
   affiliation: string;
   useBadges?: boolean;
 };
+
 
 const ProfileDisplayCase: React.FC<{ profiles: ProfileInfoProps[]; useBadges?: boolean }> = ({ profiles, useBadges = true }) => {
   return (
@@ -32,8 +33,7 @@ const ProfileDisplayCase: React.FC<{ profiles: ProfileInfoProps[]; useBadges?: b
           <Grid item xs={12} sm={6} md={4} lg={3} key={index} style={{marginLeft:'10px', marginRight:'50px'}}>
             <ProfileCard
               name={profile.name}
-              // state={profile.state}
-              state={"JERSEYYYY"}
+              state={profile.state}
               email={profile.email}
               affiliation = {profile.affiliation}
               profilePicture={profile.profilePicture}

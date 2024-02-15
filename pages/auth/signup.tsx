@@ -19,7 +19,6 @@ import {
   CitySelect,
   CountrySelect,
   StateSelect,
-  LanguageSelect,
 } from "react-country-state-city";
 import "react-country-state-city/dist/react-country-state-city.css";
 
@@ -56,6 +55,12 @@ const Signup = () => {
     }
     const handleSetState = (event: any) => {
         setStateid(Number(event.target.value));
+    }
+    const handleSetCity = (event: any) => {
+        setCityid(Number(event.target.value));
+    }
+    const handleSetCountry = (event: any) => {
+        setCountryid(Number(event.target.value));
     }
 
     const handleTogglePassword = () => {
@@ -157,9 +162,7 @@ const Signup = () => {
                             />
                             <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>          
                             <CountrySelect 
-                                onChange={(e : any) => {
-                                setCountryid(e.id);
-                                }}
+                                onChange={handleSetCountry}
                                 placeHolder="Country*"
                                         
                             />
@@ -168,9 +171,7 @@ const Signup = () => {
                                    <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>            
                             <StateSelect
                                 countryid={countryid}
-                                onChange={(e: any) => {
-                                setStateid(e.id);
-                                }}
+                                onChange={handleSetState}
                                 placeHolder="State*"
                             />
                             </FormControl>      
@@ -179,9 +180,7 @@ const Signup = () => {
                                 <CitySelect
                                     countryid={countryid}
                                     stateid={stateid}
-                                    onChange={(e: any) => {
-                                    setCityid(e.id);
-                                    }}
+                                    onChange={handleSetCity}
                                     placeHolder="City*"
                                             
                                 />
