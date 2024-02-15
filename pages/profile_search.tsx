@@ -30,10 +30,23 @@ type ProfileProps = {
   drives: BookDrive[] | null;
   broadcasts: Broadcast[];
   allAccounts: VolunteerAccount[];
-  query: string | null // represents the query parameter if the profile search page is reached from the forum page
+  query: string | null; // represents the query parameter if the profile search page is reached from the forum page
+  userEmail: string;
+  receivedFriendRequestList: string[];
 };
-const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, error, allAccounts, query }) => {
-  
+// return {
+//   props: {
+//     broadcasts: JSON.parse(JSON.stringify(broadcasts)),
+//     account: JSON.parse(JSON.stringify(volunteerAccount)) as VolunteerAccount,
+//     drives: JSON.parse(JSON.stringify(drives)) as BookDrive,
+//     allAccounts: JSON.parse(JSON.stringify(allAccounts)),
+//     error: null,
+//     query: query ? query : null,
+//     session: session,
+//   },
+// };
+
+const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, error, allAccounts, query, userEmail, receivedFriendRequestList}) => {
   const handleFriendRequest = () => {
     // Handle the logic for sending a friend request
     console.log('Friend request sent');
@@ -59,9 +72,12 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
   };
 
   const states = getStates();
+
+  //console.log(receivedFriendRequestList);
+  //console.log(states)
   const allProfiles = allAccounts.map((account) => ({
     name: `${account.fname} ${account.lname}`,
-    state: states[account.location - 1].name,
+    //state: `${states[account.location - 1].name}`,
     email: `${account.email}`,
     profilePicture: `${account.pfpLink}`,
     badges: [
@@ -101,7 +117,7 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
   const [filteredProfiles, setFilteredProfiles] = useState<
     Array<{
       name: string;
-      state: string;
+      //state: string;
       email: string;
       profilePicture: string;
       badges: Array<{
@@ -178,7 +194,7 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
             mt={6}
             sx={{ margin: "25 0px" }}
           >
-            {filteredProfiles && <ProfileDisplayCase profiles={filteredProfiles} useBadges={true} />}
+            {filteredProfiles && <ProfileDisplayCase account={account} userEmail={userEmail} profiles={filteredProfiles} useBadges={true} receivedFriendRequestList={receivedFriendRequestList} />}
           </Grid>
         </Grid>
       </Grid>
@@ -218,13 +234,21 @@ export const getServerSideProps = async (context: any) => {
 
     const allAccounts = (await VolunteerAccount.find({})) as VolunteerAccount[];
 
-    console.log(volunteerAccount.broadcasts);
     const bPromises = volunteerAccount.broadcasts.map((broadcastId) => {
       const res = Broadcast.findOne({ id: broadcastId });
       if (!res) console.log("the bad broadcastId is", broadcastId);
       else return res;
     });
     const broadcasts = (await Promise.all(bPromises)) as Broadcast[];
+
+    // prop for friend requests received from other users 
+    const receivedFriendRequestList = []
+    for (let i = 0; i < allAccounts.length; i++) {
+      if (allAccounts[i].friendRequests.includes(volunteerAccount.email)) {
+        receivedFriendRequestList.push(allAccounts[i].email);
+      }
+    }
+
     return {
       props: {
         broadcasts: JSON.parse(JSON.stringify(broadcasts)),
@@ -234,7 +258,9 @@ export const getServerSideProps = async (context: any) => {
         drives: JSON.parse(JSON.stringify(drives)) as BookDrive,
         allAccounts: JSON.parse(JSON.stringify(allAccounts)),
         error: null,
-        query: query ? query : null
+        query: query ? query : null,
+        userEmail: email,
+        receivedFriendRequestList: receivedFriendRequestList,
       },
     };
   } catch (e: Error | any) {

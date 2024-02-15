@@ -1,159 +1,176 @@
-import React from 'react';
-import {BadgeType} from '../models/VolunteerAccount'
-
+import React from "react";
+import { BadgeType } from "../models/VolunteerAccount";
 
 type ProfileCardProps = {
+  account: VolunteerAccount;
   name: string;
   state: string;
   email: string;
   profilePicture: string;
   affiliation: string;
- // badges: BadgeType;
+  // badges: BadgeType;
   useBadges?: boolean;
   style?: React.CSSProperties;
+  userEmail: string;
+  receivedFriendRequestList: string[];
 };
 
-
-const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePicture, affiliation,  /*badges,*/ useBadges = true, style }) => {
-  const [friendStatus, setFriendStatus] = React.useState<string>('none');
-  const [showRevokeButton, setShowRevokeButton] = React.useState<boolean>(false);
+const ProfileCard: React.FC<ProfileCardProps> = ({
+  account,
+  name,
+  state,
+  email,
+  profilePicture,
+  affiliation,
+  /*badges,*/ useBadges = true,
+  style,
+  userEmail,
+  receivedFriendRequestList,
+}) => {
+  
+  const [friendStatus, setFriendStatus] = React.useState<string>("none");
+  React.useEffect(() => {
+    if (receivedFriendRequestList.includes(email)) {
+      setFriendStatus("received");
+    } else if (account.friends.includes(email)) {
+      handleAcceptFriendRequest()
+    }
+  }, [receivedFriendRequestList, email]);
+  const [showRevokeButton, setShowRevokeButton] =
+    React.useState<boolean>(false);
 
   const cardStyle: React.CSSProperties = {
-    border: '1px solid #ddd',
-    padding: '10px',
-    marginBottom: '10px',
-    width: '300px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    backgroundColor: '#f2f2f2',
-    overflowWrap:'break-word',
+    border: "1px solid #ddd",
+    padding: "10px",
+    marginBottom: "10px",
+    width: "300px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    backgroundColor: "#f2f2f2",
+    overflowWrap: "break-word",
     ...style, // Add the provided style
   };
 
   const contentStyle: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    wordWrap: 'break-word',
-    overflowWrap:'break-word',
-    maxWidth:'100%'
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    wordWrap: "break-word",
+    overflowWrap: "break-word",
+    maxWidth: "100%",
   };
 
   const imageStyle: React.CSSProperties = {
-    width: '100px',
-    height: 'auto',
-    marginBottom: '10px',
+    width: "100px",
+    height: "auto",
+    marginBottom: "10px",
   };
 
   const badgesContainerStyle: React.CSSProperties = {
-    display: 'flex',
-    gap: '10px',
+    display: "flex",
+    gap: "10px",
   };
 
- const userInfoStyle: React.CSSProperties = {
-  marginLeft: '10px',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-  maxHeight: '60px', // Set a maximum height for the email container
-  //overflow: 'hidden',
-  overflowWrap: 'break-word',
-  wordWrap:'break-word',
-  maxWidth:"100%",
-};
+  const userInfoStyle: React.CSSProperties = {
+    marginLeft: "10px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    maxHeight: "60px", // Set a maximum height for the email container
+    //overflow: 'hidden',
+    overflowWrap: "break-word",
+    wordWrap: "break-word",
+    maxWidth: "100%",
+  };
 
-const userInfoItemStyle: React.CSSProperties = {
-  marginBottom: '5px',
-  textOverflow: 'ellipsis', // Add ellipsis for overflowed text
-  overflowWrap: 'break-word',
-  wordWrap:'break-word',
-  maxWidth:"100%",
+  const userInfoItemStyle: React.CSSProperties = {
+    marginBottom: "5px",
+    textOverflow: "ellipsis", // Add ellipsis for overflowed text
+    overflowWrap: "break-word",
+    wordWrap: "break-word",
+    maxWidth: "100%",
 
-
-
-  //whiteSpace: 'nowrap', // Prevent text from wrapping
-  //overflow: 'hidden',
-};
+    //whiteSpace: 'nowrap', // Prevent text from wrapping
+    //overflow: 'hidden',
+  };
 
   const badgesAndButtonsContainerStyle: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column', // Stack badges and buttons in a column
-    marginLeft: '10px', // Add margin to separate user information and badges/buttons
-    
+    display: "flex",
+    flexDirection: "column", // Stack badges and buttons in a column
+    marginLeft: "10px", // Add margin to separate user information and badges/buttons
   };
   const buttonsContainerStyle: React.CSSProperties = {
-    marginTop: '10px',
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent:'center',
-    alignContent:'center',
-    width:'100%'
+    marginTop: "10px",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "center",
+    alignContent: "center",
+    width: "100%",
   };
-
 
   const getButtonColor = () => {
     switch (friendStatus) {
-      case 'none':
-        return '#FE9834';
-      case 'sent':
-      case 'received':
-        return '#FF6347';
-      case 'friends':
-        return '#4CAF50';
+      case "none":
+        return "#FE9834";
+      case "sent":
+      case "received":
+        return "#FF6347";
+      case "friends":
+        return "#4CAF50";
       default:
-        return '#FE9834';
+        return "#FE9834";
     }
   };
 
   const buttonStyle: React.CSSProperties = {
-    padding: '8px 16px',
-    borderRadius: '4px',
-    border: 'none',
+    padding: "8px 16px",
+    borderRadius: "4px",
+    border: "none",
     backgroundColor: getButtonColor(),
-    color: 'white',
-    cursor: 'pointer',
-    margin: '4px 0',
+    color: "white",
+    cursor: "pointer",
+    margin: "4px 0",
   };
 
   const revokeButtonStyle: React.CSSProperties = {
-    padding: '8px 16px',
-    borderRadius: '4px',
-    backgroundColor: '#A9A9A9',
-    color: 'white',
-    cursor: 'pointer',
-    margin: '4px 0',
+    padding: "8px 16px",
+    borderRadius: "4px",
+    backgroundColor: "#A9A9A9",
+    color: "white",
+    cursor: "pointer",
+    margin: "4px 0",
   };
 
   const revokeIconStyle: React.CSSProperties = {
-    marginLeft: '4px', // Adjust the left positioning
-    cursor: 'pointer',
+    marginLeft: "4px", // Adjust the left positioning
+    cursor: "pointer",
   };
 
   const handleSendFriendRequest = () => {
-    setFriendStatus('sent');
+    setFriendStatus("sent");
     setShowRevokeButton(true);
   };
 
   const handleRevokeFriendRequest = () => {
-    setFriendStatus('none');
+    setFriendStatus("none");
   };
 
   const handleAcceptFriendRequest = () => {
-    setFriendStatus('friends');
+    setFriendStatus("friends");
     setShowRevokeButton(true);
   };
 
-return (
-  <div style={cardStyle}>
-    <div style={contentStyle}>
-      <img src={profilePicture} alt="Profile" style={imageStyle} />
-      <div style = {userInfoStyle}>   
-        <p style = {userInfoItemStyle}>{name}</p>
-        <p style = {userInfoItemStyle}>{state}</p>
-        <p style = {userInfoItemStyle}>{affiliation}</p>
-      </div>
+  return (
+    <div style={cardStyle}>
+      <div style={contentStyle}>
+        <img src={profilePicture} alt="Profile" style={imageStyle} />
+        <div style={userInfoStyle}>
+          <p style={userInfoItemStyle}>{name}</p>
+          <p style={userInfoItemStyle}>{state}</p>
+          <p style={userInfoItemStyle}>{affiliation}</p>
+        </div>
       </div>
       {/*useBadges && (
         <div style={badgesAndButtonsContainerStyle}>
@@ -175,23 +192,22 @@ return (
         </div>
               )*/}
       <div style={buttonsContainerStyle}>
-        {friendStatus === 'none' && (
+        {friendStatus === "none" && (
           <div>
             <button onClick={handleSendFriendRequest} style={buttonStyle}>
               Send Friend Request
             </button>
           </div>
-          
         )}
-        {friendStatus === 'sent' && (
-          <div style={{ position: 'relative', width: '100%' }}>
+        {friendStatus === "sent" && (
+          <div style={{ position: "relative", width: "100%" }}>
             <div style={revokeButtonStyle}>
               Revoke
               <span
                 style={revokeIconStyle}
                 onClick={() => {
                   handleRevokeFriendRequest();
-                  setFriendStatus('none');
+                  setFriendStatus("none");
                 }}
               >
                 x
@@ -199,19 +215,20 @@ return (
             </div>
           </div>
         )}
-        {(friendStatus === 'received' || friendStatus === 'friends') && showRevokeButton && (
-          <button style={buttonStyle} onClick={handleRevokeFriendRequest}>
-            Unfriend
-          </button>
-        )}
-        {friendStatus === 'received' && (
+        {(friendStatus === "received" || friendStatus === "friends") &&
+          showRevokeButton && (
+            <button style={buttonStyle} onClick={handleRevokeFriendRequest}>
+              Unfriend
+            </button>
+          )}
+        {friendStatus === "received" && (
           <button style={buttonStyle} onClick={handleAcceptFriendRequest}>
             Accept Friend Request
           </button>
         )}
       </div>
     </div>
-);
+  );
 };
 
 export default ProfileCard;
