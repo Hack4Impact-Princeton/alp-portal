@@ -174,11 +174,11 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
           />
         </Grid>
         <Grid item xs={12} sm={7} display="flex" flexDirection="column" sx={{ cursor: "pointer" }}>
-          <Link href="/forum">
+         {/*<Link href="/forum" style={{border:"1px solid gray"}}>
             <a style={backButtonStyle}>
               <span style={backIconStyle}>&lt;</span> Back to Forum
             </a>
-          </Link>
+  </Link>*/}
         </Grid>
         <Grid
           container
