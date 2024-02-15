@@ -106,7 +106,7 @@ const Forum: NextPage<PostProps> = ({
             </h1>
           </Grid2>
           <Grid2 sx={{ justifyContent: "left" }}>
-            <SearchBar allAccounts={allAccounts}/>
+            <SearchBar />
           </Grid2>
           <Grid2 container flexDirection="row" spacing={4}>
             <Grid2 sx={{ width: "50vw" }}>
@@ -224,11 +224,11 @@ const Forum: NextPage<PostProps> = ({
                   })}
               </Grid2>
             </Grid2>
-            <Grid2 sx={{ width: "27vw",pt:3 }}>
+            <Grid2 sx={{ width: "27vw", pt: 3 }}>
               <Grid2>
                 <h1 style={{ color: "#FE9834" }}>Friends</h1>
               </Grid2>
-              <Grid2 sx={{marginTop:2}} >
+              <Grid2 sx={{ marginTop: 2 }} >
                 <Button
                   variant="contained"
                   disableElevation
@@ -237,7 +237,7 @@ const Forum: NextPage<PostProps> = ({
                     backgroundColor:
                       friendBtn === "friends" ? "#F3D39A" : "#F5F5F5",
                     color: "#5F5F5F",
-                    mr:2
+                    mr: 2
                   }}
                   onClick={() => setFriendBtn("friends")}
                 >
@@ -257,7 +257,7 @@ const Forum: NextPage<PostProps> = ({
                   Requests
                 </Button>
               </Grid2>
-              <Grid2 sx={{marginTop:1}}>
+              <Grid2 sx={{ marginTop: 1 }}>
                 {friendBtn == "friends" && (
                   <div>
                     <FriendsList

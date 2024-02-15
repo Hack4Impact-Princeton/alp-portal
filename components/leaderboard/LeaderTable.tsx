@@ -12,11 +12,13 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { styled } from "@mui/material/styles";
+import CircularIcon from "../CircularIcon";
+
 
 const StyledTableCell = styled(TableCell)(() => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "#F3D39A",
-    color: "#5F5F5F",
+    backgroundColor: "#FE9834",
+    color: "#F1F1F1",
     fontStyle: "bold",
     fontSize: 20,
     // borderRight: "1px solid #C9C9C9",
@@ -72,7 +74,7 @@ const LeaderTable: React.FC<TableProps> = ({ data, boardType }) => {
                 key={d.userName}
               >
                 <StyledTableCell component="th" scope="row">
-                  <p>{rank + 1}</p>
+                  <p>{rank+1}</p>
                 </StyledTableCell>
                 <StyledTableCell component="th" scope="row">
                   <p>{d.userName}</p>

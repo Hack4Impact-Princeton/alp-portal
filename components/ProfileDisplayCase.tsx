@@ -14,7 +14,7 @@ type BadgeInfoProps = {
 type ProfileInfoProps = {
   account: VolunteerAccount;
   name: string;
-  state: string;
+  // state: string;
   email: string;
   profilePicture: string;
   badges: BadgeInfoProps[];
@@ -59,7 +59,8 @@ const ProfileDisplayCase: React.FC<{account: VolunteerAccount; userEmail: string
             <ProfileCard
               account={account}
               name={profile.name}
-              state={profile.state}
+              // state={profile.state}
+              state={"JERSEYYYY"}
               email={profile.email}
               affiliation={profile.affiliation}
               profilePicture={profile.profilePicture}

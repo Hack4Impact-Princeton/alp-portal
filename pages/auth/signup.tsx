@@ -15,6 +15,13 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import {
+  CitySelect,
+  CountrySelect,
+  StateSelect,
+  LanguageSelect,
+} from "react-country-state-city";
+import "react-country-state-city/dist/react-country-state-city.css";
 
 const Signup = () => {
     const states = getStates()
@@ -24,8 +31,10 @@ const Signup = () => {
     const [email, setEmail] = useState("")
     const [isValidEmail, setIsValidEmail] = useState(true);
     const [password, setPassword] = useState("")
-    const [location, setLocation] = useState(1)
     const [showPassword, setShowPassword] = useState(false);
+    const [countryid, setCountryid] = useState(0);
+    const [cityid, setCityid] = useState(0);
+    const [stateid, setStateid] = useState(0);
 
     const validateEmail = (input: string) => {
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -45,9 +54,10 @@ const Signup = () => {
     const handleSetPassword = (passwordText: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(passwordText.target.value)
     }
-    const handleSetLocation = (event: any) => {
-        setLocation(Number(event.target.value));
+    const handleSetState = (event: any) => {
+        setStateid(Number(event.target.value));
     }
+
     const handleTogglePassword = () => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
     };
@@ -63,7 +73,7 @@ const Signup = () => {
             const bcrypt = require("bcryptjs");
             const salt = bcrypt.genSaltSync(10);
             const hashedPwd = (password == '') ? '' : bcrypt.hashSync(password, salt);
-            const data = { fname: fname, lname: lname, email: email, pwhash: hashedPwd, location: location }
+            const data = { fname: fname, lname: lname, email: email, pwhash: hashedPwd, country: countryid, state: stateid, city: cityid }
             // return if empty field
             for (let entry in data)
                 if (entry == '') return;
@@ -126,6 +136,7 @@ const Signup = () => {
                                 mb: 3, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
 
                             }} />
+                        
                         <TextField size="small" fullWidth required id="password" label="password" variant="filled"
                             type={showPassword ? 'text' : 'password'}
                             value={password}
@@ -143,11 +154,43 @@ const Signup = () => {
                                 mb: 3,
                                 border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
                             }}
-                        />
+                            />
+                            <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>          
+                            <CountrySelect 
+                                onChange={(e : any) => {
+                                setCountryid(e.id);
+                                }}
+                                placeHolder="Country*"
+                                        
+                            />
+                            </FormControl> 
+                            <br></br>
+                                   <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>            
+                            <StateSelect
+                                countryid={countryid}
+                                onChange={(e: any) => {
+                                setStateid(e.id);
+                                }}
+                                placeHolder="State*"
+                            />
+                            </FormControl>      
+                        <br></br>
                         <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>
+                                <CitySelect
+                                    countryid={countryid}
+                                    stateid={stateid}
+                                    onChange={(e: any) => {
+                                    setCityid(e.id);
+                                    }}
+                                    placeHolder="City*"
+                                            
+                                />
+                                </FormControl>
+                        <br></br>
+                        {/* <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>
                             <InputLabel id="state-label">state</InputLabel>
                             <Select
-                                onChange={handleSetLocation}
+                                onChange={handleSetState}
                                 input={<OutlinedInput label="State" />}
                             >
                                 {
@@ -156,7 +199,8 @@ const Signup = () => {
                                     ))
                                 }
                             </Select>
-                        </FormControl>
+                        </FormControl> */}
+                        
                         <br></br>
                         <p style={{ fontSize: 10, color: "white" }}>You can unsubscribe at any time by clicking the link in the footer of our emails. For information about our privacy practices, please visit our website.</p>
                         <Button variant="contained"
@@ -171,6 +215,7 @@ const Signup = () => {
                                 mb: 2
                             }}>Sign up</Button>
                     </Box>
+    
                 </div>
                 <Link passHref style={{ color: "white" }} href="/auth/login">
                     <a style={{ color: "white", textDecoration: "none" }}>
