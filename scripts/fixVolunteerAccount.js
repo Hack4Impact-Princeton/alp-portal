@@ -24,9 +24,7 @@ async function run() {
 
     const update = {
       $set: {
-        country: 233,
-        state: 1417,
-        city: 153288
+        commentsReceived: 0
       }
     }
     // Execute query
