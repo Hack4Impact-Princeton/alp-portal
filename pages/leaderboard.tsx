@@ -163,9 +163,9 @@ export const getServerSideProps = async (context: any) => {
     const allVolunteers: VolunteerAccount[] = (await VolunteerAccount.find(
       {}
     )) as VolunteerAccount[];
-    /*const myAccount = allVolunteers.find(
+    const myAccount = allVolunteers.find(
       (obj) => obj.email == session.user?.email
-    );*/
+    );
     const BookDrive: mongoose.Model<BookDrive> = getBookDriveModel();
     const allBookDrives: BookDrive[] = (await BookDrive.find(
       {}
@@ -195,6 +195,7 @@ export const getServerSideProps = async (context: any) => {
     for (const v of allVolunteers) {
       if (v.allDrives == 0) continue;
       const userName = v.fname + " " + v.lname[0];
+      const userState = states.find((state) => state.index === v.state);
       // const userState = states.find((state) => state.index === v.location);
       const totalDrives = v.allDrives;
       let seasonalDrives = 0;
@@ -205,7 +206,7 @@ export const getServerSideProps = async (context: any) => {
       }
       leaderboardData.push({
         userName: userName,
-        // userState: userState ? userState.name : "",
+         userState: userState ? userState.name : "",
         totalDrives: totalDrives,
         seasonalDrives: seasonalDrives,
       });
@@ -213,7 +214,7 @@ export const getServerSideProps = async (context: any) => {
       if (v.email == session.user?.email) {
         myLeaderboard.push({
           userName: userName,
-          // userState: userState ? userState.name : "",
+          userState: userState ? userState.name : "",
           totalDrives: totalDrives,
           seasonalDrives: seasonalDrives,
         });

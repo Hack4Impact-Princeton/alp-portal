@@ -234,7 +234,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives, b
   const toggleShowEditProfileModal = (val: boolean) => {
     if (val) {
       setName(`${currAccount.fname} ${currAccount!.lname}`)
-      // setLocation(currAccount.state)
+      setState(currAccount.state)
       setHobbies(currAccount.hobbies)
       setAffiliation(currAccount.affiliation)
       setFavBook(currAccount.favoriteBook)

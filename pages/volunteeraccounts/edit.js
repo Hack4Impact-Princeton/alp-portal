@@ -16,20 +16,20 @@ const EditVolunteerAccount = (props) => {
     
 
     const [email, setEmail] = useState(volunteerAccount ? volunteerAccount.email : null)
-    const [location, setLocation] = useState(volunteerAccount ? volunteerAccount.location : null)
+    const [state, setState] = useState(volunteerAccount ? volunteerAccount.state : null)
     const [isEdited, setIsEdited] = useState(false)
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value)
     }
-    const handleLocationChange = (event) => {
-        setLocation(event.target.value)
+    const handleStateChange = (event) => {
+        setState(event.target.value)
     }
     const editVolunteerAccount = async () => {
         try {
             const data = {
                 email: email,
-                location: location,
+                state: state,
             }
             const resJson = await fetch(`/api/volunteeraccounts/${volunteerAccount.email}`, {
                 method: "PATCH",
@@ -49,8 +49,8 @@ const EditVolunteerAccount = (props) => {
                         <p>Update your email</p>
                         <input type="text" value={email} onChange={handleEmailChange} />
                         <br></br>
-                        <p>Update your location</p>
-                        <select onChange={handleLocationChange} value={location}>
+                        <p>Update your state</p>
+                        <select onChange={handleStateChange} value={state}>
                             {
                                 states.map((state) => (
                                     <option key={state.index} value={state.index}>{state.name}</option>
@@ -80,7 +80,7 @@ const EditVolunteerAccount = (props) => {
             <br></br>
             <p>Email: {email}</p>
             <br></br>
-            <p>location: {states[location - 1].name}</p>
+            <p>State: {states[state - 1].name}</p>
             <br></br>
             <Button href={`/volunteeraccounts/profile`}>Click here to see your profile</Button>
         </div>
