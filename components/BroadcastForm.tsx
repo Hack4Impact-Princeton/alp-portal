@@ -24,6 +24,9 @@ type BroadcastFormProps = {
   recipient: string | undefined;
   sbjt: string | undefined;
 };
+
+
+
 const BroadcastForm: React.FC<BroadcastFormProps> = ({
   email,
   volunteers,
@@ -41,7 +44,6 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
   const [recipients, setRecipients] = useState<string[]>(
     recipient ? [recipient] : []
   );
-
   const sendCustomBroadcast = async () => {
     try {
       setSubmit(true);
@@ -100,6 +102,32 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
       primary: { main: "#F3D39A" },
     },
   });
+  const styles = {
+    select: {
+      border:"none",
+      '&:active': {
+        borderColor: '#5F5F5F', // Change the border color on focus
+      },
+      '&.Mui-focused': {
+        borderColor: '#5F5F5F', // Change the border color for the focused state
+      },
+      height:"40px",
+      backgroundColor:"#F3D39A",
+      fontFamily:"Epilogue"
+    },
+    broadcast: {
+      fontFamily:"Epilogue",
+      backgroundColor:"#F3D39A",
+      outline:"none",
+      fontSize:"100%",
+      marginTop: 2, marginBottom: 4, width: "95%",
+      color:"#5F5F5F",
+      fontWeight:"bold",
+      '&:hover': {
+        backgroundColor:"#D3A874", 
+      },
+    },
+  };
 
   return (
     <Grid
@@ -122,10 +150,11 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
           backgroundColor: "#F5F5F5",
           width: "95%",
           padding: 10,
+          borderRadius:"7px",
         }}
       >
         <Grid xs={12}>
-          <p>Recipients:</p>
+          <h3 style={{color:"#5F5F5F"}}>Recipients:</h3>
         </Grid>
         <Grid container  style={{
           display: "flex",
@@ -135,18 +164,18 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
 
         }}>
       
-        <Grid item xs={5} sx={{border:"1.5px solid gray", mr:"1%"}}>
+        <Grid item xs={5} sx={{ mr:"1%"}}>
           <FormControl
             id="volunteer-picker"
-            sx={{ width: "100%"}}
+            sx={{ width: "100%",justifyContent:"center",outline:'none',fontFamily:"Epilogue"}}
           >
-            <InputLabel id="volunteer-label">Volunteer</InputLabel>
-            <Select sx={{height:"50px"}}
+           {/*<InputLabel id="volunteer-label" sx={{fontFamily:"Epilogue", fontColor:"#5F5F5F"}}>Volunteer</InputLabel>*/}
+            <Select sx={styles.select}
               onChange={updateRecipients}
-              input={<OutlinedInput label="Volunteer" />}
+              input={<OutlinedInput sx={{fontFamily:"Epilogue"}} label="Volunteer" />}
             >
               {volunteers.map((volunteer) => (
-                <MenuItem key={volunteer.alp_id} value={volunteer.email}>{`${
+                <MenuItem sx={{fontFamily:"Epilogue"}}key={volunteer.alp_id} value={volunteer.email}>{`${
                   volunteer.fname
                 } ${volunteer.lname.substring(0, 1)}.`}</MenuItem>
               ))}
@@ -156,8 +185,9 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
         <Grid item xs={4} sx={{border:"1.5px solid gray",mr:"1%"}}>
         <Button
           onClick={addAllRecipients}
-          variant="outlined"
-          style={{ padding: 5, cursor: "pointer", width:"100%", height:"50px" }}
+          style={{ padding: 5, cursor: "pointer", width:"100%", height:"40px",fontFamily:"Epilogue",
+                    fontWeight:"bold",color:"#5F5F5F",textTransform: 'none',outline:"none",backgroundColor:"#F3D39A",fontSize:"100%"
+                  }}
         >
           Add all volunteers
         </Button>
@@ -165,13 +195,13 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
       <Grid item xs={2.5} sx={{border:"1.5px solid gray",mr:"1%"}}>
         <Button
           onClick={()=> setRecipients([])}
-          variant="outlined"
           style={{
             display: "flex",
             width: "100%",
             padding: 5,
             cursor: "pointer",
-            height:"50px"
+            height:"40px",
+            fontWeight:"bold",color:"#5F5F5F",textTransform: 'none',outline:"none",backgroundColor:"#F3D39A",fontSize:"100%"
           }}
         >
           Clear all
@@ -195,7 +225,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
           <Button
             variant="contained"
             onClick={sendAutomatedBroadcast}
-            sx={{ marginTop: 2, marginBottom: 4, width: "95%" }}
+            sx={styles.broadcast}
           >
             Send Automated Broadcast{" "}
           </Button>
@@ -223,6 +253,11 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setSubject(e.target.value)
               }
+              InputLabelProps={{
+                style: {
+                  fontFamily: 'Epilogue',
+                },
+              }}
               sx={{
                 mb: 2,
                 width: "95%",
@@ -242,12 +277,18 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setMessage(e.target.value)
               }
-              style={{ width: "95%", minWidth: "500px" }}
+              InputLabelProps={{
+                style: {
+                  fontFamily: 'Epilogue',
+                },
+              }}
+              sx={{ width: "95%", minWidth: "500px" , fontFamily:"Epilogue"
+            }}
             />
             <Button
               variant="contained"
               onClick={sendCustomBroadcast}
-              sx={{ marginTop: 1.5, width: "95%" }}
+              sx={styles.broadcast}
             >
               Send Custom Broadcast{" "}
             </Button>
