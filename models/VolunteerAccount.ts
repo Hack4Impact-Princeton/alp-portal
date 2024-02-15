@@ -144,6 +144,11 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>(
       required: true,
       default: 0
     },
+    commentsReceived: {
+      type: Number,
+      required: true,
+      default: 0
+    },
     postIDs: {
       type: [String],
       default: []
