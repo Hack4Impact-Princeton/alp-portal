@@ -143,25 +143,24 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
     >
       <Grid
         container
-        style={{
+        sx={{
           display: "flex",
           justifyContent: "center",
           flexDirection: "row",
           backgroundColor: "#F5F5F5",
           width: "95%",
-          padding: 10,
+          padding: 2,
+          paddingTop:2,
           borderRadius:"7px",
         }}
       >
         <Grid xs={12}>
-          <h3 style={{color:"#5F5F5F"}}>Recipients:</h3>
+          <h3 style={{color:"#5F5F5F",marginBottom:5}}>Recipients:</h3>
         </Grid>
         <Grid container  style={{
           display: "flex",
           alignItems:"center",
           flexDirection: "row",
-          border:"1.5px solid gray",
-
         }}>
       
         <Grid item xs={5} sx={{ mr:"1%"}}>
@@ -182,7 +181,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={4} sx={{border:"1.5px solid gray",mr:"1%"}}>
+        <Grid item xs={4} sx={{mr:"1%"}}>
         <Button
           onClick={addAllRecipients}
           style={{ padding: 5, cursor: "pointer", width:"100%", height:"40px",fontFamily:"Epilogue",
@@ -192,7 +191,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
           Add all volunteers
         </Button>
       </Grid>
-      <Grid item xs={2.5} sx={{border:"1.5px solid gray",mr:"1%"}}>
+      <Grid item xs={2.5} sx={{mr:"1%"}}>
         <Button
           onClick={()=> setRecipients([])}
           style={{
