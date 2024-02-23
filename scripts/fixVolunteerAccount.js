@@ -7,7 +7,7 @@ const client = new MongoClient(uri);
 
 async function run() {
   try {
-    
+
     // Get the database and collection on which to run the operation
     const database = client.db("alp_portal");
     const accounts = database.collection("volunteerAccounts");
@@ -23,16 +23,9 @@ async function run() {
     // };
 
     const update = {
-        $set: {
-          badges: {
-            Organizer: 0, 
-            Profile: 0, 
-            Connector: 0,  
-            Supporter: 0, 
-            Leader: 0, 
-            Participation: 0
-          }
-        }
+      $set: {
+        commentsReceived: 0
+      }
     }
     // Execute query
     const arr = await accounts.updateMany({}, update);

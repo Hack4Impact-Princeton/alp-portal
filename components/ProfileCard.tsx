@@ -7,13 +7,14 @@ type ProfileCardProps = {
   state: string;
   email: string;
   profilePicture: string;
+  affiliation: string;
  // badges: BadgeType;
   useBadges?: boolean;
   style?: React.CSSProperties;
 };
 
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePicture, /*badges,*/ useBadges = true, style }) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({ name, state, email, profilePicture, affiliation,  /*badges,*/ useBadges = true, style }) => {
   const [friendStatus, setFriendStatus] = React.useState<string>('none');
   const [showRevokeButton, setShowRevokeButton] = React.useState<boolean>(false);
 
@@ -151,7 +152,7 @@ return (
       <div style = {userInfoStyle}>   
         <p style = {userInfoItemStyle}>{name}</p>
         <p style = {userInfoItemStyle}>{state}</p>
-        <p style = {userInfoItemStyle}>{email}</p>
+        <p style = {userInfoItemStyle}>{affiliation}</p>
       </div>
       </div>
       {/*useBadges && (

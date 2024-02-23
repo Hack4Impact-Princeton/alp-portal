@@ -13,10 +13,11 @@ type BadgeInfoProps = {
 
 type ProfileInfoProps = {
   name: string;
-  state: string;
+  // state: string;
   email: string;
   profilePicture: string;
   badges: BadgeInfoProps[];
+  affiliation: string;
   useBadges?: boolean;
 };
 
@@ -31,8 +32,10 @@ const ProfileDisplayCase: React.FC<{ profiles: ProfileInfoProps[]; useBadges?: b
           <Grid item xs={12} sm={6} md={4} lg={3} key={index} style={{marginLeft:'10px', marginRight:'50px'}}>
             <ProfileCard
               name={profile.name}
-              state={profile.state}
+              // state={profile.state}
+              state={"JERSEYYYY"}
               email={profile.email}
+              affiliation = {profile.affiliation}
               profilePicture={profile.profilePicture}
               //badges={profile.badges}
               useBadges={useBadges}

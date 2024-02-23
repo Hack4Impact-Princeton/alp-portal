@@ -73,7 +73,7 @@ const Signup = () => {
             const bcrypt = require("bcryptjs");
             const salt = bcrypt.genSaltSync(10);
             const hashedPwd = (password == '') ? '' : bcrypt.hashSync(password, salt);
-            const data = { fname: fname, lname: lname, email: email, pwhash: hashedPwd, location: location }
+            const data = { fname: fname, lname: lname, email: email, pwhash: hashedPwd, country: countryid, state: stateid, city: cityid }
             // return if empty field
             for (let entry in data)
                 if (entry == '') return;
