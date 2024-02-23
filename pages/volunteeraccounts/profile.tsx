@@ -318,16 +318,23 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives, b
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  justifyContent: "space-between",
+                  justifyContent: "space-around",
+                  alignItems: "center",
                   borderRadius: 'auto',
                   width: '50%',
-                  height: 'auto',
+                  height: '100%',
+                  padding: 2
                 }}
               >
                 <img
                   src={pfpURL}
                   alt="Profile Image"
                   style={{
+                    height: "50%",
+                    aspectRatio: 1,
+                    flexShrink: 1,
+                    flexGrow: 1,
+
                     marginBottom: 20
                   }}
                 />
@@ -356,9 +363,10 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives, b
           <dialog
             ref={editProfileRef}
             style={{
-              height: "65%",
+              height: "69%",
               width: "40%",
               minWidth: "365px",
+              minHeight: "450px",
               borderRadius: "3%",
               padding: 0,
               position: "absolute",
@@ -404,24 +412,26 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives, b
 
               </Grid>
               <div style={{ display: "flex", justifyContent: "space-around", flexDirection: "row", width: "100%", alignItems: "center", }}>
-                <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center", width: "40%", }}>
-                  <img src={pfpURL} height={65} />
-                  <ImageUpload setpfpURL={setpfpURL} currAccount={currAccount} />
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "start", width: "30%" }}>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-around", marginLeft: "14%" }}>
+                    <img src={pfpURL} style={{ height: 85, aspectRatio: 1, marginBottom: 2 }} />
+                    <ImageUpload setpfpURL={setpfpURL} currAccount={currAccount} />
+                  </div>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", width: "60%", height: "100%", justifyContent: "space-around", alignItems: "start", }}>
+                <div style={{ display: "flex", flexDirection: "column", width: "70%", height: "100%", justifyContent: "space-around", alignItems: "start", }}>
                   <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>Name</i>
-                  <input type="text" placeholder={"name"} style={{ padding: "3px", width: "93%", height: "30px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                  <input type="text" placeholder={"name"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
                   <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>State</i>
                   {/* <Dropdown options={states} setResult={setLocation} location={location} /> */}
                 </div>
               </div>
               <div style={{ display: "flex", flex: 1, minHeight: 170, paddingTop: 5, paddingBottom: 5, justifyContent: "space-around", flexDirection: "column", width: "100%", alignItems: "start", paddingLeft: "4%" }}>
                 <i style={{ marginLeft: 3, fontSize: 10 }}>Affiliation</i>
-                <input style={{ padding: 3, width: "96%", height: "30px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} type="text" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAffiliation(e.target.value)} value={affiliation} />
+                <input style={{ padding: 3, width: "96%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} type="text" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAffiliation(e.target.value)} value={affiliation} />
                 <i style={{ marginLeft: 3, fontSize: 10 }}>Hobbies</i>
-                <input style={{ padding: 3, width: "96%", height: "30px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} type="text" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setHobbies(e.target.value.split(", "))} value={hobbies.join(", ")} />
+                <input style={{ padding: 3, width: "96%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} type="text" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setHobbies(e.target.value.split(", "))} value={hobbies.join(", ")} />
                 <i style={{ marginLeft: 3, fontSize: 10 }}>Favorite Book</i>
-                <input style={{ padding: 3, width: "96%", height: "30px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} type="text" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFavBook(e.target.value)} value={favBook} />
+                <input style={{ padding: 3, width: "96%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} type="text" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFavBook(e.target.value)} value={favBook} />
               </div>
               <Grid
                 display="flex"
