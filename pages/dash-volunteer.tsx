@@ -25,6 +25,7 @@ import getReactivationRequestModel, {
 import { TextField } from "@mui/material";
 import CircularIIcon from "../components/CircularIIcon";
 import getBroadcastModel, { Broadcast } from "../models/Broadcast";
+import Footer from "../components/Footer";
 
 const DashVolunteer: NextPage<{
   driveData: {
@@ -536,6 +537,7 @@ const DashVolunteer: NextPage<{
             </Grid2>
           </dialog>
         </Box>
+        <Footer/>
       </Grid2>
     );
   } else {
