@@ -74,61 +74,81 @@ const BadgeInfo: React.FC<BadgeInfoProps> = ({ isEarned, level, name, descriptio
   );
 };
 
-const BadgeDisplayCase = ({ badgeLevels } : { badgeLevels: undefined|BadgeType} ) => {
+
+const BadgeDisplayCase = ({ badgeLevels }: { badgeLevels: undefined | BadgeType }) => {
+  const [selectedBadge, setSelectedBadge] = useState<string | null>(null);
 
   const getBadgeIconsFromLevels = (badgeLevels: BadgeType) => {
-
-    const files = { // TODO these need to be corrected 
+    const files = {
       Connector: ["connector 1.png", "connector 2.png", "connector 3.png", "connector 4.png"],
       Leader: ["leader 1.png", "leader 2.png", "leader 3.png", "leader 4.png"],
       Organizer: ["BDO 1.png", "BDO 2.png", "BDO 3.png", "BDO 4.png"],
       Participation: ["maverick 1.png", "maverick 2.png", "maverick 3.png", "maverick 4.png"],
       Profile: ["friend 1.png", "friend 2.png", "friend 3.png", "friend 4.png"],
       Supporter: ["supporter 1.png", "supporter 2.png", "supporter 3.png", "supporter 4.png"],
-    }
+    };
 
-    return Object.keys(badgeLevels).map((badgeName: string) => {
-      const level = badgeLevels[badgeName as keyof typeof badgeLevels];
-      if (level === 0) {
-        return null;
-      }
-      return {
-        isEarned: true,
-        level: level,
-        name: badgeName,
-        //description: "description",
-        icon: files[badgeName as keyof typeof files][level - 1],
-      };
-    }).filter((badge: any) => badge !== null);
-  }
+    return Object.keys(badgeLevels)
+      .map((badgeName: string) => {
+        const level = badgeLevels[badgeName as keyof typeof badgeLevels];
+        if (level === 0) {
+          return null;
+        }
+        return {
+          isEarned: true,
+          level: level,
+          name: badgeName,
+          //description: "description",
+          icon: files[badgeName as keyof typeof files][level - 1],
+        };
+      })
+      .filter((badge: any) => badge !== null);
+  };
+
+  const openBadgeModal = (badgeName: string) => {
+    setSelectedBadge(badgeName);
+  };
+
+  const closeBadgeModal = () => {
+    setSelectedBadge(null);
+  };
 
   return (
-    <Grid container style={{
-      border: '1.5px solid black', padding: '10px', marginBottom: '10px', display: 'flex',
-      width: '95%',
-      backgroundColor: "#F5F5F5"
+    <div style={{ border: '1.5px solid black', padding: '10px', marginBottom: '10px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '95%', backgroundColor: "#F5F5F5" }}>
+      <h2 style={{ textAlign: 'left', marginBottom: '10px' }}>Badges</h2>
 
-    }}>
+      <div className="badge-display-container" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
+        {badgeLevels &&
+          getBadgeIconsFromLevels(badgeLevels).map((badge: any, index: number) => (
+            <div key={index} className="badge-item" onClick={() => openBadgeModal(badge.icon)} style={{ margin: '10px' }}>
+              <img
+                src={`/badges/${badge.icon}`}
+                alt="Unlocked Badge"
+                style={{ width: '150px', height: '150px', marginBottom: '5px', cursor: 'pointer' }}
+              />
+              <div style={{ textAlign: 'center' }}>
+                <p style={{ margin: 0, fontWeight: 'bold' }}>{badge.name}</p>
+                <p style={{ margin: 0, fontSize: '12px' }}>{badge.description}</p>
+              </div>
+            </div>
+          ))}
+      </div>
 
-      <Grid xs={12} ><h2 style={{ textAlign: 'left', marginBottom: '10px' }}>Badges</h2></Grid>
-
-      {badgeLevels && getBadgeIconsFromLevels(badgeLevels).map((badge: any, index: number) => (
-        <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '10px', marginTop: "0px" }}>
-          <img
-            src={`/badges/${badge.icon}`} // TODO could switch this to cloudinary
-            alt="Unlocked Badge"
-            style={{ width: '150px', height: '150px', marginBottom: '5px' }}
-          />
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ margin: 0, fontWeight: 'bold' }}>{badge.name}</p>
-            <p style={{ margin: 0, fontSize: '12px' }}>{badge.description}</p>
+      <div className="modal-overlay" onClick={closeBadgeModal} style={{ position: 'fixed', top: '0', left: '0', width: '100%', height: '100%',backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: '999', display: selectedBadge ? 'block' : 'none' }}></div>
+      <div className="modal" style={{ borderRadius:"5px",position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white', padding: '20px', zIndex: '1000', display: selectedBadge ? 'block' : 'none' }}>
+        {selectedBadge && (
+          <div className="modal-content" style={{ position: 'relative' }}>
+            <span className="close" onClick={closeBadgeModal} style={{ position: 'absolute', top: '10px', right: '10px', cursor: 'pointer', fontSize:"40px" }}>&times;</span>
+            <img src={`/badges/${selectedBadge}`} alt="Selected Badge" style={{ width: '400px', height: '400px' }} />
           </div>
-        </div>
-      ))}
-
-    </Grid>
+        )}
+      </div>
+    </div>
   );
 };
+
+
+
 
 const PersonalInfoCard: React.FC<{ account: VolunteerAccount }> = ({ account }) => {
   const affiliation = account.affiliation.length ? <p style={{ display: "inline" }}>{account.affiliation}</p> : <p style={{ display: "inline", fontStyle: "italic" }}>add your affiliation!</p>
