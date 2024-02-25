@@ -21,6 +21,7 @@ import Dropdown from "../../components/Dropdown";
 import InfoIcon from '@mui/icons-material/Info';
 import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import useDynamicPadding from "../../lib/useDynamicPadding";
 
 type ProfileProps = {
   error: string | null;
@@ -90,9 +91,12 @@ const BadgeDisplayCase = () => {
   ];
 
   return (
-    <Grid container style={{
-      border: '1.5px solid black', padding: '10px', marginBottom: '10px', display: 'flex',
-      width: '95%',
+    <Grid container sx={{
+      border: '1.5px solid black', padding: '10px', display: 'flex',
+      '@media (min-width: 600px)': {
+        width: "99.5%"
+      },
+      width: '98%',
       backgroundColor: "#F5F5F5"
 
     }}>
@@ -114,7 +118,7 @@ const PersonalInfoCard: React.FC<{ account: VolunteerAccount }> = ({ account }) 
   return (
     <div style={{
       border: '1.5px solid black', padding: '10px', marginBottom: '10px', display: 'flex',
-      width: '95%', backgroundColor: "#F5F5F5", flexDirection: "column"
+      width: '98%', backgroundColor: "#F5F5F5", flexDirection: "column"
     }}>
       <h2 style={{ textAlign: 'left', marginBottom: '10px', paddingRight: '10px' }}>Personal Information</h2>
       <div>
@@ -185,11 +189,17 @@ export const ImageUpload: React.FC<{ setpfpURL: Dispatch<SetStateAction<string>>
         type="file" style={{ display: 'none' }} onChange={changeHandler} />
       <label htmlFor="icon-button-file">
         <IconButton sx={{
-          backgroundColor: "#F3D39A",
-          "&:hover": { backgroundColor: "#D3A874" },
+          backgroundColor: "#FE9834",
+          "&:hover": { backgroundColor: "#e0771a" },
+          width: 110,
+          color: "white",
+          borderRadius: 1,
+          height: 25
         }} aria-label="upload picture"
           component="span">
-          <PhotoCamera />
+          <p style={{
+            fontSize: 10
+          }}>Upload new</p>
         </IconButton>
       </label>
     </div>
@@ -266,18 +276,18 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
   return (
     <Grid>
       <PageContainer broadcasts={broadcasts} fName={currAccount.fname} currPage="profile" />
-      <Grid container display="flex" padding={1} sx={{ pl: 20 }} rowSpacing={2}>
-        <Grid item xs={12} sm={7} display="flex" flexDirection="column" >
+      <Grid container display="flex" padding={1} sx={{ pl: useDynamicPadding(635, 775, "29vw", "20vw", "15vw"), width: "100%" }} rowSpacing={.5}>
+        <Grid item xs={12} sm={12} md={12} lg={9} display="flex" flexDirection="column" >
           <Box
             sx={{
-              width: "100%",
+              width: "98%",
               height: "175px",
               border: '1.5px solid black',
               display: 'flex',
               marginBottom: '10px',
               '@media (min-width: 600px)': {
                 display: 'flex',
-                width: '95%',
+                width: '98%',
               },
               backgroundColor: "#F5F5F5"
             }}
@@ -288,33 +298,45 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                borderRadius: "1.5px solid red"
               }}
             >
               <div
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  justifyContent: "space-around",
+                  justifyContent: "center",
                   alignItems: "center",
                   borderRadius: 'auto',
                   width: '50%',
                   height: '100%',
-                  padding: 2
+                  padding: 2,
                 }}
               >
-                <img
-                  src={pfpURL}
-                  alt="Profile Image"
-                  style={{
-                    height: "50%",
-                    aspectRatio: 1,
-                    flexShrink: 1,
-                    flexGrow: 1,
+                <Box sx={{
+                  '@media (min-width: 760px)': {
+                    height: "85%",
+                    width: "85%",
+                  },
+                  height: "50%",
+                  display: "flex",
+                  alignItems: "center",
 
-                    marginBottom: 20
-                  }}
-                />
-                <ImageUpload setpfpURL={setpfpURL} currAccount={currAccount} />
+                }}>
+
+                  <img
+                    src={pfpURL}
+                    alt="Profile Image"
+                    style={{
+                      // height: "65%",
+                      aspectRatio: 1,
+                      // flexShrink: 1.5,
+                      height: "100%",
+                      borderRadius: "50%",
+                    }}
+                  />
+                </Box>
+                {/* <ImageUpload setpfpURL={setpfpURL} currAccount={currAccount} /> */}
               </div>
             </div>
             <div
@@ -335,13 +357,12 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
 
           </Box>
           <PersonalInfoCard account={currAccount} />
-          <BadgeDisplayCase />
           <dialog
             ref={editProfileRef}
             style={{
               height: "69%",
               width: "40%",
-              minWidth: "365px",
+              minWidth: "390px",
               minHeight: "450px",
               borderRadius: "3%",
               padding: 0,
@@ -389,12 +410,12 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
               </Grid>
               <div style={{ display: "flex", justifyContent: "space-around", flexDirection: "row", width: "100%", alignItems: "center", }}>
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "start", width: "30%" }}>
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-around", marginLeft: "14%" }}>
-                    <img src={pfpURL} style={{ height: 85, aspectRatio: 1, marginBottom: 2 }} />
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-around", marginLeft: "12%" }}>
+                    <img src={pfpURL} style={{ height: 110, aspectRatio: 1, marginBottom: 2 }} />
                     <ImageUpload setpfpURL={setpfpURL} currAccount={currAccount} />
                   </div>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", width: "70%", height: "100%", justifyContent: "space-around", alignItems: "start", }}>
+                <div style={{ display: "flex", flexDirection: "column", width: "67%", flexShrink: 3, height: "100%", justifyContent: "space-around", alignItems: "start", }}>
                   <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>Name</i>
                   <input type="text" placeholder={"name"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
                   <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>State</i>
@@ -446,22 +467,26 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
             </Grid>
           </dialog>
         </Grid>
-        <Grid item xs={12} sm={5} height={"418px"}>
+        <Grid item xs={12} sm={10} md={5} lg={3} height={"302px"} mb={5}>
           <Box
             sx={{
-              width: "100%",
+              width: "98%",
               height: "110%",
               border: "1.5px solid black",
-              '@media (min-width: 600px)': {
-                display: 'inline-block',
-                width: '100%',
-                height: '100%',
-              },
-              maxWidth: "450px",
+              // '@media (min-width: 600px)': {
+              //   display: 'inline-block',
+              //   width: '100%',
+              //   height: '100%',
+              // },
+              // maxWidth: "300px",
+              marginBottom: 150,
               backgroundColor: "#F5F5F5"
             }}>
             <MapComponent drives={drives ? drives : []} />
           </Box>
+        </Grid>
+        <Grid item xs={12} sm={12} md={12} lg={12}>
+          <BadgeDisplayCase />
         </Grid>
       </Grid>
     </Grid>
