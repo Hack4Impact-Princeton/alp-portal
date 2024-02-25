@@ -111,7 +111,7 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                 </CustomWidthTooltip>
                 </ListItem>
             </Link>
-            */ }
+          
             
             <Link href="/h4i-team">
                     <ListItem key="Contact Us">
@@ -126,6 +126,7 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                     </CustomWidthTooltip>
                     </ListItem>
                 </Link>
+                  */ }
             </List>
         </Drawer>
     );
