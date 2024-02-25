@@ -134,11 +134,11 @@ const BadgeDisplayCase = ({ badgeLevels }: { badgeLevels: undefined | BadgeType 
           ))}
       </div>
 
-      <div className="modal-overlay" onClick={closeBadgeModal} style={{ position: 'fixed', top: '0', left: '0', width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: '999', display: selectedBadge ? 'block' : 'none' }}></div>
-      <div className="modal" style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white', padding: '20px', zIndex: '1000', display: selectedBadge ? 'block' : 'none' }}>
+      <div className="modal-overlay" onClick={closeBadgeModal} style={{ position: 'fixed', top: '0', left: '0', width: '100%', height: '100%',backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: '999', display: selectedBadge ? 'block' : 'none' }}></div>
+      <div className="modal" style={{ borderRadius:"5px",position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white', padding: '20px', zIndex: '1000', display: selectedBadge ? 'block' : 'none' }}>
         {selectedBadge && (
           <div className="modal-content" style={{ position: 'relative' }}>
-            <span className="close" onClick={closeBadgeModal} style={{ position: 'absolute', top: '10px', right: '10px', cursor: 'pointer' }}>&times;</span>
+            <span className="close" onClick={closeBadgeModal} style={{ position: 'absolute', top: '10px', right: '10px', cursor: 'pointer', fontSize:"40px" }}>&times;</span>
             <img src={`/badges/${selectedBadge}`} alt="Selected Badge" style={{ width: '400px', height: '400px' }} />
           </div>
         )}
