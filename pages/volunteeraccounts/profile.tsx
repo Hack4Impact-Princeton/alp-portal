@@ -1,23 +1,20 @@
 import getVolunteerAccountModel, { VolunteerAccount } from "../../models/VolunteerAccount";
 import dbConnect from '../../lib/dbConnect';
-import { Grid, IconButton, Button, TextField, FormControl, InputLabel, Select, OutlinedInput, MenuItem, SelectChangeEvent } from "@mui/material";
+import { Grid, IconButton, Button, } from "@mui/material";
 import Box from '@mui/material/Box';
 import PageContainer from "../../components/PageContainer";
 import React, { useState, useRef, Dispatch, SetStateAction, useEffect } from 'react';
-import { signOut } from "next-auth/react";
 import MapComponent from '../../components/MapComponent';
 import Link from 'next/link';
 import { BookDriveStatus, getStates } from "../../lib/enums";
 import getBookDriveModel, { BookDrive } from "../../models/BookDrive";
+import { BadgeType } from '../../models/VolunteerAccount';
 import { NextPage } from 'next';
 import mongoose from 'mongoose';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import getBroadcastModel, { Broadcast } from "../../models/Broadcast";
-import { PhotoCamera } from "@mui/icons-material";
 import { imageDelete, imagePfpUpload } from "../../db_functions/imageDB";
-import CircularIcon from "../../components/CircularIcon";
-import Dropdown from "../../components/Dropdown";
 import InfoIcon from '@mui/icons-material/Info';
 import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
@@ -28,6 +25,7 @@ type ProfileProps = {
   account: VolunteerAccount | null;
   drives: BookDrive[] | null;
   broadcasts: Broadcast[];
+  // badgeLevels: BadgeType;
 }
 type BadgeInfoProps = {
   isEarned: boolean,
@@ -73,22 +71,33 @@ const BadgeInfo: React.FC<BadgeInfoProps> = ({ isEarned, level, name, descriptio
   );
 };
 
-const BadgeDisplayCase = () => {
-  const badges = [
-    {
-      isEarned: true,
-      level: 1,
-      name: 'Ivy',
-      description: 'ivy being nice for once',
-    },
-    {
-      isEarned: false,
-      level: 2,
-      name: 'ivy',
-      description: 'ivy saving us!',
-    },
-    // Add more badges here
-  ];
+const BadgeDisplayCase = ({ badgeLevels }: { badgeLevels: undefined | BadgeType }) => {
+
+  const getBadgeIconsFromLevels = (badgeLevels: BadgeType) => {
+
+    const files = { // TODO these need to be corrected 
+      Connector: ["connector 1.png", "connector 2.png", "connector 3.png", "connector 4.png"],
+      Leader: ["leader 1.png", "leader 2.png", "leader 3.png", "leader 4.png"],
+      Organizer: ["BDO 1.png", "BDO 2.png", "BDO 3.png", "BDO 4.png"],
+      Participation: ["maverick 1.png", "maverick 2.png", "maverick 3.png", "maverick 4.png"],
+      Profile: ["friend 1.png", "friend 2.png", "friend 3.png", "friend 4.png"],
+      Supporter: ["supporter 1.png", "supporter 2.png", "supporter 3.png", "supporter 4.png"],
+    }
+
+    return Object.keys(badgeLevels).map((badgeName: string) => {
+      const level = badgeLevels[badgeName as keyof typeof badgeLevels];
+      if (level === 0) {
+        return null;
+      }
+      return {
+        isEarned: true,
+        level: level,
+        name: badgeName,
+        //description: "description",
+        icon: files[badgeName as keyof typeof files][level - 1],
+      };
+    }).filter((badge: any) => badge !== null);
+  }
 
   return (
     <Grid container sx={{
@@ -100,12 +109,23 @@ const BadgeDisplayCase = () => {
       backgroundColor: "#F5F5F5"
 
     }}>
+
       <Grid xs={12} ><h2 style={{ textAlign: 'left', marginBottom: '10px' }}>Badges</h2></Grid>
-      <Grid container xs={12} style={{ display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap', paddingLeft: '10px' }}>
-        {badges.map((badge, index) => (
-          <BadgeInfo key={index} {...badge} />
-        ))}
-      </Grid>
+
+      {badgeLevels && getBadgeIconsFromLevels(badgeLevels).map((badge: any, index: number) => (
+        <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '10px', marginTop: "0px" }}>
+          <img
+            src={`/badges/${badge.icon}`} // TODO could switch this to cloudinary
+            alt="Unlocked Badge"
+            style={{ width: '150px', height: '150px', marginBottom: '5px' }}
+          />
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ margin: 0, fontWeight: 'bold' }}>{badge.name}</p>
+            <p style={{ margin: 0, fontSize: '12px' }}>{badge.description}</p>
+          </div>
+        </div>
+      ))}
+
     </Grid>
   );
 };
@@ -212,6 +232,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
   const states = getStates()
   const [currAccount, setCurrAccount] = useState(account)
   if (!currAccount) return <ProfileError error={error!} />
+  const badgeLevels = currAccount.badges
   useEffect(() => {
     console.log(currAccount)
   }, [currAccount])
@@ -220,7 +241,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
   const toggleShowEditProfileModal = (val: boolean) => {
     if (val) {
       setName(`${currAccount.fname} ${currAccount!.lname}`)
-      setLocation(currAccount.location)
+      // setLocation(currAccount.state)
       setHobbies(currAccount.hobbies)
       setAffiliation(currAccount.affiliation)
       setFavBook(currAccount.favoriteBook)
@@ -229,7 +250,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
     else {
       editProfileRef?.current?.close()
       setName(`${currAccount.fname} ${currAccount.lname}`)
-      setLocation(currAccount.location)
+      // setLocation(currAccount.state)
       setHobbies(currAccount.hobbies)
       setAffiliation(currAccount.affiliation)
       setFavBook(currAccount.favoriteBook)
@@ -238,7 +259,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
   }
   const editProfileRef = useRef<HTMLDialogElement>(null)
   const [name, setName] = useState(`${currAccount.fname} ${currAccount.lname}`)
-  const [location, setLocation] = useState(currAccount.location)
+  // const [location, setLocation] = useState(currAccount.location)
   const [affiliation, setAffiliation] = useState(currAccount.affiliation)
   const [favBook, setFavBook] = useState(currAccount.affiliation)
   const [hobbies, setHobbies] = useState(currAccount.hobbies)
@@ -252,7 +273,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
     const update = {
       fname: nameArr[0],
       lname: nameArr[nameArr.length - 1],
-      location: location,
+      // location: location,
       affiliation: affiliation.trim(),
       favoriteBook: favBook.trim(),
       hobbies: hobbies,
@@ -419,7 +440,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                   <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>Name</i>
                   <input type="text" placeholder={"name"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
                   <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>State</i>
-                  <Dropdown options={states} setResult={setLocation} location={location} />
+                  {/* <Dropdown options={states} setResult={setLocation} location={location} /> */}
                 </div>
               </div>
               <div style={{ display: "flex", flex: 1, minHeight: 170, paddingTop: 5, paddingBottom: 5, justifyContent: "space-around", flexDirection: "column", width: "100%", alignItems: "start", paddingLeft: "4%" }}>
@@ -486,7 +507,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
           </Box>
         </Grid>
         <Grid item xs={12} sm={12} md={12} lg={12}>
-          <BadgeDisplayCase />
+          <BadgeDisplayCase badgeLevels={badgeLevels ? badgeLevels : undefined} />
         </Grid>
       </Grid>
     </Grid>
@@ -528,16 +549,32 @@ export const getServerSideProps = async (context: any) => {
       if (!res) console.log("the bad broadcastId is", broadcastId);
       else return res;
     });
+
+
     const broadcasts = (await Promise.all(bPromises)) as Broadcast[];
-    return { props: { broadcasts: JSON.parse(JSON.stringify(broadcasts)), account: JSON.parse(JSON.stringify(volunteerAccount)) as VolunteerAccount, drives: JSON.parse(JSON.stringify(drives)) as BookDrive[], error: null } }
+
+
+
+    return {
+      props:
+      {
+        broadcasts: JSON.parse(JSON.stringify(broadcasts)),
+        account: JSON.parse(JSON.stringify(volunteerAccount)) as VolunteerAccount, drives: JSON.parse(JSON.stringify(drives)) as BookDrive[], error: null
+      }
+    }
   } catch (e: Error | any) {
     console.error(e)
     // if the specific error message occurs it's because the user has not logged in
     let strError = e.message === "Cannot read properties of null (reading 'user')" ? "You must login before accessing this page" : `${e}`
 
-    return { props: { error: strError, account: null, drives: null } }
+    return {
+      props: {
+        error: strError,
+        account: null,
+        drives: null,
+      }
+    }
   }
-
 }
 
 export default Profile;

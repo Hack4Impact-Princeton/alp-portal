@@ -3,11 +3,13 @@ import Grid from "@mui/material/Grid";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DoneIcon from "@mui/icons-material/Done";
 import CloseIcon from "@mui/icons-material/Close";
-import { IconButton } from "@mui/material";
+import { IconButton,Button } from "@mui/material";
 import approveFriendRequest, {
   removeFriendRequest,
 } from "../../db_functions/friending";
 import FriendRequestCard from "../FriendRequestCard";
+import MessageIcon from '@mui/icons-material/Message';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 type ReqProps = {
   fname: string;
@@ -63,7 +65,7 @@ const RequestPreview: React.FC<ReqProps> = ({
         )}
 
         <Grid
-          xs={3}
+          xs={2.5}
           display="flex"
           sx={{ height: "100%", justifyContent: "center" }}
         >
@@ -76,16 +78,41 @@ const RequestPreview: React.FC<ReqProps> = ({
           </span>
         </Grid>
         <Grid
-          xs={5}
+          xs={5.5}
           display="flex"
           flexDirection="column"
-          sx={{ height: "100%", justifyContent: "center" }}
+          sx={{ height: "100%", justifyContent: "center",textOverflow:'wrap',pr:2 }}
         >
-          <h3>
+          <h3 style={{wordWrap: 'break-word'}}>
             {fname} {lname}.
           </h3>
           <p>{state}</p>
         </Grid>
+        {!request && (
+          <Grid xs={4} container alignContent={"center"}>
+            <Grid xs={7} display={"flex"} justifyContent={"center"} >
+              <IconButton
+                sx={{ backgroundColor: "#5F5F5F", color: "#FFFFFF",borderRadius:"30px",pl:2,pr:2}}
+                size={"small"}
+                onClick={() => {
+                }}
+              >
+                <p style={{fontSize:"15px"}}>view</p>
+                {/*<VisibilityIcon />*/}
+              </IconButton>
+            </Grid>
+            <Grid xs={5} display={"flex"} justifyContent={"center"}>
+              <IconButton
+                sx={{ backgroundColor: "#5F5F5F", color: "#FFFFFF" }}
+                size={"small"}
+                onClick={() => {
+                }}
+              >
+                <MessageIcon />
+              </IconButton>
+            </Grid>
+            </Grid>
+        )}
         {request && (
           <Grid
             xs={4}

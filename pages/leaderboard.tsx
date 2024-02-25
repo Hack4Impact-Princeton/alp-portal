@@ -195,7 +195,7 @@ export const getServerSideProps = async (context: any) => {
     for (const v of allVolunteers) {
       if (v.allDrives == 0) continue;
       const userName = v.fname + " " + v.lname[0];
-      const userState = states.find((state) => state.index === v.location);
+      // const userState = states.find((state) => state.index === v.location);
       const totalDrives = v.allDrives;
       let seasonalDrives = 0;
       for (const d of v.driveIds) {
@@ -205,7 +205,7 @@ export const getServerSideProps = async (context: any) => {
       }
       leaderboardData.push({
         userName: userName,
-        userState: userState ? userState.name : "",
+        // userState: userState ? userState.name : "",
         totalDrives: totalDrives,
         seasonalDrives: seasonalDrives,
       });
@@ -213,7 +213,7 @@ export const getServerSideProps = async (context: any) => {
       if (v.email == session.user?.email) {
         myLeaderboard.push({
           userName: userName,
-          userState: userState ? userState.name : "",
+          // userState: userState ? userState.name : "",
           totalDrives: totalDrives,
           seasonalDrives: seasonalDrives,
         });

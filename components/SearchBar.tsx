@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SearchIcon from '@mui/icons-material/Search'; // Import the Search icon from Material-UI
 import { VolunteerAccount } from '../models/VolunteerAccount';
+import Link from 'next/link';
 
 const SearchBar: React.FC<{
   users: VolunteerAccount[];
@@ -17,7 +18,7 @@ const SearchBar: React.FC<{
   }, [query]);
 
   const searchBarStyle:  React.CSSProperties = {
-    position: 'absolute',
+   position: 'absolute',
     left: '250px', // Adjust the right position as needed
     top: '200px', // Adjust the top position as needed
     width: '800px', // Adjust the width as needed
@@ -27,6 +28,15 @@ const SearchBar: React.FC<{
     borderRadius: '5px',
     outline: 'none',
   };
+  const forumButtonStyle: React.CSSProperties = {
+    position: 'absolute',
+     left: '250px', // Adjust the right position as needed
+     top: '255px', // Adjust the top position as needed
+    // width: '800px', // Adjust the width as needed
+     padding: '10px',
+     fontSize: '16px',
+     outline: 'none',
+   };
 
   const inputStyle:  React.CSSProperties = {
     width: '100%', // Adjust the width as needed
@@ -47,6 +57,7 @@ const SearchBar: React.FC<{
   };
 
   return (
+    <>
     <div style={searchBarStyle}>
       <SearchIcon style ={iconStyle} />
       <input
@@ -57,6 +68,15 @@ const SearchBar: React.FC<{
         onChange={(e) => setQuery(e.target.value)}
       />
     </div>
+    <div style={forumButtonStyle}>
+    <Link href="/forum" style={{border:"1px solid gray"}}>
+            <div style={{ color: '#FE9834',cursor: 'pointer'}}>
+              <span >&lt;</span> Back to Forum
+            </div>
+      </Link>
+    </div>
+      
+    </>
   );
 };
 
