@@ -101,7 +101,7 @@ const BadgeDisplayCase = ({ badgeLevels }: { badgeLevels: undefined | BadgeType 
 
   return (
     <Grid container sx={{
-      border: '1.5px solid black', padding: '10px', display: 'flex',
+      border: '1.5px solid #C9C9C9', padding: '20px', display: 'flex', borderRadius:"5px",
       '@media (min-width: 600px)': {
         width: "99.5%"
       },
@@ -137,7 +137,7 @@ const PersonalInfoCard: React.FC<{ account: VolunteerAccount }> = ({ account }) 
 
   return (
     <div style={{
-      border: '1.5px solid black', padding: '10px', marginBottom: '10px', display: 'flex',
+      border: '1.5px solid #C9C9C9', borderRadius:"5px", padding: '20px', marginBottom: '10px', display: 'flex',
       width: '98%', backgroundColor: "#F5F5F5", flexDirection: "column"
     }}>
       <h2 style={{ textAlign: 'left', marginBottom: '10px', paddingRight: '10px' }}>Personal Information</h2>
@@ -297,13 +297,14 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
   return (
     <Grid>
       <PageContainer broadcasts={broadcasts} fName={currAccount.fname} currPage="profile" />
-      <Grid container display="flex" padding={1} sx={{ pl: useDynamicPadding(635, 775, "29vw", "20vw", "15vw"), width: "100%" }} rowSpacing={.5}>
+      <Grid container display="flex" padding={1} sx={{ pl: useDynamicPadding(635, 775, "29vw", "20vw", "15vw"), width: "95%" }} rowSpacing={.5}>
         <Grid item xs={12} sm={12} md={12} lg={9} display="flex" flexDirection="column" >
           <Box
             sx={{
               width: "98%",
               height: "175px",
-              border: '1.5px solid black',
+              border: '1.5px solid #C9C9C9',
+              borderRadius: "5px",
               display: 'flex',
               marginBottom: '10px',
               '@media (min-width: 600px)': {
@@ -315,11 +316,10 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
           >
             <div
               style={{
-                width: '35%',
+                width: '25%',
                 display: 'flex',
-                alignItems: 'center',
                 justifyContent: 'center',
-                borderRadius: "1.5px solid red"
+                paddingRight:"70px"
               }}
             >
               <div
@@ -327,7 +327,6 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
-                  alignItems: "center",
                   borderRadius: 'auto',
                   width: '50%',
                   height: '100%',
@@ -341,8 +340,6 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                   },
                   height: "50%",
                   display: "flex",
-                  alignItems: "center",
-
                 }}>
 
                   <img
@@ -352,7 +349,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                       // height: "65%",
                       aspectRatio: 1,
                       // flexShrink: 1.5,
-                      height: "100%",
+                      height: "95%",
                       borderRadius: "50%",
                     }}
                   />
@@ -492,8 +489,10 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
           <Box
             sx={{
               width: "98%",
-              height: "110%",
-              border: "1.5px solid black",
+              height: "115%",
+              border: "1.5px solid #C9C9C9",
+              borderRadius:"5px",
+              paddingTop:"20px",
               // '@media (min-width: 600px)': {
               //   display: 'inline-block',
               //   width: '100%',
