@@ -1,34 +1,31 @@
 import getVolunteerAccountModel, { VolunteerAccount } from "../../models/VolunteerAccount";
 import dbConnect from '../../lib/dbConnect';
-import { Grid, IconButton, Button, TextField, FormControl, InputLabel, Select, OutlinedInput, MenuItem, SelectChangeEvent } from "@mui/material";
+import { Grid, IconButton, Button, } from "@mui/material";
 import Box from '@mui/material/Box';
 import PageContainer from "../../components/PageContainer";
 import React, { useState, useRef, Dispatch, SetStateAction, useEffect } from 'react';
-import { signOut } from "next-auth/react";
 import MapComponent from '../../components/MapComponent';
 import Link from 'next/link';
 import { BookDriveStatus, getStates } from "../../lib/enums";
 import getBookDriveModel, { BookDrive } from "../../models/BookDrive";
-import {BadgeType} from '../../models/VolunteerAccount';
+import { BadgeType } from '../../models/VolunteerAccount';
 import { NextPage } from 'next';
 import mongoose from 'mongoose';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import getBroadcastModel, { Broadcast } from "../../models/Broadcast";
-import { PhotoCamera } from "@mui/icons-material";
 import { imageDelete, imagePfpUpload } from "../../db_functions/imageDB";
-import CircularIcon from "../../components/CircularIcon";
-import Dropdown from "../../components/Dropdown";
 import InfoIcon from '@mui/icons-material/Info';
 import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import useDynamicPadding from "../../lib/useDynamicPadding";
 
 type ProfileProps = {
   error: string | null;
   account: VolunteerAccount | null;
   drives: BookDrive[] | null;
   broadcasts: Broadcast[];
-  badgeLevels: string;
+  // badgeLevels: BadgeType;
 }
 type BadgeInfoProps = {
   isEarned: boolean,
@@ -114,25 +111,28 @@ const BadgeDisplayCase = ({ badgeLevels }: { badgeLevels: undefined | BadgeType 
   };
 
   return (
-    <div style={{ border: '1.5px solid black', padding: '10px', marginBottom: '10px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '95%', backgroundColor: "#F5F5F5" }}>
-      <h2 style={{ textAlign: 'left', marginBottom: '10px' }}>Badges</h2>
+    <Grid container style={{
+      border: '1.5px solid #C9C9C9', borderRadius:"5px",padding: '20px', marginBottom: '10px', display: 'flex',
+      width: '100%',
+      backgroundColor: "#F5F5F5"
 
-      <div className="badge-display-container" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
-        {badgeLevels &&
-          getBadgeIconsFromLevels(badgeLevels).map((badge: any, index: number) => (
-            <div key={index} className="badge-item" onClick={() => openBadgeModal(badge.icon)} style={{ margin: '10px' }}>
-              <img
-                src={`/badges/${badge.icon}`}
-                alt="Unlocked Badge"
-                style={{ width: '150px', height: '150px', marginBottom: '5px', cursor: 'pointer' }}
-              />
-              <div style={{ textAlign: 'center' }}>
-                <p style={{ margin: 0, fontWeight: 'bold' }}>{badge.name}</p>
-                <p style={{ margin: 0, fontSize: '12px' }}>{badge.description}</p>
-              </div>
-            </div>
-          ))}
-      </div>
+    }}>
+
+      <Grid xs={12} ><h2 style={{ textAlign: 'left', marginBottom: '10px' }}>Badges</h2></Grid>
+
+      {badgeLevels && getBadgeIconsFromLevels(badgeLevels).map((badge: any, index: number) => (
+        <div key={index} onClick={() => openBadgeModal(badge.icon)} style={{ cursor:"pointer",display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '10px', marginTop: "0px" }}>
+          <img
+            src={`/badges/${badge.icon}`} // TODO could switch this to cloudinary
+            alt="Unlocked Badge"
+            style={{ width: '150px', height: '150px', marginBottom: '5px' }}
+          />
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ margin: 0, fontWeight: 'bold' }}>{badge.name}</p>
+            <p style={{ margin: 0, fontSize: '12px' }}>{badge.description}</p>
+          </div>
+        </div>
+      ))}
 
       <div className="modal-overlay" onClick={closeBadgeModal} style={{ position: 'fixed', top: '0', left: '0', width: '100%', height: '100%',backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: '999', display: selectedBadge ? 'block' : 'none' }}></div>
       <div className="modal" style={{ borderRadius:"5px",position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white', padding: '20px', zIndex: '1000', display: selectedBadge ? 'block' : 'none' }}>
@@ -143,7 +143,7 @@ const BadgeDisplayCase = ({ badgeLevels }: { badgeLevels: undefined | BadgeType 
           </div>
         )}
       </div>
-    </div>
+    </Grid>
   );
 };
 
@@ -157,8 +157,8 @@ const PersonalInfoCard: React.FC<{ account: VolunteerAccount }> = ({ account }) 
 
   return (
     <div style={{
-      border: '1.5px solid black', padding: '10px', marginBottom: '10px', display: 'flex',
-      width: '95%', backgroundColor: "#F5F5F5", flexDirection: "column"
+      border: '1.5px solid #C9C9C9', borderRadius:"5px", padding: '20px', marginBottom: '10px', display: 'flex',
+      width: '98%', backgroundColor: "#F5F5F5", flexDirection: "column"
     }}>
       <h2 style={{ textAlign: 'left', marginBottom: '10px', paddingRight: '10px' }}>Personal Information</h2>
       <div>
@@ -229,11 +229,17 @@ export const ImageUpload: React.FC<{ setpfpURL: Dispatch<SetStateAction<string>>
         type="file" style={{ display: 'none' }} onChange={changeHandler} />
       <label htmlFor="icon-button-file">
         <IconButton sx={{
-          backgroundColor: "#F3D39A",
-          "&:hover": { backgroundColor: "#D3A874" },
+          backgroundColor: "#FE9834",
+          "&:hover": { backgroundColor: "#e0771a" },
+          width: 110,
+          color: "white",
+          borderRadius: 1,
+          height: 25
         }} aria-label="upload picture"
           component="span">
-          <PhotoCamera />
+          <p style={{
+            fontSize: 10
+          }}>Upload new</p>
         </IconButton>
       </label>
     </div>
@@ -241,11 +247,12 @@ export const ImageUpload: React.FC<{ setpfpURL: Dispatch<SetStateAction<string>>
   )
 }
 
-const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives, badgeLevels }) => {
+const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives }) => {
   const [pfpURL, setpfpURL] = useState<string>((account) ? account.pfpLink : "https://icons.iconarchive.com/icons/pictogrammers/material/512/account-circle-icon.png")
   const states = getStates()
   const [currAccount, setCurrAccount] = useState(account)
   if (!currAccount) return <ProfileError error={error!} />
+  const badgeLevels = currAccount.badges
   useEffect(() => {
     console.log(currAccount)
   }, [currAccount])
@@ -285,7 +292,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives, b
     setHobbies(hobbies.join(", ").trim().split(", "))
     const update = {
       fname: nameArr[0],
-      lname: nameArr[nameArr.length-1],
+      lname: nameArr[nameArr.length - 1],
       // location: location,
       affiliation: affiliation.trim(),
       favoriteBook: favBook.trim(),
@@ -310,55 +317,64 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives, b
   return (
     <Grid>
       <PageContainer broadcasts={broadcasts} fName={currAccount.fname} currPage="profile" />
-      <Grid container display="flex" padding={1} sx={{ pl: 20 }} rowSpacing={2}>
-        <Grid item xs={12} sm={7} display="flex" flexDirection="column" >
+      <Grid container display="flex" padding={1} sx={{ pl: useDynamicPadding(635, 775, "29vw", "20vw", "15vw"), width: "95%" }} rowSpacing={.5}>
+        <Grid item xs={12} sm={12} md={12} lg={9} display="flex" flexDirection="column" >
           <Box
             sx={{
-              width: "100%",
+              width: "98%",
               height: "175px",
-              border: '1.5px solid black',
+              border: '1.5px solid #C9C9C9',
+              borderRadius: "5px",
               display: 'flex',
               marginBottom: '10px',
               '@media (min-width: 600px)': {
                 display: 'flex',
-                width: '95%',
+                width: '98%',
               },
               backgroundColor: "#F5F5F5"
             }}
           >
             <div
               style={{
-                width: '35%',
+                width: '25%',
                 display: 'flex',
-                alignItems: 'center',
                 justifyContent: 'center',
+                paddingRight:"70px"
               }}
             >
               <div
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  justifyContent: "space-around",
-                  alignItems: "center",
+                  justifyContent: "center",
                   borderRadius: 'auto',
                   width: '50%',
                   height: '100%',
-                  padding: 2
+                  padding: 2,
                 }}
               >
-                <img
-                  src={pfpURL}
-                  alt="Profile Image"
-                  style={{
-                    height: "50%",
-                    aspectRatio: 1,
-                    flexShrink: 1,
-                    flexGrow: 1,
+                <Box sx={{
+                  '@media (min-width: 760px)': {
+                    height: "85%",
+                    width: "85%",
+                  },
+                  height: "50%",
+                  display: "flex",
+                }}>
 
-                    marginBottom: 20
-                  }}
-                />
-                <ImageUpload setpfpURL={setpfpURL} currAccount={currAccount} />
+                  <img
+                    src={pfpURL}
+                    alt="Profile Image"
+                    style={{
+                      // height: "65%",
+                      aspectRatio: 1,
+                      // flexShrink: 1.5,
+                      height: "95%",
+                      borderRadius: "50%",
+                    }}
+                  />
+                </Box>
+                {/* <ImageUpload setpfpURL={setpfpURL} currAccount={currAccount} /> */}
               </div>
             </div>
             <div
@@ -379,13 +395,12 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives, b
 
           </Box>
           <PersonalInfoCard account={currAccount} />
-          <BadgeDisplayCase badgeLevels={account?.badges} />
           <dialog
             ref={editProfileRef}
             style={{
               height: "69%",
               width: "40%",
-              minWidth: "365px",
+              minWidth: "390px",
               minHeight: "450px",
               borderRadius: "3%",
               padding: 0,
@@ -433,12 +448,12 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives, b
               </Grid>
               <div style={{ display: "flex", justifyContent: "space-around", flexDirection: "row", width: "100%", alignItems: "center", }}>
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "start", width: "30%" }}>
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-around", marginLeft: "14%" }}>
-                    <img src={pfpURL} style={{ height: 85, aspectRatio: 1, marginBottom: 2 }} />
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-around", marginLeft: "12%" }}>
+                    <img src={pfpURL} style={{ height: 110, aspectRatio: 1, marginBottom: 2 }} />
                     <ImageUpload setpfpURL={setpfpURL} currAccount={currAccount} />
                   </div>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", width: "70%", height: "100%", justifyContent: "space-around", alignItems: "start", }}>
+                <div style={{ display: "flex", flexDirection: "column", width: "67%", flexShrink: 3, height: "100%", justifyContent: "space-around", alignItems: "start", }}>
                   <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>Name</i>
                   <input type="text" placeholder={"name"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
                   <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>State</i>
@@ -490,22 +505,28 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives, b
             </Grid>
           </dialog>
         </Grid>
-        <Grid item xs={12} sm={5} height={"418px"}>
+        <Grid item xs={12} sm={10} md={5} lg={3} height={"302px"} mb={5}>
           <Box
             sx={{
               width: "100%",
-              height: "110%",
-              border: "1.5px solid black",
-              '@media (min-width: 600px)': {
-                display: 'inline-block',
-                width: '100%',
-                height: '100%',
-              },
-              maxWidth: "450px",
+              height: "115%",
+              border: "1.5px solid #C9C9C9",
+              borderRadius:"5px",
+              paddingTop:"20px",
+              // '@media (min-width: 600px)': {
+              //   display: 'inline-block',
+              //   width: '100%',
+              //   height: '100%',
+              // },
+              // maxWidth: "300px",
+              marginBottom: 150,
               backgroundColor: "#F5F5F5"
             }}>
             <MapComponent drives={drives ? drives : []} />
           </Box>
+        </Grid>
+        <Grid item xs={12} sm={12} md={12} lg={12}>
+          <BadgeDisplayCase badgeLevels={badgeLevels ? badgeLevels : undefined} />
         </Grid>
       </Grid>
     </Grid>
@@ -553,20 +574,25 @@ export const getServerSideProps = async (context: any) => {
 
 
 
-    return { props: 
-      { broadcasts: JSON.parse(JSON.stringify(broadcasts)),
-        account: JSON.parse(JSON.stringify(volunteerAccount)) as VolunteerAccount, drives: JSON.parse(JSON.stringify(drives)) as BookDrive[], error: null } 
+    return {
+      props:
+      {
+        broadcasts: JSON.parse(JSON.stringify(broadcasts)),
+        account: JSON.parse(JSON.stringify(volunteerAccount)) as VolunteerAccount, drives: JSON.parse(JSON.stringify(drives)) as BookDrive[], error: null
+      }
     }
   } catch (e: Error | any) {
     console.error(e)
     // if the specific error message occurs it's because the user has not logged in
     let strError = e.message === "Cannot read properties of null (reading 'user')" ? "You must login before accessing this page" : `${e}`
 
-    return { props: {
-      error: strError,
-      account: null,
-      drives: null,
-    } }
+    return {
+      props: {
+        error: strError,
+        account: null,
+        drives: null,
+      }
+    }
   }
 }
 
