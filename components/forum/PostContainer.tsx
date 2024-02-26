@@ -217,7 +217,7 @@ const PostContainer: React.FC<PostProps> = ({
               justifyContent: "center",
             }}
           >
-            <h2>{post.email}</h2>
+            <h2>{post.username}</h2>
             <p style={{ fontStyle: "italic" }}>{post.date}</p>
           </Grid2>
 
