@@ -5,6 +5,7 @@ export type BookDrive = {
   driveName: string;
   driveCode: string;
   organizer: string;
+  email: string;
   startDate: Date;
   country: string;
   status: number;
@@ -35,6 +36,7 @@ export const BookDriveSchema = new Schema<BookDrive>(
     driveName: { type: String },
     driveCode: { type: String },
     organizer: { type: String },
+    email: {type: String},
     startDate: { type: Date },
     country: { type: String },
     completedDate: { type: Date },

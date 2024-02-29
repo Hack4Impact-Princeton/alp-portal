@@ -102,6 +102,7 @@ const RequestList: React.FC<RequestListProps> = ({
                   reqEmail={user.email}
                   updateFunction={updateFriendReqs}
                   request={true}
+                  pfp={user.pfp}
                 />
               </div>
             ) : null

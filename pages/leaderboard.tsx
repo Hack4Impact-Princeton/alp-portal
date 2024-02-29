@@ -12,7 +12,6 @@ import getVolunteerAccountModel, {
 import getBookDriveModel, { BookDrive } from "../models/BookDrive";
 import { getStates } from "../lib/enums";
 import LeaderTable from "../components/leaderboard/LeaderTable";
-import { NumberLiteralType } from "typescript";
 import Podium from "../components/leaderboard/Podium";
 import StarOutlinedIcon from '@mui/icons-material/StarOutlined';
 
@@ -52,7 +51,7 @@ const Leaderboard: NextPage<LeaderboardProps> = ({
           justifyContent: "space-between",
           backgroundColor:"#5F5F5F"
         }}
-        spacing={2}
+        spacing={0}
       >
           <Grid2 display="flex" justifyContent={"center"}>
             <StarOutlinedIcon sx={{fontSize: 50, borderColor:"orange", color: "#FE9834"}}/>
@@ -133,7 +132,7 @@ const Leaderboard: NextPage<LeaderboardProps> = ({
               <Podium data={allTimeBoard} boardType={"all"} />
             </Grid2>
 
-            <LeaderTable data={allTimeBoard} boardType={"all"} />
+            <LeaderTable data={allTimeBoard} boardType={"all"}  />
           </Grid2>
         </Grid2>
       </Grid2>
@@ -142,7 +141,6 @@ const Leaderboard: NextPage<LeaderboardProps> = ({
 };
 
 export default Leaderboard;
-
 export const getServerSideProps = async (context: any) => {
   try {
     const session = await getServerSession(
@@ -193,7 +191,7 @@ export const getServerSideProps = async (context: any) => {
     let leaderboardData = [];
     let myLeaderboard = [];
     for (const v of allVolunteers) {
-      if (v.allDrives == 0) continue;
+      // if (v.allDrives == 0) continue;
       const userName = v.fname + " " + v.lname[0];
       // const userState = states.find((state) => state.index === v.location);
       const totalDrives = v.allDrives;
