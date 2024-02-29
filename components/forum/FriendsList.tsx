@@ -8,6 +8,7 @@ type RequestListProps = {
   myFriends: string[];
   myEmail: string;
   allVolunteers: VolunteerAccount[];
+  myAccount: VolunteerAccount;
 };
 
 interface FriendInfo {
@@ -24,6 +25,7 @@ const RequestList: React.FC<RequestListProps> = ({
   myFriends,
   myEmail,
   allVolunteers,
+  myAccount
 }) => {
   //console.log("volunteers ", allVolunteers);
   const myFriendSet = new Set(myFriends);
@@ -36,6 +38,7 @@ const RequestList: React.FC<RequestListProps> = ({
             email: account.email,
             fname: account.fname,
             lname: account.lname[0],
+            pfp: account.pfpLink,
             // state: states.find((state) => state.index === account.location),
             // Add or modify properties as needed
           }
@@ -69,6 +72,9 @@ const RequestList: React.FC<RequestListProps> = ({
                 reqEmail={user.email}
                 updateFunction={() => {}}
                 request={false}
+                pfp={user.pfp}
+                myAccount={myAccount}
+
               />
             ) : null
           )}
