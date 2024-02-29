@@ -17,7 +17,9 @@ export type VolunteerAccount = {
     ageBucket: number,
     email: string,
     pwhash: string,
-    location: number,
+    country: number,
+    state: number,
+    city: number,
     startDate: String,
     allDrives: number,
     driveIds: Types.Array<string>,
@@ -26,13 +28,13 @@ export type VolunteerAccount = {
     broadcasts: string[],
     chatIds: string[],
     pfpLink: string,
-    friendRequests: string[];
+    friendRequests: string[],
     affiliation: string,
     hobbies: string[],
     favoriteBook: string,
-    commentsPosted: number
-    commentsReceived: number
-    posts: number
+    commentsPosted: number,
+    commentsReceived: number,
+    postIDs: string[]
 }
 
 
@@ -64,7 +66,15 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>(
       type: String,
       required: true,
     },
-    location: {
+    country: {
+      type: Number,
+      required: true,
+    },
+    state: {
+      type: Number,
+      required: true,
+    },
+    city: {
       type: Number,
       required: true,
     },
@@ -133,6 +143,15 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>(
       type: Number,
       required: true,
       default: 0
+    },
+    commentsReceived: {
+      type: Number,
+      required: true,
+      default: 0
+    },
+    postIDs: {
+      type: [String],
+      default: []
     }
 }, {collection: 'volunteerAccounts'})
 

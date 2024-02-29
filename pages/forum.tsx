@@ -106,7 +106,7 @@ const Forum: NextPage<PostProps> = ({
             </h1>
           </Grid2>
           <Grid2 sx={{ justifyContent: "left" }}>
-            <SearchBar allAccounts={allAccounts}/>
+            <SearchBar />
           </Grid2>
           <Grid2 container flexDirection="row" spacing={4}>
             <Grid2 sx={{ width: "50vw" }}>
@@ -125,20 +125,29 @@ const Forum: NextPage<PostProps> = ({
                 container
                 flexDirection="row"
                 spacing={3}
+               
               >
-                <Grid2>
+                <Grid2  marginBottom={1}>
                   <Button
                     variant="contained"
                     disableElevation
                     sx={{
-                      borderRadius: 0,
+                      borderRadius: 1,
                       backgroundColor:
                         active === "friends" ? "#F3D39A" : "#F5F5F5",
                       color: "#5F5F5F",
+                      fontFamily:"Epilogue",
+                      outline:"none",
+                      fontSize:"100%",
+                      fontWeight:"bold",
+                      '&:hover': {
+                        backgroundColor:"#D3A874", 
+                      },
+                      textTransform:"none",                      
                     }}
                     onClick={() => setActive("friends")}
                   >
-                    Friend's posts
+                    Friend's Posts
                   </Button>
                 </Grid2>
                 <Grid2>
@@ -146,13 +155,22 @@ const Forum: NextPage<PostProps> = ({
                     variant="contained"
                     disableElevation
                     sx={{
-                      borderRadius: 0,
-                      backgroundColor: active === "all" ? "#F3D39A" : "#F5F5F5",
+                      borderRadius: 1,
+                      backgroundColor:
+                        active === "all" ? "#F3D39A" : "#F5F5F5",
                       color: "#5F5F5F",
+                      fontFamily:"Epilogue",
+                      outline:"none",
+                      fontSize:"100%",
+                      fontWeight:"bold",
+                      '&:hover': {
+                        backgroundColor:"#D3A874", 
+                      },
+                      textTransform:"none",
                     }}
                     onClick={() => setActive("all")}
                   >
-                    All posts
+                    All Posts
                   </Button>
                 </Grid2>
                 <Grid2>
@@ -160,13 +178,22 @@ const Forum: NextPage<PostProps> = ({
                     variant="contained"
                     disableElevation
                     sx={{
-                      borderRadius: 0,
-                      backgroundColor: active === "my" ? "#F3D39A" : "#F5F5F5",
+                      borderRadius: 1,
+                      backgroundColor:
+                        active === "my" ? "#F3D39A" : "#F5F5F5",
                       color: "#5F5F5F",
+                      fontFamily:"Epilogue",
+                      outline:"none",
+                      fontSize:"100%",
+                      fontWeight:"bold",
+                      '&:hover': {
+                        backgroundColor:"#D3A874", 
+                      },
+                      textTransform:"none",       
                     }}
                     onClick={() => setActive("my")}
                   >
-                    My posts
+                    My Posts
                   </Button>
                 </Grid2>
               </Grid2>
@@ -224,20 +251,28 @@ const Forum: NextPage<PostProps> = ({
                   })}
               </Grid2>
             </Grid2>
-            <Grid2 sx={{ width: "27vw",pt:3 }}>
+            <Grid2 sx={{ width: "27vw", pt: 3 }}>
               <Grid2>
                 <h1 style={{ color: "#FE9834" }}>Friends</h1>
               </Grid2>
-              <Grid2 sx={{marginTop:2}} >
+              <Grid2 sx={{ marginTop: 2 }} marginBottom={2}>
                 <Button
                   variant="contained"
                   disableElevation
                   sx={{
-                    borderRadius: 0,
+                    borderRadius: 1,
                     backgroundColor:
                       friendBtn === "friends" ? "#F3D39A" : "#F5F5F5",
                     color: "#5F5F5F",
-                    mr:2
+                    mr: 2,
+                    fontFamily:"Epilogue",
+                    outline:"none",
+                    fontSize:"100%",
+                    fontWeight:"bold",
+                    '&:hover': {
+                      backgroundColor:"#D3A874", 
+                    },
+                    textTransform:"none",       
                   }}
                   onClick={() => setFriendBtn("friends")}
                 >
@@ -247,17 +282,25 @@ const Forum: NextPage<PostProps> = ({
                   variant="contained"
                   disableElevation
                   sx={{
-                    borderRadius: 0,
+                    borderRadius: 1,
                     backgroundColor:
                       friendBtn === "requests" ? "#F3D39A" : "#F5F5F5",
                     color: "#5F5F5F",
+                    fontFamily:"Epilogue",
+                    outline:"none",
+                    fontSize:"100%",
+                    fontWeight:"bold",
+                    '&:hover': {
+                      backgroundColor:"#D3A874", 
+                    },
+                    textTransform:"none",    
                   }}
                   onClick={() => setFriendBtn("requests")}
                 >
                   Requests
                 </Button>
               </Grid2>
-              <Grid2 sx={{marginTop:1}}>
+              <Grid2 sx={{ marginTop: 1 }}>
                 {friendBtn == "friends" && (
                   <div>
                     <FriendsList

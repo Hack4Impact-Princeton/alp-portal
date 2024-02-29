@@ -73,7 +73,7 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
             email: account.email,
             fname: account.fname,
             lname: account.lname[0],
-            state: states.find((state) => state.index === account.location),
+            state: states.find((state) => state.index === account.state),
             pfp: account.pfpLink,
             // Add or modify properties as needed
           }
@@ -199,8 +199,11 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
         <Navbar active={currPage}></Navbar>
         <Box sx={{
           float: 'right',
-          height: '7vh',
-          width: '30.2vw',
+          height: '10vh',
+          minHeight: "65px",
+          // maxWidth: '500px',
+          width: "fit-content",
+          minWidth: "89px",
           backgroundColor: '#fe9834',
           borderRadius: '5px',
           pt: '5px'
@@ -208,7 +211,7 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
           <Grid container flex-direction="row"
             justifyContent="flex-end"
             alignItems="center">
-            <Grid xs={4}><h3>Welcome, {fName}</h3></Grid>
+            <Grid xs={4} width={"wrap-content"} mr="5px"><h3>Welcome, {fName}</h3></Grid>
             <Grid xs={2}>
               <InboxIconButton color="inherit" onClick={handleOpenPopover}>
                 <InboxIcon></InboxIcon>

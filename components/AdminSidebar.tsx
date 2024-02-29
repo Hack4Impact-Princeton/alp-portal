@@ -550,11 +550,13 @@ const AdminSidebar: React.FC<{
                     </Typography>
                     <Typography sx={{ marginRight: 1, color: "#5F5F5F" }}>{`${
                       shipment.numBooks
-                    } book${shipment.numBooks != 1 ? "s" : ""} ${
-                      shipment.received
-                        ? "received"
-                        : `shipped from ${states[volunteer.location - 1].name}`
-                    }`}</Typography>
+                    } book${shipment.numBooks != 1 ? "s" : ""} `
+                    // ${
+                    //   shipment.received
+                    //     ? "received"
+                    //     : `shipped from ${states[volunteer.location - 1].name}`
+                    // }
+                    }</Typography>
                     {!shipment.received && (
                       <Button
                         variant="contained"

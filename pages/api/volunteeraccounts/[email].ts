@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     console.log(`volunteeraccount already exists with this email ${queryEmail}`)
                     return res.status(400).json({success: false, data: null})
                 }
-                const { email, pwhash, fname, lname, location } = JSON.parse(req.body)
+                const { email, pwhash, fname, lname, country, state, city } = JSON.parse(req.body)
                 if (email != queryEmail) {
                     console.log(`query email doesn't match body email`)
                     return res.status(400).json({success: false, data: null})
@@ -33,7 +33,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     ageBucket: 1,
                     email: email,
                     pwhash: pwhash,
-                    location: location,
+                    country: country,
+                    state: state,
+                    city: city,
                     startDate: new Date().toLocaleDateString(),
                     allDrives: 0,
                     badges: 0,

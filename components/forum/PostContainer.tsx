@@ -19,7 +19,7 @@ import getVolunteerAccountModel, {
 import RichEditor from "./RichEditor";
 
 import postComment, { deletePost } from "../../db_functions/forum";
-import { updateSupporterBadge } from "../../db_functions/badges";
+import { updateSupporterBadge , updateLeader} from "../../db_functions/badges";
 
 type PostProps = {
   post: Posts;
@@ -117,6 +117,7 @@ const PostContainer: React.FC<PostProps> = ({
     postComment(newComment, post.post_id);
     addComment(newComment);
     updateSupporterBadge(user.email);
+    updateLeader(post.email);
     console.log(newComment);
 
     setNewCommentText("");
@@ -216,7 +217,7 @@ const PostContainer: React.FC<PostProps> = ({
               justifyContent: "center",
             }}
           >
-            <h2>{post.email}</h2>
+            <h2>{post.username}</h2>
             <p style={{ fontStyle: "italic" }}>{post.date}</p>
           </Grid2>
 

@@ -29,8 +29,8 @@ const Dropdown: React.FC<DropdownProps> = ({ options, location, setResult }) => 
     };
 
     return (
-        <div style={{ position: "relative", zIndex: 1, width: "90%" }}>
-            <div onClick={toggleDropdown} style={{ cursor: 'pointer', border: '1px solid #ccc', padding: 5, borderRadius: '4px', zIndex: 2, backgroundColor: "white" }}>
+        <div style={{ position: "relative", zIndex: 1, width: "93%", }}>
+            <div onClick={toggleDropdown} style={{ cursor: 'pointer', border: '1px solid #ccc', padding: 5, borderRadius: '4px', zIndex: 2, backgroundColor: "white", height: 36, lineHeight: 1.8 }}>
                 {selectedOption || 'Select an option'}
             </div>
             {isDropdownOpen && (

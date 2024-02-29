@@ -83,19 +83,6 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                         </CustomWidthTooltip>
                     </ListItem>
                 </Link>
-                <Link href="/h4i-team">
-                    <ListItem key="Contact Us">
-                    <CustomWidthTooltip title="Contact Us" placement="right" arrow>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                <ShareIcon fontSize='large' sx={{
-                                    color: active === 'h4i-team' ? 'orange' : '#9C9C9C',
-                                }}></ShareIcon>
-                            </ListItemIcon>
-                        </ListItemButton>
-                    </CustomWidthTooltip>
-                    </ListItem>
-                </Link>
                 <Link href="/forum">
                     <ListItem key="Forum">
                     <CustomWidthTooltip title="Forum" placement="right" arrow>
@@ -109,20 +96,7 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                     </CustomWidthTooltip>
                     </ListItem>
                 </Link>
-            <Link href = "/conversations">
-                <ListItem key = "Conversations">
-                <CustomWidthTooltip title="Conversations" placement="right" arrow>
-
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <ChatBubbleIcon fontSize = 'large' sx = {{color:
-                            '#9C9C9C',}}>
-                            </ChatBubbleIcon>
-                        </ListItemIcon>
-                    </ListItemButton>
-                </CustomWidthTooltip>
-                </ListItem>
-            </Link>
+            {/* 
             <Link href = "/profile_search">
                 <ListItem key = "Profile_search">
                 <CustomWidthTooltip title="Profile Search" placement="right" arrow>
@@ -137,6 +111,22 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                 </CustomWidthTooltip>
                 </ListItem>
             </Link>
+          
+            
+            <Link href="/h4i-team">
+                    <ListItem key="Contact Us">
+                    <CustomWidthTooltip title="Contact Us" placement="right" arrow>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <ShareIcon fontSize='large' sx={{
+                                    color: active === 'h4i-team' ? 'orange' : '#9C9C9C',
+                                }}></ShareIcon>
+                            </ListItemIcon>
+                        </ListItemButton>
+                    </CustomWidthTooltip>
+                    </ListItem>
+                </Link>
+                  */ }
             </List>
         </Drawer>
     );
