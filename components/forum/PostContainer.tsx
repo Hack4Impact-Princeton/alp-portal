@@ -204,8 +204,9 @@ const PostContainer: React.FC<PostProps> = ({
               alignItems: "center",
               height: "100%",
             }}
-          >
-            <AccountCircleIcon sx={{ fontSize: "4vw" }} />
+          >{user && 
+            <img src={user.pfpLink} alt="PFP" style={{borderRadius:'50%',height:"80%"}} /> 
+            /*TODO: Fix so that this shows the poster's pfp */}
           </Grid2>
           <Grid2
             container

@@ -10,6 +10,8 @@ import approveFriendRequest, {
 import FriendRequestCard from "../FriendRequestCard";
 import MessageIcon from '@mui/icons-material/Message';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import createChat from "../../db_functions/chat";
+import { VolunteerAccount } from "../../models/VolunteerAccount";
 
 type ReqProps = {
   fname: string;
@@ -19,6 +21,8 @@ type ReqProps = {
   reqEmail: string;
   updateFunction: (friendReqEmail: string) => void;
   request: boolean;
+  pfp: string;
+  myAccount?: VolunteerAccount;
 };
 
 const RequestPreview: React.FC<ReqProps> = ({
@@ -29,6 +33,8 @@ const RequestPreview: React.FC<ReqProps> = ({
   reqEmail,
   updateFunction,
   request,
+  pfp,
+  myAccount,
 }) => {
   const [showFriendRequestCard, setShowFriendRequestCard] = useState(false);
 
@@ -71,10 +77,10 @@ const RequestPreview: React.FC<ReqProps> = ({
         >
           {/* Step 3: Make the name clickable */}
           <span
-            style={{ cursor: "pointer" }}
-            onClick={() => setShowFriendRequestCard(!showFriendRequestCard)}
+            style={{ cursor: "pointer" , display:"flex", alignItems:"center"}}
+            onClick={() => {setShowFriendRequestCard(!showFriendRequestCard)}}
           >
-            <AccountCircleIcon sx={{ fontSize: "4vw" }} />
+            <img src={pfp} alt="PFP" style={{borderRadius:'50%',height:"80%"}} />
           </span>
         </Grid>
         <Grid
@@ -88,7 +94,7 @@ const RequestPreview: React.FC<ReqProps> = ({
           </h3>
           <p>{state}</p>
         </Grid>
-        {!request && (
+        {!request && myAccount && (
           <Grid xs={4} container alignContent={"center"}>
             <Grid xs={7} display={"flex"} justifyContent={"center"} >
               <IconButton
@@ -106,6 +112,8 @@ const RequestPreview: React.FC<ReqProps> = ({
                 sx={{ backgroundColor: "#5F5F5F", color: "#FFFFFF" }}
                 size={"small"}
                 onClick={() => {
+                  createChat(reqEmail,myAccount);
+                  console.log(reqEmail,myAccount.email)
                 }}
               >
                 <MessageIcon />
@@ -136,7 +144,7 @@ const RequestPreview: React.FC<ReqProps> = ({
                 }}
               >
                 <FriendRequestCard
-                  profilePicture={""}
+                  profilePicture={pfp}
                   name={`${fname} ${lname}`}
                   reqEmail={reqEmail}
                   state={state}

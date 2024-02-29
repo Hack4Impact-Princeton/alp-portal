@@ -307,6 +307,7 @@ const Forum: NextPage<PostProps> = ({
                       myFriends={account.friends}
                       myEmail={email}
                       allVolunteers={allVolunteers}
+                      myAccount={account}
                     />
                   </div>
                 )}

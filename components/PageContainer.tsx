@@ -233,12 +233,17 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
                     variant="contained"
                     disableElevation
                     sx={{
-                      borderRadius: 0,
+                      fontFamily:"Epilogue",
+                      '&:hover': {
+                        backgroundColor:"#D3A874", 
+                      },
+                      borderRadius: 1,
                       backgroundColor: activeFilter === "all" ? "#F3D39A" : "#F5F5F5",
                       color: "#5F5F5F",
                       mx: 0.5, // Margin on the left and right
                       my: 1, // Margin on the top and bottom
-                      fontWeight: activeFilter === "all" ? "bold" : "normal", // Bold when active
+                      fontWeight: activeFilter === "all" ? "bold":"normal" , 
+                      textTransform:'none',
                     }}
                     onClick={() => handleFilterClick("all")}
                   >
@@ -248,12 +253,17 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
                     variant="contained"
                     disableElevation
                     sx={{
-                      borderRadius: 0,
+                      fontFamily:"Epilogue",
+                      '&:hover': {
+                        backgroundColor:"#D3A874", 
+                      },
+                      borderRadius: 1,
                       backgroundColor: activeFilter === "friends" ? "#F3D39A" : "#F5F5F5",
                       color: "#5F5F5F",
                       mx: 0.5, // Margin on the left and right
                       my: 1, // Margin on the top and bottom
                       fontWeight: activeFilter === "friends" ? "bold" : "normal", // Bold when active
+                      textTransform: 'none'
                     }}
                     onClick={() => handleFilterClick("friends")}
                   >
@@ -296,7 +306,7 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
                 </Box>
               </Popover>
             </Grid>
-            <Grid xs={3}><WhiteTextButton variant="text" className="signout" onClick={handleSignOut}> Sign Out </WhiteTextButton></Grid>
+            <Grid xs={3}><WhiteTextButton style={{fontFamily:'Epilogue'}}variant="text" className="signout" onClick={handleSignOut}> Sign Out </WhiteTextButton></Grid>
             <Grid xs={2}><img src="/alp-logo.png" alt="alp-logo" height="55px"></img></Grid>
           </Grid>
         </Box>
