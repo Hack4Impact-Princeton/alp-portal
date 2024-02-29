@@ -31,23 +31,19 @@ const RequestList: React.FC<RequestListProps> = ({
   const myFriendSet = new Set(myFriends);
   const states = getStates();
 
-  const friendInfo: FriendInfo[] = allVolunteers
+  const friendInfo: VolunteerAccount[] = allVolunteers
     .map((account) =>
       myFriendSet.has(account.email)
-        ? {
-            email: account.email,
-            fname: account.fname,
-            lname: account.lname[0],
-            pfp: account.pfpLink,
-            // state: states.find((state) => state.index === account.location),
-            // Add or modify properties as needed
-          }
+        ? 
+            
+          account
+            
         : null
     )
-    .filter((item) => item !== null) as FriendInfo[];
+    .filter((item) => item !== null) as VolunteerAccount[];
 
   const [friendInfoList, setFriendInfoList] =
-    useState<FriendInfo[]>(friendInfo);
+    useState<VolunteerAccount[]>(friendInfo);
 
   const updateFriendReqs = (friendReqEmail: string) => {
     setTimeout(() => {
@@ -67,14 +63,14 @@ const RequestList: React.FC<RequestListProps> = ({
               <RequestPreview
                 fname={user.fname}
                 lname={user.lname}
-                state={user.state ? user.state.name : ""}
+                state={""}
                 myEmail={myEmail}
                 reqEmail={user.email}
                 updateFunction={() => {}}
                 request={false}
-                pfp={user.pfp}
+                pfp={user.pfpLink}
                 myAccount={myAccount}
-
+                friendAccount={user}
               />
             ) : null
           )}
