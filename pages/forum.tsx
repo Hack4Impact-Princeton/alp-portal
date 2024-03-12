@@ -375,7 +375,7 @@ export const getServerSideProps = async (context: any) => {
     const Posts: mongoose.Model<Posts> = getPostModel();
 
     let publicPosts = (await Posts.find()) as Posts[];
-
+    publicPosts = publicPosts.reverse();
 
     // console.log("posts", allPosts);
     let friendsPosts: Posts[] = [];
