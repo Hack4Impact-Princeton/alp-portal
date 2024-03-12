@@ -376,11 +376,6 @@ export const getServerSideProps = async (context: any) => {
 
     let publicPosts = (await Posts.find()) as Posts[];
 
-    publicPosts = publicPosts.filter(post => 
-                    post.is_public 
-                    || post.is_public === undefined
-                    || post.email === account.email
-                   )
 
     // console.log("posts", allPosts);
     let friendsPosts: Posts[] = [];
@@ -397,6 +392,12 @@ export const getServerSideProps = async (context: any) => {
       }
     });
 
+    const filteredPublicPosts = publicPosts.filter(post => 
+                    post.is_public 
+                    || post.is_public === undefined
+                    || post.email === account.email
+                   )
+
     console.log("friends posts", friendsPosts);
     console.log("my posts", myPosts);
 
@@ -404,7 +405,7 @@ export const getServerSideProps = async (context: any) => {
     return {
       props: {
         friendsPosts: JSON.parse(JSON.stringify(friendsPosts)),
-        allPosts: JSON.parse(JSON.stringify(publicPosts)),
+        allPosts: JSON.parse(JSON.stringify(filteredPublicPosts)),
         myPosts: JSON.parse(JSON.stringify(myPosts)),
         chatInfo: JSON.parse(JSON.stringify(chatInfo)),
         account: JSON.parse(JSON.stringify(account)),
