@@ -21,6 +21,7 @@ export interface Posts {
   upvotes: string[];
   downvotes: string[];
   comments: Comments[];
+  is_public?: boolean;
 }
 
 const CommentSchema = new Schema<Comments>({
@@ -43,6 +44,7 @@ const PostSchema = new Schema<Posts>(
     upvotes: { type: [String] },
     downvotes: { type: [String] },
     comments: { type: [CommentSchema] },
+    is_public: { type: Boolean },
   },
   { collection: "posts" }
 );
@@ -58,6 +60,7 @@ const DeletedPostSchema = new Schema<Posts>(
     upvotes: { type: [String] },
     downvotes: { type: [String] },
     comments: { type: [CommentSchema] },
+    is_public: { type: Boolean },
   },
   { collection: "deletedPosts" }
 );

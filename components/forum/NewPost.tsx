@@ -80,7 +80,7 @@ type NewPostProps = {
 
 const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
   const [open, setOpen] = useState(false);
-  const [switchLabel, setSwitchLabel] = useState("Friends Only");
+  const [switchLabel, setSwitchLabel] = useState("Public");
   const handleOpen = () => setOpen(true);
   const handleClose = () =>
     setTimeout(() => {
@@ -92,12 +92,16 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
 
   const [message, setMessage] = useState("");
 
+  useEffect(() => {
+    console.log(switchLabel);
+  }, [switchLabel]);
+
   const sendPost = async () => {
     try {
       setSubmit(true);
       setTimeout(() => {
         setSubmit(false);
-      }, 4000);
+      }, 4000); // uh, why are we waiting 4s here?
       const newPost: Posts = {
         title: "",
         post_id: genUniqueId(),
@@ -108,11 +112,15 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
         upvotes: [],
         downvotes: [],
         comments: [],
+        is_public: (switchLabel === "Public"),
       };
       const res = await fetch(`/api/posts/${newPost.post_id}`, {
         method: "POST",
         body: JSON.stringify(newPost),
       });
+
+      setSwitchLabel("Public");
+
       if (!res) throw new Error("Internal server error");
       const resJson = await res.json();
       if (res.status !== 200) throw new Error(resJson.data);
@@ -220,7 +228,6 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
               }
             />*/}
 
-
             <RichEditor
               onChange={setMessage}
               readOnly={false}
@@ -231,7 +238,13 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
           </Grid2>
           <Grid2 container flexDirection={"row"} alignItems={"center"}>
             <Grid2 xs={2}>
-              <Switch defaultChecked color="warning" />
+              <Switch defaultChecked color="warning"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  e.target.checked
+                    ? setSwitchLabel("Public")
+                    : setSwitchLabel("Friends Only")
+                }
+              />
             </Grid2>
             <Grid2 xs={9}>
               <h4>{switchLabel}</h4>
