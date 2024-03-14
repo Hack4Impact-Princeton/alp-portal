@@ -12,6 +12,7 @@ import MessageIcon from '@mui/icons-material/Message';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import createChat from "../../db_functions/chat";
 import { VolunteerAccount } from "../../models/VolunteerAccount";
+import Link from 'next/link';
 
 type ReqProps = {
   fname: string;
@@ -23,6 +24,7 @@ type ReqProps = {
   request: boolean;
   pfp: string;
   myAccount?: VolunteerAccount;
+  friendAccount?: VolunteerAccount;
 };
 
 const RequestPreview: React.FC<ReqProps> = ({
@@ -35,13 +37,14 @@ const RequestPreview: React.FC<ReqProps> = ({
   request,
   pfp,
   myAccount,
+  friendAccount
 }) => {
   const [showFriendRequestCard, setShowFriendRequestCard] = useState(false);
 
   const closeFriendRequestCard = () => {
     setShowFriendRequestCard(false);
   };
-
+  if (friendAccount) {console.log(friendAccount._id)}
   return (
     <div style={{ borderColor: "black", borderWidth: 4, borderRadius: 1 }}>
       <Grid
@@ -94,7 +97,7 @@ const RequestPreview: React.FC<ReqProps> = ({
           </h3>
           <p>{state}</p>
         </Grid>
-        {!request && myAccount && (
+        {!request && myAccount && friendAccount && (
           <Grid xs={4} container alignContent={"center"}>
             <Grid xs={7} display={"flex"} justifyContent={"center"} >
               <IconButton
@@ -103,7 +106,9 @@ const RequestPreview: React.FC<ReqProps> = ({
                 onClick={() => {
                 }}
               >
-                <p style={{fontSize:"15px"}}>view</p>
+                <Link href={`/friendprofile?data=${encodeURIComponent(JSON.stringify(friendAccount._id))}`}>
+                    <p >view</p>
+                </Link>
                 {/*<VisibilityIcon />*/}
               </IconButton>
             </Grid>
