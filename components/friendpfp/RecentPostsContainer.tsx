@@ -4,6 +4,8 @@ import { IconButton,Button, Modal } from "@mui/material";
 import { Posts } from "../../models/Post";
 import RichEditor from "../forum/RichEditor";
 import PostContainer from "../forum/PostContainer";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Grid2 from "@mui/material/Unstable_Grid2";
 
 
 type PageProps = {
@@ -18,6 +20,7 @@ const RecentPostsContainer: React.FC<PageProps> = ({ name,posts
     setTimeout(() => {
       setOpen(false);
     }, 200);
+
 
     return (
         <Grid border="1.5px solid red"
@@ -46,7 +49,7 @@ const RecentPostsContainer: React.FC<PageProps> = ({ name,posts
               <RichEditor
                 readOnly={true}
                 initialValue={posts[0].text}
-                onChange={() => {}} // yeah these should be default args
+                onChange={() => {}} 
                 post_id={posts[0].post_id}
               />
               </Grid>
@@ -66,8 +69,9 @@ const RecentPostsContainer: React.FC<PageProps> = ({ name,posts
                   width: "50%",
                   bgcolor: "#F5F5F5",
                   border: "2px solid #000",
+                  borderRadius:"5px",
                   boxShadow: 24,
-                  p: 4,}}>
+                  p: 2, pt:4}}>
                 <PostCarousel name={name} posts={posts}/>
               </Grid>
             </Modal>
@@ -106,23 +110,151 @@ const PostCarousel: React.FC<CarouselProps> = ({ name,posts }) => {
   }
 
   return (
-    <Grid sx={{}}>
+    <Grid sx={{minHeight:"200px", maxHeight:"400px", overflowY:"scroll"}}>
+        <div style={{paddingLeft:'5%'}}>
         <h2>{name}'s Posts</h2>
-        <Grid className="image-carousel" display="flex" alignItems="center" justifyContent={"center"} minHeight="200px">
+        </div>
+
+        <Grid  className="image-carousel" display="flex" alignItems={'center'} justifyContent={"center"} >
         <button onClick={goToPrevSlide} style={buttonStyle}>{'<'}</button>
-        <div style={{width:"90%"}}>
-        <RichEditor
-                  readOnly={true}
-                  initialValue={posts[currentIndex].text}
-                  onChange={() => {}} // yeah these should be default args
-                  post_id={posts[currentIndex].post_id}
-                />
-        </div>  
+        <Grid sx={{width:"90%"}}>          
+        <Grid sx={{backgroundColor:"white", marginBottom:-1}}>
+          <p style={{fontStyle:"italic",marginBottom:-10, marginTop:10}}>{posts[currentIndex].date}: </p>
+          <RichEditor
+                    readOnly={true}
+                    initialValue={posts[currentIndex].text}
+                    onChange={() => {}} // yeah these should be default args
+                    post_id={posts[currentIndex].post_id}
+                  />
+          
+          </Grid>
+          <CommentsContainer post={posts[currentIndex]}/>
+        </Grid>  
+
         <button onClick={goToNextSlide} style={buttonStyle}>{'>'}</button>
+
       </Grid>
     </Grid>
     
   );
 };
+
+type CommentProps = {
+  post: Posts
+}
+const CommentsContainer: React.FC<CommentProps> = ({post}) => {
+  const [showComments, setShowComments] = useState(false);
+  const handleViewComments = () => {
+    setShowComments(!showComments);
+  };  
+  return (
+    <div>
+       <Grid2
+        container
+        display="flex"
+        sx={{ backgroundColor: "white" }}
+        //style={{ width: "100%" }}
+      >
+        <div style={{ width: "100%" }}>
+          <div style={{ width: "100%" }}>
+            <div>
+              <Button
+                onClick={handleViewComments}
+                style={{
+                  color: "gray",
+                  fontStyle: "italic",
+                  textTransform: "none",
+                  textDecoration: "underline",
+                  textDecorationColor: "lightgray",
+                }}
+              >
+                {`${showComments ? "Hide" : "View"} all comments`}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </Grid2>
+    {showComments && post.comments.map((comment) => {
+        return (
+          <div
+            key={comment.comment_id}
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              padding: "1rem",
+              backgroundColor:'white'
+            }}
+          >
+            <AccountCircleIcon
+              sx={{ fontSize: "4vw" }}
+              style={{
+                color: "#848484", // TODO
+              }}
+            />
+
+            <div
+              style={{
+                backgroundColor: "#F5F5F5",
+                borderRadius: "2px",
+                width: "100%",
+              }}
+            >
+              <Grid2
+                container
+                display="flex"
+                flexDirection="row"
+                sx={{
+                  position: "relative",
+                }}
+                paddingX="1rem"
+                paddingTop="1rem"
+              >
+                <Grid2
+                  container
+                  xs={9}
+                  display="flex"
+                  flexDirection={"column"}
+                  sx={{
+                    height: "100%",
+                    justifyContent: "center",
+                  }}
+                >
+                  <h2
+                    style={{
+                      fontSize: "1rem",
+                      fontWeight: "bold",
+                      color: "#4E4C4C", // TODO
+                    }}
+                  >
+                    {comment.username}
+                  </h2>
+                  <p
+                    style={{
+                      fontStyle: "italic",
+                      fontSize: "0.8rem",
+                      color: "#848484", // TODO
+                      marginTop: "6px",
+                    }}
+                  >
+                    {comment.date}
+                  </p>
+                </Grid2>
+              </Grid2>
+              <Grid2
+                sx={{
+                  padding: 2,
+                }}
+                minWidth="100%"
+              >
+                <p style={{ lineHeight: 1.5 }}>{comment.text}</p>
+              </Grid2>
+            </div>
+          </div>
+        );
+      })
+    }
+    </div> )
+  }
+
 
 export default RecentPostsContainer;
