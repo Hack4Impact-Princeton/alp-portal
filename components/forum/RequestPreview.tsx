@@ -107,7 +107,7 @@ const RequestPreview: React.FC<ReqProps> = ({
                 }}
               >
                 <Link href={`/friendprofile?data=${encodeURIComponent(JSON.stringify(friendAccount._id))}`}>
-                    <a>view</a>
+                    <p >view</p>
                 </Link>
                 {/*<VisibilityIcon />*/}
               </IconButton>
