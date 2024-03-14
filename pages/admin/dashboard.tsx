@@ -28,6 +28,9 @@ import AdminPageContainer from "../../components/AdminPageContainer";
 import { DSVRowString } from "d3-dsv";
 import * as d3 from "d3";
 
+import { Box, Fab, Popper } from "@mui/material";
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+
 type AdminDashboardProps = {
   account: AdminAccount;
   error: Error | null;
@@ -139,6 +142,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
       setUploaded(true);
     }
   };
+
 
   // go inside csv file and extract (for now) first book drive
   const handleUploadCSV = () => {
@@ -397,6 +401,13 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
     else return "";
   };
 
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const handleFABClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popper' : undefined;
+
   return (
     <>
       <AdminPageContainer
@@ -490,33 +501,10 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
             drives={drives}
             handleDriveNameClick={handleDriveNameClick}
           />
-          <Grid>
-            <div>
-              <h4 className="page-header mb-4">Upload a CSV</h4>
-              <div className="mb-4">
-                <input
-                  type="file"
-                  className="form-control"
-                  onChange={changeHandler}
-                />
-              </div>
-              <button
-                onClick={handleUploadCSV}
-                disabled={!uploaded}
-                className="btn btn-primary"
-              >
-                {uploaded ? "Parse Different Drives" : "Parse Drives"}
-              </button>
-              <button
-                onClick={uploadDrives}
-                disabled={!uploaded}
-                className="btn btn-primary"
-              >
-                Upload Bookdrives
-              </button>
-            </div>
-          </Grid>
+
+
         </Grid>
+
 
         {sidebarDriveDatum && (
           <div
@@ -546,6 +534,60 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
           </div>
         )}
       </Grid>
+
+      {/* TODO FIXME is this color like, defined as a css var somewhere?*/}
+      {/*<Fab color="#fe9834" aria-label="upload" */}
+      <Fab color="warning" aria-label="upload" 
+        onClick={handleFABClick}
+        style={{
+          margin: 0,
+          top: 'auto',
+          right: 20,
+          bottom: 20,
+          left: 'auto',
+          position: 'fixed',
+        }}
+      >
+        <FileUploadIcon />
+      </Fab>
+
+      <Popper id={id} open={open} anchorEl={anchorEl}>
+          <Grid>
+            <div
+              style={{
+                margin: "1rem",
+                border: "2px solid grey",
+                padding: "1rem",
+                borderRadius: "4px",
+                background: "#FCFCFC",
+              }}
+            >
+              <h4 className="page-header mb-4">Upload a CSV</h4>
+              <div className="mb-4">
+                <input
+                  type="file"
+                  className="form-control"
+                  onChange={changeHandler}
+                />
+              </div>
+              <button
+                onClick={handleUploadCSV}
+                disabled={!uploaded}
+                className="btn btn-primary"
+              >
+                {uploaded ? "Parse Different Drives" : "Parse Drives"}
+              </button>
+              <button
+                onClick={uploadDrives}
+                disabled={!uploaded}
+                className="btn btn-primary"
+              >
+                Upload Bookdrives
+              </button>
+            </div>
+          </Grid>
+      </Popper>
+
     </>
   );
 };
