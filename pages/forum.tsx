@@ -368,12 +368,14 @@ export const getServerSideProps = async (context: any) => {
    
     const Posts: mongoose.Model<Posts> = getPostModel();
 
-    const allPosts = (await Posts.find()) as Posts[];
+    let publicPosts = (await Posts.find()) as Posts[];
+    publicPosts = publicPosts.reverse();
+
     // console.log("posts", allPosts);
     let friendsPosts: Posts[] = [];
     let myPosts: Posts[] = [];
 
-    allPosts.forEach((p) => {
+    publicPosts.forEach((p) => {
       friendList.forEach((f) => {
         if (f === p.email) {
           friendsPosts.push(p);
@@ -384,14 +386,20 @@ export const getServerSideProps = async (context: any) => {
       }
     });
 
-    //console.log("friends posts", friendsPosts);
-    //console.log("my posts", myPosts);
+    const filteredPublicPosts = publicPosts.filter(post => 
+                    post.is_public 
+                    || post.is_public === undefined
+                    || post.email === account.email
+                   )
+
+    console.log("friends posts", friendsPosts);
+    console.log("my posts", myPosts);
 
     const chatInfo = await generateChatInfo(account);
     return {
       props: {
         friendsPosts: JSON.parse(JSON.stringify(friendsPosts)),
-        allPosts: JSON.parse(JSON.stringify(allPosts)),
+        allPosts: JSON.parse(JSON.stringify(filteredPublicPosts)),
         myPosts: JSON.parse(JSON.stringify(myPosts)),
         chatInfo: JSON.parse(JSON.stringify(chatInfo)),
         account: JSON.parse(JSON.stringify(account)),
