@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { NextPage,GetServerSideProps } from "next";
 import Navbar from "../components/Navbar";
 import { useRouter } from "next/router";
 import Grid2 from "@mui/material/Unstable_Grid2"; // Grid version 2
@@ -8,27 +8,25 @@ import InfoIcon from '@mui/icons-material/Info';
 import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { Grid, IconButton, Button, } from "@mui/material";
-import { VolunteerAccount,BadgeType } from "../models/VolunteerAccount";
+import getVolunteerAccountModel, { VolunteerAccount,BadgeType } from "../models/VolunteerAccount";
 import { useState } from "react";
 import MapComponent from "../components/MapComponent";
 import { Person } from "@mui/icons-material";
+import mongoose from "mongoose";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]";
+import getPostModel, { Posts } from "../models/Post";
+
 
 
 type FriendProfileProps = {
-    name: string
+    friendAccount: VolunteerAccount | undefined;
+    friendPosts: Posts | undefined
   };
 
-const FriendProfile: NextPage<FriendProfileProps> = ({ name,
+const FriendProfile: NextPage<FriendProfileProps> = ({ friendAccount, friendPosts
 }) => {
-    const router = useRouter();
-    const receivedData = router.query.data|| null;
-    let friendAccount: VolunteerAccount | undefined;
-
-    if (typeof receivedData === 'string') {
-        friendAccount = JSON.parse(receivedData)
-    }
-
-    console.log(friendAccount)
+    
     return (
         <>
         {friendAccount && (
@@ -56,7 +54,7 @@ const FriendProfile: NextPage<FriendProfileProps> = ({ name,
                 </Grid>
                 <Grid className="first body container" display={"flex"} flexDirection="row" border={"1.5px solid black"} padding={0} marginTop={5}>
                     <Grid className="left column" display={"flex"} flexDirection="column" width={"70%"} marginRight={3}>
-                        <RecentPostsContainer name={"John"}/>
+                        <RecentPostsContainer name={friendAccount.fname}/>
                         <PersonalInfoCard account={friendAccount}/>
                     </Grid>
                     <Grid className="right column" display={"flex"} flexDirection="column" width={"30%"} border={"1.5px solid red"}>
@@ -70,6 +68,7 @@ const FriendProfile: NextPage<FriendProfileProps> = ({ name,
         </>
     )
 }
+
 
 const PersonalInfoCard: React.FC<{ account: VolunteerAccount }> = ({ account }) => {
     const affiliation = account.affiliation.length ? <p style={{ display: "inline" }}>{account.affiliation}</p> : <p style={{ display: "inline", fontStyle: "italic" }}>add your affiliation!</p>
@@ -183,3 +182,49 @@ const PersonalInfoCard: React.FC<{ account: VolunteerAccount }> = ({ account }) 
   
 
 export default FriendProfile
+
+export const getServerSideProps: GetServerSideProps<FriendProfileProps> = async (context:any) => {
+  const { query } = context;
+  const receivedData = typeof query.data === 'string' ? JSON.parse(query.data) : null;
+  if (!receivedData) {
+    return {
+      redirect: {
+        destination: "../forum",
+        permanent: false,
+      },
+    };
+  }
+  console.log(receivedData)
+  const session = await getServerSession(
+    context.req,
+    context.res,
+    authOptions
+  );
+  if (!session) {
+    return {
+      redirect: {
+        destination: "../auth/login",
+        permanent: false,
+      },
+    };
+  }
+  const myEmail = session.user?.email
+
+  const VolunteerAccount: mongoose.Model<VolunteerAccount> =
+      getVolunteerAccountModel();
+  const friendAccount: VolunteerAccount = (await VolunteerAccount.findOne({
+    _id: receivedData
+  })) as VolunteerAccount;
+  const Posts: mongoose.Model<Posts> = getPostModel();
+
+  const friendPosts = (await Posts.find({
+    email: friendAccount.email }
+  )) as Posts[];
+  
+  return {
+    props: {
+      friendAccount: JSON.parse(JSON.stringify(friendAccount)) || undefined,
+      friendPosts: JSON.parse(JSON.stringify(friendPosts)) || undefined
+    },
+  };
+};

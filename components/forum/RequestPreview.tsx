@@ -44,7 +44,7 @@ const RequestPreview: React.FC<ReqProps> = ({
   const closeFriendRequestCard = () => {
     setShowFriendRequestCard(false);
   };
-
+  if (friendAccount) {console.log(friendAccount._id)}
   return (
     <div style={{ borderColor: "black", borderWidth: 4, borderRadius: 1 }}>
       <Grid
@@ -97,7 +97,7 @@ const RequestPreview: React.FC<ReqProps> = ({
           </h3>
           <p>{state}</p>
         </Grid>
-        {!request && myAccount && (
+        {!request && myAccount && friendAccount && (
           <Grid xs={4} container alignContent={"center"}>
             <Grid xs={7} display={"flex"} justifyContent={"center"} >
               <IconButton
@@ -106,7 +106,7 @@ const RequestPreview: React.FC<ReqProps> = ({
                 onClick={() => {
                 }}
               >
-                <Link href={`/friendprofile?data=${encodeURIComponent(JSON.stringify(friendAccount))}`}>
+                <Link href={`/friendprofile?data=${encodeURIComponent(JSON.stringify(friendAccount._id))}`}>
                     <a>view</a>
                 </Link>
                 {/*<VisibilityIcon />*/}

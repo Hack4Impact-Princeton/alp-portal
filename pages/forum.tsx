@@ -37,7 +37,6 @@ type PostProps = {
   friendRequests: string[];
   allVolunteers: VolunteerAccount[];
   refreshPosts: (post_id: string) => void;
-  allAccounts: VolunteerAccount[];
 };
 
 const Forum: NextPage<PostProps> = ({
@@ -50,7 +49,6 @@ const Forum: NextPage<PostProps> = ({
   account,
   friendRequests,
   allVolunteers,
-  allAccounts
 }) => {
   const [active, setActive] = useState("friends");
   const [friendBtn, setFriendBtn] = useState("requests");
@@ -360,18 +358,14 @@ export const getServerSideProps = async (context: any) => {
     /*const account: VolunteerAccount = (await VolunteerAccount.findOne({
       email: session.user?.email,
     })) as VolunteerAccount;*/
-    const allAccounts = await VolunteerAccount.find({}) as VolunteerAccount[]
     //const name = account.fname + " " + account.lname;
     //console.log("account", account);
     // console.log("account email", account.email);
     const friendList = account.friends;
 
     const userName = account.fname + " " + account.lname;
-    console.log(userName);
     const volunteerEmail = account.email;
-    console.log(volunteerEmail);
-    console.log("friendslist", friendList);
-
+   
     const Posts: mongoose.Model<Posts> = getPostModel();
 
     const allPosts = (await Posts.find()) as Posts[];
@@ -390,8 +384,8 @@ export const getServerSideProps = async (context: any) => {
       }
     });
 
-    console.log("friends posts", friendsPosts);
-    console.log("my posts", myPosts);
+    //console.log("friends posts", friendsPosts);
+    //console.log("my posts", myPosts);
 
     const chatInfo = await generateChatInfo(account);
     return {
@@ -401,7 +395,6 @@ export const getServerSideProps = async (context: any) => {
         myPosts: JSON.parse(JSON.stringify(myPosts)),
         chatInfo: JSON.parse(JSON.stringify(chatInfo)),
         account: JSON.parse(JSON.stringify(account)),
-        allAccounts: JSON.parse(JSON.stringify(allAccounts)),
         username: userName,
         email: volunteerEmail,
         friendRequests: JSON.parse(JSON.stringify(account.friendRequests)),

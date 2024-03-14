@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Grid from "@mui/material/Grid"; 
-import { IconButton,Button } from "@mui/material";
+import { IconButton,Button, Modal } from "@mui/material";
 
 
 type PageProps = {
@@ -8,8 +8,12 @@ type PageProps = {
 };
 
 const RecentPostsContainer: React.FC<PageProps> = ({ name,
-
   }) => {
+    const [open, setOpen] = useState(false);
+    const handleClose = () =>
+    setTimeout(() => {
+      setOpen(false);
+    }, 200);
 
     return (
         <Grid border="1.5px solid red"
@@ -25,12 +29,31 @@ const RecentPostsContainer: React.FC<PageProps> = ({ name,
               <IconButton
                 sx={{ backgroundColor: "#FE9834", color: "#FFFFFF",borderRadius:"30px",pl:2,pr:2,ml:1}}
                 size={"small"}
-                onClick={() => {
+                onClick={() => {setOpen(true)
                 }}
               >
                 <p>more </p>
               </IconButton>
             </Grid>
+            <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="recent-post-modal"
+              aria-describedby="recent-post-modal"
+            >
+              <Grid sx={{ 
+                  position: "absolute" as "absolute",
+                  top: "30%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: "50%",
+                  bgcolor: "#F5F5F5",
+                  border: "2px solid #000",
+                  boxShadow: 24,
+                  p: 4,}}>
+                <p>hey</p>
+              </Grid>
+            </Modal>
         </Grid>
     )
   }

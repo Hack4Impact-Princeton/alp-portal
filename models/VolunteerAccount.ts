@@ -11,6 +11,7 @@ export type BadgeType = {
 }
 
 export type VolunteerAccount = {
+    _id: string,
     fname: string,
     lname: string,
     alp_id: number,
