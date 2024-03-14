@@ -16,15 +16,17 @@ import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
 import getPostModel, { Posts } from "../models/Post";
-
+import getBookDriveModel, {BookDrive} from "../models/BookDrive";
+import { BookDriveStatus } from "../lib/enums";
 
 
 type FriendProfileProps = {
     friendAccount: VolunteerAccount | undefined;
-    friendPosts: Posts | undefined
+    friendPosts: Posts[] | undefined;
+    drives: BookDrive[]
   };
 
-const FriendProfile: NextPage<FriendProfileProps> = ({ friendAccount, friendPosts
+const FriendProfile: NextPage<FriendProfileProps> = ({ friendAccount, friendPosts, drives
 }) => {
     
     return (
@@ -52,13 +54,18 @@ const FriendProfile: NextPage<FriendProfileProps> = ({ friendAccount, friendPost
                         <p style={{fontSize:"20px"}}>AZ | {friendAccount.allDrives} book drives completed</p>
                     </Grid>
                 </Grid>
-                <Grid className="first body container" display={"flex"} flexDirection="row" border={"1.5px solid black"} padding={0} marginTop={5}>
+                <Grid className="first body container" display={"flex"} flexDirection="row"padding={0} marginTop={3} height="60vh">
                     <Grid className="left column" display={"flex"} flexDirection="column" width={"70%"} marginRight={3}>
-                        <RecentPostsContainer name={friendAccount.fname}/>
+                        <RecentPostsContainer name={friendAccount.fname} posts={friendPosts}/>
+                        <div style={{height:"2vh"}}></div>
                         <PersonalInfoCard account={friendAccount}/>
                     </Grid>
-                    <Grid className="right column" display={"flex"} flexDirection="column" width={"30%"} border={"1.5px solid red"}>
-
+                    <Grid className="right column" display={"flex"} flexDirection="column" width={"30%"} sx={{
+                        border: "1.5px solid #C9C9C9",
+                        borderRadius:"5px",
+                        paddingTop:"20px",
+                        backgroundColor: "#F5F5F5", marginBottom:3}}>
+                      <MapComponent drives={drives ? drives : []} />
                     </Grid>
                     
                 </Grid>
@@ -71,9 +78,9 @@ const FriendProfile: NextPage<FriendProfileProps> = ({ friendAccount, friendPost
 
 
 const PersonalInfoCard: React.FC<{ account: VolunteerAccount }> = ({ account }) => {
-    const affiliation = account.affiliation.length ? <p style={{ display: "inline" }}>{account.affiliation}</p> : <p style={{ display: "inline", fontStyle: "italic" }}>add your affiliation!</p>
-    const hobbies = account.hobbies.length ? <p style={{ display: "inline" }}>{account.hobbies.join(', ')}</p> : <p style={{ display: "inline", fontStyle: "italic" }}>add your hobbies!</p>
-    const faveBook = account.favoriteBook.length ? <p style={{ display: "inline" }}>{account.favoriteBook}</p> : <p style={{ display: "inline", fontStyle: "italic" }}>add your favorite book!</p>
+    const affiliation = account.affiliation.length ? <p style={{ display: "inline" }}>{account.affiliation}</p> : <p style={{ display: "inline", fontStyle: "italic" }}>N/A</p>
+    const hobbies = account.hobbies.length ? <p style={{ display: "inline" }}>{account.hobbies.join(', ')}</p> : <p style={{ display: "inline", fontStyle: "italic" }}>N/A</p>
+    const faveBook = account.favoriteBook.length ? <p style={{ display: "inline" }}>{account.favoriteBook}</p> : <p style={{ display: "inline", fontStyle: "italic" }}>N/A</p>
   
     return (
       <div style={{
@@ -220,11 +227,19 @@ export const getServerSideProps: GetServerSideProps<FriendProfileProps> = async 
   const friendPosts = (await Posts.find({
     email: friendAccount.email }
   )) as Posts[];
+  const posts = friendPosts.reverse();
   
+  const BookDrive: mongoose.Model<BookDrive> = getBookDriveModel()
+  const promises = friendAccount.driveIds.map(async (driveId: string) => await BookDrive.find({ driveCode: driveId}));
+  const resolvedPromises = await Promise.all(promises);
+  // you have to flatten the array otherwise it will have a weird shape.
+  const drives: BookDrive[] | null = resolvedPromises.flat()
+
   return {
     props: {
       friendAccount: JSON.parse(JSON.stringify(friendAccount)) || undefined,
-      friendPosts: JSON.parse(JSON.stringify(friendPosts)) || undefined
+      friendPosts: JSON.parse(JSON.stringify(posts)) || undefined, 
+      drives: JSON.parse(JSON.stringify(drives)) as BookDrive[] || undefined
     },
   };
 };
