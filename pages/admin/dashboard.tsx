@@ -535,20 +535,21 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
         )}
       </Grid>
 
-      {/* TODO FIXME is this color like, defined as a css var somewhere?*/}
-      {/*<Fab color="#fe9834" aria-label="upload" */}
-      <Fab color="warning" aria-label="upload" 
+      <Fab aria-label="upload" 
         onClick={handleFABClick}
-        style={{
+        sx={{
+          backgroundColor:"#fe9834",color:"white",
           margin: 0,
           top: 'auto',
           right: 20,
           bottom: 20,
           left: 'auto',
           position: 'fixed',
+          height:"10vh",
+          width:"10vh"
         }}
       >
-        <FileUploadIcon />
+        <FileUploadIcon sx={{ fontSize: '5vh' }}/>
       </Fab>
 
       <Popper id={id} open={open} anchorEl={anchorEl}>
@@ -556,13 +557,14 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
             <div
               style={{
                 margin: "1rem",
-                border: "2px solid grey",
+                border: "2px solid #9C9C9C",
                 padding: "1rem",
-                borderRadius: "4px",
-                background: "#FCFCFC",
+                borderRadius: "5px",
+                background: "#F5F5F5",
+                height:"20vh"
               }}
             >
-              <h4 className="page-header mb-4">Upload a CSV</h4>
+              <h3 className="page-header mb-4">Upload a CSV</h3>
               <div className="mb-4">
                 <input
                   type="file"
