@@ -106,7 +106,7 @@ const PostCarousel: React.FC<CarouselProps> = ({ name,posts }) => {
     width:'40px',
     height:"30px",
     border:"none",
-    cursor:'pointer'
+    cursor:'pointer',
   }
 
   return (
@@ -119,7 +119,7 @@ const PostCarousel: React.FC<CarouselProps> = ({ name,posts }) => {
         <button onClick={goToPrevSlide} style={buttonStyle}>{'<'}</button>
         <Grid sx={{width:"90%"}}>          
         <Grid sx={{backgroundColor:"white", marginBottom:-1}}>
-          <p style={{fontStyle:"italic",marginBottom:-10, marginTop:10}}>{posts[currentIndex].date}: </p>
+          <p style={{fontStyle:"italic",marginBottom:-10, marginTop:10, paddingTop:10, paddingLeft: 15}}>{posts[currentIndex].date}: </p>
           <RichEditor
                     readOnly={true}
                     initialValue={posts[currentIndex].text}
