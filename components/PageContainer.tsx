@@ -134,6 +134,14 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
     setSnackbarOpen(true);
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const year = date.getFullYear().toString();
+    return `${month}/${day}/${year}`;
+};
+
 
   let pageName = "";
   let fontsize = "";
@@ -272,17 +280,20 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
                   {/* Add more filters as needed */}
                   {activeFilter === "all" && broadcasts?.map((broadcast, index) => (
                     <Collapse in={visibleBroadcasts[index]} key={index} sx={{ transition: '0.3s' }}>
-                      <Box sx={{
-                        width: '300px',
-                        borderRadius: '10px',
-                        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
-                        border: '1px solid #d89600',
-                        padding: '12px',
-                        mb: 2, // Add margin-bottom for space
-                      }}>
-                        <Typography variant="body1" sx={{ cursor: 'pointer', flex: 1 }} onClick={() => handleBroadcastClick(index)}>
-                          {broadcast.message}
-                        </Typography>
+                      <Box              sx={{
+            width: '300px',
+            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+            padding: '12px',
+            mb: 3,
+            cursor: 'pointer', 
+            backgroundColor: '#f2f2f2',
+        }}
+                      onClick={() => handleBroadcastClick(index)}
+                      >
+                          <Typography variant="h6" sx={{ marginBottom: '8px', lineHeight:1, fontWeight: 'bold', color: '#5F5F5F' }}>{broadcast.subject}</Typography>
+        <Typography variant="body2" sx={{ fontSize: '0.9rem',color: '#666'  }}>{broadcast.senderEmail}</Typography>
+        <Typography variant = "body2" sx= {{ marginBottom: '4px', fontSize: '0.9rem', color: '#666'}}>{formatDate(broadcast.sentTime)}</Typography>
+        <Typography variant="body1" sx = {{fontSize: '0.9rem', color: '#666'}}>{broadcast.message}</Typography>
                       </Box>
                     </Collapse>
                   ))}
