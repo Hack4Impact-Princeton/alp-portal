@@ -290,10 +290,10 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
         }}
                       onClick={() => handleBroadcastClick(index)}
                       >
-                          <Typography variant="h6" sx={{ marginBottom: '8px', fontWeight: 'bold', color: '#333' }}>{broadcast.subject}</Typography>
-        <Typography variant="body2" sx={{ fontSize: '0.8rem',color: '#666'  }}>{broadcast.senderEmail}</Typography>
-        <Typography variant = "body2" sx= {{ marginBottom: '4px', fontSize: '0.8rem', color: '#666'}}>{formatDate(broadcast.sentTime)}</Typography>
-        <Typography variant="body1" sx = {{fontSize: '0.8rem', color: '#666'}}>{broadcast.message}</Typography>
+                          <Typography variant="h6" sx={{ marginBottom: '8px', lineHeight:1, fontWeight: 'bold', color: '#5F5F5F' }}>{broadcast.subject}</Typography>
+        <Typography variant="body2" sx={{ fontSize: '0.9rem',color: '#666'  }}>{broadcast.senderEmail}</Typography>
+        <Typography variant = "body2" sx= {{ marginBottom: '4px', fontSize: '0.9rem', color: '#666'}}>{formatDate(broadcast.sentTime)}</Typography>
+        <Typography variant="body1" sx = {{fontSize: '0.9rem', color: '#666'}}>{broadcast.message}</Typography>
                       </Box>
                     </Collapse>
                   ))}
