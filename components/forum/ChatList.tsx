@@ -130,14 +130,14 @@ const ChatList: React.FC<{ chatInfo: { otherUser: VolunteerAccount, chat: Chat }
                 </div>
             }
             <div style={{ maxHeight: 500, height: "wrap-content", borderRadius: "25px" }}>
-                <div style={{ width: "100%", display: "flex", justifySelf: "flex-end", alignSelf: "start", justifyContent: "space-between", paddingLeft: "15px", borderBottom: "3px solid white", paddingTop: "1px", backgroundColor: "#5F5F5F", borderTopRightRadius: "10px", borderTopLeftRadius: "10px" }} onClick={() => setShowChat(showChat => !showChat)}>
+                <div style={{ width: "100%", display: "flex", justifyContent: "space-between", paddingLeft: "15px", borderBottom: "3px solid white", paddingTop: "1px", backgroundColor: "#5F5F5F", borderTopRightRadius: "10px", borderTopLeftRadius: "10px" }} onClick={() => setShowChat(showChat => !showChat)}>
                     <h3 style={{ color: "white", marginTop: "12px" }}>
                         Messages
                     </h3>
                     {!showChat &&
-                        <UpCaret bgColor="#FFFFFF" onClick={() => setShowChat(true)} />}
+                        <div style={{padding:0, margin:0}}><UpCaret bgColor="#FFFFFF" onClick={() => console.log('up')} /></div>}
                     {showChat &&
-                        <DownCaret bgColor="#FFFFFF" onClick={() => setShowChat(false)} />}
+                        <div style={{padding:0, margin:0}}><DownCaret bgColor="#FFFFFF" onClick={() => console.log('down')} /></div>}
                 </div>
                 <div style={{
                     display: "flex",
