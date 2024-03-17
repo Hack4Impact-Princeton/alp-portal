@@ -104,6 +104,33 @@ export const isChatUpdated = async(chatId: string, length: number) => {
     }
 }
 
+export const checkNewChatInfos = async(email: string, currNumChats: number) => {
+    try {
+        const res = await fetch(`/api/chat/haveNewChats/${email}?currNumChats=${currNumChats}`, {method: "GET"})
+        if (res.status === 204) return {newChatInfos: null}
+        const newChats = await res.json()
+        if (res.status === 500) return {error: newChats.error}
+        else {
+            console.log("there's something new!")
+            // const newChats = resJson.newChats
+            const newChatInfosPromises = await newChats.map(async(chat: Chat) => {
+                const otherUserEmail = chat.participantAEmail === email ? chat.participantBEmail : chat.participantAEmail
+                const otherVolunteerAccountRes = await fetch(`/api/volunteeraccounts/${otherUserEmail}`, {method: "GET"})
+                if (!otherVolunteerAccountRes.ok) throw new Error(`user with email ${otherUserEmail} could not be found`)
+                const otherVolunteerAccountResJson = await otherVolunteerAccountRes.json()
+                const otherVolunteerAccount: VolunteerAccount = otherVolunteerAccountResJson.data
+                return {otherUser: otherVolunteerAccount, chat: chat}
+            })
+            const newChatInfos = await Promise.all(newChatInfosPromises)
+            console.log("returning a new chat", newChatInfos)
+            return {newChatInfos: newChatInfos}
+        }
+    } catch (e: Error | any) {
+        console.error(e)
+        return {error: e}
+    }
+}
+
 export async function generateChatInfo(account: VolunteerAccount): Promise<{ otherUser: VolunteerAccount, chat: Chat }[] | Error> {
     const ChatModel: mongoose.Model<Chat> = getChatModel()
     const VolunteerAccountModel: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel()

@@ -1,4 +1,4 @@
-import createChat, { isChatUpdated } from "../../db_functions/chat";
+import createChat, { isChatUpdated, checkNewChatInfos } from "../../db_functions/chat";
 import { Chat } from "../../models/Chat";
 import { VolunteerAccount } from "../../models/VolunteerAccount";
 import ChatBox from "./ChatBox";
@@ -11,6 +11,18 @@ const ChatList: React.FC<{ chatInfo: { otherUser: VolunteerAccount, chat: Chat }
     const [currChatAndOtherUser, setCurrChatAndOtherUser] = useState<{ otherUser: VolunteerAccount, chat: Chat } | null>(null)
     useEffect(() => {
         const fetchData = async () => {
+            const { error, newChatInfos } = await checkNewChatInfos(user.email, currChatInfo.length)
+            if (error) console.error("ERROR", error)
+            else if (newChatInfos) {
+                console.log("newChatInfos", newChatInfos)
+                let done = false
+                if (!done) {
+                    setCurrChatInfo(oldChatInfo => [...newChatInfos, ...oldChatInfo])
+                }
+                done = true
+            } else {
+                console.log("I don't see anything lol")
+            }
             currChatInfo.map(async ({ chat, otherUser }, index) => {
                 const res = await isChatUpdated(chat.id, chat.messages.length)
                 if (res.error) console.error(res.error)
