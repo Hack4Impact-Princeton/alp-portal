@@ -4,6 +4,17 @@ import { VolunteerAccount } from '../models/VolunteerAccount'
 import getChatModel, {Chat} from '../models/Chat'
 import getVolunteerAccountModel from '../models/VolunteerAccount'
 import mongoose from 'mongoose'
+
+export const deleteChat = async(currentUser: VolunteerAccount, emailRemove: string) => {
+    if (emailRemove in currentUser.chatIds) {
+        currentUser.chatIds.splice(currentUser.chatIds.indexOf(emailRemove), 1)
+    }
+    let account = await fetch(`../pages/api/volunteeraccounts/${currentUser.email}`, {
+        method: "PATCH",
+        body: JSON.stringify(currentUser)
+    }).then(res => res.json()).then(res => res.data)
+    return account
+}
 const createChat = async(participantBEmail: string, participantA: VolunteerAccount)  => {
     try {
         const chatId = genUniqueId()
