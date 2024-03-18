@@ -1,4 +1,5 @@
 import { VolunteerAccount } from "../models/VolunteerAccount";
+import { deleteChat } from "./chat";
 
 const sendFriendRequest = async (email1: string, email2: string) => {
   try {
@@ -94,6 +95,7 @@ export const removeFriendRequest = async (email1: string, email2: string) => {
       throw new Error(
         "Something went wrong removing friend2 from friend1s array"
       );
+    
     /*if (!res2.ok) {
       // undo adding removing friend2 from friend 1s list
       await fetch(`/api/volunteeraccounts${email1}`, {
@@ -157,6 +159,8 @@ export const removeFriend = async (email1: string, email2: string) => {
         "Something went wrong removing friend1 from friend2s array"
       );
     }
+    await deleteChat(volunteer1, email2)
+    await deleteChat(volunteer2, email1)
     return { success: true, data: "hi" };
   } catch (e: Error | any) {
     console.error(e);
