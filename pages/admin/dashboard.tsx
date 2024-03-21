@@ -28,7 +28,7 @@ import AdminPageContainer from "../../components/AdminPageContainer";
 import { DSVRowString } from "d3-dsv";
 import * as d3 from "d3";
 
-import { Box, Fab, Popper } from "@mui/material";
+import { Box, Fab, Modal, Popper } from "@mui/material";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 
 type AdminDashboardProps = {
@@ -152,6 +152,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
       if (event.target) {
         const csvData: string | ArrayBuffer | null = event.target.result;
 
+
         // Use D3.js to parse the CSV data
         if (csvData !== null && typeof csvData === "string") {
           const parsedData = d3.csvParse(csvData);
@@ -201,6 +202,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
               },
             })
           );
+          //console.log(newBookDrives);
           setBookDrives(newBookDrives);
         }
       }
@@ -210,7 +212,91 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
       reader.readAsText(blob);
     }
     // reader.readAsText(selectedFile);
+
+
+
   };
+
+  const verifyDrives = () => {
+
+    let errors = []
+    for (let i = 0; i < bookDrives.length; i++) {
+
+
+      // check for missing fields
+      const missingField = hasBlankFields(bookDrives[i], fieldsToCheck);
+      if (missingField !== "")  {
+        let err = [i+1, "The following information is missing: " + missingField]
+        errors.push(err)
+      }
+
+      // check for duplicate drive codes
+      for (let j = i+1; j < bookDrives.length; j++) {
+        if (bookDrives[i]["driveCode"] === bookDrives[j]["driveCode"]) {
+          let err = [i+1, "Duplicate drive code found in row " + (j+1)]
+          errors.push(err)
+        }
+      }
+
+      /*
+      // check for wrong types of fields
+      //Book Drive Name: string
+      //Contact: Full Name: string
+      //Contact Email: string
+      //Country Prefrence: Countries Name : string
+      //Status: string
+      //Book Drive Code: string
+      //Created Date: string
+      //Books Sent: number
+
+      // check for wrong types of fields
+      // mmmmh good code
+      if (typeof bookDrives[i]["driveName"] !== "string") {
+      let err = [i+1, "Book Drive Name should be a string"]
+      errors.push(err)
+      }
+
+      if (typeof bookDrives[i]["driveCode"] !== "string") {
+      let err = [i+1, "Book Drive Code should be a string"]
+      errors.push(err)
+      }
+
+      if (typeof bookDrives[i]["organizer"] !== "string") {
+      let err = [i+1, "Contact: Full Name should be a string"]
+      errors.push(err)
+      }
+
+      if (typeof bookDrives[i]["email"] !== "string") {
+      let err = [i+1, "Contact Email should be a string"]
+      errors.push(err)
+      }
+
+      if (typeof bookDrives[i]["country"] !== "string") {
+      let err = [i+1, "Country Prefrence: Countries Name should be a string"]
+      errors.push(err)
+      }
+
+      if (typeof bookDrives[i]["status"] !== "string") {
+      let err = [i+1, "Status should be a string"]
+      errors.push(err)
+      }
+
+      // start date should be a date
+      if (typeof bookDrives[i]["startDate"] !== "object") {
+      let err = [i+1, "Start Date should be a date"]
+      errors.push(err)
+      }
+      */
+
+
+    }
+
+    return errors
+
+  }
+
+
+
 
   const uploadDrives = async () => {
     console.log("Uploading Drive to Mongo");
@@ -401,12 +487,29 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
     else return "";
   };
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const handleFABClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
+  //const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  //const handleFABClick = (event: React.MouseEvent<HTMLElement>) => {
+  //  setAnchorEl(anchorEl ? null : event.currentTarget);
+  //};
+  //const open = Boolean(anchorEl);
+  //const id = open ? 'simple-popper' : undefined;
+
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const modalStyle = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    //width: 400,
+    bgcolor: 'background.paper',
+    //border: '2px solid #000',
+    boxShadow: 24,
+    p: 2,
+    borderRadius: 1,
   };
-  const open = Boolean(anchorEl);
-  const id = open ? 'simple-popper' : undefined;
 
   return (
     <>
@@ -536,7 +639,8 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
       </Grid>
 
       <Fab aria-label="upload" 
-        onClick={handleFABClick}
+        //onClick={handleFABClick}
+        onClick={handleOpen}
         sx={{
           backgroundColor:"#fe9834",color:"white",
           margin: 0,
@@ -552,7 +656,14 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
         <FileUploadIcon sx={{ fontSize: '5vh' }}/>
       </Fab>
 
-      <Popper id={id} open={open} anchorEl={anchorEl}>
+      {/*<Popper id={id} open={open} anchorEl={anchorEl}>
+      </Popper>*/}
+
+      <Modal
+        open={open}
+        onClose={handleClose}
+      >
+        <Box sx={modalStyle}>
           <Grid>
             <div
               style={{
@@ -572,6 +683,21 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
                   onChange={changeHandler}
                 />
               </div>
+
+              <button
+                onClick={handleUploadCSV}
+                disabled={!uploaded}
+              >
+                Check File
+              </button>
+
+              errs go here
+
+              <button>
+                Upload
+              </button>
+
+{/*
               <button
                 onClick={handleUploadCSV}
                 disabled={!uploaded}
@@ -579,16 +705,21 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
               >
                 {uploaded ? "Parse Different Drives" : "Parse Drives"}
               </button>
+
+
               <button
                 onClick={uploadDrives}
                 disabled={!uploaded}
                 className="btn btn-primary"
               >
                 Upload Bookdrives
-              </button>
+              </button>*/}
+
+
             </div>
           </Grid>
-      </Popper>
+        </Box>
+      </Modal>
 
     </>
   );
