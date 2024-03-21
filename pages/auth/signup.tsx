@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { getStates } from '../../lib/enums'
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { SettingsInputAntennaOutlined, Visibility, VisibilityOff } from '@mui/icons-material';
 import { signIn } from 'next-auth/react'
 import Link from 'next/link';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -16,10 +16,10 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import {
-  CitySelect,
-  CountrySelect,
-  StateSelect,
-  LanguageSelect,
+    CitySelect,
+    CountrySelect,
+    StateSelect,
+    LanguageSelect,
 } from "react-country-state-city";
 import "react-country-state-city/dist/react-country-state-city.css";
 
@@ -32,9 +32,11 @@ const Signup = () => {
     const [isValidEmail, setIsValidEmail] = useState(true);
     const [password, setPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false);
-    const [countryid, setCountryid] = useState(0);
-    const [cityid, setCityid] = useState(0);
-    const [stateid, setStateid] = useState(0);
+    const [countryName, setCountryName] = useState("");
+    const [cityName, setCityName] = useState("");
+    const [stateName, setStateName] = useState("");
+    const [stateId, setStateId] = useState(0)
+    const [countryId, setCountryId] = useState(0)
 
     const validateEmail = (input: string) => {
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -54,8 +56,8 @@ const Signup = () => {
     const handleSetPassword = (passwordText: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(passwordText.target.value)
     }
-    const handleSetState = (event: any) => {
-        setStateid(Number(event.target.value));
+    const handleSetStateName = (event: any) => {
+        setStateName(event.target.value);
     }
 
     const handleTogglePassword = () => {
@@ -73,7 +75,7 @@ const Signup = () => {
             const bcrypt = require("bcryptjs");
             const salt = bcrypt.genSaltSync(10);
             const hashedPwd = (password == '') ? '' : bcrypt.hashSync(password, salt);
-            const data = { fname: fname, lname: lname, email: email, pwhash: hashedPwd, country: countryid, state: stateid, city: cityid }
+            const data = { fname: fname, lname: lname, email: email, pwhash: hashedPwd, country: countryName, state: stateName, city: cityName }
             // return if empty field
             for (let entry in data)
                 if (entry == '') return;
@@ -136,7 +138,7 @@ const Signup = () => {
                                 mb: 3, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
 
                             }} />
-                        
+
                         <TextField size="small" fullWidth required id="password" label="password" variant="filled"
                             type={showPassword ? 'text' : 'password'}
                             value={password}
@@ -154,38 +156,46 @@ const Signup = () => {
                                 mb: 3,
                                 border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
                             }}
-                            />
-                            <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>          
-                            <CountrySelect 
-                                onChange={(e : any) => {
-                                setCountryid(e.id);
+                        />
+                        <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>
+                            <CountrySelect
+                                onChange={(e: any) => {
+                                    console.log(typeof e.name)
+                                    setCountryName(e.name);
+                                    setCountryId(e.id)
                                 }}
                                 placeHolder="Country*"
-                                        
+
                             />
-                            </FormControl> 
-                            <br></br>
-                                   <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>            
+                        </FormControl>
+                        <br></br>
+                        <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>
                             <StateSelect
-                                countryid={countryid}
+                                countryid={countryId}
                                 onChange={(e: any) => {
-                                setStateid(e.id);
+                                    console.log(typeof e.name)
+                                    console.log(e.name)
+                                    setStateId(e.id)
+                                    setStateName(e.name);
                                 }}
                                 placeHolder="State*"
                             />
-                            </FormControl>      
+                        </FormControl>
                         <br></br>
                         <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>
-                                <CitySelect
-                                    countryid={countryid}
-                                    stateid={stateid}
-                                    onChange={(e: any) => {
-                                    setCityid(e.id);
-                                    }}
-                                    placeHolder="City*"
-                                            
-                                />
-                                </FormControl>
+                            <CitySelect
+                                countryid={countryId}
+                                stateid={stateId}
+                                onChange={(e: any) => {
+                                    console.log(typeof e.name)
+                                    console.log(e.name)
+
+                                    setCityName(e.name);
+                                }}
+                                placeHolder="City*"
+
+                            />
+                        </FormControl>
                         <br></br>
                         {/* <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>
                             <InputLabel id="state-label">state</InputLabel>
@@ -200,7 +210,7 @@ const Signup = () => {
                                 }
                             </Select>
                         </FormControl> */}
-                        
+
                         <br></br>
                         <p style={{ fontSize: 10, color: "white" }}>You can unsubscribe at any time by clicking the link in the footer of our emails. For information about our privacy practices, please visit our website.</p>
                         <Button variant="contained"
@@ -215,7 +225,7 @@ const Signup = () => {
                                 mb: 2
                             }}>Sign up</Button>
                     </Box>
-    
+
                 </div>
                 <Link passHref style={{ color: "white" }} href="/auth/login">
                     <a style={{ color: "white", textDecoration: "none" }}>
