@@ -18,9 +18,9 @@ export type VolunteerAccount = {
     ageBucket: number,
     email: string,
     pwhash: string,
-    country: number,
-    state: number,
-    city: number,
+    country: string,
+    state: string,
+    city: string,
     startDate: String,
     allDrives: number,
     driveIds: Types.Array<string>,
@@ -68,15 +68,15 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>(
       required: true,
     },
     country: {
-      type: Number,
+      type: String,
       required: true,
     },
     state: {
-      type: Number,
+      type: String,
       required: true,
     },
     city: {
-      type: Number,
+      type: String,
       required: true,
     },
     startDate: {
