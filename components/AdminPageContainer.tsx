@@ -18,7 +18,7 @@ import { Margin } from "@mui/icons-material";
 
 type PageContainerProps = {
   fName: String;
-  currPage: "dashboard" | "profile" | "broadcast" | null;
+  currPage: "dashboard" | "directory" | "broadcast" | null;
 };
 
 const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage }) => {
@@ -30,8 +30,8 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, currPage }) => {
   let pageName = "";
   let fontsize = "";
   switch (currPage) {
-    case "profile": {
-      pageName = "Profile";
+    case "directory": {
+      pageName = "Directory";
       fontsize = "90px";
       break;
     }
