@@ -140,7 +140,7 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
     const day = date.getDate().toString().padStart(2, '0');
     const year = date.getFullYear().toString();
     return `${month}/${day}/${year}`;
-};
+  };
 
 
   let pageName = "";
@@ -241,17 +241,17 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
                     variant="contained"
                     disableElevation
                     sx={{
-                      fontFamily:"Epilogue",
+                      fontFamily: "Epilogue",
                       '&:hover': {
-                        backgroundColor:"#D3A874", 
+                        backgroundColor: "#D3A874",
                       },
                       borderRadius: 1,
                       backgroundColor: activeFilter === "all" ? "#F3D39A" : "#F5F5F5",
                       color: "#5F5F5F",
                       mx: 0.5, // Margin on the left and right
                       my: 1, // Margin on the top and bottom
-                      fontWeight: activeFilter === "all" ? "bold":"normal" , 
-                      textTransform:'none',
+                      fontWeight: activeFilter === "all" ? "bold" : "normal",
+                      textTransform: 'none',
                     }}
                     onClick={() => handleFilterClick("all")}
                   >
@@ -261,9 +261,9 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
                     variant="contained"
                     disableElevation
                     sx={{
-                      fontFamily:"Epilogue",
+                      fontFamily: "Epilogue",
                       '&:hover': {
-                        backgroundColor:"#D3A874", 
+                        backgroundColor: "#D3A874",
                       },
                       borderRadius: 1,
                       backgroundColor: activeFilter === "friends" ? "#F3D39A" : "#F5F5F5",
@@ -280,20 +280,20 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
                   {/* Add more filters as needed */}
                   {activeFilter === "all" && broadcasts?.map((broadcast, index) => (
                     <Collapse in={visibleBroadcasts[index]} key={index} sx={{ transition: '0.3s' }}>
-                      <Box              sx={{
-            width: '300px',
-            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
-            padding: '12px',
-            mb: 3,
-            cursor: 'pointer', 
-            backgroundColor: '#f2f2f2',
-        }}
-                      onClick={() => handleBroadcastClick(index)}
+                      <Box sx={{
+                        width: '300px',
+                        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+                        padding: '12px',
+                        mb: 3,
+                        cursor: 'pointer',
+                        backgroundColor: '#f2f2f2',
+                      }}
+                        onClick={() => handleBroadcastClick(index)}
                       >
-                          <Typography variant="h6" sx={{ marginBottom: '8px', lineHeight:1, fontWeight: 'bold', color: '#5F5F5F' }}>{broadcast.subject}</Typography>
-        <Typography variant="body2" sx={{ fontSize: '0.9rem',color: '#666'  }}>{broadcast.senderEmail}</Typography>
-        <Typography variant = "body2" sx= {{ marginBottom: '4px', fontSize: '0.9rem', color: '#666'}}>{formatDate(broadcast.sentTime)}</Typography>
-        <Typography variant="body1" sx = {{fontSize: '0.9rem', color: '#666'}}>{broadcast.message}</Typography>
+                        <Typography variant="h6" sx={{ marginBottom: '8px', lineHeight: 1, fontWeight: 'bold', color: '#5F5F5F' }}>{broadcast.subject}</Typography>
+                        <Typography variant="body2" sx={{ fontSize: '.9rem', fontWeight: "500", color: '#666', }}><i>{broadcast.senderName}</i></Typography>
+                        <Typography variant="body2" sx={{ marginBottom: '4px', fontSize: '0.9rem', color: '#666' }}><i>{formatDate(broadcast.sentTime)}</i></Typography>
+                        <Typography variant="body1" sx={{ fontSize: '0.9rem', color: '#666' }}>{broadcast.message}</Typography>
                       </Box>
                     </Collapse>
                   ))}
@@ -317,7 +317,7 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
                 </Box>
               </Popover>
             </Grid>
-            <Grid xs={3}><WhiteTextButton style={{fontFamily:'Epilogue'}}variant="text" className="signout" onClick={handleSignOut}> Sign Out </WhiteTextButton></Grid>
+            <Grid xs={3}><WhiteTextButton style={{ fontFamily: 'Epilogue' }} variant="text" className="signout" onClick={handleSignOut}> Sign Out </WhiteTextButton></Grid>
             <Grid xs={2}><img src="/alp-logo.png" alt="alp-logo" height="55px"></img></Grid>
           </Grid>
         </Box>

@@ -28,8 +28,9 @@ const AdminSidebar: React.FC<{
   };
   updateBookDriveStatus: (driveCode: string, status: number) => Promise<void>;
   removeReactivationReq: (driveCode: string) => void;
+  senderName: string;
   email: string;
-}> = ({ email, driveData, updateBookDriveStatus, removeReactivationReq }) => {
+}> = ({ email, senderName, driveData, updateBookDriveStatus, removeReactivationReq }) => {
   const { drive, shipments, volunteer, reactivationReq } = driveData;
   const { status, organizer, driveName, driveCode, country, booksGoal, cb } =
     drive;
@@ -73,6 +74,7 @@ const AdminSidebar: React.FC<{
       const message = "automated broadcast message";
       const broadcastRes = await sendBroadcast(
         email,
+        senderName,
         [volunteer.email],
         subject,
         message

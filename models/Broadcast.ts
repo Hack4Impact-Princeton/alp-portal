@@ -4,6 +4,7 @@ const { Schema } = mongoose;
 export interface Broadcast {
     id: string, // id of the broadcast
     senderEmail: string, // email of sender
+    senderName: string, // first name and last initial of sender
     receiverEmails: string[], // emails of receivers
     sentTime: string, // date and time
     read: boolean[], // the array that keeps track of who read the message
@@ -12,6 +13,7 @@ export interface Broadcast {
 }
 const BroadcastSchema = new Schema<Broadcast>({
     id: {type: String, required: true},
+    senderName: {type: String, required: true},
     senderEmail: {type: String, required: true},
     receiverEmails: {type: [String], required: true},
     sentTime: {type: String, required: true},
