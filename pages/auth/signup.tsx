@@ -160,7 +160,6 @@ const Signup = () => {
                         <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>
                             <CountrySelect
                                 onChange={(e: any) => {
-                                    console.log(typeof e.name)
                                     setCountryName(e.name);
                                     setCountryId(e.id)
                                 }}
@@ -173,10 +172,8 @@ const Signup = () => {
                             <StateSelect
                                 countryid={countryId}
                                 onChange={(e: any) => {
-                                    console.log(typeof e.name)
-                                    console.log(e.name)
                                     setStateId(e.id)
-                                    setStateName(e.name);
+                                    setStateName(e.state_code);
                                 }}
                                 placeHolder="State*"
                             />
@@ -187,9 +184,6 @@ const Signup = () => {
                                 countryid={countryId}
                                 stateid={stateId}
                                 onChange={(e: any) => {
-                                    console.log(typeof e.name)
-                                    console.log(e.name)
-
                                     setCityName(e.name);
                                 }}
                                 placeHolder="City*"
