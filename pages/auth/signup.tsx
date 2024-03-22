@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Router from 'next/router'
 import Image from 'next/image';
 import { getStates } from '../../lib/enums'
@@ -102,6 +102,22 @@ const Signup = () => {
             console.error(e)
         }
     }
+
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth < window.screen.width * 0.6);
+        };
+
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Check initial screen width
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
     return (
         <div className="auth-bg" >
             <div style={{
@@ -109,12 +125,14 @@ const Signup = () => {
                 marginTop: "2%",
                 marginBottom: "1%",
             }}>
+                
 
                 <Image className="auth-logo" src="/logo-long.png" width={956 * 0.225} height={295 * 0.225} alt="ALP-logo" style={{
                 }} />
             </div>
-            <div style={{ display: "flex", justifySelf: "flex-start", flexDirection: "column", flexShrink: 1 }}>
-                <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-start", alignItems: "start" }}>
+            <div style={{ display: "flex", justifySelf: "flex-start", flexDirection: "column", flexShrink: 1, alignItems: "center" }}>
+                <div style = {{display: "flex",  flexDirection: isSmallScreen ? 'column' : 'row', justifyContent: "space-between"}}>
+                <div style={{ display: "flex", flexDirection: "column" }}>
                     <Box
                         sx={{
                             width: 350,
@@ -136,8 +154,7 @@ const Signup = () => {
                                 mb: 3, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
 
                             }} />
-                        
-                        <TextField size="small" fullWidth required id="password" label="password" variant="filled"
+                                             <TextField size="small" fullWidth required id="password" label="password" variant="filled"
                             type={showPassword ? 'text' : 'password'}
                             value={password}
                             onChange={handleSetPassword}
@@ -155,6 +172,14 @@ const Signup = () => {
                                 border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
                             }}
                             />
+                        </Box>
+                        </div>
+                    <div style={{ display: "flex", flexDirection: isSmallScreen ? 'column' : 'row', alignItems: "start" }}></div>
+                     <Box
+                        sx={{
+                            width: 350,
+                            height: "wrap-content",
+                        }}>
                             <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>          
                             <CountrySelect 
                                 onChange={(e : any) => {
@@ -200,31 +225,38 @@ const Signup = () => {
                                 }
                             </Select>
                         </FormControl> */}
-                        
+                                     </Box>
+                                </div>
                         <br></br>
                         <p style={{ fontSize: 10, color: "white" }}>You can unsubscribe at any time by clicking the link in the footer of our emails. For information about our privacy practices, please visit our website.</p>
-                        <Button variant="contained"
-                            onClick={signUpHandler}
-                            sx={{
-                                marginTop: 2,
-                                borderRadius: 2,
-                                color: "white",
-                                fontWeight: 500,
-                                backgroundColor: "black",
-                                "&:hover": { backgroundColor: "#555555" },
-                                mb: 2
-                            }}>Sign up</Button>
-                    </Box>
-    
+                                <Button variant="contained"
+                    onClick={signUpHandler}
+                    sx={{
+                        marginTop: 2,
+                        borderRadius: 2,
+                        color: "white",
+                        fontWeight: 600,
+                        fontSize: 16,
+                        backgroundColor: "black",
+                        "&:hover": { backgroundColor: "#555555" },
+                        mb: 2,
+                        width: '150px',
+                        height: '50px',
+                        marginLeft: 'auto',
+                        marginRight: 'auto'
+                    }}>Sign up</Button>
+
                 </div>
                 <Link passHref style={{ color: "white" }} href="/auth/login">
                     <a style={{ color: "white", textDecoration: "none" }}>
                         Already have an account?
                     </a>
                 </Link>
-            </div>
-        </div>
+                </div>
+                
     )
+
+    
 }
 
 export default Signup
