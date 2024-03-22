@@ -4,8 +4,18 @@ import { VolunteerAccount } from "../../models/VolunteerAccount";
 import CircularIcon from "../CircularIcon";
 import format from "date-fns/format";
 import formatDistance from "date-fns/formatDistance";
+import Modal from "@mui/material/Modal";
+import Button from "@mui/material/Button";
+
 const ChatPreview: React.FC<{ chat: Chat, user: VolunteerAccount, otherUser: VolunteerAccount, createChatByEmail: (email: string) => void, setCurrChatAndOtherUser: Dispatch<SetStateAction<{ otherUser: VolunteerAccount; chat: Chat } | null>>, chatIndex: number, chatInfo: { otherUser: VolunteerAccount, chat: Chat }[] }> = ({ chatIndex, chatInfo, user, otherUser, setCurrChatAndOtherUser }) => {
     const [chatHovered, setChatHovered] = useState(false)
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    const handleDeleteChat = () => {
+    // derek cook
+    console.log("Deleting chat...");
+    setShowDeleteModal(false);
+    };
     let lastMessage = null
     let lastMessageString = ""
     const chat = chatInfo[chatIndex].chat
@@ -71,12 +81,28 @@ const ChatPreview: React.FC<{ chat: Chat, user: VolunteerAccount, otherUser: Vol
                     </div>
                 }
             </div>
+                     <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+    <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "#FFFFFF", borderRadius: "8px", boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)", padding: "20px", maxWidth: "320px" }}>
+        <h2 style={{ color: "#333333", marginBottom: "20px", textAlign: "center" }}>{`Are you sure you want to delete chat with ${otherUser.fname} ${otherUser.lname}?`}</h2>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+            <Button variant="contained" color="error" onClick={handleDeleteChat} sx={{ marginRight: "10px" }}>Yes</Button>
+            <Button variant="contained" onClick={() => setShowDeleteModal(false)}>No</Button>
+        </div>
+    </div>
+</Modal>
+
             {lastMessage &&
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "stretch", height: "100%", width: "100%", alignSelf: "start", marginTop: "10px" }}>
 
                     <p style={{ textAlign: "right", color: "white", paddingRight: "10px", fontSize: 8, marginBottom: "5px" }}>
                         {date}
                     </p>
+                              <button
+                onClick={() => setShowDeleteModal(true)}
+                style={{ backgroundColor: "transparent", border: "none", cursor: "pointer", marginTop: "5px", color: "red", marginLeft: "65px" }}
+            >
+                X
+            </button>
                     {(chat.participantAEmail === user.email ? (!chat.seenByParticipantA && lastMessage) : (!chat.seenByParticipantB && lastMessage)) &&
                         <div style={{ display: "flex", marginLeft: "auto", marginRight: "9px", marginTop: "2px" }}>
                             <CircularIcon diameter={"12"} bgColor="#FE9835" />
