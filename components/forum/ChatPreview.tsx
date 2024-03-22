@@ -85,8 +85,8 @@ const ChatPreview: React.FC<{ chat: Chat, user: VolunteerAccount, otherUser: Vol
     <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "#FFFFFF", borderRadius: "8px", boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)", padding: "20px", maxWidth: "320px" }}>
         <h2 style={{ color: "#333333", marginBottom: "20px", textAlign: "center" }}>{`Are you sure you want to delete chat with ${otherUser.fname} ${otherUser.lname}?`}</h2>
         <div style={{ display: "flex", justifyContent: "center" }}>
-            <Button variant="contained" color="error" onClick={handleDeleteChat} sx={{ marginRight: "10px" }}>Yes</Button>
-            <Button variant="contained" onClick={() => setShowDeleteModal(false)}>No</Button>
+            <Button variant="contained" color="primary" onClick={handleDeleteChat} sx={{ marginRight: "10px" }}>Yes</Button>
+            <Button variant="contained" color= "error" onClick={() => setShowDeleteModal(false)}>No</Button>
         </div>
     </div>
 </Modal>
