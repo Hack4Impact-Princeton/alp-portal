@@ -1,5 +1,7 @@
 import React from "react";
 import { BadgeType } from "../models/VolunteerAccount";
+import sendFriendRequest from "../db_functions/friending";
+//import {sendFriendRequest, approveFriendRequest, removeFriendRequest, removeFriend} from "../db_functions/friending"
 
 type ProfileCardProps = {
   account: VolunteerAccount;
@@ -13,6 +15,7 @@ type ProfileCardProps = {
   style?: React.CSSProperties;
   userEmail: string;
   receivedFriendRequestList: string[];
+  sentFriendRequestList: string[];
 };
 
 const ProfileCard: React.FC<ProfileCardProps> = ({
@@ -26,16 +29,29 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   style,
   userEmail,
   receivedFriendRequestList,
+  sentFriendRequestList,
 }) => {
-  
   const [friendStatus, setFriendStatus] = React.useState<string>("none");
+  console.log(userEmail + " is " + friendStatus + " with " + email);
+
+  /*
+  sent means userEmail sent a request to email and ema
+  received means userEmail received a request from email
+  friends means userEmail and email have each other in their friends array
+  none means no relation at all
+  */
   React.useEffect(() => {
-    if (receivedFriendRequestList.includes(email)) {
-      setFriendStatus("received");
+    if (sentFriendRequestList.includes(email)) {
+      setFriendStatus("sent");
     } else if (account.friends.includes(email)) {
-      handleAcceptFriendRequest()
+      handleAcceptFriendRequest();
+    } else if (receivedFriendRequestList.includes(email)) {
+      // need to be that it has received so either accept or leave it there
+      // also after accept, should do the revoke
+      handleReceiveFriendRequest();
     }
   }, [receivedFriendRequestList, email]);
+
   const [showRevokeButton, setShowRevokeButton] =
     React.useState<boolean>(false);
 
@@ -115,8 +131,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       case "none":
         return "#FE9834";
       case "sent":
+        return "#FF5733";
       case "received":
-        return "#FF6347";
+        return "#800080";
       case "friends":
         return "#4CAF50";
       default:
@@ -143,14 +160,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
     margin: "4px 0",
   };
 
-  const revokeIconStyle: React.CSSProperties = {
-    marginLeft: "4px", // Adjust the left positioning
-    cursor: "pointer",
-  };
-
-  const handleSendFriendRequest = () => {
+  const handleSendFriendRequest = (firstEmail, secEmail) => {
+    console.log("in handleSendFriendRequest");
     setFriendStatus("sent");
-    setShowRevokeButton(true);
+    //sendFriendRequest(firstEmail, secEmail);
+    // setShowRevokeButton(true);
   };
 
   const handleRevokeFriendRequest = () => {
@@ -160,6 +174,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   const handleAcceptFriendRequest = () => {
     setFriendStatus("friends");
     setShowRevokeButton(true);
+  };
+
+  const handleReceiveFriendRequest = () => {
+    setFriendStatus("received");
+    // setShowRevokeButton(true);
   };
 
   return (
@@ -172,48 +191,30 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           <p style={userInfoItemStyle}>{affiliation}</p>
         </div>
       </div>
-      {/*useBadges && (
-        <div style={badgesAndButtonsContainerStyle}>
-            <div style= {badgesContainerStyle}>
-          {badges.map((badge, index) => (
-            <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '10px' }}>
-              {badge.isEarned ? (
-                <img src="https://cdn-icons-png.flaticon.com/512/1435/1435715.png" alt="Unlocked Badge" style={{ width: '40px', height: '40px', marginBottom: '5px' }} />
-              ) : (
-                <img src="https://cdn-icons-png.flaticon.com/512/1435/1435722.png" alt="Locked Badge" style={{ width: '40px', height: '40px', marginBottom: '5px', filter: 'grayscale(100%)' }} />
-              )}
-              <div style={{ textAlign: 'center' }}>
-                <p style={{ margin: 0, fontWeight: 'bold' }}>{badge.name}</p>
-                <p style={{ margin: 0, fontSize: '12px' }}>{badge.description}</p>
-              </div>
-            </div>
-              ))}
-        </div>
-        </div>
-              )*/}
+
       <div style={buttonsContainerStyle}>
         {friendStatus === "none" && (
           <div>
-            <button onClick={handleSendFriendRequest} style={buttonStyle}>
+            <button
+              onClick={() => {
+                handleSendFriendRequest(userEmail, email);
+              }}
+              style={buttonStyle}
+            >
               Send Friend Request
             </button>
           </div>
         )}
         {friendStatus === "sent" && (
-          <div style={{ position: "relative", width: "100%" }}>
-            <div style={revokeButtonStyle}>
-              Revoke
-              <span
-                style={revokeIconStyle}
-                onClick={() => {
-                  handleRevokeFriendRequest();
-                  setFriendStatus("none");
-                }}
-              >
-                x
-              </span>
-            </div>
-          </div>
+          <button
+            style={buttonStyle}
+            onClick={() => {
+              handleRevokeFriendRequest();
+              setFriendStatus("none");
+            }}
+          >
+            Click Here to Revoke
+          </button>
         )}
         {(friendStatus === "received" || friendStatus === "friends") &&
           showRevokeButton && (

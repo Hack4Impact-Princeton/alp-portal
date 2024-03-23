@@ -1,25 +1,51 @@
 import { VolunteerAccount } from "../models/VolunteerAccount";
 
-const sendFriendRequest = async (email1: string, email2: string) => {
+export const sendFriendRequest = async (email1: string, email2: string) => {
   try {
-    const volunteer1res = await fetch(`/api/volunteeraccounts/${email1}`, {
-      method: "GET",
+    // const volunteer1res = await fetch(`/api/volunteeraccounts/${email1}`, {
+    //   method: "GET",
+    // });
+    // const volunteer2res = await fetch(`/api/volunteeraccounts/${email2}`, {
+    //   method: "GET",
+    // });
+    // if (!volunteer1res.ok)
+    //   throw new Error(`Could not find an account with email ${email1}`);
+    // if (!volunteer2res.ok)
+    //   throw new Error(`Could not find an account with email ${email2}`);
+    // const volunteer1 = (await volunteer1res.json()).data as VolunteerAccount;
+    // const volunteer2 = (await volunteer2res.json()).data as VolunteerAccount;
+    const VolunteerAccount: mongoose.Model<VolunteerAccount> =
+      getVolunteerAccountModel();
+    const senderAccount = await VolunteerAccount.findOne({
+      email: email1,
     });
-    const volunteer2res = await fetch(`/api/volunteeraccounts/${email2}`, {
-      method: "GET",
-    });
-    if (!volunteer1res.ok)
-      throw new Error(`Could not find an account with email ${email1}`);
-    if (!volunteer2res.ok)
-      throw new Error(`Could not find an account with email ${email2}`);
-    const volunteer1 = (await volunteer1res.json()).data as VolunteerAccount;
-    const volunteer2 = (await volunteer2res.json()).data as VolunteerAccount;
-    const requestArray1 = [...volunteer1.friendRequests, volunteer2.email];
+    if (!senderAccount) {
+      throw new Error(`Sender account with email ${email1} not found`);
+    }
 
-    const res1 = await fetch(`/api/volunteeraccounts/${email1}`, {
-      method: "PATCH",
-      body: JSON.stringify({ friendRequests: requestArray1 }),
+    // Find the receiver account
+    const receiverAccount = await VolunteerAccount.findOne({
+      email: email2,
     });
+    if (!receiverAccount) {
+      throw new Error(`Receiver account with email ${email2} not found`);
+    }
+    const updatedSentFriendReqs = [
+      ...senderAccount.sentFriendRequests,
+      receiverAccount.email,
+    ];
+    console.log(updatedSentFriendReqs);
+
+    const updatedReceivedFriendReqs = [
+      ...receiverAccount.friendRequests,
+      senderAccount.email,
+    ];
+    console.log(updatedReceivedFriendReqs);
+
+    // const res1 = await fetch(`/api/volunteeraccounts/${email1}`, {
+    //   method: "PATCH",
+    //   body: JSON.stringify({ friendRequests: requestArray1 }),
+    // });
     return { success: true, data: "hi" };
   } catch (e: Error | any) {
     console.error(e);

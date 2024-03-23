@@ -22,7 +22,7 @@ type ProfileInfoProps = {
   useBadges?: boolean;
 };
 
-const ProfileDisplayCase: React.FC<{account: VolunteerAccount; userEmail: string; profiles: ProfileInfoProps[]; useBadges?: boolean; receivedFriendRequestList: string[]}> = ({ account, userEmail, profiles, useBadges = true, receivedFriendRequestList}) => {
+const ProfileDisplayCase: React.FC<{account: VolunteerAccount; userEmail: string; profiles: ProfileInfoProps[]; useBadges?: boolean; receivedFriendRequestList: string[]; sentFriendRequestList: string[]}> = ({ account, userEmail, profiles, useBadges = true, receivedFriendRequestList, sentFriendRequestList}) => {
 
   return (
     <Grid
@@ -68,6 +68,7 @@ const ProfileDisplayCase: React.FC<{account: VolunteerAccount; userEmail: string
               useBadges={useBadges}
               userEmail={userEmail}
               receivedFriendRequestList={receivedFriendRequestList}
+              sentFriendRequestList={sentFriendRequestList}
             />
           </Grid>
         ))}

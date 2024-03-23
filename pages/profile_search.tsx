@@ -33,6 +33,7 @@ type ProfileProps = {
   query: string | null; // represents the query parameter if the profile search page is reached from the forum page
   userEmail: string;
   receivedFriendRequestList: string[];
+  sentFriendRequestList: string[];
 };
 // return {
 //   props: {
@@ -46,11 +47,7 @@ type ProfileProps = {
 //   },
 // };
 
-const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, error, allAccounts, query, userEmail, receivedFriendRequestList}) => {
-  const handleFriendRequest = () => {
-    // Handle the logic for sending a friend request
-    console.log('Friend request sent');
-  };
+const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, error, allAccounts, query, userEmail, receivedFriendRequestList, sentFriendRequestList}) => {
   const backButtonStyle: React.CSSProperties = {
     color: '#FE9834',
     cursor: 'pointer',
@@ -66,15 +63,9 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
     marginRight: '8px', // Adjust the right margin
     fontSize: '1.2em', // Set the font size for the "<" symbol
   };
-  const handleRevokeFriendRequest = () => {
-    // Handle the logic for revoking a friend request
-    console.log('Friend request revoked');
-  };
 
   const states = getStates();
 
-  //console.log(receivedFriendRequestList);
-  //console.log(states)
   const allProfiles = allAccounts.map((account) => ({
     name: `${account.fname} ${account.lname}`,
     // state: states[account.location - 1].name,
@@ -101,6 +92,7 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
     if (query.trim() === '') {
       setFilteredProfiles([]); // If the query is empty, set filteredProfiles to an empty array
     } else {
+      // need to exclude own profile
       const filteredProfiles = allProfiles.filter((profile) =>
         profile.name.toLowerCase().includes(query.toLowerCase())
       );
@@ -113,7 +105,7 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
   
 
 
-  const [filteredUsers, setFilteredUsers] = useState<VolunteerAccount[]>([]);
+  
   const [filteredProfiles, setFilteredProfiles] = useState<
     Array<{
       name: string;
@@ -194,7 +186,7 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
             mt={6}
             sx={{ margin: "25 0px" }}
           >
-            {filteredProfiles && <ProfileDisplayCase account={account} userEmail={userEmail} profiles={filteredProfiles} useBadges={true} receivedFriendRequestList={receivedFriendRequestList} />}
+            {filteredProfiles && <ProfileDisplayCase account={account} userEmail={userEmail} profiles={filteredProfiles} useBadges={true} receivedFriendRequestList={receivedFriendRequestList} sentFriendRequestList = {sentFriendRequestList} />}
           </Grid>
         </Grid>
       </Grid>
@@ -243,11 +235,13 @@ export const getServerSideProps = async (context: any) => {
 
     // prop for friend requests received from other users 
     const receivedFriendRequestList = []
-    for (let i = 0; i < allAccounts.length; i++) {
-      if (allAccounts[i].friendRequests.includes(volunteerAccount.email)) {
-        receivedFriendRequestList.push(allAccounts[i].email);
-      }
-    }
+    // for (let i = 0; i < allAccounts.length; i++) {
+    //   if (allAccounts[i].friendRequests.includes(volunteerAccount.email)) {
+    //     receivedFriendRequestList.push(allAccounts[i].email);
+    //   }
+    // }
+    const receivedFriendRequests = volunteerAccount.friendRequests
+    const sentFriendRequests = volunteerAccount.sentFriendRequests
 
     return {
       props: {
@@ -260,7 +254,8 @@ export const getServerSideProps = async (context: any) => {
         error: null,
         query: query ? query : null,
         userEmail: email,
-        receivedFriendRequestList: receivedFriendRequestList,
+        receivedFriendRequestList: receivedFriendRequests,
+        sentFriendRequestList: sentFriendRequests,
       },
     };
   } catch (e: Error | any) {
