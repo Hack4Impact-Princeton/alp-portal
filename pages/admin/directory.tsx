@@ -412,6 +412,10 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
 
+  const [name, updateName] = useState(account.fname + " " + account.lname)
+  const [adminState, updateAdminState] = useState("City, State")
+  const [affiliation, updateAffiliation] = useState("Affiliation")
+
   return (
     <>
       <AdminPageContainer
@@ -452,9 +456,9 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
                 <ModeIcon sx={{color: "white"}}/>
             </IconButton>
         </Grid>
-        <Grid >
-            <div style={{border:"1.5px solid #C9C9C9", backgroundColor: "F5F5F5", width:"60%"}}>
-                <p>Placeholder for admin personal info here</p>
+        <Grid marginTop={2}>
+            <div style={{border:"1.5px solid #C9C9C9", backgroundColor: "#F5F5F5", width:"50%", padding: 20, borderRadius: "5px"}}>
+                <p>{name} | {adminState} | {affiliation}</p>
             </div>
         </Grid>
         <Grid display="flex" alignItems={"center"} marginTop={3}>
@@ -488,6 +492,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
             marginLeft: 20,
             flexDirection: "column",
             marginBottom: 2,
+            marginTop: 1,
           }}
         >
           <AdminTable
