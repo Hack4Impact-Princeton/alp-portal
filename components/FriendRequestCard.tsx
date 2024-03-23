@@ -49,7 +49,7 @@ const FriendRequestCard: React.FC<FriendRequestCardProps> = ({
         </Badge>
         <div style={{ marginLeft: '10px', flex: 1 }}> {/* Add margin to separate profile picture and information */}
           <Typography variant="h6">{name}</Typography>
-          <Typography variant="subtitle1">{reqEmail}</Typography>
+          <Typography variant="subtitle1">affiliation here</Typography>
           <Typography variant="caption" color="textSecondary">
             {"Date here"} | {state}
           </Typography>

@@ -37,7 +37,6 @@ type PostProps = {
   friendRequests: string[];
   allVolunteers: VolunteerAccount[];
   refreshPosts: (post_id: string) => void;
-  allAccounts: VolunteerAccount[];
 };
 
 const Forum: NextPage<PostProps> = ({
@@ -50,7 +49,6 @@ const Forum: NextPage<PostProps> = ({
   account,
   friendRequests,
   allVolunteers,
-  allAccounts
 }) => {
   const [active, setActive] = useState("friends");
   const [friendBtn, setFriendBtn] = useState("requests");
@@ -125,20 +123,29 @@ const Forum: NextPage<PostProps> = ({
                 container
                 flexDirection="row"
                 spacing={3}
+               
               >
-                <Grid2>
+                <Grid2  marginBottom={1}>
                   <Button
                     variant="contained"
                     disableElevation
                     sx={{
-                      borderRadius: 0,
+                      borderRadius: 1,
                       backgroundColor:
                         active === "friends" ? "#F3D39A" : "#F5F5F5",
                       color: "#5F5F5F",
+                      fontFamily:"Epilogue",
+                      outline:"none",
+                      fontSize:"100%",
+                      fontWeight:"bold",
+                      '&:hover': {
+                        backgroundColor:"#D3A874", 
+                      },
+                      textTransform:"none",                      
                     }}
                     onClick={() => setActive("friends")}
                   >
-                    Friend's posts
+                    Friend's Posts
                   </Button>
                 </Grid2>
                 <Grid2>
@@ -146,13 +153,22 @@ const Forum: NextPage<PostProps> = ({
                     variant="contained"
                     disableElevation
                     sx={{
-                      borderRadius: 0,
-                      backgroundColor: active === "all" ? "#F3D39A" : "#F5F5F5",
+                      borderRadius: 1,
+                      backgroundColor:
+                        active === "all" ? "#F3D39A" : "#F5F5F5",
                       color: "#5F5F5F",
+                      fontFamily:"Epilogue",
+                      outline:"none",
+                      fontSize:"100%",
+                      fontWeight:"bold",
+                      '&:hover': {
+                        backgroundColor:"#D3A874", 
+                      },
+                      textTransform:"none",
                     }}
                     onClick={() => setActive("all")}
                   >
-                    All posts
+                    All Posts
                   </Button>
                 </Grid2>
                 <Grid2>
@@ -160,13 +176,22 @@ const Forum: NextPage<PostProps> = ({
                     variant="contained"
                     disableElevation
                     sx={{
-                      borderRadius: 0,
-                      backgroundColor: active === "my" ? "#F3D39A" : "#F5F5F5",
+                      borderRadius: 1,
+                      backgroundColor:
+                        active === "my" ? "#F3D39A" : "#F5F5F5",
                       color: "#5F5F5F",
+                      fontFamily:"Epilogue",
+                      outline:"none",
+                      fontSize:"100%",
+                      fontWeight:"bold",
+                      '&:hover': {
+                        backgroundColor:"#D3A874", 
+                      },
+                      textTransform:"none",       
                     }}
                     onClick={() => setActive("my")}
                   >
-                    My posts
+                    My Posts
                   </Button>
                 </Grid2>
               </Grid2>
@@ -228,16 +253,24 @@ const Forum: NextPage<PostProps> = ({
               <Grid2>
                 <h1 style={{ color: "#FE9834" }}>Friends</h1>
               </Grid2>
-              <Grid2 sx={{ marginTop: 2 }} >
+              <Grid2 sx={{ marginTop: 2 }} marginBottom={2}>
                 <Button
                   variant="contained"
                   disableElevation
                   sx={{
-                    borderRadius: 0,
+                    borderRadius: 1,
                     backgroundColor:
                       friendBtn === "friends" ? "#F3D39A" : "#F5F5F5",
                     color: "#5F5F5F",
-                    mr: 2
+                    mr: 2,
+                    fontFamily:"Epilogue",
+                    outline:"none",
+                    fontSize:"100%",
+                    fontWeight:"bold",
+                    '&:hover': {
+                      backgroundColor:"#D3A874", 
+                    },
+                    textTransform:"none",       
                   }}
                   onClick={() => setFriendBtn("friends")}
                 >
@@ -247,10 +280,18 @@ const Forum: NextPage<PostProps> = ({
                   variant="contained"
                   disableElevation
                   sx={{
-                    borderRadius: 0,
+                    borderRadius: 1,
                     backgroundColor:
                       friendBtn === "requests" ? "#F3D39A" : "#F5F5F5",
                     color: "#5F5F5F",
+                    fontFamily:"Epilogue",
+                    outline:"none",
+                    fontSize:"100%",
+                    fontWeight:"bold",
+                    '&:hover': {
+                      backgroundColor:"#D3A874", 
+                    },
+                    textTransform:"none",    
                   }}
                   onClick={() => setFriendBtn("requests")}
                 >
@@ -264,6 +305,7 @@ const Forum: NextPage<PostProps> = ({
                       myFriends={account.friends}
                       myEmail={email}
                       allVolunteers={allVolunteers}
+                      myAccount={account}
                     />
                   </div>
                 )}
@@ -316,26 +358,24 @@ export const getServerSideProps = async (context: any) => {
     /*const account: VolunteerAccount = (await VolunteerAccount.findOne({
       email: session.user?.email,
     })) as VolunteerAccount;*/
-    const allAccounts = await VolunteerAccount.find({}) as VolunteerAccount[]
     //const name = account.fname + " " + account.lname;
     //console.log("account", account);
     // console.log("account email", account.email);
     const friendList = account.friends;
 
     const userName = account.fname + " " + account.lname;
-    console.log(userName);
     const volunteerEmail = account.email;
-    console.log(volunteerEmail);
-    console.log("friendslist", friendList);
-
+   
     const Posts: mongoose.Model<Posts> = getPostModel();
 
-    const allPosts = (await Posts.find()) as Posts[];
+    let publicPosts = (await Posts.find()) as Posts[];
+    publicPosts = publicPosts.reverse();
+
     // console.log("posts", allPosts);
     let friendsPosts: Posts[] = [];
     let myPosts: Posts[] = [];
 
-    allPosts.forEach((p) => {
+    publicPosts.forEach((p) => {
       friendList.forEach((f) => {
         if (f === p.email) {
           friendsPosts.push(p);
@@ -346,6 +386,12 @@ export const getServerSideProps = async (context: any) => {
       }
     });
 
+    const filteredPublicPosts = publicPosts.filter(post => 
+                    post.is_public 
+                    || post.is_public === undefined
+                    || post.email === account.email
+                   )
+
     console.log("friends posts", friendsPosts);
     console.log("my posts", myPosts);
 
@@ -353,11 +399,10 @@ export const getServerSideProps = async (context: any) => {
     return {
       props: {
         friendsPosts: JSON.parse(JSON.stringify(friendsPosts)),
-        allPosts: JSON.parse(JSON.stringify(allPosts)),
+        allPosts: JSON.parse(JSON.stringify(filteredPublicPosts)),
         myPosts: JSON.parse(JSON.stringify(myPosts)),
         chatInfo: JSON.parse(JSON.stringify(chatInfo)),
         account: JSON.parse(JSON.stringify(account)),
-        allAccounts: JSON.parse(JSON.stringify(allAccounts)),
         username: userName,
         email: volunteerEmail,
         friendRequests: JSON.parse(JSON.stringify(account.friendRequests)),

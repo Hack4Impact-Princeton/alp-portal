@@ -45,8 +45,10 @@ const LeaderTable: React.FC<TableProps> = ({ data, boardType }) => {
   console.log(data);
   console.log(typeof data);
 
-  // const [rank, setRank] = useState(0);
-  const rank = [];
+
+  // Take only the first 10 entries
+  const slicedData = data.slice(0, 10);
+
   return (
     <Grid2>
       <TableContainer component={Paper}>
@@ -68,13 +70,13 @@ const LeaderTable: React.FC<TableProps> = ({ data, boardType }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((d, rank) => (
+            {slicedData.map((d, index) => (
               <TableRow
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                key={d.userName}
+                key={index}
               >
                 <StyledTableCell component="th" scope="row">
-                  <p>{rank+1}</p>
+                  <p>{index + 1}</p>
                 </StyledTableCell>
                 <StyledTableCell component="th" scope="row">
                   <p>{d.userName}</p>
