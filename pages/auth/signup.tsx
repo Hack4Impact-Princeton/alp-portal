@@ -22,6 +22,7 @@ import {
   LanguageSelect,
 } from "react-country-state-city";
 import "react-country-state-city/dist/react-country-state-city.css";
+import { wrap } from 'module';
 
 const Signup = () => {
     const states = getStates()
@@ -122,7 +123,7 @@ const Signup = () => {
         <div className="auth-bg" >
             <div style={{
                 height: 'wrap-content',
-                marginTop: "2%",
+                marginTop: isSmallScreen? "7vw":"2vw" ,
                 marginBottom: "1%",
             }}>
                 
@@ -174,13 +175,13 @@ const Signup = () => {
                             />
                         </Box>
                         </div>
-                    <div style={{ display: "flex", flexDirection: isSmallScreen ? 'column' : 'row', alignItems: "start" }}></div>
+                    <div style={{ display: "flex", flexDirection: isSmallScreen ? 'column' : 'row', alignItems: "start", marginLeft: isSmallScreen ? 0: 10 }}></div>
                      <Box
                         sx={{
                             width: 350,
                             height: "wrap-content",
                         }}>
-                            <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>          
+                            <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: isSmallScreen? 3: 4.5 }}>          
                             <CountrySelect 
                                 onChange={(e : any) => {
                                 setCountryid(e.id);
@@ -190,7 +191,7 @@ const Signup = () => {
                             />
                             </FormControl> 
                             <br></br>
-                                   <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>            
+                                   <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: isSmallScreen? 3: 4.5}}>            
                             <StateSelect
                                 countryid={countryid}
                                 onChange={(e: any) => {
@@ -200,7 +201,7 @@ const Signup = () => {
                             />
                             </FormControl>      
                         <br></br>
-                        <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>
+                        <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: isSmallScreen? 3: 4.5 }}>
                                 <CitySelect
                                     countryid={countryid}
                                     stateid={stateid}
@@ -228,8 +229,10 @@ const Signup = () => {
                                      </Box>
                                 </div>
                         <br></br>
-                        <p style={{ fontSize: 10, color: "white" }}>You can unsubscribe at any time by clicking the link in the footer of our emails. For information about our privacy practices, please visit our website.</p>
-                                <Button variant="contained"
+                        <div style={{width: isSmallScreen? 350:700}}> 
+                            <p style={{ fontSize: 15, color: "white" }}>You can unsubscribe at any time by clicking the link in the footer of our emails. For information about our privacy practices, please visit our website.</p>
+                        </div>
+                    <Button variant="contained"
                     onClick={signUpHandler}
                     sx={{
                         marginTop: 2,
@@ -243,12 +246,13 @@ const Signup = () => {
                         width: '150px',
                         height: '50px',
                         marginLeft: 'auto',
-                        marginRight: 'auto'
+                        marginRight: 'auto',
+                        fontFamily:"Epilogue",
                     }}>Sign up</Button>
 
                 </div>
                 <Link passHref style={{ color: "white" }} href="/auth/login">
-                    <a style={{ color: "white", textDecoration: "none" }}>
+                    <a style={{ color: "white", textDecoration: "none",marginBottom: isSmallScreen? 20:0 }}>
                         Already have an account?
                     </a>
                 </Link>
