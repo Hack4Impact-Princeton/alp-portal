@@ -1,6 +1,9 @@
-import { VolunteerAccount } from "../models/VolunteerAccount";
+import mongoose from "mongoose";
+import getVolunteerAccountModel, { VolunteerAccount } from "../models/VolunteerAccount";
 
-export const sendFriendRequest = async (email1: string, email2: string) => {
+// TO DO: add a revokeFriendRequest function (diff from remove)
+
+/*export const sendFriendRequest = async (email1: string, email2: string) => {
   try {
     // const volunteer1res = await fetch(`/api/volunteeraccounts/${email1}`, {
     //   method: "GET",
@@ -51,7 +54,35 @@ export const sendFriendRequest = async (email1: string, email2: string) => {
     console.error(e);
     return { success: false, error: e };
   }
+};*/
+export const sendFriendRequest = async (email1: string, email2: string) => {
+  try {
+    const volunteer1res = await fetch(`/api/volunteeraccounts/${email1}`, {
+      method: "GET",
+    });
+    const volunteer2res = await fetch(`/api/volunteeraccounts/${email2}`, {
+      method: "GET",
+    });
+    if (!volunteer1res.ok)
+      throw new Error(`Could not find an account with email ${email1}`);
+    if (!volunteer2res.ok)
+      throw new Error(`Could not find an account with email ${email2}`);
+    const volunteer1 = (await volunteer1res.json()).data as VolunteerAccount;
+    const volunteer2 = (await volunteer2res.json()).data as VolunteerAccount;
+    const requestArray1 = [...volunteer1.friendRequests, volunteer2.email];
+    console.log(requestArray1);
+
+    const res1 = await fetch(`/api/volunteeraccounts/${email1}`, {
+      method: "PATCH",
+      body: JSON.stringify({ friendRequests: requestArray1 }),
+    });
+    return { success: true, data: "hi" };
+  } catch (e: Error | any) {
+    console.error(e);
+    return { success: false, error: e };
+  }
 };
+
 
 const approveFriendRequest = async (email1: string, email2: string) => {
   try {

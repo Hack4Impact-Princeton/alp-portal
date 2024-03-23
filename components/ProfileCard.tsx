@@ -1,6 +1,6 @@
 import React from "react";
-import { BadgeType } from "../models/VolunteerAccount";
-import sendFriendRequest from "../db_functions/friending";
+import  { VolunteerAccount, BadgeType } from "../models/VolunteerAccount";
+import {sendFriendRequest} from "../db_functions/friending";
 //import {sendFriendRequest, approveFriendRequest, removeFriendRequest, removeFriend} from "../db_functions/friending"
 
 type ProfileCardProps = {
@@ -160,15 +160,17 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
     margin: "4px 0",
   };
 
-  const handleSendFriendRequest = (firstEmail, secEmail) => {
+  const handleSendFriendRequest = (userEmail: string, email: string) => {
     console.log("in handleSendFriendRequest");
     setFriendStatus("sent");
-    //sendFriendRequest(firstEmail, secEmail);
+    sendFriendRequest(email, userEmail); // the way the function is written in friending.ts has the order reversed so
     // setShowRevokeButton(true);
   };
 
-  const handleRevokeFriendRequest = () => {
+  const handleRevokeFriendRequest = (userEmail:string, email: string) => {
+    console.log("in handleRevokeFriendRequest")
     setFriendStatus("none");
+    // insert some revokeFriendRequest function here (import from friending.ts)
   };
 
   const handleAcceptFriendRequest = () => {
@@ -209,7 +211,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           <button
             style={buttonStyle}
             onClick={() => {
-              handleRevokeFriendRequest();
+              handleRevokeFriendRequest(userEmail, email);
               setFriendStatus("none");
             }}
           >
@@ -218,7 +220,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         )}
         {(friendStatus === "received" || friendStatus === "friends") &&
           showRevokeButton && (
-            <button style={buttonStyle} onClick={handleRevokeFriendRequest}>
+            <button style={buttonStyle} onClick={()=> handleRevokeFriendRequest(userEmail, email)}>
               Unfriend
             </button>
           )}
