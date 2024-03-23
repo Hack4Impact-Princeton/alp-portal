@@ -172,7 +172,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
               startDate: new Date(),
               country: `${curBookDrive["Country: Countries Name"]}`,
               status: 0,
-              booksGoal: (curBookDrive["Book Drive Name"].endsWith('h drive'))?500:1000,
+              booksGoal: (curBookDrive["Book Drive Name"].endsWith('h drive')) ? 500 : 1000,
               completedDate: new Date(),
               mailDate: new Date(),
               reactivationRequestId: null,
@@ -244,14 +244,14 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
             `Uploaded book drive with code: ${bookDrives[i]["driveCode"]}`
           );
           // add to volunteer account
-          const res = await fetch(`../api/volunteeraccounts/${bookDrives[i]["email"]}` ,{
+          const res = await fetch(`../api/volunteeraccounts/${bookDrives[i]["email"]}`, {
             method: "GET"
           })
           if (!res.ok) continue; // no account found
           const account = await res.json().then(res => res.data);
           if (bookDrives[i]["driveCode"] in account.driveIds) continue;
           account.driveIds.push(bookDrives[i]["driveCode"])
-          const resp = await fetch(`../api/volunteeraccounts/${bookDrives[i]["email"]}` ,{
+          const resp = await fetch(`../api/volunteeraccounts/${bookDrives[i]["email"]}`, {
             method: "PATCH",
             body: JSON.stringify(account)
           }).then(res => res.json())
@@ -527,6 +527,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
           >
             <AdminSidebar
               email={account.email}
+              senderName={`${account.fname} ${account.lname.substring(0, 1)}`}
               updateBookDriveStatus={updateBookDriveStatus}
               driveData={sidebarDriveDatum}
               removeReactivationReq={removeReactivationReq}
@@ -535,59 +536,59 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
         )}
       </Grid>
 
-      <Fab aria-label="upload" 
+      <Fab aria-label="upload"
         onClick={handleFABClick}
         sx={{
-          backgroundColor:"#fe9834",color:"white",
+          backgroundColor: "#fe9834", color: "white",
           margin: 0,
           top: 'auto',
           right: 20,
           bottom: 20,
           left: 'auto',
           position: 'fixed',
-          height:"10vh",
-          width:"10vh"
+          height: "10vh",
+          width: "10vh"
         }}
       >
-        <FileUploadIcon sx={{ fontSize: '5vh' }}/>
+        <FileUploadIcon sx={{ fontSize: '5vh' }} />
       </Fab>
 
       <Popper id={id} open={open} anchorEl={anchorEl}>
-          <Grid>
-            <div
-              style={{
-                margin: "1rem",
-                border: "2px solid #9C9C9C",
-                padding: "1rem",
-                borderRadius: "5px",
-                background: "#F5F5F5",
-                height:"20vh"
-              }}
-            >
-              <h3 className="page-header mb-4">Upload a CSV</h3>
-              <div className="mb-4">
-                <input
-                  type="file"
-                  className="form-control"
-                  onChange={changeHandler}
-                />
-              </div>
-              <button
-                onClick={handleUploadCSV}
-                disabled={!uploaded}
-                className="btn btn-primary"
-              >
-                {uploaded ? "Parse Different Drives" : "Parse Drives"}
-              </button>
-              <button
-                onClick={uploadDrives}
-                disabled={!uploaded}
-                className="btn btn-primary"
-              >
-                Upload Bookdrives
-              </button>
+        <Grid>
+          <div
+            style={{
+              margin: "1rem",
+              border: "2px solid #9C9C9C",
+              padding: "1rem",
+              borderRadius: "5px",
+              background: "#F5F5F5",
+              height: "20vh"
+            }}
+          >
+            <h3 className="page-header mb-4">Upload a CSV</h3>
+            <div className="mb-4">
+              <input
+                type="file"
+                className="form-control"
+                onChange={changeHandler}
+              />
             </div>
-          </Grid>
+            <button
+              onClick={handleUploadCSV}
+              disabled={!uploaded}
+              className="btn btn-primary"
+            >
+              {uploaded ? "Parse Different Drives" : "Parse Drives"}
+            </button>
+            <button
+              onClick={uploadDrives}
+              disabled={!uploaded}
+              className="btn btn-primary"
+            >
+              Upload Bookdrives
+            </button>
+          </div>
+        </Grid>
       </Popper>
 
     </>
