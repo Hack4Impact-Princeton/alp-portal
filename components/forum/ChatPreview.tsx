@@ -88,8 +88,12 @@ const ChatPreview: React.FC<{ chat: Chat, user: VolunteerAccount, otherUser: Vol
     <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "#FFFFFF", borderRadius: "8px", boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)", padding: "20px", maxWidth: "320px" }}>
         <h2 style={{ color: "#333333", marginBottom: "20px", textAlign: "center" }}>{`Are you sure you want to delete chat with ${otherUser.fname} ${otherUser.lname}?`}</h2>
         <div style={{ display: "flex", justifyContent: "center" }}>
-            <Button variant="contained" color="primary" onClick={handleDeleteChat} sx={{ marginRight: "10px" }}>Yes</Button>
-            <Button variant="contained" color= "error" onClick={() => setShowDeleteModal(false)}>No</Button>
+            <Button variant="contained" onClick={handleDeleteChat} sx={{ marginRight: "10px", fontFamily:"Epilogue",'&:hover': {
+                        backgroundColor:"#D3A874", 
+                      }, backgroundColor:"#5F5F5F" }}>Yes</Button>
+            <Button variant="contained" onClick={() => setShowDeleteModal(false)} sx={{fontFamily:"Epilogue",'&:hover': {
+                        backgroundColor:"#D3A874", 
+                      },backgroundColor:"#FE9834"}}>No</Button>
         </div>
     </div>
     </Modal>
@@ -113,7 +117,7 @@ const ChatPreview: React.FC<{ chat: Chat, user: VolunteerAccount, otherUser: Vol
            <button
                 onClick={() => setShowDeleteModal(true)}
                 onMouseEnter={() => setDeleteHovered(true)} onMouseLeave={() => setDeleteHovered(false)} 
-                style={{  backgroundColor: deleteHovered ? "#444444" : "#5F5F5F",border: "none", cursor: "pointer", color: "white", fontSize:15, paddingTop: 10, paddingBottom: 10}}
+                style={{  backgroundColor: deleteHovered ? "#444444" : "#5F5F5F",border: "none", cursor: "pointer", color: "white", fontSize:15, paddingTop: 7, paddingBottom: 10}}
             >
                 x
             </button>
