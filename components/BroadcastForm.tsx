@@ -19,6 +19,7 @@ import sendBroadcast from "../db_functions/sendBroadcast";
 import Link from "next/link";
 type BroadcastFormProps = {
   email: string;
+  senderName: string;
   volunteers: VolunteerAccount[];
   addBroadcast: (broadcast: Broadcast) => void;
   recipient: string | undefined;
@@ -29,6 +30,7 @@ type BroadcastFormProps = {
 
 const BroadcastForm: React.FC<BroadcastFormProps> = ({
   email,
+  senderName,
   volunteers,
   addBroadcast,
   recipient,
@@ -52,6 +54,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
       }, 4000);
       const broadcastRes = await sendBroadcast(
         email,
+        senderName,
         recipients,
         subject,
         message
@@ -73,7 +76,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
     try {
       const subj = "automated broadcast subject";
       const msg = "automated broadcast message";
-      const broadcastRes = await sendBroadcast(email, recipients, subj, msg);
+      const broadcastRes = await sendBroadcast(email, senderName, recipients, subj, msg);
       if (!broadcastRes.success) {
         alert(broadcastRes.error.message);
         return;
@@ -104,27 +107,27 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
   });
   const styles = {
     select: {
-      border:"none",
+      border: "none",
       '&:active': {
         borderColor: '#5F5F5F', // Change the border color on focus
       },
       '&.Mui-focused': {
         borderColor: '#5F5F5F', // Change the border color for the focused state
       },
-      height:"40px",
-      backgroundColor:"#F3D39A",
-      fontFamily:"Epilogue"
+      height: "40px",
+      backgroundColor: "#F3D39A",
+      fontFamily: "Epilogue"
     },
     broadcast: {
-      fontFamily:"Epilogue",
-      backgroundColor:"#F3D39A",
-      outline:"none",
-      fontSize:"100%",
+      fontFamily: "Epilogue",
+      backgroundColor: "#F3D39A",
+      outline: "none",
+      fontSize: "100%",
       marginTop: 2, marginBottom: 4, width: "95%",
-      color:"#5F5F5F",
-      fontWeight:"bold",
+      color: "#5F5F5F",
+      fontWeight: "bold",
       '&:hover': {
-        backgroundColor:"#D3A874", 
+        backgroundColor: "#D3A874",
       },
     },
   };
@@ -150,64 +153,64 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
           backgroundColor: "#F5F5F5",
           width: "95%",
           padding: 2,
-          paddingTop:2,
-          borderRadius:"7px",
+          paddingTop: 2,
+          borderRadius: "7px",
         }}
       >
         <Grid xs={12}>
-          <h3 style={{color:"#5F5F5F",marginBottom:5}}>Recipients:</h3>
+          <h3 style={{ color: "#5F5F5F", marginBottom: 5 }}>Recipients:</h3>
         </Grid>
-        <Grid container  style={{
+        <Grid container style={{
           display: "flex",
-          alignItems:"center",
+          alignItems: "center",
           flexDirection: "row",
         }}>
-      
-        <Grid item xs={5} sx={{ mr:"1%"}}>
-          <FormControl
-            id="volunteer-picker"
-            sx={{ width: "100%",justifyContent:"center",outline:'none',fontFamily:"Epilogue"}}
-          >
-           {/*<InputLabel id="volunteer-label" sx={{fontFamily:"Epilogue", fontColor:"#5F5F5F"}}>Volunteer</InputLabel>*/}
-            <Select sx={styles.select}
-              onChange={updateRecipients}
-              input={<OutlinedInput sx={{fontFamily:"Epilogue"}} label="Volunteer" />}
+
+          <Grid item xs={5} sx={{ mr: "1%" }}>
+            <FormControl
+              id="volunteer-picker"
+              sx={{ width: "100%", justifyContent: "center", outline: 'none', fontFamily: "Epilogue" }}
             >
-              {volunteers.map((volunteer) => (
-                <MenuItem sx={{fontFamily:"Epilogue"}}key={volunteer.alp_id} value={volunteer.email}>{`${
-                  volunteer.fname
-                } ${volunteer.lname.substring(0, 1)}.`}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={4} sx={{mr:"1%"}}>
-        <Button
-          onClick={addAllRecipients}
-          style={{ padding: 5, cursor: "pointer", width:"100%", height:"40px",fontFamily:"Epilogue",
-                    fontWeight:"bold",color:"#5F5F5F",textTransform: 'none',outline:"none",backgroundColor:"#F3D39A",fontSize:"100%"
-                  }}
-        >
-          Add all volunteers
-        </Button>
-      </Grid>
-      <Grid item xs={2.5} sx={{mr:"1%"}}>
-        <Button
-          onClick={()=> setRecipients([])}
-          style={{
-            display: "flex",
-            width: "100%",
-            padding: 5,
-            cursor: "pointer",
-            height:"40px",
-            fontWeight:"bold",color:"#5F5F5F",textTransform: 'none',outline:"none",backgroundColor:"#F3D39A",fontSize:"100%"
-          }}
-        >
-          Clear all
-          </Button>
+              {/*<InputLabel id="volunteer-label" sx={{fontFamily:"Epilogue", fontColor:"#5F5F5F"}}>Volunteer</InputLabel>*/}
+              <Select sx={styles.select}
+                onChange={updateRecipients}
+                input={<OutlinedInput sx={{ fontFamily: "Epilogue" }} label="Volunteer" />}
+              >
+                {volunteers.map((volunteer) => (
+                  <MenuItem sx={{ fontFamily: "Epilogue" }} key={volunteer.alp_id} value={volunteer.email}>{`${volunteer.fname
+                    } ${volunteer.lname.substring(0, 1)}.`}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={4} sx={{ mr: "1%" }}>
+            <Button
+              onClick={addAllRecipients}
+              style={{
+                padding: 5, cursor: "pointer", width: "100%", height: "40px", fontFamily: "Epilogue",
+                fontWeight: "bold", color: "#5F5F5F", textTransform: 'none', outline: "none", backgroundColor: "#F3D39A", fontSize: "100%"
+              }}
+            >
+              Add all volunteers
+            </Button>
+          </Grid>
+          <Grid item xs={2.5} sx={{ mr: "1%" }}>
+            <Button
+              onClick={() => setRecipients([])}
+              style={{
+                display: "flex",
+                width: "100%",
+                padding: 5,
+                cursor: "pointer",
+                height: "40px",
+                fontWeight: "bold", color: "#5F5F5F", textTransform: 'none', outline: "none", backgroundColor: "#F3D39A", fontSize: "100%"
+              }}
+            >
+              Clear all
+            </Button>
           </Grid>
         </Grid>
-        
+
         <Grid xs={12}>
           <RecipientList
             recipients={recipients}
@@ -281,8 +284,9 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
                   fontFamily: 'Epilogue',
                 },
               }}
-              sx={{ width: "95%", minWidth: "500px" , fontFamily:"Epilogue"
-            }}
+              sx={{
+                width: "95%", minWidth: "500px", fontFamily: "Epilogue"
+              }}
             />
             <Button
               variant="contained"

@@ -88,6 +88,7 @@ const BroadcastPage: NextPage<BroadcastPageProps> = ({
 
         <BroadcastForm
           email={account.email}
+          senderName={`${account.fname} ${account.lname.substring(0, 1)}`}
           volunteers={volunteers}
           addBroadcast={addBroadcast}
           recipient={recipient}

@@ -10,7 +10,6 @@ import Button from "@mui/material/Button";
 const ChatPreview: React.FC<{ chat: Chat, user: VolunteerAccount, otherUser: VolunteerAccount, createChatByEmail: (email: string) => void, setCurrChatAndOtherUser: Dispatch<SetStateAction<{ otherUser: VolunteerAccount; chat: Chat } | null>>, chatIndex: number, chatInfo: { otherUser: VolunteerAccount, chat: Chat }[] }> = ({ chatIndex, chatInfo, user, otherUser, setCurrChatAndOtherUser }) => {
     const [chatHovered, setChatHovered] = useState(false)
     const [deleteHovered, setDeleteHovered] = useState(false)
-
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const handleDeleteChat = () => {
@@ -84,6 +83,7 @@ const ChatPreview: React.FC<{ chat: Chat, user: VolunteerAccount, otherUser: Vol
                     </div>
                 }
             </div>
+
     <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
     <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "#FFFFFF", borderRadius: "8px", boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)", padding: "20px", maxWidth: "320px" }}>
         <h2 style={{ color: "#333333", marginBottom: "20px", textAlign: "center" }}>{`Are you sure you want to delete chat with ${otherUser.fname} ${otherUser.lname}?`}</h2>
@@ -104,7 +104,7 @@ const ChatPreview: React.FC<{ chat: Chat, user: VolunteerAccount, otherUser: Vol
                     <p style={{ textAlign: "right", color: "white", paddingRight: "10px", fontSize: 8, marginBottom: "5px" }}>
                         {date}
                     </p>
-            
+
                     {(chat.participantAEmail === user.email ? (!chat.seenByParticipantA && lastMessage) : (!chat.seenByParticipantB && lastMessage)) &&
                         <div style={{ display: "flex", marginLeft: "auto", marginRight: "9px", marginTop: "2px" }}>
                             <CircularIcon diameter={"12"} bgColor="#FE9835" />
