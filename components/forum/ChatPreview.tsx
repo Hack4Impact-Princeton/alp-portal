@@ -9,6 +9,7 @@ import Button from "@mui/material/Button";
 
 const ChatPreview: React.FC<{ chat: Chat, user: VolunteerAccount, otherUser: VolunteerAccount, createChatByEmail: (email: string) => void, setCurrChatAndOtherUser: Dispatch<SetStateAction<{ otherUser: VolunteerAccount; chat: Chat } | null>>, chatIndex: number, chatInfo: { otherUser: VolunteerAccount, chat: Chat }[] }> = ({ chatIndex, chatInfo, user, otherUser, setCurrChatAndOtherUser }) => {
     const [chatHovered, setChatHovered] = useState(false)
+    const [deleteHovered, setDeleteHovered] = useState(false)
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const handleDeleteChat = () => {
@@ -58,8 +59,9 @@ const ChatPreview: React.FC<{ chat: Chat, user: VolunteerAccount, otherUser: Vol
     }
 
     return (
+        <div style={{display:"flex"}}>
         <div onClick={() => setCurrChatAndOtherUser(chatInfo[chatIndex])} onMouseEnter={() => setChatHovered(true)} onMouseLeave={() => setChatHovered(false)} style={{
-            display: "flex", flexDirection: "row", alignItems: "center", width: "100%", height: "65px", backgroundColor: chatHovered ? "#444444" : "#5F5F5F", paddingTop: "10px", padding: "5px", cursor: "pointer",
+            display: "flex", flexDirection: "row", alignItems: "center", width: "93%", height: "65px", backgroundColor: chatHovered ? "#444444" : "#5F5F5F", paddingTop: "10px", padding: "5px", cursor: "pointer",
         }}>
             <div style={{ marginRight: "10px", marginLeft: "10px" }}>
                 {userIcon}
@@ -81,15 +83,20 @@ const ChatPreview: React.FC<{ chat: Chat, user: VolunteerAccount, otherUser: Vol
                     </div>
                 }
             </div>
-                     <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+
+    <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
     <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "#FFFFFF", borderRadius: "8px", boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)", padding: "20px", maxWidth: "320px" }}>
         <h2 style={{ color: "#333333", marginBottom: "20px", textAlign: "center" }}>{`Are you sure you want to delete chat with ${otherUser.fname} ${otherUser.lname}?`}</h2>
         <div style={{ display: "flex", justifyContent: "center" }}>
-            <Button variant="contained" color="error" onClick={handleDeleteChat} sx={{ marginRight: "10px" }}>Yes</Button>
-            <Button variant="contained" onClick={() => setShowDeleteModal(false)}>No</Button>
+            <Button variant="contained" onClick={handleDeleteChat} sx={{ marginRight: "10px", fontFamily:"Epilogue",'&:hover': {
+                        backgroundColor:"#D3A874", 
+                      }, backgroundColor:"#5F5F5F" }}>Yes</Button>
+            <Button variant="contained" onClick={() => setShowDeleteModal(false)} sx={{fontFamily:"Epilogue",'&:hover': {
+                        backgroundColor:"#D3A874", 
+                      },backgroundColor:"#FE9834"}}>No</Button>
         </div>
     </div>
-</Modal>
+    </Modal>
 
             {lastMessage &&
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "stretch", height: "100%", width: "100%", alignSelf: "start", marginTop: "10px" }}>
@@ -97,18 +104,24 @@ const ChatPreview: React.FC<{ chat: Chat, user: VolunteerAccount, otherUser: Vol
                     <p style={{ textAlign: "right", color: "white", paddingRight: "10px", fontSize: 8, marginBottom: "5px" }}>
                         {date}
                     </p>
-                              <button
-                onClick={() => setShowDeleteModal(true)}
-                style={{ backgroundColor: "transparent", border: "none", cursor: "pointer", marginTop: "5px", color: "red", marginLeft: "65px" }}
-            >
-                X
-            </button>
+
                     {(chat.participantAEmail === user.email ? (!chat.seenByParticipantA && lastMessage) : (!chat.seenByParticipantB && lastMessage)) &&
                         <div style={{ display: "flex", marginLeft: "auto", marginRight: "9px", marginTop: "2px" }}>
                             <CircularIcon diameter={"12"} bgColor="#FE9835" />
                         </div>
                     }
                 </div>}
+        </div>
+        <div 
+            style={{ width:"7%", display:'flex', alignItems:'center', justifyContent:'left',}}>
+           <button
+                onClick={() => setShowDeleteModal(true)}
+                onMouseEnter={() => setDeleteHovered(true)} onMouseLeave={() => setDeleteHovered(false)} 
+                style={{  backgroundColor: deleteHovered ? "#444444" : "#5F5F5F",border: "none", cursor: "pointer", color: "white", fontSize:15, paddingTop: 7, paddingBottom: 10}}
+            >
+                x
+            </button>
+            </div>
         </div>
     )
 }
