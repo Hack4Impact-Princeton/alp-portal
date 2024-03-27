@@ -69,13 +69,20 @@ export const sendFriendRequest = async (email1: string, email2: string) => {
       throw new Error(`Could not find an account with email ${email2}`);
     const volunteer1 = (await volunteer1res.json()).data as VolunteerAccount;
     const volunteer2 = (await volunteer2res.json()).data as VolunteerAccount;
-    const requestArray1 = [...volunteer1.friendRequests, volunteer2.email];
+    const requestArray1 = [...volunteer1.sentFriendRequests, volunteer2.email];
     console.log(requestArray1);
 
+    // email 1 is sending request to email 2
+    // volunteer1 sentFriendRequests array will append email 2
+    // volunteeer2 friendRequests array will append email 1
     const res1 = await fetch(`/api/volunteeraccounts/${email1}`, {
       method: "PATCH",
-      body: JSON.stringify({ friendRequests: requestArray1 }),
+      body: JSON.stringify({ sentFriendRequests: requestArray1 }),
     });
+    const res2 = await fetch(`/api/volunteeraccounts/${email2}`, {
+      method: "PATCH",
+      body: JSON.stringify({ friendRequests: [...volunteer2.friendRequests, volunteer1.email]})
+    })
     return { success: true, data: "hi" };
   } catch (e: Error | any) {
     console.error(e);
@@ -84,7 +91,10 @@ export const sendFriendRequest = async (email1: string, email2: string) => {
 };
 
 
-const approveFriendRequest = async (email1: string, email2: string) => {
+// volunteer1 got friend request from volunteer2 and is approving it
+// so volunteer1 has to remove volunteer2 from its friendRequest array
+// and volunteer2 has to remove volunteer1 from its sentFriendRequest array
+export const approveFriendRequest = async (email1: string, email2: string) => {
   try {
     const volunteer1res = await fetch(`/api/volunteeraccounts/${email1}`, {
       method: "GET",
@@ -105,6 +115,11 @@ const approveFriendRequest = async (email1: string, email2: string) => {
       method: "PATCH",
       body: JSON.stringify({ friends: friendsArray1 }),
     });
+    const friendsArray2 = [...volunteer2.friends, volunteer1.email];
+    const res2 = await fetch(`/api/volunteeraccounts/${email2}`, {
+      method: "PATCH",
+      body: JSON.stringify({ friends: friendsArray2 }),
+    });
     const done = await removeFriendRequest(email1, email2);
 
     if (!res1.ok)
@@ -115,8 +130,13 @@ const approveFriendRequest = async (email1: string, email2: string) => {
     return { success: false, error: e };
   }
 };
+
+
+// so volunteer1 has to remove volunteer2 from its friendRequest array
+// and volunteer2 has to remove volunteer1 from its sentFriendRequest array
 export const removeFriendRequest = async (email1: string, email2: string) => {
   try {
+    console.log("Removing requests now")
     const volunteer1res = await fetch(`/api/volunteeraccounts/${email1}`, {
       method: "GET",
     });
@@ -136,31 +156,29 @@ export const removeFriendRequest = async (email1: string, email2: string) => {
     const friendsArray1 = volunteer1.friendRequests.filter(
       (friend) => friend !== volunteer2.email
     );
-    const friendsArray2 = volunteer2.friendRequests.filter(
+    const friendsArray2 = volunteer2.sentFriendRequests.filter(
       (friend) => friend !== volunteer1.email
     );
+    
+    console.log("first cleaning up " + email1 + " friendRequests")
     const res1 = await fetch(`/api/volunteeraccounts/${email1}`, {
       method: "PATCH",
       body: JSON.stringify({ friendRequests: friendsArray1 }),
     });
-    /*const res2 = await fetch(`/api/volunteeraccounts/${email2}`, {
+    console.log("first cleaning up " + email2 + " sentFriendRequests");
+    const res2 = await fetch(`/api/volunteeraccounts/${email2}`, {
       method: "PATCH",
-      body: JSON.stringify({ friends: friendsArray2 }),
-    });*/
+      body: JSON.stringify({ sentFriendRequests: friendsArray2 }),
+    });
     if (!res1.ok)
       throw new Error(
         "Something went wrong removing friend2 from friend1s array"
       );
-    /*if (!res2.ok) {
-      // undo adding removing friend2 from friend 1s list
-      await fetch(`/api/volunteeraccounts${email1}`, {
-        method: "PATCH",
-        body: JSON.stringify(volunteer1.friends),
-      });
+    if (!res2.ok) {
       throw new Error(
         "Something went wrong removing friend1 from friend2s array"
       );
-    }*/
+    }
     return { success: true, data: "hi" };
   } catch (e: Error | any) {
     console.error(e);
@@ -253,4 +271,4 @@ export const checkFriendStatus = async (email1: string, email2: string) => {
 
 //approveFriendRequest("test2@test.com", "test3@test.com");
 
-export default approveFriendRequest;
+//export { approveFriendRequest, approveFriendRequest, removeFriendRequest };

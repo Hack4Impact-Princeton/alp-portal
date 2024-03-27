@@ -1,6 +1,11 @@
 import React from "react";
 import  { VolunteerAccount, BadgeType } from "../models/VolunteerAccount";
-import {sendFriendRequest} from "../db_functions/friending";
+import {
+  sendFriendRequest,
+  approveFriendRequest,
+  removeFriendRequest,
+  removeFriend,
+} from "../db_functions/friending";
 //import {sendFriendRequest, approveFriendRequest, removeFriendRequest, removeFriend} from "../db_functions/friending"
 
 type ProfileCardProps = {
@@ -44,11 +49,16 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
     if (sentFriendRequestList.includes(email)) {
       setFriendStatus("sent");
     } else if (account.friends.includes(email)) {
-      handleAcceptFriendRequest();
+      setFriendStatus("friends")
+      setShowRevokeButton(true);
+      //handleAcceptFriendRequest();
     } else if (receivedFriendRequestList.includes(email)) {
       // need to be that it has received so either accept or leave it there
       // also after accept, should do the revoke
-      handleReceiveFriendRequest();
+
+      setFriendStatus("received");
+      setShowRevokeButton(true);
+      //handleReceiveFriendRequest();
     }
   }, [receivedFriendRequestList, email]);
 
@@ -163,24 +173,25 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   const handleSendFriendRequest = (userEmail: string, email: string) => {
     console.log("in handleSendFriendRequest");
     setFriendStatus("sent");
-    sendFriendRequest(email, userEmail); // the way the function is written in friending.ts has the order reversed so
-    // setShowRevokeButton(true);
-  };
-
-  const handleRevokeFriendRequest = (userEmail:string, email: string) => {
-    console.log("in handleRevokeFriendRequest")
-    setFriendStatus("none");
-    // insert some revokeFriendRequest function here (import from friending.ts)
-  };
-
-  const handleAcceptFriendRequest = () => {
-    setFriendStatus("friends");
+    sendFriendRequest(userEmail, email); // the way the function is written in friending.ts has the order reversed so
     setShowRevokeButton(true);
   };
 
-  const handleReceiveFriendRequest = () => {
-    setFriendStatus("received");
-    // setShowRevokeButton(true);
+  const handleRevokeFriendRequest = (userEmail:string, email: string) => {
+    setFriendStatus("none");
+    removeFriendRequest(email, userEmail);
+    // insert some revokeFriendRequest function here (import from friending.ts)
+  };
+
+  const handleRemoveFriends = (userEmail: string, email: string) => {
+    setFriendStatus("none");
+    removeFriend(userEmail, email);
+  };
+  
+  const handleAcceptFriendRequest = (userEmail: string, email: string) => {
+    setFriendStatus("friends");
+    approveFriendRequest(userEmail, email);
+    setShowRevokeButton(true);
   };
 
   return (
@@ -218,14 +229,14 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             Click Here to Revoke
           </button>
         )}
-        {(friendStatus === "received" || friendStatus === "friends") &&
+        {(/*friendStatus === "received" ||*/ friendStatus === "friends") &&
           showRevokeButton && (
-            <button style={buttonStyle} onClick={()=> handleRevokeFriendRequest(userEmail, email)}>
+            <button style={buttonStyle} onClick={()=> handleRemoveFriends(userEmail, email)}>
               Unfriend
             </button>
           )}
         {friendStatus === "received" && (
-          <button style={buttonStyle} onClick={handleAcceptFriendRequest}>
+          <button style={buttonStyle} onClick={() => handleAcceptFriendRequest(userEmail, email)}>
             Accept Friend Request
           </button>
         )}
