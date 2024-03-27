@@ -2,6 +2,9 @@
 import React from 'react';
 import { Grid } from '@mui/material';
 import ProfileCard from './ProfileCard';
+import {
+  VolunteerAccount,
+} from "../models/VolunteerAccount";
 import {BadgeType} from '../models/VolunteerAccount'
 
 type BadgeInfoProps = {
