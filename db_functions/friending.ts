@@ -270,5 +270,5 @@ export const checkFriendStatus = async (email1: string, email2: string) => {
 };
 
 //approveFriendRequest("test2@test.com", "test3@test.com");
-
+export default approveFriendRequest;
 //export { approveFriendRequest, approveFriendRequest, removeFriendRequest };
