@@ -115,7 +115,7 @@
     "db_functions/manageShipments.js",
     "pages/api/bookDrive/standardize/index.js",
     "components/forum/SearchBar.jsx"
-  ],
+, "scripts/fixVolunteerAccount.mjs"  ],
   "exclude": [
     "node_modules"
   ]

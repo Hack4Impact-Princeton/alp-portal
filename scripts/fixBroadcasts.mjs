@@ -10,7 +10,7 @@ async function run() {
 
     // Get the database and collection on which to run the operation
     const database = client.db("alp_portal");
-    const accounts = database.collection("volunteerAccounts");
+    const broadcasts = database.collection("broadcasts");
 
     // Query for a movie that has the title 'The Room'
     // const query = { title: "The Room" };
@@ -24,11 +24,11 @@ async function run() {
 
     const update = {
       $set: {
-        commentsReceived: 0
+        senderName: "email t."
       }
     }
     // Execute query
-    const arr = await accounts.updateMany({}, update);
+    const arr = await broadcasts.updateMany({}, update);
 
     // Print the document returned by findOne()
     console.log(arr);

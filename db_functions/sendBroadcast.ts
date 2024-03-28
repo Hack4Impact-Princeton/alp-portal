@@ -1,6 +1,6 @@
 import { Broadcast } from "../models/Broadcast"
 import genUniqueId from "../lib/idGen"
-const sendBroadcast = async(email: string, recipients: string[], subject: string, message: string) => {
+const sendBroadcast = async(email: string, senderName: string, recipients: string[], subject: string, message: string) => {
     try {
         if (recipients.length == 0) throw new Error("Recipient list cannot be empty")
         if (subject === '') throw new Error("Subject cannot be empty")
@@ -8,6 +8,7 @@ const sendBroadcast = async(email: string, recipients: string[], subject: string
         const broadcast: Broadcast = {
             id: genUniqueId(),
             senderEmail: email,
+            senderName: senderName,
             receiverEmails: recipients,
             read: new Array<boolean>(recipients.length).fill(false),
             subject: subject,

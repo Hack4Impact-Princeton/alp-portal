@@ -1,13 +1,13 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Router from 'next/router'
 import Image from 'next/image';
 import { getStates } from '../../lib/enums'
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { SettingsInputAntennaOutlined, Visibility, VisibilityOff } from '@mui/icons-material';
 import { signIn } from 'next-auth/react'
 import Link from 'next/link';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -16,12 +16,13 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import {
-  CitySelect,
-  CountrySelect,
-  StateSelect,
-  LanguageSelect,
+    CitySelect,
+    CountrySelect,
+    StateSelect,
+    LanguageSelect,
 } from "react-country-state-city";
 import "react-country-state-city/dist/react-country-state-city.css";
+import { wrap } from 'module';
 
 const Signup = () => {
     const states = getStates()
@@ -32,9 +33,11 @@ const Signup = () => {
     const [isValidEmail, setIsValidEmail] = useState(true);
     const [password, setPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false);
-    const [countryid, setCountryid] = useState(0);
-    const [cityid, setCityid] = useState(0);
-    const [stateid, setStateid] = useState(0);
+    const [countryName, setCountryName] = useState("");
+    const [cityName, setCityName] = useState("");
+    const [stateName, setStateName] = useState("");
+    const [stateId, setStateId] = useState(0)
+    const [countryId, setCountryId] = useState(0)
 
     const validateEmail = (input: string) => {
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -54,8 +57,8 @@ const Signup = () => {
     const handleSetPassword = (passwordText: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(passwordText.target.value)
     }
-    const handleSetState = (event: any) => {
-        setStateid(Number(event.target.value));
+    const handleSetStateName = (event: any) => {
+        setStateName(event.target.value);
     }
 
     const handleTogglePassword = () => {
@@ -73,7 +76,7 @@ const Signup = () => {
             const bcrypt = require("bcryptjs");
             const salt = bcrypt.genSaltSync(10);
             const hashedPwd = (password == '') ? '' : bcrypt.hashSync(password, salt);
-            const data = { fname: fname, lname: lname, email: email, pwhash: hashedPwd, country: countryid, state: stateid, city: cityid }
+            const data = { fname: fname, lname: lname, email: email, pwhash: hashedPwd, country: countryName, state: stateName, city: cityName }
             // return if empty field
             for (let entry in data)
                 if (entry == '') return;
@@ -102,42 +105,60 @@ const Signup = () => {
             console.error(e)
         }
     }
+
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth < window.screen.width * 0.6);
+        };
+
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Check initial screen width
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
     return (
         <div className="auth-bg" >
             <div style={{
                 height: 'wrap-content',
-                marginTop: "2%",
+                marginTop: isSmallScreen? "7vw":"2vw" ,
                 marginBottom: "1%",
             }}>
+                
 
                 <Image className="auth-logo" src="/logo-long.png" width={956 * 0.225} height={295 * 0.225} alt="ALP-logo" style={{
                 }} />
             </div>
-            <div style={{ display: "flex", justifySelf: "flex-start", flexDirection: "column", flexShrink: 1 }}>
-                <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-start", alignItems: "start" }}>
+            <div style={{ display: "flex", justifySelf: "flex-start", flexDirection: "column", flexShrink: 1, alignItems: "center" }}>
+                <div style = {{display: "flex",  flexDirection: isSmallScreen ? 'column' : 'row', justifyContent: "space-between"}}>
+                <div style={{ display: "flex", flexDirection: "column" }}>
                     <Box
                         sx={{
                             width: 350,
                             height: "wrap-content",
                         }}>
-                        <TextField size="small" fullWidth required error={submit && fname == ''} id="fname" label="first name" variant="filled"
+                        <TextField size="small" fullWidth required error={submit && fname == ''} id="fname" label="First Name" variant="filled"
                             value={fname} onChange={handleSetFName}
                             sx={{
                                 mb: 3, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
                             }} />
-                        <TextField size="small" fullWidth required error={submit && lname == ''} id="lname" label="last name" variant="filled"
+                        <TextField size="small" fullWidth required error={submit && lname == ''} id="lname" label="Last Name" variant="filled"
                             value={lname} onChange={handleSetLName}
                             sx={{
                                 mb: 3, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
                             }} />
-                        <TextField size="small" fullWidth required error={submit && email == ''} id="email" label="email" variant="filled"
+                        <TextField size="small" fullWidth required error={submit && email == ''} id="email" label="Email" variant="filled"
                             value={email} onChange={handleSetEmail}
                             sx={{
                                 mb: 3, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
 
                             }} />
-                        
-                        <TextField size="small" fullWidth required id="password" label="password" variant="filled"
+
+                        <TextField size="small" fullWidth required id="password" label="Password" variant="filled"
                             type={showPassword ? 'text' : 'password'}
                             value={password}
                             onChange={handleSetPassword}
@@ -155,32 +176,42 @@ const Signup = () => {
                                 border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
                             }}
                             />
-                            <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>          
+                        </Box>
+                        </div>
+                    <div style={{ display: "flex", flexDirection: isSmallScreen ? 'column' : 'row', alignItems: "start", marginLeft: isSmallScreen ? 0: 10 }}></div>
+                     <Box
+                        sx={{
+                            width: 350,
+                            height: "wrap-content",
+                        }}>
+                            <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: isSmallScreen? 3: 4.5 }}>          
                             <CountrySelect 
                                 onChange={(e : any) => {
-                                setCountryid(e.id);
+                                setCountryId(e.id);
+                                setCountryName(e.name);
                                 }}
                                 placeHolder="Country*"
-                                        
+
                             />
                             </FormControl> 
                             <br></br>
-                                   <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>            
+                                   <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: isSmallScreen? 3: 4.5}}>            
                             <StateSelect
-                                countryid={countryid}
+                                countryid={countryId}
                                 onChange={(e: any) => {
-                                setStateid(e.id);
+                                    setStateId(e.id)
+                                    setStateName(e.state_code);
                                 }}
                                 placeHolder="State*"
                             />
-                            </FormControl>      
+                        </FormControl>
                         <br></br>
-                        <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: 3 }}>
+                        <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: isSmallScreen? 3: 4.5 }}>
                                 <CitySelect
-                                    countryid={countryid}
-                                    stateid={stateid}
+                                    countryid={countryId}
+                                    stateid={stateId}
                                     onChange={(e: any) => {
-                                    setCityid(e.id);
+                                        setCityName(e.name);
                                     }}
                                     placeHolder="City*"
                                             
@@ -200,31 +231,41 @@ const Signup = () => {
                                 }
                             </Select>
                         </FormControl> */}
-                        
+                                     </Box>
+                                </div>
                         <br></br>
-                        <p style={{ fontSize: 10, color: "white" }}>You can unsubscribe at any time by clicking the link in the footer of our emails. For information about our privacy practices, please visit our website.</p>
-                        <Button variant="contained"
-                            onClick={signUpHandler}
-                            sx={{
-                                marginTop: 2,
-                                borderRadius: 2,
-                                color: "white",
-                                fontWeight: 500,
-                                backgroundColor: "black",
-                                "&:hover": { backgroundColor: "#555555" },
-                                mb: 2
-                            }}>Sign up</Button>
-                    </Box>
-    
+                        <div style={{width: isSmallScreen? 350:700}}> 
+                            <p style={{ fontSize: 15, color: "white" }}>You can unsubscribe at any time by clicking the link in the footer of our emails. For information about our privacy practices, please visit our website.</p>
+                        </div>
+                    <Button variant="contained"
+                    onClick={signUpHandler}
+                    sx={{
+                        marginTop: 2,
+                        borderRadius: 2,
+                        color: "white",
+                        fontWeight: 600,
+                        fontSize: 16,
+                        backgroundColor: "black",
+                        "&:hover": { backgroundColor: "#555555" },
+                        mb: 2,
+                        width: '150px',
+                        height: '50px',
+                        marginLeft: 'auto',
+                        marginRight: 'auto',
+                        fontFamily:"Epilogue",
+                    }}>Sign up</Button>
+
                 </div>
                 <Link passHref style={{ color: "white" }} href="/auth/login">
-                    <a style={{ color: "white", textDecoration: "none" }}>
+                    <a style={{ color: "white", textDecoration: "none",marginBottom: isSmallScreen? 20:0 }}>
                         Already have an account?
                     </a>
                 </Link>
-            </div>
-        </div>
+                </div>
+                
     )
+
+    
 }
 
 export default Signup
