@@ -24,7 +24,7 @@ async function run() {
 
     const update = {
       $set: {
-        commentsReceived: 0
+        state: "NJ"
       }
     }
     // Execute query

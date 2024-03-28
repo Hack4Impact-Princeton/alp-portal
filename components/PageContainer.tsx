@@ -24,7 +24,7 @@ interface FriendInfo {
   email: string;
   fname: string;
   lname: string;
-  state: { name: string; index: number };
+  state: string;
   pfp: string;
 
   // Add or modify properties as needed
@@ -73,7 +73,7 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
             email: account.email,
             fname: account.fname,
             lname: account.lname[0],
-            state: states.find((state) => state.index === account.state),
+            state: account.state,
             pfp: account.pfpLink,
             // Add or modify properties as needed
           }
@@ -305,7 +305,7 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
                           profilePicture={request.pfp}
                           name={request.fname}
                           reqEmail={request.email}
-                          state={request.state.name}
+                          state={request.state}
                           myEmail={myEmail}
                           requeststate='pending'
                           onApprove={() => handleApproveFriendRequest(request.email)}

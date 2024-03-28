@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { getStates } from '../../lib/enums'
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { SettingsInputAntennaOutlined, Visibility, VisibilityOff } from '@mui/icons-material';
 import { signIn } from 'next-auth/react'
 import Link from 'next/link';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -16,10 +16,10 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import {
-  CitySelect,
-  CountrySelect,
-  StateSelect,
-  LanguageSelect,
+    CitySelect,
+    CountrySelect,
+    StateSelect,
+    LanguageSelect,
 } from "react-country-state-city";
 import "react-country-state-city/dist/react-country-state-city.css";
 import { wrap } from 'module';
@@ -33,9 +33,11 @@ const Signup = () => {
     const [isValidEmail, setIsValidEmail] = useState(true);
     const [password, setPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false);
-    const [countryid, setCountryid] = useState(0);
-    const [cityid, setCityid] = useState(0);
-    const [stateid, setStateid] = useState(0);
+    const [countryName, setCountryName] = useState("");
+    const [cityName, setCityName] = useState("");
+    const [stateName, setStateName] = useState("");
+    const [stateId, setStateId] = useState(0)
+    const [countryId, setCountryId] = useState(0)
 
     const validateEmail = (input: string) => {
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -55,8 +57,8 @@ const Signup = () => {
     const handleSetPassword = (passwordText: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(passwordText.target.value)
     }
-    const handleSetState = (event: any) => {
-        setStateid(Number(event.target.value));
+    const handleSetStateName = (event: any) => {
+        setStateName(event.target.value);
     }
 
     const handleTogglePassword = () => {
@@ -74,7 +76,7 @@ const Signup = () => {
             const bcrypt = require("bcryptjs");
             const salt = bcrypt.genSaltSync(10);
             const hashedPwd = (password == '') ? '' : bcrypt.hashSync(password, salt);
-            const data = { fname: fname, lname: lname, email: email, pwhash: hashedPwd, country: countryid, state: stateid, city: cityid }
+            const data = { fname: fname, lname: lname, email: email, pwhash: hashedPwd, country: countryName, state: stateName, city: cityName }
             // return if empty field
             for (let entry in data)
                 if (entry == '') return;
@@ -139,23 +141,24 @@ const Signup = () => {
                             width: 350,
                             height: "wrap-content",
                         }}>
-                        <TextField size="small" fullWidth required error={submit && fname == ''} id="fname" label="first name" variant="filled"
+                        <TextField size="small" fullWidth required error={submit && fname == ''} id="fname" label="First Name" variant="filled"
                             value={fname} onChange={handleSetFName}
                             sx={{
                                 mb: 3, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
                             }} />
-                        <TextField size="small" fullWidth required error={submit && lname == ''} id="lname" label="last name" variant="filled"
+                        <TextField size="small" fullWidth required error={submit && lname == ''} id="lname" label="Last Name" variant="filled"
                             value={lname} onChange={handleSetLName}
                             sx={{
                                 mb: 3, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
                             }} />
-                        <TextField size="small" fullWidth required error={submit && email == ''} id="email" label="email" variant="filled"
+                        <TextField size="small" fullWidth required error={submit && email == ''} id="email" label="Email" variant="filled"
                             value={email} onChange={handleSetEmail}
                             sx={{
                                 mb: 3, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
 
                             }} />
-                                             <TextField size="small" fullWidth required id="password" label="password" variant="filled"
+
+                        <TextField size="small" fullWidth required id="password" label="Password" variant="filled"
                             type={showPassword ? 'text' : 'password'}
                             value={password}
                             onChange={handleSetPassword}
@@ -184,29 +187,31 @@ const Signup = () => {
                             <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: isSmallScreen? 3: 4.5 }}>          
                             <CountrySelect 
                                 onChange={(e : any) => {
-                                setCountryid(e.id);
+                                setCountryId(e.id);
+                                setCountryName(e.name);
                                 }}
                                 placeHolder="Country*"
-                                        
+
                             />
                             </FormControl> 
                             <br></br>
                                    <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: isSmallScreen? 3: 4.5}}>            
                             <StateSelect
-                                countryid={countryid}
+                                countryid={countryId}
                                 onChange={(e: any) => {
-                                setStateid(e.id);
+                                    setStateId(e.id)
+                                    setStateName(e.state_code);
                                 }}
                                 placeHolder="State*"
                             />
-                            </FormControl>      
+                        </FormControl>
                         <br></br>
                         <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: isSmallScreen? 3: 4.5 }}>
                                 <CitySelect
-                                    countryid={countryid}
-                                    stateid={stateid}
+                                    countryid={countryId}
+                                    stateid={stateId}
                                     onChange={(e: any) => {
-                                    setCityid(e.id);
+                                        setCityName(e.name);
                                     }}
                                     placeHolder="City*"
                                             
