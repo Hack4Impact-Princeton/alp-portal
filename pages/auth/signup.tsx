@@ -141,24 +141,24 @@ const Signup = () => {
                             width: 350,
                             height: "wrap-content",
                         }}>
-                        <TextField size="small" fullWidth required error={submit && fname == ''} id="fname" label="first name" variant="filled"
+                        <TextField size="small" fullWidth required error={submit && fname == ''} id="fname" label="First Name" variant="filled"
                             value={fname} onChange={handleSetFName}
                             sx={{
                                 mb: 3, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
                             }} />
-                        <TextField size="small" fullWidth required error={submit && lname == ''} id="lname" label="last name" variant="filled"
+                        <TextField size="small" fullWidth required error={submit && lname == ''} id="lname" label="Last Name" variant="filled"
                             value={lname} onChange={handleSetLName}
                             sx={{
                                 mb: 3, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
                             }} />
-                        <TextField size="small" fullWidth required error={submit && email == ''} id="email" label="email" variant="filled"
+                        <TextField size="small" fullWidth required error={submit && email == ''} id="email" label="Email" variant="filled"
                             value={email} onChange={handleSetEmail}
                             sx={{
                                 mb: 3, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
 
                             }} />
 
-                        <TextField size="small" fullWidth required id="password" label="password" variant="filled"
+                        <TextField size="small" fullWidth required id="password" label="Password" variant="filled"
                             type={showPassword ? 'text' : 'password'}
                             value={password}
                             onChange={handleSetPassword}
