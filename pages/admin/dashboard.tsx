@@ -487,16 +487,16 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
     else return "";
   };
 
-  //const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  //const handleFABClick = (event: React.MouseEvent<HTMLElement>) => {
-  //  setAnchorEl(anchorEl ? null : event.currentTarget);
-  //};
-  //const open = Boolean(anchorEl);
-  //const id = open ? 'simple-popper' : undefined;
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const handleFABClick = (event: React.MouseEvent<HTMLElement>) => {
+   setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popper' : undefined;
 
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  // const [open, setOpen] = React.useState(false);
+  // const handleOpen = () => setOpen(true);
+  // const handleClose = () => setOpen(false);
 
   const modalStyle = {
     position: 'absolute' as 'absolute',
