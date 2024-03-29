@@ -23,6 +23,8 @@ import SearchBar from '../components/SearchBar';
 import ProfileDisplayCase from '../components/ProfileDisplayCase';
 import ProfileCard from '../components/ProfileCard';
 import { getStates } from "../lib/enums";
+import {BadgeType} from '../models/VolunteerAccount'
+
 
 type ProfileProps = {
   error: string | null;
@@ -46,6 +48,12 @@ type ProfileProps = {
 //     session: session,
 //   },
 // };
+type BadgeInfoProps = {
+  isEarned: boolean;
+  level: number;
+  name: string;
+  description: string;
+};
 
 const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, error, allAccounts, query, userEmail, receivedFriendRequestList, sentFriendRequestList}) => {
   const backButtonStyle: React.CSSProperties = {
@@ -64,27 +72,13 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
     fontSize: '1.2em', // Set the font size for the "<" symbol
   };
 
-  const states = getStates();
-
   const allProfiles = allAccounts.map((account) => ({
+    account: account,
     name: `${account.fname} ${account.lname}`,
-    // state: states[account.location - 1].name,
+    state: `${account.state}`,
     email: `${account.email}`,
     profilePicture: `${account.pfpLink}`,
-    badges: [
-      {
-        isEarned: true,
-        level: 1,
-        name: "Badge 1",
-        description: "Badge 1 description",
-      },
-      {
-        isEarned: false,
-        level: 2,
-        name: "Badge 2",
-        description: "Badge 2 description",
-      },
-    ],
+    badges: account.badges,
     affiliation: `${account.affiliation}`,
   }));
   
@@ -108,17 +102,13 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
   
   const [filteredProfiles, setFilteredProfiles] = useState<
     Array<{
+      account: VolunteerAccount;
       name: string;
       state: string;
       email: string;
       profilePicture: string;
-      badges: Array<{
-        isEarned: boolean;
-        level: number;
-        name: string;
-        description: string;
-      }>;
-      affiliation: string
+      badges: BadgeType;
+      affiliation: string;
     }>
   >([]);
   const users: VolunteerAccount[] = [ /* Add your user data here */];

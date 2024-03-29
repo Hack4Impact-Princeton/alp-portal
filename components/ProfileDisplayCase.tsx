@@ -7,20 +7,14 @@ import {
 } from "../models/VolunteerAccount";
 import {BadgeType} from '../models/VolunteerAccount'
 
-type BadgeInfoProps = {
-  isEarned: boolean;
-  level: number;
-  name: string;
-  description: string;
-};
 
 type ProfileInfoProps = {
   account: VolunteerAccount;
   name: string;
-  // state: string;
+  state: string;
   email: string;
   profilePicture: string;
-  badges: BadgeInfoProps[];
+  badges: BadgeType;
   affiliation: string;
   useBadges?: boolean;
 };
