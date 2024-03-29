@@ -56,8 +56,10 @@ import {
       return {
         id: admin._id,
         adminName: admin.fname + " " + admin.lname,
-        state: "ST",
+        state: admin.state,
         email: admin.email,
+        affiliation: admin.affiliation,
+        driveIds: admin.driveIds,
       };
     });
     if (currDrivesGridRows.length === 0) return <></>;

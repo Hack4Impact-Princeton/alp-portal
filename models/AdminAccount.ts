@@ -12,6 +12,10 @@ export interface AdminAccount extends Document {
     broadcasts: string[],
     volunteerIds: number[],
     driveIds: string[],
+    city: string,
+    state: string,
+    country: string,
+    affiliation: string
 }
 
 const AdminAccountSchema = new Schema<AdminAccount>({

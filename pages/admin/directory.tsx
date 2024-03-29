@@ -32,6 +32,7 @@ import { Box, Button, Fab, IconButton, Popper } from "@mui/material";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import ModeIcon from '@mui/icons-material/Mode';
 import AdminTable from "../../components/admindir/AdminTable";
+import AdminDirectorySidebar from "../../components/AdminDirectorySidebar";
 
 type AdminDashboardProps = {
   allAdmin: AdminAccount[];
@@ -124,12 +125,14 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
   const [showSidebar, setShowSidebar] = useState(false);
   const [activateSidebarMinWidth, toggleActivateSidebarMinWidth] =
     useState(false);
-  const [sidebarDriveDatum, setSideBarDriveData] = useState<{
-    drive: BookDrive;
-    shipments: Shipment[];
-    volunteer: VolunteerAccount;
-    reactivationReq: ReactivationRequest | null;
-  } | null>(null);
+  const [sidebarDatum, setSideBarData] = useState<{
+    adminName: string;
+    affiliation: string;
+    driveIds: string[];
+    email: string;
+    id: string;
+    state: string;
+  }| null>(null);
 
   const drives = driveDataProps?.map((driveDatum) => driveDatum.drive);
   const [, setState] = useState(false);
@@ -307,77 +310,84 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
     }
   };
 
-  const removeReactivationReq = (driveCode: string) => {
-    const foundDriveDatum = driveData?.find(
-      (driveDatum) => driveDatum.drive.driveCode === driveCode
-    );
-    if (!foundDriveDatum) {
-      console.error(`hmmm, couldn't find the drive with code ${driveCode}`);
-      alert(`hmmm, couldn't find the drive with code ${driveCode}`);
-      return;
-    }
-    if (!foundDriveDatum.reactivationReq) {
-      console.error(
-        `hmmm, there was no reactivation request found for the drive with driveCode ${driveCode}`
-      );
-      alert(
-        `hmmm, there was no reactivation request found for the drive with driveCode ${driveCode}`
-      );
-      return;
-    }
-    const filteredDrives = driveData?.filter(
-      (datum) => datum.drive.driveCode !== driveCode
-    );
-    setDriveData(filteredDrives ? filteredDrives : null);
-    const editedCurrDrive = sidebarDriveDatum;
-    if (!editedCurrDrive) {
-      console.error(
-        "attempting to access the current sidebar drive but it doesnt exist apparently"
-      );
-      alert(
-        "attempting to access the current sidebar drive but it doesnt exist apparently"
-      );
-      return;
-    }
-    editedCurrDrive.reactivationReq = null;
-    editedCurrDrive.drive.reactivationRequestId = undefined;
-    setSideBarDriveData(editedCurrDrive);
-  };
+  // const removeReactivationReq = (driveCode: string) => {
+  //   const foundDriveDatum = driveData?.find(
+  //     (driveDatum) => driveDatum.drive.driveCode === driveCode
+  //   );
+  //   if (!foundDriveDatum) {
+  //     console.error(`hmmm, couldn't find the drive with code ${driveCode}`);
+  //     alert(`hmmm, couldn't find the drive with code ${driveCode}`);
+  //     return;
+  //   }
+  //   if (!foundDriveDatum.reactivationReq) {
+  //     console.error(
+  //       `hmmm, there was no reactivation request found for the drive with driveCode ${driveCode}`
+  //     );
+  //     alert(
+  //       `hmmm, there was no reactivation request found for the drive with driveCode ${driveCode}`
+  //     );
+  //     return;
+  //   }
+  //   const filteredDrives = driveData?.filter(
+  //     (datum) => datum.drive.driveCode !== driveCode
+  //   );
+  //   setDriveData(filteredDrives ? filteredDrives : null);
+  //   const editedCurrDrive = sidebarDriveDatum;
+  //   if (!editedCurrDrive) {
+  //     console.error(
+  //       "attempting to access the current sidebar drive but it doesnt exist apparently"
+  //     );
+  //     alert(
+  //       "attempting to access the current sidebar drive but it doesnt exist apparently"
+  //     );
+  //     return;
+  //   }
+  //   editedCurrDrive.reactivationReq = null;
+  //   editedCurrDrive.drive.reactivationRequestId = undefined;
+  //   setSideBarDriveData(editedCurrDrive);
+  // };
   const handleDriveNameClick = (params: GridCellParams) => {
-    if (params.field === "driveName") {
-      const preDriveName = params.value as string;
-      const midDriveName = preDriveName.replace(/[^a-zA-Z0-9\s\p{P}]/gu, "");
-      const driveName = midDriveName.trim();
-      // Close the current sidebar (if any) before opening the new one
+    console.log("in drivename click")
+    if (params.field === "adminName") {
+      const driveName = params.value as string;
+      console.log(driveName)
       if (
-        sidebarDriveDatum &&
-        driveName === sidebarDriveDatum.drive.driveName
+        sidebarDatum &&
+        driveName === sidebarDatum.adminName
       ) {
         closeSidebar();
         // console.log("closing the drive because we have a duplicate: ", driveName)
         return;
       }
+      const adminProfile = {
+        adminName: params.row.adminName,
+        affiliation: params.row.affiliation,
+        driveIds: params.row.driveIds,
+        email: params.row.email,
+        id: params.row.id,
+        state: params.row.state
+      }
+      console.log(params, driveData, adminProfile, "this!")
 
-      const sideDrive = driveData?.find(
-        (driveDatum) => driveDatum.drive.driveName === driveName
-      );
-      if (!sideDrive) {
+      if (!adminProfile) {
         alert("Something went wrong on our end. Try refreshing the page");
         return;
       }
       // tbh I don't know why this works
-      openSidebar(sideDrive);
+      openSidebar(adminProfile);
     }
   };
 
-  const openSidebar = (sideDrive: {
-    drive: BookDrive;
-    shipments: Shipment[];
-    volunteer: VolunteerAccount;
-    reactivationReq: ReactivationRequest | null;
+  const openSidebar = (adminProfile: {
+    adminName: string;
+    affiliation: string;
+    driveIds: string[];
+    email: string;
+    id: string;
+    state: string;
   }) => {
     setTimeout(() => {
-      setSideBarDriveData(sideDrive);
+      setSideBarData(adminProfile);
       setShowSidebar(true);
     }, 250); // Adjust the delay as needed
     setTimeout(() => {
@@ -389,7 +399,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
     toggleActivateSidebarMinWidth(false);
     setShowSidebar(false);
     setTimeout(() => {
-      setSideBarDriveData(null);
+      setSideBarData(null);
     }, 240); // Delayed reset after closing
   };
 
@@ -413,8 +423,9 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
   const id = open ? 'simple-popper' : undefined;
 
   const [name, updateName] = useState(account.fname + " " + account.lname)
-  const [adminState, updateAdminState] = useState("City, State")
-  const [affiliation, updateAffiliation] = useState("Affiliation")
+  const [adminState, updateAdminState] = useState(account.state)
+  const [adminCity, updateAdminCity] = useState(account.city)
+  const [affiliation, updateAffiliation] = useState(account.affiliation)
 
   return (
     <>
@@ -458,7 +469,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
         </Grid>
         <Grid marginTop={2}>
             <div style={{border:"1.5px solid #C9C9C9", backgroundColor: "#F5F5F5", width:"50%", padding: 20, borderRadius: "5px"}}>
-                <p>{name} | {adminState} | {affiliation}</p>
+                <p>{name} | {adminCity}, {adminState} | {affiliation}</p>
             </div>
         </Grid>
         <Grid display="flex" alignItems={"center"} marginTop={3}>
@@ -505,7 +516,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
         </Grid>
 
 
-        {sidebarDriveDatum && (
+        {sidebarDatum && (
           <div
             ref={sidebarRef}
             style={{
@@ -524,11 +535,9 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
               minWidth: activateSidebarMinWidth ? "400px" : 0,
             }}
           >
-            <AdminSidebar
-              email={account.email}
-              updateBookDriveStatus={updateBookDriveStatus}
-              driveData={sidebarDriveDatum}
-              removeReactivationReq={removeReactivationReq}
+            <AdminDirectorySidebar
+              adminProfile={sidebarDatum}
+              
             />
           </div>
         )}
