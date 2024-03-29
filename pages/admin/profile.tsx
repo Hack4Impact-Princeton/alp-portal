@@ -57,7 +57,7 @@ const Profile: NextPage<ProfileProps> = ({ error, account, drives }) => {
     console.log("ACCOUNT: ", account);
     return (
       <Grid>
-        <PageContainer fName={account.fname} currPage="profile" />
+        <PageContainer fName={account.fname} currPage="directory" />
         <Grid
           container
           display="flex"

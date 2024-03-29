@@ -27,7 +27,7 @@ const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
 });
 
 type NavbarProps = {
-  active: "dashboard" | "profile" | "broadcast" | null;
+  active: "dashboard" | "directory" | "broadcast" | null;
 };
 const Navbar: React.FC<NavbarProps> = ({ active }) => {
   return (
@@ -71,15 +71,15 @@ const Navbar: React.FC<NavbarProps> = ({ active }) => {
             </CustomWidthTooltip>
           </ListItem>
         </Link>
-        <Link href="/admin/profile">
+        <Link href="/admin/directory">
           <ListItem key="Organizer Checklist">
-            <CustomWidthTooltip title="Profile" placement="right" arrow>
+            <CustomWidthTooltip title="Directory" placement="right" arrow>
               <ListItemButton>
                 <ListItemIcon>
                   <Person2Icon
                     fontSize="large"
                     sx={{
-                      color: active === "profile" ? "orange" : "#9C9C9C",
+                      color: active === "directory" ? "orange" : "#9C9C9C",
                     }}
                   ></Person2Icon>
                 </ListItemIcon>
