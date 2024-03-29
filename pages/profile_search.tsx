@@ -23,6 +23,8 @@ import SearchBar from '../components/SearchBar';
 import ProfileDisplayCase from '../components/ProfileDisplayCase';
 import ProfileCard from '../components/ProfileCard';
 import { getStates } from "../lib/enums";
+import {BadgeType} from '../models/VolunteerAccount'
+
 
 type ProfileProps = {
   error: string | null;
@@ -30,14 +32,30 @@ type ProfileProps = {
   drives: BookDrive[] | null;
   broadcasts: Broadcast[];
   allAccounts: VolunteerAccount[];
-  query: string | null // represents the query parameter if the profile search page is reached from the forum page
+  query: string | null; // represents the query parameter if the profile search page is reached from the forum page
+  userEmail: string;
+  receivedFriendRequestList: string[];
+  sentFriendRequestList: string[];
 };
-const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, error, allAccounts, query }) => {
-  
-  const handleFriendRequest = () => {
-    // Handle the logic for sending a friend request
-    console.log('Friend request sent');
-  };
+// return {
+//   props: {
+//     broadcasts: JSON.parse(JSON.stringify(broadcasts)),
+//     account: JSON.parse(JSON.stringify(volunteerAccount)) as VolunteerAccount,
+//     drives: JSON.parse(JSON.stringify(drives)) as BookDrive,
+//     allAccounts: JSON.parse(JSON.stringify(allAccounts)),
+//     error: null,
+//     query: query ? query : null,
+//     session: session,
+//   },
+// };
+type BadgeInfoProps = {
+  isEarned: boolean;
+  level: number;
+  name: string;
+  description: string;
+};
+
+const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, error, allAccounts, query, userEmail, receivedFriendRequestList, sentFriendRequestList}) => {
   const backButtonStyle: React.CSSProperties = {
     color: '#FE9834',
     cursor: 'pointer',
@@ -53,31 +71,14 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
     marginRight: '8px', // Adjust the right margin
     fontSize: '1.2em', // Set the font size for the "<" symbol
   };
-  const handleRevokeFriendRequest = () => {
-    // Handle the logic for revoking a friend request
-    console.log('Friend request revoked');
-  };
 
-  const states = getStates();
   const allProfiles = allAccounts.map((account) => ({
+    account: account,
     name: `${account.fname} ${account.lname}`,
-    // state: states[account.location - 1].name,
+    state: `${account.state}`,
     email: `${account.email}`,
     profilePicture: `${account.pfpLink}`,
-    badges: [
-      {
-        isEarned: true,
-        level: 1,
-        name: "Badge 1",
-        description: "Badge 1 description",
-      },
-      {
-        isEarned: false,
-        level: 2,
-        name: "Badge 2",
-        description: "Badge 2 description",
-      },
-    ],
+    badges: account.badges,
     affiliation: `${account.affiliation}`,
   }));
   
@@ -85,6 +86,7 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
     if (query.trim() === '') {
       setFilteredProfiles([]); // If the query is empty, set filteredProfiles to an empty array
     } else {
+      // need to exclude own profile
       const filteredProfiles = allProfiles.filter((profile) =>
         profile.name.toLowerCase().includes(query.toLowerCase())
       );
@@ -97,20 +99,16 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
   
 
 
-  const [filteredUsers, setFilteredUsers] = useState<VolunteerAccount[]>([]);
+  
   const [filteredProfiles, setFilteredProfiles] = useState<
     Array<{
+      account: VolunteerAccount;
       name: string;
-      // state: string;
+      state: string;
       email: string;
       profilePicture: string;
-      badges: Array<{
-        isEarned: boolean;
-        level: number;
-        name: string;
-        description: string;
-      }>;
-      affiliation: string
+      badges: BadgeType;
+      affiliation: string;
     }>
   >([]);
   const users: VolunteerAccount[] = [ /* Add your user data here */];
@@ -178,7 +176,7 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
             mt={6}
             sx={{ margin: "25 0px" }}
           >
-            {filteredProfiles && <ProfileDisplayCase profiles={filteredProfiles} useBadges={true} />}
+            {filteredProfiles && <ProfileDisplayCase account={account} userEmail={userEmail} profiles={filteredProfiles} useBadges={true} receivedFriendRequestList={receivedFriendRequestList} sentFriendRequestList = {sentFriendRequestList} />}
           </Grid>
         </Grid>
       </Grid>
@@ -218,13 +216,23 @@ export const getServerSideProps = async (context: any) => {
 
     const allAccounts = (await VolunteerAccount.find({})) as VolunteerAccount[];
 
-    console.log(volunteerAccount.broadcasts);
     const bPromises = volunteerAccount.broadcasts.map((broadcastId) => {
       const res = Broadcast.findOne({ id: broadcastId });
       if (!res) console.log("the bad broadcastId is", broadcastId);
       else return res;
     });
     const broadcasts = (await Promise.all(bPromises)) as Broadcast[];
+
+    // prop for friend requests received from other users 
+    const receivedFriendRequestList = []
+    // for (let i = 0; i < allAccounts.length; i++) {
+    //   if (allAccounts[i].friendRequests.includes(volunteerAccount.email)) {
+    //     receivedFriendRequestList.push(allAccounts[i].email);
+    //   }
+    // }
+    const receivedFriendRequests = volunteerAccount.friendRequests
+    const sentFriendRequests = volunteerAccount.sentFriendRequests
+
     return {
       props: {
         broadcasts: JSON.parse(JSON.stringify(broadcasts)),
@@ -234,7 +242,10 @@ export const getServerSideProps = async (context: any) => {
         drives: JSON.parse(JSON.stringify(drives)) as BookDrive,
         allAccounts: JSON.parse(JSON.stringify(allAccounts)),
         error: null,
-        query: query ? query : null
+        query: query ? query : null,
+        userEmail: email,
+        receivedFriendRequestList: receivedFriendRequests,
+        sentFriendRequestList: sentFriendRequests,
       },
     };
   } catch (e: Error | any) {

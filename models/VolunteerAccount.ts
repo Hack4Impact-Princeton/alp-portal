@@ -30,6 +30,7 @@ export type VolunteerAccount = {
     chatIds: string[],
     pfpLink: string,
     friendRequests: string[],
+    sentFriendRequests: string[],
     affiliation: string,
     hobbies: string[],
     favoriteBook: string,
@@ -122,6 +123,9 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>(
       type: [String],
     },
     friendRequests: {
+      type: [String],
+    },
+    sentFriendRequests: {
       type: [String],
     },
     pfpLink:  {
