@@ -141,7 +141,7 @@ const Signup = () => {
                         <TextField size="small" fullWidth required error={submit && fname == ''} id="fname" label="first name" variant="filled"
                             value={fname} onChange={handleSetFName}
                             sx={{
-                                mb: 3, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
+                                mb: 4, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
                             }} />
                         <TextField size="small" fullWidth required error={submit && lname == ''} id="lname" label="last name" variant="filled"
                             value={lname} onChange={handleSetLName}
