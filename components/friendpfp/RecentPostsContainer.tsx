@@ -33,17 +33,23 @@ const RecentPostsContainer: React.FC<PageProps> = ({ name,posts
         }}>
             <Grid container display="flex" alignItems={'center'} flexDirection={"row"} >
               <h2>{name}'s Recent Posts </h2>
-              <IconButton
+              {posts && posts.length > 0 && <IconButton
                 sx={{ backgroundColor: "#FE9834", color: "#FFFFFF",borderRadius:"30px",pl:2,pr:2,ml:1}}
                 size={"small"}
                 onClick={() => {setOpen(true)
                 }}
               >
                 <p>more{'>'}</p>
-              </IconButton>
+              </IconButton> }
             </Grid>
-            {posts && (<div>
-              <Grid sx={{ backgroundColor: "white", alignItems:"center",mt:1,p:2, maxHeight: "150px", overflowY: "auto"}}>
+            {posts && posts.length == 0 && (
+            <Grid marginTop={2} paddingLeft={1}>
+              <p style={{fontStyle:"italic"}}>No posts yet!</p>
+            </Grid>
+            )}
+            {posts && posts.length > 0 && (<div>
+              <Grid sx={{ 
+                backgroundColor: "white", alignItems:"center",mt:1,p:2, maxHeight: "200px", overflowY: "auto", minHeight:"150px"}}>
               <p style={{fontStyle:"italic",marginBottom:-5}}>{posts[0].date}:</p>
               <Grid sx={{height:"100%", p:0, m:0}}>
               <RichEditor

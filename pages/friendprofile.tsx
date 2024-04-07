@@ -59,17 +59,19 @@ const FriendProfile: NextPage<FriendProfileProps> = ({ friendAccount, friendPost
                         <RecentPostsContainer name={friendAccount.fname} posts={friendPosts}/>
                         <div style={{height:"2vh"}}></div>
                         <PersonalInfoCard account={friendAccount}/>
+                        <div style={{height:"1vh"}}></div>
+                        {friendPosts && friendPosts.length==0 && <BadgeDisplayCase badgeLevels={friendAccount.badges}/> }
                     </Grid>
                     <Grid className="right column" display={"flex"} flexDirection="column" width={"30%"} sx={{
                         border: "1.5px solid #C9C9C9",
                         borderRadius:"5px",
                         paddingTop:"20px",
-                        backgroundColor: "#F5F5F5", marginBottom:3}}>
+                        backgroundColor: "#F5F5F5", marginBottom:2.5}}>
                       <MapComponent drives={drives ? drives : []} />
                     </Grid>
                     
                 </Grid>
-                <BadgeDisplayCase badgeLevels={friendAccount.badges}/>
+                {friendPosts && friendPosts.length>0 && <BadgeDisplayCase badgeLevels={friendAccount.badges}/> }
             </Grid>
         </Grid> )}
         </>
@@ -154,12 +156,12 @@ const PersonalInfoCard: React.FC<{ account: VolunteerAccount }> = ({ account }) 
       <Grid container style={{
         border: '1.5px solid #C9C9C9', borderRadius:"5px",padding: '20px', marginBottom: '10px', display: 'flex',
         width: '100%',
-        backgroundColor: "#F5F5F5"
+        backgroundColor: "#F5F5F5",
+        minHeight:'150px'
   
       }}>
   
         <Grid xs={12} ><h2 style={{ textAlign: 'left', marginBottom: '10px' }}>Badges</h2></Grid>
-  
         {badgeLevels && getBadgeIconsFromLevels(badgeLevels).map((badge: any, index: number) => (
           <div key={index} onClick={() => openBadgeModal(badge.icon)} style={{ cursor:"pointer",display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '10px', marginTop: "0px" }}>
             <img
