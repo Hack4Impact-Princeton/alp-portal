@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Grid from "@mui/material/Grid"; 
 import { IconButton,Button, Modal } from "@mui/material";
 import { Posts } from "../../models/Post";
@@ -65,7 +65,7 @@ const RecentPostsContainer: React.FC<PageProps> = ({ name,posts
                   position: "absolute" as "absolute",
                   top: "50%",
                   left: "50%",
-                  transform: "translate(-50%, -50%)",
+                  transform: "translate(-50%, -30vh)",
                   width: "50%",
                   bgcolor: "#F5F5F5",
                   border: "2px solid #000",
@@ -106,20 +106,22 @@ const PostCarousel: React.FC<CarouselProps> = ({ name,posts }) => {
     width:'40px',
     height:"30px",
     border:"none",
-    cursor:'pointer',
+    cursor:'pointer',  
   }
 
   return (
-    <Grid sx={{minHeight:"200px", maxHeight:"400px", overflowY:"scroll"}}>
-        <div style={{paddingLeft:'5%'}}>
-        <h2>{name}'s Posts</h2>
-        </div>
-
+    <Grid  sx={{minHeight:"200px", maxHeight:"400px", overflowY:"scroll", display:'flex', justifyContent:'center'}}>
+      <Grid  marginTop= {'60px'} marginRight={1} >
+          <button onClick={goToPrevSlide} style={buttonStyle}>{'<'}</button>
+      </Grid>
+        <Grid width="90%">
+        
         <Grid  className="image-carousel" display="flex" alignItems={'center'} justifyContent={"center"} >
-        <button onClick={goToPrevSlide} style={buttonStyle}>{'<'}</button>
-        <Grid sx={{width:"90%"}}>          
-        <Grid sx={{backgroundColor:"white", marginBottom:-1}}>
-          <p style={{fontStyle:"italic",marginBottom:-10, marginTop:10, paddingTop:10, paddingLeft: 15}}>{posts[currentIndex].date}: </p>
+          
+        <Grid sx={{minWidth:"100%"}}>  
+        <h2>{name}'s Posts</h2>        
+        <Grid sx={{backgroundColor:"white", marginBottom:-1, paddingBottom:2}}>
+          <p style={{fontStyle:"italic",marginBottom:-10, marginTop:10, paddingTop:10, paddingLeft: 15, textDecoration:'underline'}}>{posts[currentIndex].date}: </p>
           <RichEditor
                     readOnly={true}
                     initialValue={posts[currentIndex].text}
@@ -128,11 +130,16 @@ const PostCarousel: React.FC<CarouselProps> = ({ name,posts }) => {
                   />
           
           </Grid>
-          <CommentsContainer post={posts[currentIndex]}/>
+          <Grid pt={2}>
+            <CommentsContainer post={posts[currentIndex]}/>
+          </Grid>
+          
         </Grid>  
-
+        </Grid>
+        
+      </Grid>
+       <Grid marginTop= {'60px'} marginLeft={1}>
         <button onClick={goToNextSlide} style={buttonStyle}>{'>'}</button>
-
       </Grid>
     </Grid>
     
