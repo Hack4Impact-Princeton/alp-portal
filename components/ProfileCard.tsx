@@ -127,12 +127,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
     marginLeft: "10px", // Add margin to separate user information and badges/buttons
   };
   const buttonsContainerStyle: React.CSSProperties = {
-    marginTop: "10px",
     display: "flex",
     flexDirection: "row",
     alignItems: "flex-start",
-    justifyContent: "center",
-    alignContent: "center",
     width: "100%",
   };
 
@@ -141,18 +138,18 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       case "none":
         return "#FE9834";
       case "sent":
-        return "#FF5733";
+        return "#5F5F5F";
       case "received":
-        return "#800080";
+        return "#008000";
       case "friends":
-        return "#4CAF50";
+        return "#FF7629";
       default:
         return "#FE9834";
     }
   };
 
   const buttonStyle: React.CSSProperties = {
-    padding: "8px 16px",
+    padding: "8px 110px",
     borderRadius: "4px",
     border: "none",
     backgroundColor: getButtonColor(),
@@ -162,9 +159,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   };
 
   const revokeButtonStyle: React.CSSProperties = {
-    padding: "8px 16px",
+    padding: "8px 80px",
     borderRadius: "4px",
-    backgroundColor: "#A9A9A9",
+     backgroundColor: getButtonColor(),
     color: "white",
     cursor: "pointer",
     margin: "4px 0",
@@ -214,30 +211,30 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               }}
               style={buttonStyle}
             >
-              Send Friend Request
+              Request
             </button>
           </div>
         )}
         {friendStatus === "sent" && (
           <button
-            style={buttonStyle}
+            style={revokeButtonStyle}
             onClick={() => {
               handleRevokeFriendRequest(userEmail, email);
               setFriendStatus("none");
             }}
           >
-            Click Here to Revoke
+            Cancel Request
           </button>
         )}
         {(/*friendStatus === "received" ||*/ friendStatus === "friends") &&
           showRevokeButton && (
-            <button style={buttonStyle} onClick={()=> handleRemoveFriends(userEmail, email)}>
-              Unfriend
+            <button style={revokeButtonStyle} onClick={()=> handleRemoveFriends(userEmail, email)}>
+              Remove Friend
             </button>
           )}
         {friendStatus === "received" && (
           <button style={buttonStyle} onClick={() => handleAcceptFriendRequest(userEmail, email)}>
-            Accept Friend Request
+            Accept
           </button>
         )}
       </div>
