@@ -7,7 +7,8 @@ const SearchBar: React.FC<{
   users: VolunteerAccount[];
   onQueryChange: (query: string, filteredUsers: VolunteerAccount[]) => void;
   onBackToForum: () => void; // Function to handle the "Back to Forum" button
-}> = ({ users, onQueryChange, onBackToForum }) => {
+  minimized: boolean;
+}> = ({ users, onQueryChange, onBackToForum, minimized }) => {
   const [query, setQuery] = useState("")
     
   useEffect(() => {
@@ -17,26 +18,28 @@ const SearchBar: React.FC<{
     onQueryChange(query, filteredUsers);
   }, [query]);
 
-  const searchBarStyle:  React.CSSProperties = {
-   position: 'absolute',
-    left: '250px', // Adjust the right position as needed
-    top: '200px', // Adjust the top position as needed
-    width: '800px', // Adjust the width as needed
-    padding: '10px',
-    fontSize: '16px',
-    border: '1px solid #ccc',
-    borderRadius: '5px',
-    outline: 'none',
-  };
-  const forumButtonStyle: React.CSSProperties = {
-    position: 'absolute',
-     left: '250px', // Adjust the right position as needed
-     top: '255px', // Adjust the top position as needed
-    // width: '800px', // Adjust the width as needed
-     padding: '10px',
-     fontSize: '16px',
-     outline: 'none',
-   };
+const searchBarStyle: React.CSSProperties = {
+  position: 'relative', // Changed to relative positioning
+  left: minimized ? '10px' : '0px',
+  top: minimized ? '10px' : '0px',
+  width: minimized ? '800px' :'calc(100% - 20px)',
+  padding: '10px',
+  fontSize: '16px',
+  border: '1px solid #ccc',
+  borderRadius: '5px',
+  outline: 'none',
+  marginLeft : minimized ? '0px' : '90px',
+};
+
+const forumButtonStyle: React.CSSProperties = {
+  position: 'relative', // Changed to relative positioning
+  marginLeft: minimized ? '0px' : '90px', // Adjusted left margin instead of left position
+  // marginTop: minimized ? '5px' : '55px', // Adjusted top margin instead of top position
+  padding: '10px',
+  fontSize: '16px',
+  outline: 'none',
+};
+
 
   const inputStyle:  React.CSSProperties = {
     width: '100%', // Adjust the width as needed

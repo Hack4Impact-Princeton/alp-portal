@@ -24,6 +24,7 @@ import ProfileDisplayCase from '../components/ProfileDisplayCase';
 import ProfileCard from '../components/ProfileCard';
 import { getStates } from "../lib/enums";
 import {BadgeType} from '../models/VolunteerAccount'
+import { useMediaQuery } from '@mui/material';
 
 
 type ProfileProps = {
@@ -56,6 +57,7 @@ type BadgeInfoProps = {
 };
 
 const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, error, allAccounts, query, userEmail, receivedFriendRequestList, sentFriendRequestList}) => {
+  const minimized = useMediaQuery('(max-width: 600px)');
   const backButtonStyle: React.CSSProperties = {
     color: '#FE9834',
     cursor: 'pointer',
@@ -135,27 +137,30 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
   
 
   return (
-    <Grid>
-      <PageContainer
-        broadcasts={broadcasts}
-        fName={account.fname}
-        currPage="profile_search"
+   <Grid>
+  <PageContainer
+    broadcasts={broadcasts}
+    fName={account.fname}
+    currPage="profile_search"
+  />
+  <Grid
+    container
+    display="flex"
+    padding={2}
+    sx={{ pl: 20 }}
+    rowSpacing={3}
+  >
+    {/* The SearchBar Grid item */}
+    <Grid item xs={12} sm={minimized ? 12 : 7} display="flex" flexDirection="column">
+      <SearchBar
+        users={users}
+        onQueryChange={handleQueryChange}
+        onBackToForum={() => { }}
+        minimized = {minimized}
       />
-      <Grid
-        container
-        display="flex"
-        padding={2}
-        sx={{ pl: 20 }}
-        rowSpacing={3}
-      >
-        <Grid item xs={12} sm={7} display="flex" flexDirection="column">
-          <SearchBar
-            users={users}
-            onQueryChange={handleQueryChange}
-          onBackToForum={() => { }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={7} display="flex" flexDirection="column" sx={{ cursor: "pointer" }}>
+    </Grid>
+    {/* The other Grid item */}
+    <Grid item xs={12} sm={minimized ? 12 : 7} display="flex" flexDirection="column" sx={{ cursor: "pointer" }}>
          {/*<Link href="/forum" style={{border:"1px solid gray"}}>
             <a style={backButtonStyle}>
               <span style={backIconStyle}>&lt;</span> Back to Forum
