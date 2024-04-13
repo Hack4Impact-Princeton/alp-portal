@@ -57,7 +57,7 @@ type BadgeInfoProps = {
 };
 
 const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, error, allAccounts, query, userEmail, receivedFriendRequestList, sentFriendRequestList}) => {
-  const minimized = useMediaQuery('(max-width: 600px)');
+  const minimized = useMediaQuery('(max-width: 700px)');
   const backButtonStyle: React.CSSProperties = {
     color: '#FE9834',
     cursor: 'pointer',
@@ -170,15 +170,15 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
         <Grid
           container
           display="flex"
-          padding={1}
           sx={{ pl: 5 }}
+          padding={1}
           spacing={3}
         >
           <Grid
             item
             xs={12}
             sm={5}
-            mt={6}
+            mt={0}
             sx={{ margin: "25 0px" }}
           >
             {filteredProfiles && <ProfileDisplayCase account={account} userEmail={userEmail} profiles={filteredProfiles} useBadges={true} receivedFriendRequestList={receivedFriendRequestList} sentFriendRequestList = {sentFriendRequestList} />}

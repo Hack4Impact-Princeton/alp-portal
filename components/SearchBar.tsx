@@ -22,18 +22,22 @@ const searchBarStyle: React.CSSProperties = {
   position: 'relative', // Changed to relative positioning
   left: minimized ? '10px' : '0px',
   top: minimized ? '10px' : '0px',
-  width: minimized ? '800px' :'calc(100% - 20px)',
+  width:'calc(100%-20px)',
+ // width: minimized ? '800px' :'calc(100% - 20px)',
   padding: '10px',
   fontSize: '16px',
   border: '1px solid #ccc',
   borderRadius: '5px',
   outline: 'none',
-  marginLeft : minimized ? '0px' : '90px',
+  marginLeft: '4vw'
+  //marginLeft : minimized ? '0px' : '60px',
 };
 
 const forumButtonStyle: React.CSSProperties = {
   position: 'relative', // Changed to relative positioning
-  marginLeft: minimized ? '0px' : '90px', // Adjusted left margin instead of left position
+  marginLeft: '4vw',
+
+ // marginLeft: minimized ? '0px' : '60px', // Adjusted left margin instead of left position
   // marginTop: minimized ? '5px' : '55px', // Adjusted top margin instead of top position
   padding: '10px',
   fontSize: '16px',
