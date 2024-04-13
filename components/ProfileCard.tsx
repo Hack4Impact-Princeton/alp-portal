@@ -151,7 +151,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   const buttonStyle: React.CSSProperties = {
     padding: "8px 110px",
     borderRadius: "4px",
-    border: "none",
+   // border: "none",
+    borderColor: "#5F5F5F",
     backgroundColor: getButtonColor(),
     color: "white",
     cursor: "pointer",
@@ -159,10 +160,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   };
 
   const revokeButtonStyle: React.CSSProperties = {
-    padding: "8px 80px",
+    padding: "8px 80px", // check this
     borderRadius: "4px",
      backgroundColor: getButtonColor(),
     color: "white",
+    border:"none",
     cursor: "pointer",
     margin: "4px 0",
   };
