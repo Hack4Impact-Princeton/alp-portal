@@ -57,7 +57,7 @@ const ProfileDisplayCase: React.FC<{account: VolunteerAccount; userEmail: string
               account={account}
               name={profile.name}
               // state={profile.state}
-              state={"JERSEYYYY"}
+              state={account.state}
               email={profile.email}
               affiliation={profile.affiliation}
               profilePicture={profile.profilePicture}

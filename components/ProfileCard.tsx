@@ -103,6 +103,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
+    paddingTop:"5px",
     maxHeight: "60px", // Set a maximum height for the email container
     //overflow: 'hidden',
     overflowWrap: "break-word",
@@ -112,13 +113,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
 
   const userInfoItemStyle: React.CSSProperties = {
     marginBottom: "5px",
-    textOverflow: "ellipsis", // Add ellipsis for overflowed text
+    textOverflow: "ellipsis", 
     overflowWrap: "break-word",
     wordWrap: "break-word",
     maxWidth: "100%",
-
-    //whiteSpace: 'nowrap', // Prevent text from wrapping
-    //overflow: 'hidden',
+   
   };
 
   const badgesAndButtonsContainerStyle: React.CSSProperties = {
@@ -131,6 +130,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
     flexDirection: "row",
     alignItems: "flex-start",
     width: "100%",
+    marginTop:2,
   };
 
   const getButtonColor = () => {
@@ -198,9 +198,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       <div style={contentStyle}>
         <img src={profilePicture} alt="Profile" style={imageStyle} />
         <div style={userInfoStyle}>
-          <p style={userInfoItemStyle}>{name}</p>
+          <p style={{...userInfoItemStyle, fontWeight:"bold"}}>{name}</p>
           <p style={userInfoItemStyle}>{state}</p>
-          <p style={userInfoItemStyle}>{affiliation}</p>
+          <p style={{...userInfoItemStyle, fontStyle:"italic"}}>{affiliation}</p>
         </div>
       </div>
 
