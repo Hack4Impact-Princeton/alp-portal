@@ -171,7 +171,7 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
           container
           display="flex"
           sx={{ pl: 5 }}
-          padding={1}
+          padding={0}
           spacing={3}
         >
           <Grid
