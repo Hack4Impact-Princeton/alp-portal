@@ -1,59 +1,16 @@
 import React, { useState, ChangeEvent } from "react";
+import { BookDrive } from "../../models/BookDrive";
 import { DSVRowString } from "d3-dsv";
 import * as d3 from "d3";
+import Papa from 'papaparse';
 
 const fieldsToCheck = ["driveName", "driveCode", "organizer", "country"];
 
 type UploadProps = {};
 
-type BookDrive = {
-  driveName: string;
-  driveCode: string;
-  organizer: string;
-  startDate: Date;
-  country: string;
-  status: number;
-  booksGoal: number;
-  completedDate: Date;
-  mailDate: Date;
-  reactivationRequestId: number | null;
-  gs: {
-    fundraise: string;
-    terms: boolean;
-  };
-  cb: {
-    booksCurrent: number;
-    updateFreq: number;
-    lastUpdate: Date;
-  };
-  pts: {
-    intFee: number;
-    domFee: number;
-    materials: {
-      boxes: boolean;
-      extraCardboard: boolean;
-      tape: boolean;
-      mailingLabels: boolean;
-    };
-  };
-  fl: {
-    isFinalized: boolean;
-    shipments: any[];
-  };
-  [key: string]: string | number | boolean | null | Date | Record<string, any>;
-};
 
 type ErrorDriveMap = Map<number, string>;
 
-// function hasBlankFields(obj: BookDrive, fieldsToCheck: string[]): string {
-//   for (const field of fieldsToCheck) {
-//     const value = obj[field];
-//     if (value === "" || value === null) {
-//       return field; // At least one blank field found
-//     }
-//   }
-//   return ""; // No blank fields found
-// }
 
 function hasBlankFields(obj: BookDrive, fieldsToCheck: string[]): string {
   for (const field of fieldsToCheck) {
@@ -71,6 +28,7 @@ const Upload: React.FC<UploadProps> = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [bookDrives, setBookDrives] = useState<BookDrive[]>([]); // Provide the correct initial type
   const [errorDriveMap, setErrorDriveMap] = useState(new Map());
+  const [dupList, setDupList] = useState<string[]>([]);
 
   // set uploaded csv file as selectedFile
   const changeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -83,74 +41,66 @@ const Upload: React.FC<UploadProps> = () => {
 
   // go inside csv file and extract (for now) first book drive
   const handleUploadCSV = () => {
-    const reader = new FileReader();
 
-    reader.onload = (event) => {
-      if (event.target) {
-        const csvData: string | ArrayBuffer | null = event.target.result;
-
-        // Use D3.js to parse the CSV data
-        if (csvData !== null && typeof csvData === "string") {
-          const parsedData = d3.csvParse(csvData);
-
-          // Now you can work with the parsed data
-          console.log(parsedData.length);
-
-          const newBookDrives = parsedData.map(
-            (
-              curBookDrive: DSVRowString<string>,
-              index: number,
-              array: DSVRowString<string>[]
-            ) => ({
-              driveName: `${curBookDrive["Book Drive Name"]}`,
-              driveCode: `${curBookDrive["Book Drive Code"]}`,
-              organizer: `${curBookDrive["Contact: Full Name"]}`,
-              startDate: new Date(),
-              country: `${curBookDrive["Country Prefrence: Countries Name"]}`,
-              status: 0,
-              booksGoal: 1000,
-              completedDate: new Date(),
-              mailDate: new Date(),
-              reactivationRequestId: null,
-              gs: {
-                fundraise: "fundraise",
-                terms: true,
+    if (!selectedFile) return;
+    console.log(selectedFile)
+    let data: Record<any, any>[] = []
+    Papa.parse(selectedFile, {
+      complete: function (results: any) {
+        console.log("Finished:", results.data);
+        console.log("Finished:", results.data[1]);
+        let drives: BookDrive[] = []
+        for (let i = 1; i < results.data.length; i++) {
+          let drive: Record<any, any> = {};
+          for (let j = 0; j < (results.data[0] as any).length; j++) 
+            drive[(results.data[0] as Array<string>)[j]] = (results.data[i] as any)[j]
+          drives.push({
+            driveName: `${drive["Book Drive Name"]}`,
+            driveCode: `${drive["Book Drive Code"]}`,
+            organizer: `${drive["Contact: Full Name"]}`,
+            email: `${drive["Contact Email"]}`,
+            startDate: new Date(),
+            country: `${drive["Country: Countries Name"]}`,
+            status: 0,
+            booksGoal: (drive["Book Drive Name"].endsWith('h drive')) ? 500 : 1000,
+            completedDate: new Date(),
+            mailDate: new Date(),
+            reactivationRequestId: "",
+            gs: {
+              fundraise: "fundraise",
+              terms: true,
+            },
+            cb: {
+              booksCurrent: parseInt(drive["Books Sent"]),
+              updateFreq: 0,
+              lastUpdate: new Date(),
+            },
+            pts: {
+              intFee: 0,
+              domFee: 0,
+              materials: {
+                boxes: false,
+                extraCardboard: false,
+                tape: false,
+                mailingLabels: false,
               },
-              cb: {
-                booksCurrent: 0,
-                updateFreq: 0,
-                lastUpdate: new Date(),
-              },
-              pts: {
-                intFee: 0,
-                domFee: 0,
-                materials: {
-                  boxes: false,
-                  extraCardboard: false,
-                  tape: false,
-                  mailingLabels: false,
-                },
-              },
-              fl: {
-                isFinalized: false,
-                shipments: [],
-              },
-            })
-          );
-          setBookDrives(newBookDrives);
+            },
+            fl: {
+              isFinalized: false,
+              shipments: [],
+            },
+          })
         }
+        setBookDrives(drives)
       }
-    };
-    if (selectedFile) {
-      const blob = new Blob([selectedFile], { type: "text/csv" });
-      reader.readAsText(blob);
-    }
-    // reader.readAsText(selectedFile);
+    });
+
   };
 
   const uploadDrives = async () => {
     console.log("Uploading Drive to Mongo");
     setErrorDriveMap(new Map());
+    let dup : string[] = []
     for (let i = 0; i < bookDrives.length; i++) {
       // if any missing fields, don't upload drive and tell that there is an error
       const missingField = hasBlankFields(bookDrives[i], fieldsToCheck);
@@ -171,7 +121,7 @@ const Upload: React.FC<UploadProps> = () => {
           `/api/bookDrive/${bookDrives[i]["driveCode"]}`,
           {
             method: "POST",
-            body: JSON.stringify(bookDrives[i]),
+            body: JSON.stringify(bookDrives),
           }
         );
 
@@ -180,21 +130,14 @@ const Upload: React.FC<UploadProps> = () => {
             `Uploaded book drive with code: ${bookDrives[i]["driveCode"]}`
           );
         } else {
-          setErrorDriveMap(
-            (map) =>
-              new Map(
-                map.set(
-                  i,
-                  "check if the drive you are trying to input already exists " +
-                    response.status
-                )
-              )
-          );
+          dup.push(bookDrives[i].driveCode)
         }
       } catch (e) {
         console.log(e);
       }
     }
+    setDupList(dup);
+    
   };
 
   return (
@@ -230,10 +173,17 @@ const Upload: React.FC<UploadProps> = () => {
             <ul>
               {Array.from(errorDriveMap.entries()).map(([key, value]) => (
                 <li key={key}>
-                  Drive at index {key}: {value}
+                  Drive on line {key}: {value}
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+      </div>
+      <div>
+        {dupList.length !== 0 && (
+          <div>
+            <li >The following driveIDs have already been uploaded: {dupList.toString()} </li>
           </div>
         )}
       </div>
