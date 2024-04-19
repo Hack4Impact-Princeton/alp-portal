@@ -37,7 +37,7 @@ const CurrentDriveTable: React.FC<{
         ...column,
         renderCell: (params: GridCellParams) => {
           if (column.field === "driveName") {
-            if (!drives) throw new Error("drives don't exist???");
+            if (!drives) throw new Error("drives don't exist");
             const colDriveName = params.value as string;
             return getDriveNameCell(colDriveName, drives);
           } else if (column.field === "size") {
@@ -88,7 +88,7 @@ const CurrentDriveTable: React.FC<{
             initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
             pageSizeOptions={[10]}
             checkboxSelection
-            hideFooter
+            
             disableRowSelectionOnClick
             onCellClick={handleDriveNameClick}
             getRowClassName={setRowClassName}

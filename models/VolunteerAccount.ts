@@ -10,6 +10,12 @@ export type BadgeType = {
   Organizer: number, Profile: number, Connector: number, Supporter: number, Leader: number, Participation: number
 }
 
+export type EmptyVolunteerAccount = {
+  fname: string,
+  lname: string,
+  email: string,
+}
+
 export type VolunteerAccount = {
     _id: string,
     fname: string,

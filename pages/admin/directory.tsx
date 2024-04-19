@@ -38,14 +38,14 @@ type AdminDashboardProps = {
   allAdmin: AdminAccount[];
   account: AdminAccount;
   error: Error | null;
-  driveDataProps:
+  /*driveDataProps:
   | {
     drive: BookDrive;
     shipments: Shipment[];
     volunteer: VolunteerAccount;
     reactivationReq: ReactivationRequest | null;
   }[]
-  | null;
+  | null;*/
 };
 const fieldsToCheck = ["driveName", "driveCode", "organizer", "country", "email"];
 
@@ -104,7 +104,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
   allAdmin,
   account,
   error,
-  driveDataProps,
+  //driveDataProps,
 }) => {
   if (error) return <h1>{`error: ${error}`}</h1>;
   if (!account)
@@ -113,7 +113,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
         Something went wrong. Please try to log in again
       </Link>
     );
-  const [driveData, setDriveData] = useState<
+/*  const [driveData, setDriveData] = useState<
     | {
       drive: BookDrive;
       shipments: Shipment[];
@@ -121,7 +121,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
       reactivationReq: ReactivationRequest | null;
     }[]
     | null
-  >(driveDataProps);
+  >(driveDataProps);*/
   const [showSidebar, setShowSidebar] = useState(false);
   const [activateSidebarMinWidth, toggleActivateSidebarMinWidth] =
     useState(false);
@@ -134,7 +134,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
     state: string;
   }| null>(null);
 
-  const drives = driveDataProps?.map((driveDatum) => driveDatum.drive);
+  //const drives = driveDataProps?.map((driveDatum) => driveDatum.drive);
   const [, setState] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState(false);
@@ -280,7 +280,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
     }
 
   };
-
+/*
   const updateBookDriveStatus = async (
     driveCode: string,
     status: number
@@ -309,7 +309,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
       console.error(e);
     }
   };
-
+*/
   // const removeReactivationReq = (driveCode: string) => {
   //   const foundDriveDatum = driveData?.find(
   //     (driveDatum) => driveDatum.drive.driveCode === driveCode
@@ -362,12 +362,12 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
       const adminProfile = {
         adminName: params.row.adminName,
         affiliation: params.row.affiliation,
-        driveIds: params.row.driveIds,
+        driveIds: ['test'],
         email: params.row.email,
         id: params.row.id,
         state: params.row.state
       }
-      console.log(params, driveData, adminProfile, "this!")
+//      console.log(params, driveData, adminProfile, "this!")
 
       if (!adminProfile) {
         alert("Something went wrong on our end. Try refreshing the page");
@@ -508,7 +508,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
         >
           <AdminTable
             allAdmin={allAdmin}
-            drives={drives}
+            //drives={drives}
             handleDriveNameClick={handleDriveNameClick}
             setRowClassName={setRowClassName}
           />
@@ -583,7 +583,8 @@ export const getServerSideProps = async (context: any) => {
       getVolunteerAccountModel();
     const ReactivationRequestModel: mongoose.Model<ReactivationRequest> =
       getReactivationRequestModel();
-    const driveDataPromises: Promise<{
+    
+  /*  const driveDataPromises: Promise<{
       drive: BookDrive;
       shipments: Shipment[];
       volunteer: VolunteerAccount;
@@ -621,12 +622,12 @@ export const getServerSideProps = async (context: any) => {
       };
     });
     const driveData = await Promise.all(driveDataPromises);
-    // console.log(driveData)
+    // console.log(driveData)*/
     return {
       props: {
         error: null,
         account: JSON.parse(JSON.stringify(account)),
-        driveDataProps: JSON.parse(JSON.stringify(driveData)),
+        //driveDataProps: JSON.parse(JSON.stringify(driveData)),
         allAdmin: JSON.parse(JSON.stringify(allAdmin)),
       },
     };

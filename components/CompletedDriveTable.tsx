@@ -113,7 +113,7 @@ const CompletedDriveTable: React.FC<{
               }}
               pageSizeOptions={[10]}
               checkboxSelection
-              hideFooter
+              //hideFooter
               disableRowSelectionOnClick
               onCellClick={handleDriveNameClick}
             />

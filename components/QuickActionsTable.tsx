@@ -12,7 +12,7 @@ import UpCaret from "./UpCaret";
 import DownCaret from "./DownCaret";
 import useExpandableElement from "../lib/useExpandableElement";
 import { ReactivationRequest } from "../models/ReactivationRequest";
-import { VolunteerAccount } from "../models/VolunteerAccount";
+import { EmptyVolunteerAccount, VolunteerAccount } from "../models/VolunteerAccount";
 import { Shipment } from "../models/Shipment";
 const QuickActionsTable: React.FC<{
   driveData:
@@ -20,7 +20,7 @@ const QuickActionsTable: React.FC<{
         drive: BookDrive;
         shipments: Shipment[];
         reactivationReq: ReactivationRequest | null;
-        volunteer: VolunteerAccount;
+        volunteer: VolunteerAccount | EmptyVolunteerAccount;
       }[]
     | undefined
     | null;
