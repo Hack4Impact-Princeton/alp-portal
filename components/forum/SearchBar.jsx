@@ -37,7 +37,7 @@ const Bar = ({ searchQuery, setSearchQuery }) => {
       placeholder="Search for a profile..."
       size="small"
       sx={{
-        width: "40vw", backgroundColor: "#F5F5F5"
+        width: "40vw", backgroundColor: "#F5F5F5", fontFamily:"Epilogue"
       }}
       InputProps={{
         startAdornment: (

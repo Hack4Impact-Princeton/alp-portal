@@ -28,14 +28,16 @@ import AdminPageContainer from "../../components/AdminPageContainer";
 import { DSVRowString } from "d3-dsv";
 import * as d3 from "d3";
 
-import { Box, Button, Fab, IconButton, Popper } from "@mui/material";
+import { Box, Button, Fab, IconButton, Modal, Popper } from "@mui/material";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import ModeIcon from '@mui/icons-material/Mode';
 import AdminTable from "../../components/admindir/AdminTable";
 import AdminDirectorySidebar from "../../components/AdminDirectorySidebar";
+import PromoteAdminSearchBar from "../../components/admindir/PromoteAdminSearchBar";
 
 type AdminDashboardProps = {
   allAdmin: AdminAccount[];
+  allVolunteers: VolunteerAccount[];
   account: AdminAccount;
   error: Error | null;
   /*driveDataProps:
@@ -102,6 +104,7 @@ function hasBlankFields(obj: BookDriveT, fieldsToCheck: string[]): string {
 
 const AdminDashboard: NextPage<AdminDashboardProps> = ({
   allAdmin,
+  allVolunteers,
   account,
   error,
   //driveDataProps,
@@ -427,6 +430,15 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
   const [adminCity, updateAdminCity] = useState(account.city)
   const [affiliation, updateAffiliation] = useState(account.affiliation)
 
+  const[showSearch, setShowSearch] = useState(false)
+  const[filteredVolunteers, setFilteredVolunteers] = useState(allVolunteers.filter(volunteer => !allAdmin.some(admin => admin.email === volunteer.email)))
+  const[updatedAdmin, setUpdatedAdmin] = useState(allAdmin)
+
+  const handleNewAdmin = () => {
+    setFilteredVolunteers(filteredVolunteers.filter(volunteer => !updatedAdmin.some(admin => admin.email === volunteer.email)));
+  }
+
+
   return (
     <>
       <AdminPageContainer
@@ -483,12 +495,19 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
             >
                 All Admin
             </h1>
-            <Button 
+           { account.isSuperAdmin == true && <div><Button 
+                    onClick={() => setShowSearch(true)}
                     sx={{ padding: 2, cursor: "pointer", height:"40px",fontFamily:"Epilogue",
                     fontWeight:"bold",color:"#5F5F5F",textTransform: 'none',outline:"none",backgroundColor:"#F3D39A",fontSize:"100%"
-                  }}>
+                  }} >
                 <p>Promote New Admin</p>
-            </Button>
+            </Button> 
+            <Modal open={showSearch} onClose={() => setShowSearch(false)}>
+                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "#FFFFFF", borderRadius: "8px", boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)", padding: "20px", maxWidth: "320px" }}>
+                    <PromoteAdminSearchBar users={filteredVolunteers} admins={allAdmin}/>
+                </div>
+           </Modal>
+            </div>}
         </Grid>
         </Grid>
         
@@ -565,6 +584,7 @@ export const getServerSideProps = async (context: any) => {
         },
       };
     }
+
     const AdminAccountModel: mongoose.Model<AdminAccount> =
       getAdminAccountModel();
     const account: AdminAccount = (await AdminAccountModel.findOne({
@@ -579,10 +599,14 @@ export const getServerSideProps = async (context: any) => {
     getVolunteerAccountModel();
     const BookDriveModel: mongoose.Model<BookDrive> = getBookDriveModel();
     const ShipmentModel: mongoose.Model<Shipment> = getShipmentModel();
-    const VolunteerAccountModel: mongoose.Model<VolunteerAccount> =
+    const VolunteerAccount: mongoose.Model<VolunteerAccount> =
       getVolunteerAccountModel();
     const ReactivationRequestModel: mongoose.Model<ReactivationRequest> =
       getReactivationRequestModel();
+
+    const allVolunteers: VolunteerAccount[] = (await VolunteerAccount.find(
+        {}
+    )) as VolunteerAccount[];
     
   /*  const driveDataPromises: Promise<{
       drive: BookDrive;
@@ -627,7 +651,7 @@ export const getServerSideProps = async (context: any) => {
       props: {
         error: null,
         account: JSON.parse(JSON.stringify(account)),
-        //driveDataProps: JSON.parse(JSON.stringify(driveData)),
+        allVolunteers: JSON.parse(JSON.stringify(allVolunteers)),
         allAdmin: JSON.parse(JSON.stringify(allAdmin)),
       },
     };
