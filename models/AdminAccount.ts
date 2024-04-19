@@ -1,14 +1,14 @@
 import mongoose from 'mongoose'
 import {Schema, Document, Types} from 'mongoose'
-import { VolunteerAccount, VolunteerAccountSchema } from './VolunteerAccount'
-import {BookDrive, BookDriveSchema} from './BookDrive'
 
-export interface AdminAccount extends Document {
+
+export interface AdminAccount  {
+    id: string,
     fname: string,
     lname: string,
     email: string,
     pwhash: string,
-    alp_id: string,
+    alp_id: number,
     broadcasts: string[],
     isSuperAdmin: boolean,
     city: string,
@@ -36,14 +36,38 @@ const AdminAccountSchema = new Schema<AdminAccount>({
         type: String,
         required: true
     },
-    id: {
-        type: String,
-        required: true
+    alp_id: {type: Number, required: true},
+    broadcasts: {type: [String], required:true    },
+    isSuperAdmin: {type: Boolean, required:true,
     },
-    broadcasts: {type: [String]},
-    isSuperAdmin: {type: Boolean},
-   // volunteerIds: [Number], 
-   // driveIds: [String]
+
+    city: {
+        type: String,
+        required:true,
+        default: ""
+
+    },
+    state: {
+        type: String,
+        required:true,
+        default: ""
+
+    },
+    country: {
+        type: String,
+        required:true,
+        default: ""
+
+    },
+    affiliation: {
+        type: String,
+        required:true,
+        default: ""
+
+    },
+   
+
+   
 }, {collection: 'adminAccounts'})
 
 

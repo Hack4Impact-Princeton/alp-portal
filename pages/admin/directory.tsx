@@ -503,7 +503,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
                 <p>Promote New Admin</p>
             </Button> 
             <Modal open={showSearch} onClose={() => setShowSearch(false)}>
-                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "#FFFFFF", borderRadius: "8px", boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)", padding: "20px", maxWidth: "320px" }}>
+                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "#FFFFFF", borderRadius: "8px", boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)", padding: "20px", width: "40vw" }}>
                     <PromoteAdminSearchBar users={filteredVolunteers} admins={allAdmin}/>
                 </div>
            </Modal>

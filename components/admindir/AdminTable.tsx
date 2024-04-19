@@ -54,7 +54,7 @@ import {
     const currDrivesGridRows = allAdmin.map((admin) => {
         console.log(admin)
       return {
-        id: admin._id,
+        id: admin.id,
         adminName: admin.fname + " " + admin.lname,
         state: admin.state,
         email: admin.email,
