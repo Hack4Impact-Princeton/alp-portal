@@ -2,7 +2,7 @@ import { BookDrive } from "../models/BookDrive";
 import { deadlineMap } from "./enums";
 import CircularIcon from "../components/CircularIcon";
 import { BookDriveStatus } from "./enums";
-export const isDeadlineApproaching = (country: string): boolean => {
+/*export const isDeadlineApproaching = (country: string): boolean => {
   // TODO implement deadline logic here based on date and current time
   if (!country) throw new Error("Something went wrong - country is undefined");
   if (!deadlineMap.has(country))
@@ -11,7 +11,7 @@ export const isDeadlineApproaching = (country: string): boolean => {
     deadlineMap.get(country)!.getTime() - new Date().getTime() <
     31 * 24 * 60 * 60 * 1000
   );
-};
+};*/
 
 export const halfDrive = (
   <svg
@@ -74,7 +74,7 @@ export const getDriveNameCell = (driveName: string, drives: BookDrive[]) => {
         ) : (
           <></>
         )}
-        {isDeadlineApproaching(foundDrive.country) ? (
+        {/*isDeadlineApproaching(foundDrive.country) ? (
           <div style={{ marginRight: 8 }}>
             <CircularIcon
               bgColor={"F3D39A"}
@@ -113,7 +113,7 @@ export const getDriveNameCell = (driveName: string, drives: BookDrive[]) => {
           </div>
         ) : (
           <></>
-        )}
+        )*/}
         {driveName}
       </span>
     );

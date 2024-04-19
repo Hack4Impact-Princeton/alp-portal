@@ -1,6 +1,6 @@
 import { BookDrive } from "../models/BookDrive";
 import { Shipment } from "../models/Shipment";
-import { VolunteerAccount } from "../models/VolunteerAccount";
+import { VolunteerAccount , EmptyVolunteerAccount} from "../models/VolunteerAccount";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -23,7 +23,7 @@ const AdminSidebar: React.FC<{
   driveData: {
     drive: BookDrive;
     shipments: Shipment[];
-    volunteer: VolunteerAccount;
+    volunteer: VolunteerAccount | EmptyVolunteerAccount;
     reactivationReq: ReactivationRequest | null;
   };
   updateBookDriveStatus: (driveCode: string, status: number) => Promise<void>;
@@ -32,6 +32,7 @@ const AdminSidebar: React.FC<{
   email: string;
 }> = ({ email, senderName, driveData, updateBookDriveStatus, removeReactivationReq }) => {
   const { drive, shipments, volunteer, reactivationReq } = driveData;
+
   const { status, organizer, driveName, driveCode, country, booksGoal, cb } =
     drive;
   // const [showReactivationReq, setShowReactivationReq] = useState(false)
@@ -68,6 +69,8 @@ const AdminSidebar: React.FC<{
       console.error(e);
     }
   };
+  const volunteerType = Object.keys(volunteer).length == 3 ? "empty" : "full"
+
   const sendAutomatedBroadcast = async () => {
     try {
       const subject = "automated broadcast subject";
@@ -128,8 +131,10 @@ const AdminSidebar: React.FC<{
       spacing={1}
       minWidth={"300px"}
     >
-      <Grid item>
+      <Grid item >
         <Typography
+          paddingTop={10}
+          paddingBottom={1}
           variant="h5"
           sx={{
             color: "#FE9834",
@@ -153,6 +158,8 @@ const AdminSidebar: React.FC<{
           container
           direction="column"
           spacing={1}
+          paddingTop={3}
+          paddingBottom={3}
           xs={6}
           sx={{
             justifyContent: "center",
@@ -186,7 +193,7 @@ const AdminSidebar: React.FC<{
             />
             <Typography
               variant="body1"
-              sx={{ marginLeft: 1, color: "#5F5F5F" }}
+              sx={{ marginLeft: 1, color: "#5F5F5F", fontFamily:"Epilogue" }}
             >
               {statusMap.get(status)}
             </Typography>
@@ -205,7 +212,7 @@ const AdminSidebar: React.FC<{
             />
             <Typography
               variant="body1"
-              sx={{ marginLeft: 1, color: "#5F5F5F" }}
+              sx={{ marginLeft: 1, color: "#5F5F5F",fontFamily:"Epilogue" }}
             >
               {booksGoal === 500 ? "Half library" : "Full library"}
             </Typography>
@@ -231,7 +238,7 @@ const AdminSidebar: React.FC<{
             />
             <Typography
               variant="body1"
-              sx={{ marginLeft: 1, color: "#5F5F5F" }}
+              sx={{ marginLeft: 1, color: "#5F5F5F",fontFamily:"Epilogue" }}
             >
               {country}
             </Typography>
@@ -279,7 +286,7 @@ const AdminSidebar: React.FC<{
             />
             <Typography
               variant="body1"
-              sx={{ marginLeft: 1, color: "#5F5F5F" }}
+              sx={{ marginLeft: 1, color: "#5F5F5F",fontFamily:"Epilogue" }}
             >
               {organizer}
             </Typography>
@@ -327,14 +334,15 @@ const AdminSidebar: React.FC<{
             />
             <Typography
               variant="body1"
-              sx={{ marginLeft: 1, color: "#5F5F5F" }}
+              sx={{ marginLeft: 1, color: "#5F5F5F",fontFamily:"Epilogue" }}
             >
-              {deadlineMap.get(country)!.toLocaleDateString()}
+              Updated: {new Date(drive.startDate).toLocaleDateString()} {/*temporary*/}
+              {/*deadlineMap.get(country)!.toLocaleDateString(), commented this out bc it was just returning the current date*/}  
             </Typography>
           </Grid>
         </Grid>
       </Grid>
-      <Grid
+      {volunteerType == 'full' && <Grid
         item
         container
         justifyContent="space-between"
@@ -381,7 +389,7 @@ const AdminSidebar: React.FC<{
             Compose custom message
           </Button>
         </Link>
-      </Grid>
+          </Grid> }
       {status == BookDriveStatus.Cancelled && reactivationReq && (
         <>
           <Grid
@@ -398,7 +406,7 @@ const AdminSidebar: React.FC<{
             />
             <Typography
               variant="h5"
-              style={{ color: "#FE9834", fontWeight: 700, marginLeft: 10 }}
+              style={{ color: "#FE9834", fontWeight: 700, marginLeft: 10,fontFamily:"Epilogue" }}
             >
               Reactivation Request
             </Typography>
@@ -501,6 +509,7 @@ const AdminSidebar: React.FC<{
       >
         <Grid
           item
+          
           sx={{
             display: "flex",
             flexDirection: "row",
@@ -511,7 +520,8 @@ const AdminSidebar: React.FC<{
         >
           <Typography
             variant="h5"
-            sx={{ marginRight: 1, color: "#FE9834", fontWeight: 600 }}
+            
+            sx={{ marginRight: 1, color: "#FE9834", fontWeight: 600,fontFamily:"Epilogue" }}
           >
             Update History
           </Typography>
@@ -534,7 +544,7 @@ const AdminSidebar: React.FC<{
           >
             <Typography
               variant={"h6"}
-              sx={{ fontWeight: 600, color: "#5F5F5F" }}
+              sx={{ fontWeight: 600, color: "#5F5F5F",fontFamily:"Epilogue" }}
             >
               Shipment Progress
             </Typography>
@@ -547,10 +557,10 @@ const AdminSidebar: React.FC<{
                     justifyContent={"flex-start"}
                     alignItems="flex-start"
                   >
-                    <Typography sx={{ marginRight: 1, color: "#5F5F5F" }}>
+                    <Typography sx={{ marginRight: 1, color: "#5F5F5F",fontFamily:"Epilogue" }}>
                       {new Date(shipment.date).toLocaleDateString()}
                     </Typography>
-                    <Typography sx={{ marginRight: 1, color: "#5F5F5F" }}>{`${
+                    <Typography sx={{ marginRight: 1, color: "#5F5F5F",fontFamily:"Epilogue" }}>{`${
                       shipment.numBooks
                     } book${shipment.numBooks != 1 ? "s" : ""} `
                     // ${
@@ -581,7 +591,7 @@ const AdminSidebar: React.FC<{
               })}
             <Typography
               variant={"h6"}
-              sx={{ fontWeight: 600, color: "#5F5F5F" }}
+              sx={{ fontWeight: 600, color: "#5F5F5F",fontFamily:"Epilogue" }}
             >
               Collection Progress
             </Typography>
@@ -591,10 +601,10 @@ const AdminSidebar: React.FC<{
               justifyContent={"flex-start"}
               alignItems={"flex-start"}
             >
-              <Typography sx={{ marginRight: 1, color: "#5F5F5F" }}>
+              <Typography sx={{ marginRight: 1, color: "#5F5F5F",fontFamily:"Epilogue" }}>
                 {new Date(cb.lastUpdate).toLocaleDateString()}
               </Typography>
-              <Typography sx={{ color: "#5F5F5F" }}>{`${cb.booksCurrent} book${
+              <Typography sx={{ color: "#5F5F5F",fontFamily:"Epilogue" }}>{`${cb.booksCurrent} book${
                 cb.booksCurrent != 1 ? "s" : ""
               } collected`}</Typography>
             </Grid>

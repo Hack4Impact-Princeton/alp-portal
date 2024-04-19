@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import CircularIcon from "./CircularIcon";
 import { BookDriveStatus } from "../lib/enums";
 import { statusMap } from "../lib/enums";
-import { deadlineMap } from "../lib/enums";
+//import { deadlineMap } from "../lib/enums";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 import Link from "next/link";
 import { useState } from "react";
@@ -16,8 +16,6 @@ import DownCaret from "./DownCaret";
 import { getStates } from "../lib/enums";
 import useExpandableElement from "../lib/useExpandableElement";
 import sendBroadcast from "../db_functions/sendBroadcast";
-import { ReactivationRequest } from "../models/ReactivationRequest";
-import { deleteReactivationRequest } from "../db_functions/reactivationReqFns";
 import MailOutlineIcon from '@mui/icons-material/MailOutline';import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import PlaceIcon from '@mui/icons-material/Place';
 import { EmailOutlined } from "@mui/icons-material";
@@ -168,7 +166,7 @@ const AdminDirectorySidebar: React.FC<{
             <p>Remove Admin Status</p>
         </Button>
       </Grid>
-      <Grid marginLeft={"2%"} marginTop={3}>
+      {/*<Grid marginLeft={"2%"} marginTop={3}>
         <Typography
             variant="h5"
             sx={{
@@ -187,8 +185,8 @@ const AdminDirectorySidebar: React.FC<{
                 <p>{driveId} | Drive State</p>
             )
         })}
+      </Grid> */}
       </Grid>
-    </Grid>
   );
 };
 

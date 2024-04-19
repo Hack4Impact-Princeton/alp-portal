@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth/next";
 import { NextPage } from "next/types";
 import getAdminAccountModel, { AdminAccount } from "../../models/AdminAccount";
 import getVolunteerAccountModel, {
-  VolunteerAccount,
+  VolunteerAccount, EmptyVolunteerAccount
 } from "../../models/VolunteerAccount";
 import getBookDriveModel, { BookDrive } from "../../models/BookDrive";
 import mongoose from "mongoose";
@@ -38,7 +38,7 @@ type AdminDashboardProps = {
   | {
     drive: BookDrive;
     shipments: Shipment[];
-    volunteer: VolunteerAccount;
+    volunteer: VolunteerAccount | EmptyVolunteerAccount;
     reactivationReq: ReactivationRequest | null;
   }[]
   | null;
@@ -112,7 +112,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
     | {
       drive: BookDrive;
       shipments: Shipment[];
-      volunteer: VolunteerAccount;
+      volunteer: VolunteerAccount | EmptyVolunteerAccount;
       reactivationReq: ReactivationRequest | null;
     }[]
     | null
@@ -123,7 +123,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
   const [sidebarDriveDatum, setSideBarDriveData] = useState<{
     drive: BookDrive;
     shipments: Shipment[];
-    volunteer: VolunteerAccount;
+    volunteer: VolunteerAccount | EmptyVolunteerAccount;
     reactivationReq: ReactivationRequest | null;
   } | null>(null);
 
@@ -369,7 +369,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
   const openSidebar = (sideDrive: {
     drive: BookDrive;
     shipments: Shipment[];
-    volunteer: VolunteerAccount;
+    volunteer: VolunteerAccount | EmptyVolunteerAccount;
     reactivationReq: ReactivationRequest | null;
   }) => {
     setTimeout(() => {
@@ -620,32 +620,40 @@ export const getServerSideProps = async (context: any) => {
     })) as AdminAccount;
     if (!account) throw new Error(`account with email ${session.user.email}`);
     getVolunteerAccountModel();
-    const BookDriveModel: mongoose.Model<BookDrive> = getBookDriveModel();
+    const BookDrive: mongoose.Model<BookDrive> = getBookDriveModel()
     const ShipmentModel: mongoose.Model<Shipment> = getShipmentModel();
     const VolunteerAccountModel: mongoose.Model<VolunteerAccount> =
       getVolunteerAccountModel();
     const ReactivationRequestModel: mongoose.Model<ReactivationRequest> =
       getReactivationRequestModel();
+    const allBookDrives = (await BookDrive.find({})) as BookDrive[];
+
     const driveDataPromises: Promise<{
       drive: BookDrive;
       shipments: Shipment[];
-      volunteer: VolunteerAccount;
+      volunteer: VolunteerAccount | EmptyVolunteerAccount;
       reactivationReq: ReactivationRequest | null;
-    }>[] = account.driveIds.map(async (driveId) => {
-      const drive = (await BookDriveModel.findOne({
-        driveCode: driveId,
-      })) as BookDrive;
-      if (!drive) throw new Error(`no bookdrive found with code ${driveId}`);
+    }>[] = allBookDrives.map(async(bookdrive) => {
+      const drive = bookdrive as BookDrive;
       const shipmentPromises = drive.fl.shipments.map(
         async (shipmentId) => await ShipmentModel.findById(shipmentId)
       );
       const shipments = (await Promise.all(shipmentPromises)) as Shipment[];
-      const volunteer = (await VolunteerAccountModel.findOne({
+      let findvolunteer = (await VolunteerAccountModel.findOne({
         fname: drive.organizer.split(" ")[0],
         lname: drive.organizer.split(" ")[1],
-      })) as VolunteerAccount;
-      if (!volunteer)
-        throw new Error(`no volunteer found with name ${drive.organizer}`);
+      })) as VolunteerAccount; //TODO: change this to be "contact email"
+      let volunteer = null
+      if (!findvolunteer) { // if the drive organizer hasn't made an account yet.
+         volunteer = {
+          fname: drive.organizer.split(" ")[0],
+          lname: drive.organizer.split(" ")[1],
+          email: drive.email,
+        } as EmptyVolunteerAccount
+      }
+      else {
+         volunteer = findvolunteer as VolunteerAccount
+      }
       if (!drive.reactivationRequestId)
         return {
           drive: drive,

@@ -10,8 +10,7 @@ export interface AdminAccount extends Document {
     pwhash: string,
     alp_id: string,
     broadcasts: string[],
-    volunteerIds: number[],
-    driveIds: string[],
+    isSuperAdmin: boolean,
     city: string,
     state: string,
     country: string,
@@ -42,8 +41,9 @@ const AdminAccountSchema = new Schema<AdminAccount>({
         required: true
     },
     broadcasts: {type: [String]},
-    volunteerIds: [Number], 
-    driveIds: [String]
+    isSuperAdmin: {type: Boolean},
+   // volunteerIds: [Number], 
+   // driveIds: [String]
 }, {collection: 'adminAccounts'})
 
 

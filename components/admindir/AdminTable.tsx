@@ -16,10 +16,10 @@ import {
 
   const CurrentDriveTable: React.FC<{
     allAdmin: AdminAccount[];
-    drives: BookDrive[] | undefined;
+   // drives: BookDrive[] | undefined;
     handleDriveNameClick: (params: GridCellParams) => void;
     setRowClassName: (params: GridRowParams) => string;
-  }> = ({ allAdmin,drives, handleDriveNameClick, setRowClassName }) => {
+  }> = ({ allAdmin, handleDriveNameClick, setRowClassName }) => {
 
     const prelimCurrDrivesColumns: GridColDef[] = [
       { field: "adminName", headerName: "Name", width: 300 },
@@ -33,9 +33,9 @@ import {
           ...column,
           renderCell: (params: GridCellParams) => {
             if (column.field === "driveName") {
-              if (!drives) throw new Error("drives don't exist???");
+          /*    if (!drives) throw new Error("drives don't exist???");
               const colDriveName = params.value as string;
-              return getDriveNameCell(colDriveName, drives);
+              return getDriveNameCell(colDriveName, drives);*/
             } else if (column.field === "size") {
               const val = params.value as number;
               if (val == 500) return halfDrive;
@@ -59,7 +59,7 @@ import {
         state: admin.state,
         email: admin.email,
         affiliation: admin.affiliation,
-        driveIds: admin.driveIds,
+       // driveIds: admin.driveIds,
       };
     });
     if (currDrivesGridRows.length === 0) return <></>;

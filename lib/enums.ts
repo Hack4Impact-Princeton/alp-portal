@@ -282,9 +282,24 @@ export const statusMap = new Map<number, string>([
   [3, "Cancelled"],
 ]);
 
+// TODO: what to do if new countries are added? then this breaks
+// right now, manually added in the existing countries 
+
 export const deadlineMap = new Map<string, Date>([
 
     ['South Africa', new Date()],
     ['Democratic Republic of the Congo', new Date()],
-    ['Malawi', new Date()]
+    ['Malawi', new Date()],
+    ['Botswana', new Date()],
+    ['Cameroon', new Date()],
+    ['Ghana', new Date()],
+    ['Lesotho', new Date()],
+    ['Uganda', new Date()],
+    ['Nigeria', new Date()],
+    ['South Africa', new Date()],
+    ['Sierra Leone', new Date()],
+    ['Swaziland', new Date()],
+    ['Zambia', new Date()],
+    ['Zimbabwe', new Date()]
+
 ])

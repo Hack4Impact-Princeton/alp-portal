@@ -147,10 +147,8 @@ export const getServerSideProps = async (context: any) => {
     console.log("account", account);
     const VolunteerAccount: mongoose.Model<VolunteerAccount> =
       getVolunteerAccountModel();
-    const vPromises = account.volunteerIds.map((volunteerId) =>
-      VolunteerAccount.findOne({ alp_id: volunteerId })
-    );
-    const volunteers = (await Promise.all(vPromises)) as VolunteerAccount[];
+
+    const volunteers = (await VolunteerAccount.find({})) as VolunteerAccount[];
     console.log("volunteers", volunteers);
     const Broadcast: mongoose.Model<Broadcast> = getBroadcastModel();
     console.log(account.broadcasts);
