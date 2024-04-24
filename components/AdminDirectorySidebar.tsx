@@ -19,6 +19,7 @@ import sendBroadcast from "../db_functions/sendBroadcast";
 import MailOutlineIcon from '@mui/icons-material/MailOutline';import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import PlaceIcon from '@mui/icons-material/Place';
 import { EmailOutlined } from "@mui/icons-material";
+import BadgeIcon from '@mui/icons-material/Badge';
 
 const AdminDirectorySidebar: React.FC<{
   adminProfile: {
@@ -148,10 +149,17 @@ const AdminDirectorySidebar: React.FC<{
       </Grid>
       <Grid display="flex" alignItems={"center"} marginLeft={"2%"}  marginBottom={1}>
         <div style={{backgroundColor: "#F3D39A", borderRadius:"50%", width:35, height:35, display:"flex", justifyContent:"center",alignItems:"center"}}>
+            <div style={{paddingTop:1}} ><BadgeIcon sx={{color:"#5F5F5F"}}/></div>
+        </div>
+            
+            <p style={{marginLeft:"2%"}}>Role: Container Manager, Super Admin</p>
+      </Grid>
+      <Grid display="flex" alignItems={"center"} marginLeft={"2%"}  marginBottom={1}>
+        <div style={{backgroundColor: "#F3D39A", borderRadius:"50%", width:35, height:35, display:"flex", justifyContent:"center",alignItems:"center"}}>
             <div style={{paddingTop:1}} ><FavoriteBorderIcon sx={{color:"#5F5F5F"}}/></div>
         </div>
             
-            <p style={{marginLeft:"2%"}}>{adminProfile.affiliation}</p>
+            <p style={{marginLeft:"2%"}}>Affiliation: {adminProfile.affiliation}</p>
       </Grid>
       <Grid display="flex" alignItems={"center"} marginLeft={"2%"}  marginBottom={2}>
       <div style={{backgroundColor: "#F3D39A", borderRadius:"50%", width:35, height:35, display:"flex", justifyContent:"center",alignItems:"center"}}>

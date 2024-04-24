@@ -138,7 +138,6 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
   }| null>(null);
 
   //const drives = driveDataProps?.map((driveDatum) => driveDatum.drive);
-  const [, setState] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -222,133 +221,32 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
     // reader.readAsText(selectedFile);
   };
 
-  const uploadDrives = async () => {
-    console.log("Uploading Drive to Mongo");
-    setErrorDriveMap(new Map());
-    for (let i = 0; i < bookDrives.length; i++) {
-      // if any missing fields, don't upload drive and tell that there is an error
-      const missingField = hasBlankFields(bookDrives[i], fieldsToCheck);
-      if (missingField !== "") {
-        setErrorDriveMap(
-          (map) =>
-            new Map(
-              map.set(
-                i,
-                "The following information is missing: " + missingField
-              )
-            )
-        );
-        continue;
-      }
-      try {
-        const response = await fetch(
-          `/api/bookDrive/${bookDrives[i]["driveCode"]}`,
-          {
-            method: "POST",
-            body: JSON.stringify(bookDrives[i]),
-          }
-        );
 
-        if (response.ok) {
-          console.log(
-            `Uploaded book drive with code: ${bookDrives[i]["driveCode"]}`
-          );
-          // add to volunteer account
-          const res = await fetch(`../api/volunteeraccounts/${bookDrives[i]["email"]}` ,{
-            method: "GET"
-          })
-          if (!res.ok) continue; // no account found
-          const account = await res.json().then(res => res.data);
-          if (bookDrives[i]["driveCode"] in account.driveIds) continue;
-          account.driveIds.push(bookDrives[i]["driveCode"])
-          const resp = await fetch(`../api/volunteeraccounts/${bookDrives[i]["email"]}` ,{
-            method: "PATCH",
-            body: JSON.stringify(account)
-          }).then(res => res.json())
-        } else {
-          setErrorDriveMap(
-            (map) =>
-              new Map(
-                map.set(
-                  i,
-                  "check if the drive you are trying to input already exists " +
-                  response.status
-                )
-              )
-          );
-        }
-      } catch (e) {
-        console.log(e);
-      }
+
+  const toggleShowEditProfileModal = (val: boolean) => {
+    if (val) {
+     // setName(`${currAccount.fname} ${currAccount!.lname}`)
+      // setHobbies(currAccount.hobbies)
+     // setAffiliation(currAccount.affiliation)
+      editProfileRef?.current?.showModal()
+    }
+    else {
+      editProfileRef?.current?.close()
+      //setName(`${currAccount.fname} ${currAccount.lname}`)
+     // setHobbies(currAccount.hobbies)
+      //setAffiliation(currAccount.affiliation)
+     // setFavBook(currAccount.favoriteBook)
     }
 
-  };
-/*
-  const updateBookDriveStatus = async (
-    driveCode: string,
-    status: number
-  ): Promise<void> => {
-    try {
-      const res = await fetch(`/api/bookDrive/${driveCode}`, {
-        method: "PUT",
-        body: JSON.stringify({ status: status }),
-      });
-      if (!res.ok) {
-        alert("updating the status failed");
-        throw new Error("updating the status failed");
-      }
-      const resJson = await res.json();
-      // console.log(resJson.data)
-      const modifiedDrive = driveData?.find(
-        (driveDatum) => driveDatum.drive.driveCode === resJson.data.driveCode
-      );
-      if (!modifiedDrive)
-        throw new Error("something went wrong - Internal Server Error");
-      // console.log(modifiedDrive)
-      modifiedDrive!.drive.status = status;
-      setState((prev) => !prev);
-      alert("drive marked as active successfully");
-    } catch (e: Error | any) {
-      console.error(e);
-    }
-  };
-*/
-  // const removeReactivationReq = (driveCode: string) => {
-  //   const foundDriveDatum = driveData?.find(
-  //     (driveDatum) => driveDatum.drive.driveCode === driveCode
-  //   );
-  //   if (!foundDriveDatum) {
-  //     console.error(`hmmm, couldn't find the drive with code ${driveCode}`);
-  //     alert(`hmmm, couldn't find the drive with code ${driveCode}`);
-  //     return;
-  //   }
-  //   if (!foundDriveDatum.reactivationReq) {
-  //     console.error(
-  //       `hmmm, there was no reactivation request found for the drive with driveCode ${driveCode}`
-  //     );
-  //     alert(
-  //       `hmmm, there was no reactivation request found for the drive with driveCode ${driveCode}`
-  //     );
-  //     return;
-  //   }
-  //   const filteredDrives = driveData?.filter(
-  //     (datum) => datum.drive.driveCode !== driveCode
-  //   );
-  //   setDriveData(filteredDrives ? filteredDrives : null);
-  //   const editedCurrDrive = sidebarDriveDatum;
-  //   if (!editedCurrDrive) {
-  //     console.error(
-  //       "attempting to access the current sidebar drive but it doesnt exist apparently"
-  //     );
-  //     alert(
-  //       "attempting to access the current sidebar drive but it doesnt exist apparently"
-  //     );
-  //     return;
-  //   }
-  //   editedCurrDrive.reactivationReq = null;
-  //   editedCurrDrive.drive.reactivationRequestId = undefined;
-  //   setSideBarDriveData(editedCurrDrive);
-  // };
+  }
+
+  const editProfileRef = useRef<HTMLDialogElement>(null)
+
+  const editProfile = () => {
+    toggleShowEditProfileModal(false)
+  }
+
+
   const handleDriveNameClick = (params: GridCellParams) => {
     console.log("in drivename click")
     if (params.field === "adminName") {
@@ -425,10 +323,15 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
 
-  const [name, updateName] = useState(account.fname + " " + account.lname)
-  const [adminState, updateAdminState] = useState(account.state)
-  const [adminCity, updateAdminCity] = useState(account.city)
-  const [affiliation, updateAffiliation] = useState(account.affiliation)
+  // profile variables
+  const [name, setName] = useState(account.fname + " " + account.lname)
+  const [role, setRole] = useState(account.role)
+  const [country, setCountry] = useState(account.country)
+  const [state, setState] = useState(account.state)
+  const [city, setCity] = useState(account.city)
+  const [affiliation, setAffiliation] = useState(account.affiliation)
+
+
 
   const[showSearch, setShowSearch] = useState(false)
   const[filteredVolunteers, setFilteredVolunteers] = useState(allVolunteers.filter(volunteer => !allAdmin.some(admin => admin.email === volunteer.email)))
@@ -475,13 +378,122 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
             >
                 About You
             </h1>
-            <IconButton sx={{backgroundColor: "#FE9834"}}>
+            <IconButton onClick={() => toggleShowEditProfileModal(true)} sx={{backgroundColor: "#FE9834"}}>
                 <ModeIcon sx={{color: "white"}}/>
             </IconButton>
+            <dialog
+            ref={editProfileRef}
+            style={{
+              height: "50%",
+              width: "40%",
+              minHeight: "450px",
+              borderRadius: "3%",
+              paddingLeft: 3,
+              paddingRight: 3,
+
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: "#f5f5f5"
+            }}
+          >
+            <Grid
+              display={"flex"}
+              flexDirection={"column"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+              alignSelf={"flex-start"}
+              height={"100%"}
+              sx={{
+                backgroundColor: "#F5F5F5",
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <Grid
+                display="flex"
+                flexDirection="row"
+                alignItems="center"
+                justifyContent={"space-between"}
+                width="100%"
+                sx={{ marginTop: 1 }}
+              >
+                <p
+                  style={{
+                    color: "#5F5F5F",
+                    fontWeight: 600,
+                    fontSize: 20,
+                    width: "90%",
+                    marginLeft: "5%",
+                  }}
+                >
+                  Edit Profile
+                </p>
+                <p style={{ cursor: "pointer", marginRight: 16, fontWeight: "600" }} onClick={() => toggleShowEditProfileModal(false)}>x</p>
+
+              </Grid>
+              <div style={{ marginTop: "10px", display: "flex", justifyContent: "space-around", flexDirection: "row", width: "100%", alignItems: "center"}}>
+             
+                <div style={{ display: "flex", flexDirection: "column", width: "90%", flexShrink: 3, height: "100%", justifyContent: "space-around", alignItems: "start", }}>
+                  <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>Name</i>
+                  <input type="text" placeholder={"name"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                  <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>Role</i>
+                  <input type="text" placeholder={"role"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={role} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                  <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>Country</i>
+                  <input type="text" placeholder={"role"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={country} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                  <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>State</i>
+                  <input type="text" placeholder={"role"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={state} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                  <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>City</i>
+                  <input type="text" placeholder={"role"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={city} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                  {/* <Dropdown options={states} setResult={setLocation} location={location} /> */}
+                </div>
+              </div>
+              <div style={{ display: "flex", flex: 1,  marginTop: 10, flexDirection: "column", width: "100%", alignItems: "start", paddingLeft: "4%" }}>
+                <i style={{ marginLeft: 3, fontSize: 10 }}>Affiliation</i>
+                <input style={{ padding: 3, width: "96%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} type="text" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAffiliation(e.target.value)} value={affiliation} />
+              </div>
+              <Grid
+                display="flex"
+                flexDirection="column"
+                justifyContent="space-around"
+                alignItems="center"
+                height="wrap-content"
+                sx={{ width: "100%", padding: 1, }}
+              >
+                <Button
+                  sx={{
+                    backgroundColor: "#FE9834",
+                    "&:hover": { backgroundColor: "#D87800" },
+                    fontWeight: 550,
+                    color: "white",
+                    width: "95%",
+                    marginBottom: 1
+                  }}
+                  onClick={editProfile}
+                >
+                  Submit
+                </Button>
+                <Button
+                  sx={{
+                    backgroundColor: "#5F5F5F",
+                    "&:hover": { backgroundColor: "#777777" },
+                    fontWeight: 550,
+                    color: "white",
+                    width: "95%"
+                  }}
+                  onClick={() => toggleShowEditProfileModal(false)}
+                >
+                  Cancel
+                </Button>
+              </Grid>
+            </Grid>
+          </dialog>
+
         </Grid>
         <Grid marginTop={2}>
             <div style={{border:"1.5px solid #C9C9C9", backgroundColor: "#F5F5F5", width:"50%", padding: 20, borderRadius: "5px"}}>
-                <p>{name} | {adminCity}, {adminState} | {affiliation}</p>
+                <p>{name} | {role} | {city}, {state} | {affiliation}</p>
             </div>
         </Grid>
         <Grid display="flex" alignItems={"center"} marginTop={3}>

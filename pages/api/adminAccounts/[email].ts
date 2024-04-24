@@ -28,17 +28,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     state,
                     country,
                     affiliation} = JSON.parse(req.body)
-                console.log(req.body)
+                console.log(req.body, alp_id,city, state, country, affiliation)
                 if (email != queryEmail) {
                     console.log(`query email doesn't match body email`)
                     return res.status(400).json({success: false, data: null})
                 }
                 // find largest existing alp id and then give the new user one more than that
-                let maxAlpId = 0
-                await AdminAccount.findOne().sort('-alp_id').then(account => {
-                    maxAlpId = account!.alp_id
-                })
-                console.log(maxAlpId)
+                // let maxAlpId = 0
+                // await AdminAccount.findOne().sort('-alp_id').then(account => {
+                //     maxAlpId = account!.alp_id
+                // })
+               // console.log(maxAlpId)
                 const newAdminAccount = new AdminAccount({
                     id:id,
                     fname: fname,
@@ -48,13 +48,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     pwhash: pwhash,
                     broadcasts: broadcasts,
                     isSuperAdmin: isSuperAdmin,
-                    city: 'testing??',
+                    city: city,
                     state: state,
                     country: country,
-                    affiliation: affiliation
+                    affiliation: affiliation,
                 })
-               // console.log(newAdminAccount)
+               console.log(newAdminAccount)
                 const account = await newAdminAccount.save()
+                console.log('saved?', account)
                 res.status(200).json({ success: true, data: account})
             } catch (error) {
                 res.status(400).json({ success: false, data: error })

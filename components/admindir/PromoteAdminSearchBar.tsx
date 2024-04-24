@@ -36,7 +36,6 @@ const PromoteAdminSearchBar: React.FC<{
   const [showModal, setShowModal] = useState(false)
   const [adminSelected, setAdminSelect] = useState<VolunteerAccount>()
   
-
   
 const searchBarStyle: React.CSSProperties = {
   position: 'relative', // Changed to relative positioning
@@ -103,8 +102,8 @@ const searchBarStyle: React.CSSProperties = {
       />
     </div>
     <Grid container display={'flex'} flexDirection={'column'} sx={{maxHeight:"300px",  overflowY:"scroll", flexWrap:"nowrap"}}>
-     {filteredVolunteers.map((profile) => (
-        <div>
+     {filteredVolunteers.map((profile,index) => (
+        <div key={index}>
         <Grid item border={'1.5 solid black'} height={40} width={"100%"} sx={{border:"1.5px solid grey"}} display={'flex'} alignItems={"center"}>
             <IconButton onClick={()=>{setAdminSelect(profile); setShowModal(true)}}size={'small'}><AddCircleIcon/></IconButton>
             <p>{profile.fname} {profile.lname} | {profile.email}</p>
@@ -116,11 +115,43 @@ const searchBarStyle: React.CSSProperties = {
     <Modal open={showModal} onClose={() => setShowModal(false)}>
         <div style={{ position: "absolute", top: "40%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "#FFFFFF", borderRadius: "8px", boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)", padding: "20px", width: "30vw", minHeight:"10vh" }}>
                { adminSelected && 
-               <Grid>
-                <p>Are you sure you want to promote {adminSelected.fname} {adminSelected.lname} to admin?</p> 
+               <Grid display={"flex"} flexDirection={'column'} alignItems={'center'}>
+                <p style={{textAlign:"center"}}>Are you sure you want to promote {adminSelected.fname} {adminSelected.lname} to admin?</p> 
                 <Grid>
-                    <Button onClick={() => handleAddAdmin(adminSelected)}>Yes</Button>
-                    <Button onClick={()=>setShowModal(false)}>No </Button>
+                    <Button 
+                     variant="contained"
+                     disableElevation
+                     sx={{
+                       fontFamily: "Epilogue",
+                       '&:hover': {
+                         backgroundColor: "#D3A874",
+                       },
+                       borderRadius: 1,
+                       backgroundColor: "#F3D39A" ,
+                       color: "#5F5F5F",
+                       mx: 0.5, // Margin on the left and right
+                       my: 1, // Margin on the top and bottom
+                       fontWeight: "bold",
+                       textTransform: 'none',
+                     }}
+                    onClick={() => console.log('clicked')}>Yes</Button>
+                    <Button 
+                    variant="contained"
+                    disableElevation
+                    sx={{
+                      fontFamily: "Epilogue",
+                      '&:hover': {
+                        backgroundColor: "#D3A874",
+                      },
+                      borderRadius: 1,
+                      backgroundColor: "#F3D39A" ,
+                      color: "#5F5F5F",
+                      mx: 0.5, // Margin on the left and right
+                      my: 1, // Margin on the top and bottom
+                      fontWeight: "bold",
+                      textTransform: 'none',
+                    }}
+                    onClick={()=>setShowModal(false)}>No </Button>
                 </Grid>
                 {adminNotif && <p>{adminNotif}</p>}
                </Grid>

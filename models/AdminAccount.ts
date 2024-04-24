@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import {Schema, Document, Types} from 'mongoose'
 
 
-export interface AdminAccount  {
+export interface AdminAccount {
     id: string,
     fname: string,
     lname: string,
@@ -14,10 +14,14 @@ export interface AdminAccount  {
     city: string,
     state: string,
     country: string,
-    affiliation: string
+    affiliation: string,
+    role: string,
 }
 
 const AdminAccountSchema = new Schema<AdminAccount>({
+    id: {
+        type:String,
+    },
     fname: {
         type: String,
         required: true,
@@ -65,6 +69,12 @@ const AdminAccountSchema = new Schema<AdminAccount>({
         default: ""
 
     },
+    role: {
+        type: String,
+        required:true,
+        default: ""
+
+    },
    
 
    
@@ -72,7 +82,6 @@ const AdminAccountSchema = new Schema<AdminAccount>({
 
 
 function getAdminAccountModel() {
-    // ^?
     if ("AdminAccount" in mongoose.models) {
         return mongoose.models.AdminAccount
     }

@@ -16,9 +16,10 @@ const addNewAdmin = async(user: VolunteerAccount) => {
             city: user.city,
             state: user.state,
             country: user.country,
-            affiliation: user.affiliation
+            affiliation: user.affiliation,
+            role: "",
         }
-        
+        console.log(JSON.stringify(newAdmin))
         const res = await fetch(`/api/adminAccounts/${newAdmin.email}`, {
             method: "POST",
             body: JSON.stringify(newAdmin)
