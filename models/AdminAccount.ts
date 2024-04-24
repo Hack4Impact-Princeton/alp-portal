@@ -15,7 +15,7 @@ export interface AdminAccount {
     state: string,
     country: string,
     affiliation: string,
-    role: string,
+    role: string[],
 }
 
 const AdminAccountSchema = new Schema<AdminAccount>({
@@ -69,12 +69,7 @@ const AdminAccountSchema = new Schema<AdminAccount>({
         default: ""
 
     },
-    role: {
-        type: String,
-        required:true,
-        default: ""
-
-    },
+    role: {type: [String], required:true, default: []   }
    
 
    

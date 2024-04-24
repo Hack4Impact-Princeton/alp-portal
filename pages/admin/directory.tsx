@@ -242,7 +242,38 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
 
   const editProfileRef = useRef<HTMLDialogElement>(null)
 
-  const editProfile = () => {
+  const [currAccount, setCurrAccount] = useState(account)
+
+  const editProfile = async () => {
+    const nameArr = name.trim().split(" ")
+    if (nameArr.length < 2) {
+      alert("Enter a valid first and last name")
+      return
+    }
+    setRole([])
+    console.log(role)
+
+    const update = {
+      fname: nameArr[0],
+      lname: nameArr[nameArr.length - 1],
+      // location: location,
+      affiliation: affiliation.trim(),
+      role: role,
+    }
+    const newAccount: AdminAccount = {
+      ...currAccount,
+      ...update,
+    }
+    const res = await fetch(`/api/adminAccounts/${currAccount.email}`, {
+      method: "PATCH",
+      body: JSON.stringify(update)
+    })
+    if (!res.ok) {
+      alert("profile modification failed")
+      return
+    }
+    setCurrAccount(newAccount)
+
     toggleShowEditProfileModal(false)
   }
 
@@ -439,13 +470,13 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
                   <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>Name</i>
                   <input type="text" placeholder={"name"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
                   <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>Role</i>
-                  <input type="text" placeholder={"role"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={role} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                  <input type="text" placeholder={"role"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={role} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRole(e.target.value.split(", "))} />
                   <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>Country</i>
-                  <input type="text" placeholder={"role"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={country} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                  <input type="text" placeholder={"role"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={country} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCountry(e.target.value)} />
                   <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>State</i>
-                  <input type="text" placeholder={"role"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={state} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                  <input type="text" placeholder={"role"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={state} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setState(e.target.value)} />
                   <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>City</i>
-                  <input type="text" placeholder={"role"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={city} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                  <input type="text" placeholder={"role"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={city} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCity(e.target.value)} />
                   {/* <Dropdown options={states} setResult={setLocation} location={location} /> */}
                 </div>
               </div>
@@ -493,7 +524,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
         </Grid>
         <Grid marginTop={2}>
             <div style={{border:"1.5px solid #C9C9C9", backgroundColor: "#F5F5F5", width:"50%", padding: 20, borderRadius: "5px"}}>
-                <p>{name} | {role} | {city}, {state} | {affiliation}</p>
+                <p>{currAccount.fname} {currAccount.lname} | {currAccount.role} | {currAccount.city}, {currAccount.state} | {currAccount.affiliation}</p>
             </div>
         </Grid>
         <Grid display="flex" alignItems={"center"} marginTop={3}>

@@ -61,7 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 res.status(400).json({ success: false, data: error })
             }
             break
-        case 'PATCH': // edit volunteer by email
+        case 'PATCH': // edit admin by email
             try {
                 // get email and update
                 const update = JSON.parse(req.body)
