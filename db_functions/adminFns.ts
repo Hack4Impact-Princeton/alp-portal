@@ -11,15 +11,15 @@ const addNewAdmin = async(user: VolunteerAccount) => {
             email: user.email,
             alp_id: user.alp_id,
             pwhash: user.pwhash,
-            broadcasts: [],
+            broadcasts: ['hi'],
             isSuperAdmin: false,
             city: user.city,
             state: user.state,
             country: user.country,
             affiliation: user.affiliation,
-            role: [],
+            role: ['hi'],
         }
-        console.log(JSON.stringify(newAdmin))
+        console.log('adminfns', JSON.stringify(newAdmin))
         const res = await fetch(`/api/adminAccounts/${newAdmin.email}`, {
             method: "POST",
             body: JSON.stringify(newAdmin)

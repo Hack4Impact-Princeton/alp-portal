@@ -27,8 +27,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     city,
                     state,
                     country,
-                    affiliation} = JSON.parse(req.body)
-                console.log(req.body, alp_id,city, state, country, affiliation)
+                    affiliation,
+                    role} = JSON.parse(req.body)
+            //    console.log(req.body, alp_id,city, state, country, affiliation)
                 if (email != queryEmail) {
                     console.log(`query email doesn't match body email`)
                     return res.status(400).json({success: false, data: null})
@@ -39,6 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 //     maxAlpId = account!.alp_id
                 // })
                // console.log(maxAlpId)
+               console.log('role', role)
                 const newAdminAccount = new AdminAccount({
                     id:id,
                     fname: fname,
@@ -46,14 +48,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     email: email,
                     alp_id: alp_id,
                     pwhash: pwhash,
-                    broadcasts: broadcasts,
+                    broadcasts: [],
                     isSuperAdmin: isSuperAdmin,
                     city: city,
                     state: state,
                     country: country,
                     affiliation: affiliation,
+                    //commented out role
                 })
-               console.log(newAdminAccount)
+               console.log('in api', newAdminAccount)
                 const account = await newAdminAccount.save()
                 console.log('saved?', account)
                 res.status(200).json({ success: true, data: account})

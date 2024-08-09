@@ -134,7 +134,7 @@ const searchBarStyle: React.CSSProperties = {
                        fontWeight: "bold",
                        textTransform: 'none',
                      }}
-                    onClick={() => console.log('clicked')}>Yes</Button>
+                    onClick={() => handleAddAdmin(adminSelected)}>Yes</Button>
                     <Button 
                     variant="contained"
                     disableElevation

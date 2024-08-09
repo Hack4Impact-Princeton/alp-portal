@@ -250,15 +250,15 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
       alert("Enter a valid first and last name")
       return
     }
-    setRole([])
-    console.log(role)
+    //setRole('hi')
+    //console.log(role)
 
     const update = {
       fname: nameArr[0],
       lname: nameArr[nameArr.length - 1],
       // location: location,
       affiliation: affiliation.trim(),
-      role: role,
+      //role: ["container manager", "admin"],
     }
     const newAccount: AdminAccount = {
       ...currAccount,

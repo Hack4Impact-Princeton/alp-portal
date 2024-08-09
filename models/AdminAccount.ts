@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import {Schema, Document, Types} from 'mongoose'
 
 
-export interface AdminAccount {
+export type AdminAccount = {
     id: string,
     fname: string,
     lname: string,
@@ -18,7 +18,7 @@ export interface AdminAccount {
     role: string[],
 }
 
-const AdminAccountSchema = new Schema<AdminAccount>({
+export const AdminAccountSchema = new Schema<AdminAccount>({
     id: {
         type:String,
     },
@@ -69,7 +69,9 @@ const AdminAccountSchema = new Schema<AdminAccount>({
         default: ""
 
     },
-    role: {type: [String], required:true, default: []   }
+    role: {
+        type: [String], required:false   
+    }
    
 
    
@@ -78,7 +80,7 @@ const AdminAccountSchema = new Schema<AdminAccount>({
 
 function getAdminAccountModel() {
     if ("AdminAccount" in mongoose.models) {
-        return mongoose.models.AdminAccount
+        return mongoose.models.AdminAccount;
     }
     return mongoose.model("AdminAccount", AdminAccountSchema)
 }
