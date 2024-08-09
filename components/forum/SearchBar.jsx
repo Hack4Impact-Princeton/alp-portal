@@ -5,6 +5,8 @@ import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import { useRouter } from 'next/router'
 import useClickOutside from "../../lib/useClickOutside";
+import { styled } from '@mui/material/styles';
+
 const filterData = (query, data) => {
   if (!query) {
     return data;
@@ -17,6 +19,33 @@ const filterData = (query, data) => {
   }
 };
 
+const CustomTextField = styled(TextField)({
+  '& .MuiInputBase-input::placeholder': {
+    fontFamily: "Epilogue",    
+  },
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: 'white', // Default border color
+    },
+    '&:hover fieldset': {
+      borderColor: '#5F5F5F', // Border color on hover
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: '#5F5F5F', // Border color when focused
+    },
+  },
+  '& .MuiInputBase-input': {
+    fontFamily: 'Epilogue',   // Change font family
+
+  },
+  
+  fontSize: "16px",
+  color: "black",
+  backgroundColor: "white",
+  padding: "8px",
+  // Add other custom styles here
+});
+
 const Bar = ({ searchQuery, setSearchQuery }) => {
   const router = useRouter()
   const handleKeyPress = (event) => {
@@ -26,7 +55,7 @@ const Bar = ({ searchQuery, setSearchQuery }) => {
   }
 
   return (
-    <TextField
+    <CustomTextField
       onKeyDown={handleKeyPress}
       id="search-bar"
       className="text"
@@ -51,6 +80,9 @@ const Bar = ({ searchQuery, setSearchQuery }) => {
     />
   );
 }
+
+
+
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const searchResultsRef = useRef(null)
@@ -65,6 +97,7 @@ const SearchBar = () => {
         alignSelf: "center",
         justifyContent: "center",
         flexDirection: "column",
+        
       }}
     >
       <Bar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
