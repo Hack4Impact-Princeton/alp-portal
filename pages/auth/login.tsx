@@ -11,7 +11,28 @@ import TextField from '@mui/material/TextField'
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { styled } from '@mui/material/styles';
 
+const CustomTextField = styled(TextField)({
+  '& .MuiInputLabel-root': {
+    fontFamily: "Epilogue",    
+  },
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: 'white', // Default border color
+    },
+    '&:hover fieldset': {
+      borderColor: '#5F5F5F', // Border color on hover
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: '#5F5F5F', // Border color when focused
+    },
+  },
+  '& .MuiInputBase-input': {
+    fontFamily: 'Epilogue',   // Change font family
+
+  },
+})
 const Login: NextPage = () => {
 
   const [email, setEmail] = useState("");
@@ -73,7 +94,7 @@ const Login: NextPage = () => {
               width: 400,
               height: "wrap-content",
             }}>
-            <TextField size="small" fullWidth color="warning" required className="email" id="email" label="email" variant="filled"
+            <CustomTextField size="small" fullWidth color="warning" required className="email" id="email" label="email" variant="filled"
               value={email}
               onChange={handleSetEmail}
               sx={{
@@ -82,7 +103,7 @@ const Login: NextPage = () => {
                 border: "3px solid #FE9834",
                 borderRadius: 2
               }} />
-            <TextField size="small" fullWidth color="warning" required className="password" id="password" label="password" variant="filled"
+            <CustomTextField size="small" fullWidth color="warning" required className="password" id="password" label="password" variant="filled"
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={handleSetPassword}
