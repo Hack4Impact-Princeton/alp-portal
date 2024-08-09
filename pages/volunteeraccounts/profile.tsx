@@ -19,6 +19,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import useDynamicPadding from "../../lib/useDynamicPadding";
+import Dropdown from "../../components/Dropdown";
 
 type ProfileProps = {
   error: string | null;
@@ -239,7 +240,7 @@ export const ImageUpload: React.FC<{ setpfpURL: Dispatch<SetStateAction<string>>
           component="span">
           <p style={{
             fontSize: 10
-          }}>Upload new</p>
+          }}>Upload New</p>
         </IconButton>
       </label>
     </div>
@@ -277,9 +278,12 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
     }
 
   }
+  const city = currAccount.city
+  const state = currAccount.state
+  const country = currAccount.country
   const editProfileRef = useRef<HTMLDialogElement>(null)
   const [name, setName] = useState(`${currAccount.fname} ${currAccount.lname}`)
-  // const [location, setLocation] = useState(currAccount.location)
+  // const [currState, setCurrState] = useState(currAccount.state)
   const [affiliation, setAffiliation] = useState(currAccount.affiliation)
   const [favBook, setFavBook] = useState(currAccount.affiliation)
   const [hobbies, setHobbies] = useState(currAccount.hobbies)
@@ -401,7 +405,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
               height: "69%",
               width: "40%",
               minWidth: "390px",
-              minHeight: "450px",
+              minHeight: "420px",
               borderRadius: "3%",
               padding: 0,
               position: "absolute",
@@ -423,6 +427,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                 width: "100%",
                 height: "100%",
               }}
+              padding={2}
             >
               <Grid
                 display="flex"
@@ -430,7 +435,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                 alignItems="center"
                 justifyContent={"space-between"}
                 width="100%"
-                sx={{ marginTop: 1 }}
+                sx={{ marginTop: 2,marginBottom:2 }}
               >
                 <p
                   style={{
@@ -446,21 +451,24 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                 <p style={{ cursor: "pointer", marginRight: 16, fontWeight: "600" }} onClick={() => toggleShowEditProfileModal(false)}>x</p>
 
               </Grid>
-              <div style={{ display: "flex", justifyContent: "space-around", flexDirection: "row", width: "100%", alignItems: "center", }}>
+              <div style={{ display: "flex", justifyContent: "space-around", flexDirection: "row", width: "100%" }}>
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "start", width: "30%" }}>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-around", marginLeft: "12%" }}>
                     <img src={pfpURL} style={{ height: 110, aspectRatio: 1, marginBottom: 2 }} />
                     <ImageUpload setpfpURL={setpfpURL} currAccount={currAccount} />
                   </div>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", width: "67%", flexShrink: 3, height: "100%", justifyContent: "space-around", alignItems: "start", }}>
-                  <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>Name</i>
+                <div style={{ display: "flex", flexDirection: "column", width: "67%", flexShrink: 3, height: "100%", paddingTop:1, alignItems: "start", }}>
+                  <i style={{ marginLeft: 1, display: "flex", alignSelf: "flex-start", fontSize: 10, marginBottom:5 }}>Name</i>
                   <input type="text" placeholder={"name"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
-                  <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>State</i>
-                  {/* <Dropdown options={states} setResult={setLocation} location={location} /> */}
+                  <i style={{ marginLeft: 1, display: "flex", alignSelf: "flex-start", fontSize: 10,marginBottom:5,marginTop:10 }}>City, State</i>
+                  <p>{city}, {state}</p>
+                  <i style={{ marginLeft: 1, display: "flex", alignSelf: "flex-start", fontSize: 10,marginBottom:5,marginTop:10 }}>Country</i>
+                  <p>{country}</p>
+                  {/* <Dropdown options={states} setResult={setCurrState} location={location} />  */}
                 </div>
               </div>
-              <div style={{ display: "flex", flex: 1, minHeight: 170, paddingTop: 5, paddingBottom: 5, justifyContent: "space-around", flexDirection: "column", width: "100%", alignItems: "start", paddingLeft: "4%" }}>
+              <div style={{ display: "flex", flex: 1, paddingTop: 10, paddingBottom: 5, justifyContent: "space-around", flexDirection: "column", width: "100%", alignItems: "start", paddingLeft: "4%" }}>
                 <i style={{ marginLeft: 3, fontSize: 10 }}>Affiliation</i>
                 <input style={{ padding: 3, width: "96%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} type="text" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAffiliation(e.target.value)} value={affiliation} />
                 <i style={{ marginLeft: 3, fontSize: 10 }}>Hobbies</i>
@@ -483,7 +491,8 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                     fontWeight: 550,
                     color: "white",
                     width: "95%",
-                    marginBottom: 1
+                    marginBottom: 1,
+                    fontFamily:"Epilogue"
                   }}
                   onClick={editProfile}
                 >
@@ -495,7 +504,8 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                     "&:hover": { backgroundColor: "#777777" },
                     fontWeight: 550,
                     color: "white",
-                    width: "95%"
+                    width: "95%",
+                    fontFamily:"Epilogue"
                   }}
                   onClick={() => toggleShowEditProfileModal(false)}
                 >
