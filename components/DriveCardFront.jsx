@@ -32,7 +32,7 @@ export default function DriveCardFront(props) {
                         {props.drive.status !== BookDriveStatus.Cancelled && <Link href={`/instruction-steps/${props.drive.driveCode}`} style={{ fontSize: '2vh' }}>View/Update Your Progress</Link>}
                         {props.drive.status == BookDriveStatus.Cancelled && !props.reqExists && <p onClick={props.openNewReqModal} style={{ textDecoration: "underline", cursor: "pointer", fontSize: "2vh" }}>Request Reactivation</p>}
                         {props.drive.status == BookDriveStatus.Cancelled && props.reqExists && <p onClick={props.openViewReqModal} style={{ textDecoration: "underline", cursor: "pointer", fontSize: "2vh" }}>View/Edit Reactivation Request</p>}
-                        <CircularIIcon flipCard={props.flipCard} />
+                        {/* <CircularIIcon flipCard={props.flipCard} /> */}
                     </Grid>
                 </Grid>
 

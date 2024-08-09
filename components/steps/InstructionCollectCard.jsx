@@ -60,7 +60,8 @@ function CollectBooksCard(props) {
   const styles = {
     btn: {
       backgroundColor: "#FE9834",
-      width: "5vw"
+      width: "5vw",
+      fontFamily:"Epilogue"
     },
   }
   const [bookState, setBookState] = useState("");
@@ -146,7 +147,8 @@ function CollectIntFeeCard(props) {
   const styles = {
     btn: {
       backgroundColor: "#FE9834",
-      width: "5vw"
+      width: "5vw",
+      fontFamily:"Epilogue",
     },
   }
   const [fundState, setFundState] = useState("");
@@ -235,7 +237,8 @@ function CollectDomFeeCard(props) {
   const styles = {
     btn: {
       backgroundColor: "#FE9834",
-      width: "5vw"
+      width: "5vw",
+      fontFamily:"Epilogue"
     },
   }
   const [fundState, setFundState] = useState("");
@@ -323,7 +326,8 @@ function CollectFinishLine(props) {
   const styles = {
     btn: {
       backgroundColor: "#FE9834",
-      width: "5vw"
+      width: "5vw",
+      fontFamily:"Epilogue"
     },
   }
   const [date, setDate] = useState(props.info.dateSent);

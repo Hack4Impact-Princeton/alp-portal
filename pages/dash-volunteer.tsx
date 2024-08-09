@@ -261,7 +261,7 @@ const DashVolunteer: NextPage<{
                     style={{ width: "wrap-content", height: "wrap-content" }}
                   >
                     <CircularIIcon
-                      onMouseEnter={() => setShowReqInfo(true)}
+                      onMouseEnter={() => setShowReqInfo(false)}
                       onMouseLeave={() => setShowReqInfo(false)}
                     />
                   </div>
