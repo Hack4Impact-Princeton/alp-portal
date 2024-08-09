@@ -109,11 +109,13 @@ const Login: NextPage = () => {
                 "&:hover": { backgroundColor: "#444444" },
                 marginTop: 2,
                 marginBottom: 5,
-                width: "48%"
+                width: "48%",
+                fontFamily: 'Epilogue'
               }}>Volunteer Login</Button>
             <Button variant="contained"
               onClick={() => handleSubmit(true)}
               sx={{
+                fontFamily: 'Epilogue',
                 backgroundColor: 'black',
                 "&:hover": { backgroundColor: "#444444" },
                 marginTop: 2,
@@ -125,14 +127,14 @@ const Login: NextPage = () => {
         </div>
         <br></br>
         <Link href='signup' passHref={true}>
-          <a style={{ color: "white", textDecoration: "none" }}>
+          <a style={{ color: "white", textDecoration: "none", fontFamily: 'Epilogue' }}>
             Create An Account
           </a>
         </Link>
         <br />
         <br />
         <Link href='resetpassword' passHref={true}>
-          <a style={{ textDecoration: "none", color: "white" }}>
+          <a style={{ textDecoration: "none", color: "white",fontFamily: 'Epilogue' }}>
             Forgot Password?
           </a>
         </Link>
