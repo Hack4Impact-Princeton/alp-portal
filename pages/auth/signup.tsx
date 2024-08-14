@@ -24,6 +24,8 @@ import {
 import "react-country-state-city/dist/react-country-state-city.css";
 import { wrap } from 'module';
 import { styled } from '@mui/material/styles';
+import Modal from '@mui/material/Modal';
+import Grid from '@mui/material/Grid';
 
 const CustomTextField = styled(TextField)({
     '& .MuiInputLabel-root': {
@@ -45,6 +47,7 @@ const CustomTextField = styled(TextField)({
   
     },
   })
+
 
 
 const Signup = () => {
@@ -143,6 +146,47 @@ const Signup = () => {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    // Function to open the modal
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    // Function to close the modal
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+    const styles = {
+        btn: {
+            backgroundColor: "#FE9834",
+            width: "100%",
+            fontFamily:"Epilogue",
+            marginRight:6, 
+            marginLeft: 6,
+            fontWeight:'bold'
+        },
+        modal: {
+            position: 'absolute' as 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 700,
+            bgcolor: 'background.paper',
+            border: '2px solid #000',
+            boxShadow: 24,
+            p: 4,
+            display:"flex",
+            flexDirection:"column",
+            maxHeight: "70%",
+            overflowY: "auto",
+           // alignItems:"center",
+            //justifyContent:"center",
+
+        },
+
+    };
+
 
     return (
         <div className="auth-bg" >
@@ -258,7 +302,7 @@ const Signup = () => {
                                 </div>
                         <br></br>
                         <div style={{width: isSmallScreen? 350:700}}> 
-                            <p style={{ fontSize: 15, color: "white" }}>You can unsubscribe at any time by clicking the link in the footer of our emails. For information about our privacy practices, <a href="" target="_blank" style={{color:"white"}}>please visit our website.</a></p>
+                            <p style={{ fontSize: 15, color: "white" }}>You can unsubscribe at any time by clicking the link in the footer of our emails. For information about our privacy practices, <span onClick={openModal} style={{color:"white", cursor: "pointer",textDecoration:"underline"}}>read here.</span></p>
                         </div>
                     <Button variant="contained"
                     onClick={signUpHandler}
@@ -284,7 +328,130 @@ const Signup = () => {
                         Already have an account?
                     </a>
                 </Link>
-                </div>
+                <Modal
+                    open={isModalOpen}
+                    aria-describedby="signup-input-modal"
+                >
+                    <Box sx={styles.modal} >
+                        <h2>Privacy Notice for ALP Book Drive Organizer Portal</h2>
+                        <br></br>
+                        <p><span style={{fontWeight:"bold"}}>Effective Date:</span> July 2024</p>
+                        <br></br>
+                        <p style={{fontWeight:"bold"}}>Introduction</p>
+                        <br></br>
+                        <p>
+                        Welcome to the African Library Project’s Volunteer Portal (&quot;Portal&quot;), operated by
+                        [African Library Project] (&quot;ALP,&quot; &quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). We are committed to
+                        protecting your privacy and ensuring the security of your personal information. This
+                        Privacy Policy explains how we collect, use, disclose, and safeguard your
+                        information when you use our Portal.
+                        </p>
+                        <br></br>
+                        <p style={{fontWeight:"bold"}}>Information We Collect</p>
+                        <br></br>
+                        <p>
+                        When you register and use the ALP Volunteer Portal, we collect the following
+personal information:
+                        </p>
+                        <br></br>
+                        <ul>
+                            <li>Name</li>
+                            <li>Email Address</li>
+                            <li>City and State</li>
+                            <li>Organization (optional)</li>
+                            <li>Interests (optional)</li>
+                            <li>Profile picture (optional)</li>
+                        </ul>
+                        <br></br>
+                        <p>Additionally, as you engage with the Portal, we may collect information through
+your activity, including but not limited to:</p>
+                        <br></br>
+                        <ul>
+                            <li>Questions and responses in the threads area</li>
+                            <li>Messages sent to and received from other volunteers</li>
+                            <li>Badges and achievements</li>
+                            <li>Number of books collected</li>
+                        </ul>
+                        <br></br>
+                        <p style={{fontWeight:"bold"}}>How We Use Your Information</p>
+                        <br></br>
+                        <p>We use the information we collect for the following purposes:</p>
+                        <br></br>
+                        <ol>
+                            <li><p style={{fontWeight:"bold"}}>To Provide and Enhance the Portal:</p>
+                            <ul>
+                                <li>Facilitate your participation and track your progress.</li>
+                                <li>Enable you to learn, share, and make connections with other volunteers.</li>
+                                <li>Provide you with relevant alerts and notifications.</li>
+                            </ul>
+                            </li>
+                            <li>
+                            <p style={{fontWeight:"bold"}}>To Improve Our Services:</p>
+                            <ul>
+                                <li>Understand how volunteers use the Portal to improve features and
+user experience.</li>
+                                <li>Gather feedback.</li>
+                            </ul>
+                            </li>
+                            <li>
+                            <p style={{fontWeight:"bold"}}>To Communicate with You</p>
+                            <ul>
+                                <li>Send you updates, alerts, and other information related to your
+volunteer activities and the ALP community.</li>
+                                <li>Respond to your inquiries and provide support.</li>
+                            </ul>
+                            </li>
+                        </ol>
+                        <br></br>
+                        <p style={{fontWeight:"bold"}}>Sharing Your Information</p>
+                        <br></br>
+                        <p>We may share your information with:</p>
+                        <br></br>
+                        <ul>
+                            <li><span style={{fontWeight:"bold"}}>Other Volunteers: </span>Your name, organization, city, state, interests, and profile
+picture will be visible to other volunteers within the Portal to facilitate
+connections and collaboration.</li>
+                            <li><span style={{fontWeight:"bold"}}>Service Providers: </span>Third-party service providers who assist us in operating
+the Portal and providing our services, subject to confidentiality agreements.</li>
+                            <li><span style={{fontWeight:"bold"}}>Legal Requirements: </span>When required to do so by law, or in response to legal
+requests, subpoenas, or court orders.</li>
+                        </ul>
+                        <br></br>
+                        <p style={{fontWeight:"bold"}}>Your Choices and Rights</p>
+                        <br></br>
+                        <ul>
+                            <li><span style={{fontWeight:"bold"}}>Profile Information: </span>You can review and update your profile information at
+any time through the Portal settings.</li>
+                            <li><span style={{fontWeight:"bold"}}>Communication Preferences: </span>You can opt out of receiving non-essential
+communications by contacting us directly.</li>
+                            
+                        </ul>
+                        <br></br>
+                        <p style={{fontWeight:"bold"}}>Data Security</p>
+                        <br></br>
+                        <p>The Portal may contain links to third-party websites or services. This Privacy Policy
+does not apply to those third-party sites. We recommend reviewing the privacy
+policies of any third-party sites you visit.</p>
+                        <br></br>
+                        <p style={{fontWeight:"bold"}}>Changes to This Privacy Policy</p>
+                        <br></br>
+                        <p>We may update this Privacy Policy from time to time. We will notify you of any
+changes by posting the new Privacy Policy on the Portal and updating the &quot;Effective
+Date&quot; at the top of this page. We encourage you to review this Privacy Policy
+periodically to stay informed about how we are protecting your information.</p>
+                        <br></br>
+                        <p style={{fontWeight:"bold"}}>Contact Us</p>
+                        <br></br>
+                        <p>If you have any questions or concerns about this Privacy Policy or our data
+practices, please contact us at: <span style={{textDecoration:"underline", color:"blue"}}>info@africanlibraryproject.org</span></p>
+                        <br></br>
+                        <p>Thank you for being a valued member of the ALP volunteer community.</p>
+                        <br></br>
+
+                        <Grid item><Button style={styles.btn} variant="contained" onClick={() => { closeModal() }}>I Understand</Button></Grid>
+                    </Box>
+                </Modal>
+            </div>
                 
     )
 
