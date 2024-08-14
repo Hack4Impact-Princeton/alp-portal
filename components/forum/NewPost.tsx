@@ -74,11 +74,12 @@ const style = {
 };
 type NewPostProps = {
   username: string;
+  pfpLink: string;
   email: string;
   addPost: (newPost: Posts) => void;
 };
 
-const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
+const NewPost: React.FC<NewPostProps> = ({ pfpLink,username, email, addPost }) => {
   const [open, setOpen] = useState(false);
   const [switchLabel, setSwitchLabel] = useState("Public");
   const handleOpen = () => setOpen(true);
@@ -102,9 +103,11 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
       setTimeout(() => {
         setSubmit(false);
       }, 4000); // uh, why are we waiting 4s here?
+      console.log(pfpLink)
       const newPost: Posts = {
         title: "",
         post_id: genUniqueId(),
+        pfpLink: pfpLink,
         username: username,
         email: email,
         date: Intl.DateTimeFormat("sv-SE").format(new Date()).toString(),
@@ -113,12 +116,15 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
         downvotes: [],
         comments: [],
         is_public: (switchLabel === "Public"),
+        flagged: false,
+ 
       };
+      console.log(newPost)
       const res = await fetch(`/api/posts/${newPost.post_id}`, {
         method: "POST",
         body: JSON.stringify(newPost),
       });
-
+      console.log(JSON.stringify(newPost))
       setSwitchLabel("Public");
 
       if (!res) throw new Error("Internal server error");
@@ -178,7 +184,7 @@ const NewPost: React.FC<NewPostProps> = ({ username, email, addPost }) => {
                 height: "100%",
               }}
             >
-              <AccountCircleIcon sx={{ fontSize: "4vw" }} />
+              <img src={pfpLink} style={{height: "4vw",borderRadius:'50%' }} />
             </Grid2>
             <Grid2
               container

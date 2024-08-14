@@ -205,7 +205,7 @@ const PostContainer: React.FC<PostProps> = ({
               height: "100%",
             }}
           >{user && 
-            <img src={user.pfpLink} alt="PFP" style={{borderRadius:'50%',height:"80%"}} /> 
+            <img src={post.pfpLink} alt="PFP" style={{borderRadius:'50%',height:"80%"}} /> 
             /*TODO: Fix so that this shows the poster's pfp */}
           </Grid2>
           <Grid2
@@ -222,7 +222,7 @@ const PostContainer: React.FC<PostProps> = ({
             <p style={{ fontStyle: "italic" }}>{post.date}</p>
           </Grid2>
 
-          <Grid2
+          {/* <Grid2
             container
             xs={1}
             onClick={handleShowCommentActions}
@@ -282,7 +282,7 @@ const PostContainer: React.FC<PostProps> = ({
                 ))}
               </div>
             </Popover>
-          </Grid2>
+          </Grid2> */}
         </Grid2>
         <Grid2
           sx={{

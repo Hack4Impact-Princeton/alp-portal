@@ -115,7 +115,7 @@ const Forum: NextPage<PostProps> = ({
                 sx={{ marginBottom: 1.5 }}
               >
                 <h1 style={{ color: "#FE9834", marginRight: 10 }}>Posts</h1>
-                <NewPost username={username} email={email} addPost={addPost} />
+                <NewPost pfpLink = {account.pfpLink} username={username} email={email} addPost={addPost} />
               </Grid2>
 
               <Grid2
@@ -368,22 +368,33 @@ export const getServerSideProps = async (context: any) => {
    
     const Posts: mongoose.Model<Posts> = getPostModel();
 
-    let publicPosts = (await Posts.find()) as Posts[];
-    publicPosts = publicPosts.reverse();
+    let pPosts = (await Posts.find()) as Posts[];
+    pPosts = pPosts.reverse();
+
 
     // console.log("posts", allPosts);
     let friendsPosts: Posts[] = [];
     let myPosts: Posts[] = [];
+    let publicPosts: Posts[] = [];
+    let flaggedPosts: Posts[]=[];
 
-    publicPosts.forEach((p) => {
-      friendList.forEach((f) => {
-        if (f === p.email) {
-          friendsPosts.push(p);
-        }
-      });
+    pPosts.forEach((p) => {
+      if (p.flagged) {
+        flaggedPosts.push(p)
+      }
+      else {
+        publicPosts.push(p)
+      }
       if (p.email === account.email) {
         myPosts.push(p);
       }
+      
+      friendList.forEach((f) => {
+        if (f === p.email && !p.flagged) {
+          friendsPosts.push(p);
+        }
+      });
+      
     });
 
     const filteredPublicPosts = publicPosts.filter(post => 

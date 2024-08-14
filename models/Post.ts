@@ -14,6 +14,7 @@ export interface Comments {
 export interface Posts {
   title: string;
   post_id: string;
+  pfpLink: string;
   username: string;
   email: string;
   date: string;
@@ -22,6 +23,7 @@ export interface Posts {
   downvotes: string[];
   comments: Comments[];
   is_public?: boolean;
+  flagged: boolean;
 }
 
 const CommentSchema = new Schema<Comments>({
@@ -37,6 +39,7 @@ const PostSchema = new Schema<Posts>(
   {
     title: { type: String },
     post_id: { type: String },
+    pfpLink: {type: String},
     username: { type: String },
     email: { type: String },
     date: { type: String },
@@ -45,6 +48,7 @@ const PostSchema = new Schema<Posts>(
     downvotes: { type: [String] },
     comments: { type: [CommentSchema] },
     is_public: { type: Boolean },
+    flagged: {type: Boolean},
   },
   { collection: "posts" }
 );
@@ -54,6 +58,7 @@ const DeletedPostSchema = new Schema<Posts>(
   {
     title: { type: String },
     post_id: { type: String },
+    pfpLink: {type: String},
     email: { type: String },
     date: { type: String },
     text: { type: String },
@@ -61,6 +66,7 @@ const DeletedPostSchema = new Schema<Posts>(
     downvotes: { type: [String] },
     comments: { type: [CommentSchema] },
     is_public: { type: Boolean },
+    flagged: {type: Boolean},
   },
   { collection: "deletedPosts" }
 );

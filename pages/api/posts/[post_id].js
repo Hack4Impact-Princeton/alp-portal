@@ -9,9 +9,11 @@ export default async function handler(req, res) {
 
   await dbConnect()
   const Post = getPostModel();
+  console.log('post',Post)
   switch (method) {
     case 'GET' /* Get a model by its post_id */:
       try {
+        console.log('in get')
         const post = await Post.findOne({post_id : post_id}).exec();
         if (!post) {
           return res.status(400).json({ success: false })
@@ -42,11 +44,13 @@ export default async function handler(req, res) {
       break
     case 'POST': /* Create new Post */
         try {
+
           if (await Post.exists({post_id : post_id})) {
               console.log("post already exists")
               return res.status(400).json({ success: false })
           }
           const parsedData = JSON.parse(req.body);
+          console.log(req.body)
           if (post_id != parsedData.post_id){
             console.log("api post_id and post_id do not match")
             return res.status(400).json({ success: false })
