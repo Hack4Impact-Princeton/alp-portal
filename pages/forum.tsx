@@ -77,7 +77,7 @@ const Forum: NextPage<PostProps> = ({
   return (
     <div>
       <Grid2>
-        <Navbar active="forum" />
+        <Navbar active="forum" admin={account.admin}/>
         {/* Necessary box for padding the page body, no overlap with Navbar */}
         <Grid2
           display="flex"

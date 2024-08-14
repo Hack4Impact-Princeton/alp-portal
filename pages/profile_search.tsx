@@ -142,6 +142,7 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
     broadcasts={broadcasts}
     fName={account.fname}
     currPage="profile_search"
+    admin = {account.admin}
   />
   <Grid
     container

@@ -1,30 +1,30 @@
 import { getServerSession } from "next-auth/next";
 import { NextPage } from "next/types";
-import getAdminAccountModel, { AdminAccount } from "../../models/AdminAccount";
+import getAdminAccountModel, { AdminAccount } from "../models/AdminAccount";
 import getVolunteerAccountModel, {
   VolunteerAccount, EmptyVolunteerAccount
-} from "../../models/VolunteerAccount";
-import getBookDriveModel, { BookDrive } from "../../models/BookDrive";
+} from "../models/VolunteerAccount";
+import getBookDriveModel, { BookDrive } from "../models/BookDrive";
 import mongoose from "mongoose";
-import { authOptions } from "../api/auth/[...nextauth]";
+import { authOptions } from "./api/auth/[...nextauth]";
 import { GridCellParams, GridRowParams } from "@mui/x-data-grid";
-import getShipmentModel, { Shipment } from "../../models/Shipment";
+import getShipmentModel, { Shipment } from "../models/Shipment";
 import React, { ChangeEvent } from "react";
-import { BookDriveStatus } from "../../lib/enums";
+import { BookDriveStatus } from "../lib/enums";
 import { useState, useRef } from "react";
 import Grid from "@mui/material/Grid";
-import useClickOutside from "../../lib/useClickOutside";
+import useClickOutside from "../lib/useClickOutside";
 import type { } from "@mui/x-data-grid/themeAugmentation";
 import styles from "./adminTable.module.css";
-import AdminSidebar from "../../components/AdminSidebar";
+import AdminSidebar from "../components/AdminSidebar";
 import getReactivationRequestModel, {
   ReactivationRequest,
-} from "../../models/ReactivationRequest";
-import CurrentDriveTable from "../../components/CurrentDriveTable";
-import CompletedDriveTable from "../../components/CompletedDriveTable";
-import QuickActionsTable from "../../components/QuickActionsTable";
+} from "../models/ReactivationRequest";
+import CurrentDriveTable from "../components/CurrentDriveTable";
+import CompletedDriveTable from "../components/CompletedDriveTable";
+import QuickActionsTable from "../components/QuickActionsTable";
 import Link from "next/link";
-import AdminPageContainer from "../../components/AdminPageContainer";
+import PageContainer from "../components/PageContainer";
 import { DSVRowString } from "d3-dsv";
 import * as d3 from "d3";
 
@@ -32,7 +32,7 @@ import { Box, Fab, Popper } from "@mui/material";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 
 type AdminDashboardProps = {
-  account: AdminAccount;
+  account: VolunteerAccount;
   error: Error | null;
   driveDataProps:
   | {
@@ -410,10 +410,11 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
 
   return (
     <>
-      <AdminPageContainer
+      <PageContainer
         fName={account.fname}
-        currPage="dashboard"
-      ></AdminPageContainer>
+        currPage="admin-dashboard"
+        admin= {account.admin}
+      ></PageContainer>
       <Grid sx={{ width: "100%", height: "100%", padding: 5 }}>
         <Grid sx={{ marginBottom: 3, width: "100%", marginLeft: 20 }}>
           <Grid
@@ -430,7 +431,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
                 fontWeight: 600,
               }}
             >
-              DASHBOARD
+              ADMIN DASH
             </h1>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -605,7 +606,7 @@ export const getServerSideProps = async (context: any) => {
       authOptions
     );
     // console.log("session obj", session)
-    if (!session || session.user?.name != "true") {
+    if (!session || session.user?.name != "true" ) {
       return {
         redirect: {
           destination: "../auth/login",
@@ -613,12 +614,21 @@ export const getServerSideProps = async (context: any) => {
         },
       };
     }
-    const AdminAccountModel: mongoose.Model<AdminAccount> =
-      getAdminAccountModel();
-    const account: AdminAccount = (await AdminAccountModel.findOne({
+    const VolunteerAccount: mongoose.Model<VolunteerAccount> =
+      getVolunteerAccountModel();
+    const account: VolunteerAccount = (await VolunteerAccount.findOne({
       email: session.user.email,
-    })) as AdminAccount;
+    })) as VolunteerAccount;
     if (!account) throw new Error(`account with email ${session.user.email}`);
+    // check if admin
+    if (!account.admin) {
+      return {
+        redirect: {
+          destination: "../dash-volunteer",
+          permanent: false,
+        },
+      };
+    }
     getVolunteerAccountModel();
     const BookDrive: mongoose.Model<BookDrive> = getBookDriveModel()
     const ShipmentModel: mongoose.Model<Shipment> = getShipmentModel();

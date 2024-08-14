@@ -320,7 +320,7 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
   }
   return (
     <Grid>
-      <PageContainer broadcasts={broadcasts} fName={currAccount.fname} currPage="profile" />
+      <PageContainer broadcasts={broadcasts} fName={currAccount.fname} currPage="profile" admin={currAccount.admin}/>
       <Grid container display="flex" padding={1} sx={{ pl: useDynamicPadding(635, 775, "29vw", "20vw", "15vw"), width: "95%" }} rowSpacing={.5}>
         <Grid item xs={12} sm={12} md={12} lg={9} display="flex" flexDirection="column" >
           <Box
