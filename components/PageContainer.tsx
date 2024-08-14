@@ -33,15 +33,16 @@ interface FriendInfo {
 type PageContainerProps = {
   fName: String;
   userEmail?: string;
-  currPage: "dash-volunteer" | "profile" | "instruction-steps" | "h4i-team" | "forum" | "leaderboard" | "profile_search";
+  currPage: "dash-volunteer" | "profile" | "instruction-steps" | "h4i-team" | "forum" | "leaderboard" | "profile_search" | "broadcast" | "admin-dashboard";
   broadcasts?: Broadcast[];
   friendRequests?: string[];
   allVolunteers?: VolunteerAccount[];
+  admin: boolean | null
 }
 
 
 
-const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPage, broadcasts, friendRequests, allVolunteers }) => {
+const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPage, broadcasts, friendRequests, allVolunteers, admin}) => {
   const leftPaddingValue = useDynamicPadding(635, 775, "29vw", "20vw", "15vw")
   const WhiteTextButton = styled(Button)<ButtonProps>(() => ({
     color: 'white',
@@ -204,7 +205,7 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
   return (
     <>
       <Grid>
-        <Navbar active={currPage}></Navbar>
+        <Navbar active={currPage} admin={admin}></Navbar>
         <Box sx={{
           float: 'right',
           height: '10vh',

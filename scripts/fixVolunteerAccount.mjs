@@ -24,7 +24,8 @@ async function run() {
 
     const update = {
       $set: {
-        state: "NJ"
+        isSuperAdmin: false,
+        role: []
       }
     }
     // Execute query

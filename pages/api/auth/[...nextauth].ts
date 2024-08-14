@@ -18,14 +18,14 @@ export const authOptions: NextAuthOptions = {
                 // weird cast that you have to do because at some point isAdmin goes from being a boolean to a string
                 const isAdministrator = isAdmin as unknown == 'true' ? true : false
                 await dbConnect()
-                let account: VolunteerAccount | AdminAccount | null = null
-                if (isAdministrator) {
-                    const AdminAccount: mongoose.Model<AdminAccount> = getAdminAccountModel()
-                    account = await AdminAccount.findOne({ email: email })
-                } else {
-                    const VolunteerAccount: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel();
-                    account = await VolunteerAccount.findOne({ email: email })
-                }
+                let account: VolunteerAccount | null = null
+                // if (isAdministrator) {
+                //     const AdminAccount: mongoose.Model<AdminAccount> = getAdminAccountModel()
+                //     account = await AdminAccount.findOne({ email: email })
+                // } else {
+                const VolunteerAccount: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel();
+                account = await VolunteerAccount.findOne({ email: email })
+                // }
                 // if none exists then invalid credentials
                 if (!account) throw new Error("Invalid email")
                 const bcrypt = require("bcryptjs");
@@ -34,7 +34,7 @@ export const authOptions: NextAuthOptions = {
                 const result = await bcrypt.compare(password, account.pwhash);
                 if (result) {
                     // name actually contains a string representation of whether the user is an admin or not
-                    return {id: email, email: email, name: `${isAdministrator}`, fName: account.fname}
+                    return {id: email, email: email, name: account.admin?"true":"false", fName: account.fname}
                 }
                 // if hashed passwords don't match, invalid credentials
                 throw new Error("Invalid Password")

@@ -17,32 +17,36 @@ export type EmptyVolunteerAccount = {
 }
 
 export type VolunteerAccount = {
-    _id: string,
-    fname: string,
-    lname: string,
-    alp_id: number,
-    ageBucket: number,
-    email: string,
-    pwhash: string,
-    country: string,
-    state: string,
-    city: string,
-    startDate: String,
-    allDrives: number,
-    driveIds: Types.Array<string>,
-    friends: string[],
-    badges: BadgeType;
-    broadcasts: string[],
-    chatIds: string[],
-    pfpLink: string,
-    friendRequests: string[],
-    sentFriendRequests: string[],
-    affiliation: string,
-    hobbies: string[],
-    favoriteBook: string,
-    commentsPosted: number,
-    commentsReceived: number,
-    postIDs: string[]
+  _id: string,
+  fname: string,
+  lname: string,
+  alp_id: number,
+  ageBucket: number,
+  email: string,
+  pwhash: string,
+  country: string,
+  state: string,
+  city: string,
+  startDate: String,
+  allDrives: number,
+  driveIds: Types.Array<string>,
+  friends: string[],
+  badges: BadgeType;
+  broadcasts: string[],
+  chatIds: string[],
+  pfpLink: string,
+  friendRequests: string[],
+  sentFriendRequests: string[],
+  affiliation: string,
+  hobbies: string[],
+  favoriteBook: string,
+  commentsPosted: number,
+  commentsReceived: number,
+  postIDs: string[],
+  admin: boolean,
+  role: string[],
+  isSuperAdmin: boolean,
+
 }
 
 
@@ -98,27 +102,27 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>(
     friends: [String],
     badges: {
       Organizer: {
-        type : Number,
+        type: Number,
         default: 0
-      }, 
+      },
       Profile: {
-        type : Number,
+        type: Number,
         default: 0
-      }, 
+      },
       Connector: {
-        type : Number,
+        type: Number,
         default: 0
-      },  
+      },
       Supporter: {
-        type : Number,
+        type: Number,
         default: 0
-      }, 
+      },
       Leader: {
-        type : Number,
+        type: Number,
         default: 0
-      }, 
+      },
       Participation: {
-        type : Number,
+        type: Number,
         default: 0
       }
     },
@@ -134,9 +138,9 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>(
     sentFriendRequests: {
       type: [String],
     },
-    pfpLink:  {
-        type: String,
-        default: "https://res.cloudinary.com/alp-portal/image/upload/c_thumb,g_face,h_150,w_150/rzjgu7qrlfhgefei5v4g"
+    pfpLink: {
+      type: String,
+      default: "https://res.cloudinary.com/alp-portal/image/upload/c_thumb,g_face,h_150,w_150/rzjgu7qrlfhgefei5v4g"
     },
     affiliation: {
       type: String,
@@ -163,8 +167,20 @@ export const VolunteerAccountSchema = new Schema<VolunteerAccount>(
     postIDs: {
       type: [String],
       default: []
-    }
-}, {collection: 'volunteerAccounts'})
+    },
+    admin: {
+      type: Boolean,
+      default: false
+    },
+    role: {
+      type: [String], required: false
+    },
+    isSuperAdmin: {
+      type: Boolean,
+      default: false
+    },
+
+  }, { collection: 'volunteerAccounts' })
 
 
 function getVolunteerAccountModel() {

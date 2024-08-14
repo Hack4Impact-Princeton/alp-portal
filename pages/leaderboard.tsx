@@ -25,11 +25,13 @@ type objtype = {
 type LeaderboardProps = {
   leaderboardData: objtype[];
   myLeaderboard: objtype[];
+  admin: boolean | null
 };
 
 const Leaderboard: NextPage<LeaderboardProps> = ({
   leaderboardData,
   myLeaderboard,
+  admin
 }) => {
   const seasonalBoard = leaderboardData.sort(function (a, b) {
     return b.seasonalDrives - a.seasonalDrives;
@@ -39,7 +41,7 @@ const Leaderboard: NextPage<LeaderboardProps> = ({
   });
   return (
     <div style={{backgroundColor:"#5F5F5F",height:"100vh",padding:0}}>
-      <Navbar active="leaderboard" />
+      <Navbar active="leaderboard" admin = {admin}/>
       <Grid2
         display="flex"
         flexDirection="column"
@@ -162,9 +164,9 @@ export const getServerSideProps = async (context: any) => {
     const allVolunteers: VolunteerAccount[] = (await VolunteerAccount.find(
       {}
     )) as VolunteerAccount[];
-    /*const myAccount = allVolunteers.find(
+    const myAccount = allVolunteers.find(
       (obj) => obj.email == session.user?.email
-    );*/
+    );
     const BookDrive: mongoose.Model<BookDrive> = getBookDriveModel();
     const allBookDrives: BookDrive[] = (await BookDrive.find(
       {}
@@ -226,6 +228,7 @@ export const getServerSideProps = async (context: any) => {
       props: {
         leaderboardData: leaderboardData,
         myLeaderboard: myLeaderboard,
+        admin: myAccount?.admin
       },
     };
   } catch (e: Error | any) {

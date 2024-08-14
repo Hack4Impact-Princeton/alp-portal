@@ -1,22 +1,22 @@
 import { NextPage } from "next";
 import { useState } from "react";
-import getAdminAccountModel, { AdminAccount } from "../../models/AdminAccount";
+import getAdminAccountModel, { AdminAccount } from "../models/AdminAccount";
 import getVolunteerAccountModel, {
   VolunteerAccount,
-} from "../../models/VolunteerAccount";
+} from "../models/VolunteerAccount";
 import mongoose from "mongoose";
-import BroadcastForm from "../../components/BroadcastForm";
-import getBroadcastModel, { Broadcast } from "../../models/Broadcast";
+import BroadcastForm from "../components/BroadcastForm";
+import getBroadcastModel, { Broadcast } from "../models/Broadcast";
 import { Grid, Typography } from "@mui/material";
-import BroadcastMessage from "../../components/Broadcast";
-import { authOptions } from "../api/auth/[...nextauth]";
+import BroadcastMessage from "../components/Broadcast";
+import { authOptions } from "./api/auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
-import AdminPageContainer from "../../components/AdminPageContainer";
-import Navbar from "../../components/AdminNavbar";
-import useDynamicPadding from "../../lib/useDynamicPadding";
+import AdminPageContainer from "../components/AdminPageContainer";
+import Navbar from "../components/Navbar";
+import useDynamicPadding from "../lib/useDynamicPadding";
 
 type BroadcastPageProps = {
-  account: AdminAccount;
+  account: VolunteerAccount;
   volunteers: VolunteerAccount[];
   broadcasts: Broadcast[];
   error: null | string;
@@ -53,7 +53,7 @@ const BroadcastPage: NextPage<BroadcastPageProps> = ({
       style={{ display: "flex", justifyContent: "space-between" }}
     >
       <Grid>
-        <Navbar active="broadcast"></Navbar>
+        <Navbar active="broadcast" admin = {account.admin}></Navbar>
       </Grid>
 
       <Grid
@@ -130,6 +130,7 @@ export const getServerSideProps = async (context: any) => {
       context.res,
       authOptions
     );
+    console.log(session)
     if (!session || session.user?.name != "true") {
       return {
         redirect: {
@@ -140,14 +141,23 @@ export const getServerSideProps = async (context: any) => {
     }
     const recipient: string | undefined = context.query.recipient;
     const subject: string | undefined = context.query.subject;
-    const AdminAccount: mongoose.Model<AdminAccount> = getAdminAccountModel();
-    const account: AdminAccount = (await AdminAccount.findOne({
-      email: session.user.email,
-    })) as AdminAccount;
-    console.log("account", account);
+    // const VolunteerAccount: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel();
+    // console.log("account", account);
     const VolunteerAccount: mongoose.Model<VolunteerAccount> =
       getVolunteerAccountModel();
-
+    const account: VolunteerAccount = (await VolunteerAccount.findOne({
+      email: session.user.email,
+    })) as VolunteerAccount;
+    console.log(account )
+    if (!account) throw new Error(`account with email ${session.user.email}`);
+    if (!account.admin) {
+      return {
+        redirect: {
+          destination: "../dash-volunteer",
+          permanent: false,
+        },
+      };
+    }
     const volunteers = (await VolunteerAccount.find({})) as VolunteerAccount[];
     console.log("volunteers", volunteers);
     const Broadcast: mongoose.Model<Broadcast> = getBroadcastModel();

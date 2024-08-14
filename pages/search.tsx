@@ -27,7 +27,7 @@ type volAccountProps = {
   allAccounts: VolunteerAccount[];
 };
 
-const Search: NextPage<volAccountProps> = ({ allAccounts }) => {
+const Search: NextPage<volAccountProps> = ({ allAccounts}) => {
   const [searchValue, setSearchValue] = useState(""); // Initialize the state variable with an empty string
   const [filteredAccounts, setFilteredAccounts] = useState<
     Record<string, VolunteerAccount>

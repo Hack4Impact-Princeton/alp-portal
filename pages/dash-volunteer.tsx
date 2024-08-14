@@ -153,6 +153,7 @@ const DashVolunteer: NextPage<{
           broadcasts={broadcasts}
           friendRequests={friendRequests}
           allVolunteers={allVolunteers}
+          admin = {account.admin}
         ></PageContainer>
         {/* Necessary box for padding the page body, no overlap with Navbar */}
         <Box
@@ -573,14 +574,14 @@ export async function getServerSideProps(context: any) {
         },
       };
     }
-    if (session.user?.name == "true") {
-      return {
-        redirect: {
-          destination: "/admin/dashboard",
-          permanent: false,
-        },
-      };
-    }
+    // if (session.user?.name == "true") {
+    //   return {
+    //     redirect: {
+    //       destination: "/admin/dashboard",
+    //       permanent: false,
+    //     },
+    //   };
+    // }
     const email = session.user?.email;
     //let account: VolunteerAccount;
     const VolunteerAccount: mongoose.Model<VolunteerAccount> =
