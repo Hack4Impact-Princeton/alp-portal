@@ -21,19 +21,20 @@ import { BookDriveStatus } from "../lib/enums";
 
 
 type FriendProfileProps = {
+    admin: boolean | null;
     friendAccount: VolunteerAccount | undefined;
     friendPosts: Posts[] | undefined;
     drives: BookDrive[]
   };
 
-const FriendProfile: NextPage<FriendProfileProps> = ({ friendAccount, friendPosts, drives
+const FriendProfile: NextPage<FriendProfileProps> = ({ admin, friendAccount, friendPosts, drives
 }) => {
     
     return (
         <>
         {friendAccount && (
         <Grid>
-        <Navbar active="forum" />
+        <Navbar active="forum" admin={admin}></Navbar>
             <Grid
             display="flex"
             flexDirection="column"
@@ -225,7 +226,7 @@ export const getServerSideProps: GetServerSideProps<FriendProfileProps> = async 
     _id: receivedData
   })) as VolunteerAccount;
   const Posts: mongoose.Model<Posts> = getPostModel();
-
+  const account = (await VolunteerAccount.findOne({ email: myEmail})) as VolunteerAccount
   const friendPosts = (await Posts.find({
     email: friendAccount.email }
   )) as Posts[];
@@ -239,6 +240,7 @@ export const getServerSideProps: GetServerSideProps<FriendProfileProps> = async 
 
   return {
     props: {
+      admin : account.admin,
       friendAccount: JSON.parse(JSON.stringify(friendAccount)) || undefined,
       friendPosts: JSON.parse(JSON.stringify(posts)) || undefined, 
       drives: JSON.parse(JSON.stringify(drives)) as BookDrive[] || undefined
