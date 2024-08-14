@@ -109,16 +109,15 @@ const Navbar: React.FC<NavbarProps> = ({ active, admin }) => {
                 </Link>
                 <Link href="/forum">
                     <ListItem key="Forum">
-                        <CustomWidthTooltip title="Forum" placement="right" arrow>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    <FilterFramesIcon fontSize='large' sx={{
-                                        color: '#9C9C9C',
-                                    }}></FilterFramesIcon>
-
-                                </ListItemIcon>
-                            </ListItemButton>
-                        </CustomWidthTooltip>
+                    <CustomWidthTooltip title="Forum" placement="right" arrow>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <FilterFramesIcon fontSize = 'large' sx={{
+                                    color: active === 'forum' ? 'orange' : '#9C9C9C',}}></FilterFramesIcon> 
+                                
+                            </ListItemIcon>
+                        </ListItemButton>
+                    </CustomWidthTooltip>
                     </ListItem>
                 </Link>
                 {admin && <Link href="broadcast">
