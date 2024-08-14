@@ -74,7 +74,7 @@ export default function InstructionGroupCard(props) {
       break
     case 3:
       content = <Grid container direction="column">
-        <Grid paddingTop={2}>
+        <Grid paddingTop={2} paddingBottom={3}>
           <InstructionShipmentCard driveCode={props.driveCode} driveStatus={props.driveStatus} shipments={props.shipments} handleSaveShipment={props.handleSaveShipment}></InstructionShipmentCard>
         </Grid>
       </Grid>

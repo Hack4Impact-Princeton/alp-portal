@@ -25,7 +25,7 @@ function InstructionSteps(props) {
 
     return (
         <Grid>
-            <PageContainer fName="Ivy" currPage="instruction-steps"></PageContainer>
+            <PageContainer fName="Organizer" currPage="instruction-steps"></PageContainer>
             <Box display="flex" flexDirection="column" sx={{
                 pl: "15vw",
                 pt: "5vh",

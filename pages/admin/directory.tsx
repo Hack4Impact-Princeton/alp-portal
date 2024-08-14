@@ -28,14 +28,16 @@ import AdminPageContainer from "../../components/AdminPageContainer";
 import { DSVRowString } from "d3-dsv";
 import * as d3 from "d3";
 
-import { Box, Button, Fab, IconButton, Popper } from "@mui/material";
+import { Box, Button, Fab, IconButton, Modal, Popper } from "@mui/material";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import ModeIcon from '@mui/icons-material/Mode';
 import AdminTable from "../../components/admindir/AdminTable";
 import AdminDirectorySidebar from "../../components/AdminDirectorySidebar";
+import PromoteAdminSearchBar from "../../components/admindir/PromoteAdminSearchBar";
 
 type AdminDashboardProps = {
   allAdmin: AdminAccount[];
+  allVolunteers: VolunteerAccount[];
   account: AdminAccount;
   error: Error | null;
   /*driveDataProps:
@@ -102,6 +104,7 @@ function hasBlankFields(obj: BookDriveT, fieldsToCheck: string[]): string {
 
 const AdminDashboard: NextPage<AdminDashboardProps> = ({
   allAdmin,
+  allVolunteers,
   account,
   error,
   //driveDataProps,
@@ -135,7 +138,6 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
   }| null>(null);
 
   //const drives = driveDataProps?.map((driveDatum) => driveDatum.drive);
-  const [, setState] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -219,133 +221,63 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
     // reader.readAsText(selectedFile);
   };
 
-  const uploadDrives = async () => {
-    console.log("Uploading Drive to Mongo");
-    setErrorDriveMap(new Map());
-    for (let i = 0; i < bookDrives.length; i++) {
-      // if any missing fields, don't upload drive and tell that there is an error
-      const missingField = hasBlankFields(bookDrives[i], fieldsToCheck);
-      if (missingField !== "") {
-        setErrorDriveMap(
-          (map) =>
-            new Map(
-              map.set(
-                i,
-                "The following information is missing: " + missingField
-              )
-            )
-        );
-        continue;
-      }
-      try {
-        const response = await fetch(
-          `/api/bookDrive/${bookDrives[i]["driveCode"]}`,
-          {
-            method: "POST",
-            body: JSON.stringify(bookDrives[i]),
-          }
-        );
 
-        if (response.ok) {
-          console.log(
-            `Uploaded book drive with code: ${bookDrives[i]["driveCode"]}`
-          );
-          // add to volunteer account
-          const res = await fetch(`../api/volunteeraccounts/${bookDrives[i]["email"]}` ,{
-            method: "GET"
-          })
-          if (!res.ok) continue; // no account found
-          const account = await res.json().then(res => res.data);
-          if (bookDrives[i]["driveCode"] in account.driveIds) continue;
-          account.driveIds.push(bookDrives[i]["driveCode"])
-          const resp = await fetch(`../api/volunteeraccounts/${bookDrives[i]["email"]}` ,{
-            method: "PATCH",
-            body: JSON.stringify(account)
-          }).then(res => res.json())
-        } else {
-          setErrorDriveMap(
-            (map) =>
-              new Map(
-                map.set(
-                  i,
-                  "check if the drive you are trying to input already exists " +
-                  response.status
-                )
-              )
-          );
-        }
-      } catch (e) {
-        console.log(e);
-      }
+
+  const toggleShowEditProfileModal = (val: boolean) => {
+    if (val) {
+     // setName(`${currAccount.fname} ${currAccount!.lname}`)
+      // setHobbies(currAccount.hobbies)
+     // setAffiliation(currAccount.affiliation)
+      editProfileRef?.current?.showModal()
+    }
+    else {
+      editProfileRef?.current?.close()
+      //setName(`${currAccount.fname} ${currAccount.lname}`)
+     // setHobbies(currAccount.hobbies)
+      //setAffiliation(currAccount.affiliation)
+     // setFavBook(currAccount.favoriteBook)
     }
 
-  };
-/*
-  const updateBookDriveStatus = async (
-    driveCode: string,
-    status: number
-  ): Promise<void> => {
-    try {
-      const res = await fetch(`/api/bookDrive/${driveCode}`, {
-        method: "PUT",
-        body: JSON.stringify({ status: status }),
-      });
-      if (!res.ok) {
-        alert("updating the status failed");
-        throw new Error("updating the status failed");
-      }
-      const resJson = await res.json();
-      // console.log(resJson.data)
-      const modifiedDrive = driveData?.find(
-        (driveDatum) => driveDatum.drive.driveCode === resJson.data.driveCode
-      );
-      if (!modifiedDrive)
-        throw new Error("something went wrong - Internal Server Error");
-      // console.log(modifiedDrive)
-      modifiedDrive!.drive.status = status;
-      setState((prev) => !prev);
-      alert("drive marked as active successfully");
-    } catch (e: Error | any) {
-      console.error(e);
+  }
+
+  const editProfileRef = useRef<HTMLDialogElement>(null)
+
+  const [currAccount, setCurrAccount] = useState(account)
+
+  const editProfile = async () => {
+    const nameArr = name.trim().split(" ")
+    if (nameArr.length < 2) {
+      alert("Enter a valid first and last name")
+      return
     }
-  };
-*/
-  // const removeReactivationReq = (driveCode: string) => {
-  //   const foundDriveDatum = driveData?.find(
-  //     (driveDatum) => driveDatum.drive.driveCode === driveCode
-  //   );
-  //   if (!foundDriveDatum) {
-  //     console.error(`hmmm, couldn't find the drive with code ${driveCode}`);
-  //     alert(`hmmm, couldn't find the drive with code ${driveCode}`);
-  //     return;
-  //   }
-  //   if (!foundDriveDatum.reactivationReq) {
-  //     console.error(
-  //       `hmmm, there was no reactivation request found for the drive with driveCode ${driveCode}`
-  //     );
-  //     alert(
-  //       `hmmm, there was no reactivation request found for the drive with driveCode ${driveCode}`
-  //     );
-  //     return;
-  //   }
-  //   const filteredDrives = driveData?.filter(
-  //     (datum) => datum.drive.driveCode !== driveCode
-  //   );
-  //   setDriveData(filteredDrives ? filteredDrives : null);
-  //   const editedCurrDrive = sidebarDriveDatum;
-  //   if (!editedCurrDrive) {
-  //     console.error(
-  //       "attempting to access the current sidebar drive but it doesnt exist apparently"
-  //     );
-  //     alert(
-  //       "attempting to access the current sidebar drive but it doesnt exist apparently"
-  //     );
-  //     return;
-  //   }
-  //   editedCurrDrive.reactivationReq = null;
-  //   editedCurrDrive.drive.reactivationRequestId = undefined;
-  //   setSideBarDriveData(editedCurrDrive);
-  // };
+    //setRole('hi')
+    //console.log(role)
+
+    const update = {
+      fname: nameArr[0],
+      lname: nameArr[nameArr.length - 1],
+      // location: location,
+      affiliation: affiliation.trim(),
+      //role: ["container manager", "admin"],
+    }
+    const newAccount: AdminAccount = {
+      ...currAccount,
+      ...update,
+    }
+    const res = await fetch(`/api/adminAccounts/${currAccount.email}`, {
+      method: "PATCH",
+      body: JSON.stringify(update)
+    })
+    if (!res.ok) {
+      alert("profile modification failed")
+      return
+    }
+    setCurrAccount(newAccount)
+
+    toggleShowEditProfileModal(false)
+  }
+
+
   const handleDriveNameClick = (params: GridCellParams) => {
     console.log("in drivename click")
     if (params.field === "adminName") {
@@ -422,10 +354,24 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
 
-  const [name, updateName] = useState(account.fname + " " + account.lname)
-  const [adminState, updateAdminState] = useState(account.state)
-  const [adminCity, updateAdminCity] = useState(account.city)
-  const [affiliation, updateAffiliation] = useState(account.affiliation)
+  // profile variables
+  const [name, setName] = useState(account.fname + " " + account.lname)
+  const [role, setRole] = useState(account.role)
+  const [country, setCountry] = useState(account.country)
+  const [state, setState] = useState(account.state)
+  const [city, setCity] = useState(account.city)
+  const [affiliation, setAffiliation] = useState(account.affiliation)
+
+
+
+  const[showSearch, setShowSearch] = useState(false)
+  const[filteredVolunteers, setFilteredVolunteers] = useState(allVolunteers.filter(volunteer => !allAdmin.some(admin => admin.email === volunteer.email)))
+  const[updatedAdmin, setUpdatedAdmin] = useState(allAdmin)
+
+  const handleNewAdmin = () => {
+    setFilteredVolunteers(filteredVolunteers.filter(volunteer => !updatedAdmin.some(admin => admin.email === volunteer.email)));
+  }
+
 
   return (
     <>
@@ -463,13 +409,122 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
             >
                 About You
             </h1>
-            <IconButton sx={{backgroundColor: "#FE9834"}}>
+            <IconButton onClick={() => toggleShowEditProfileModal(true)} sx={{backgroundColor: "#FE9834"}}>
                 <ModeIcon sx={{color: "white"}}/>
             </IconButton>
+            <dialog
+            ref={editProfileRef}
+            style={{
+              height: "50%",
+              width: "40%",
+              minHeight: "450px",
+              borderRadius: "3%",
+              paddingLeft: 3,
+              paddingRight: 3,
+
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: "#f5f5f5"
+            }}
+          >
+            <Grid
+              display={"flex"}
+              flexDirection={"column"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+              alignSelf={"flex-start"}
+              height={"100%"}
+              sx={{
+                backgroundColor: "#F5F5F5",
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <Grid
+                display="flex"
+                flexDirection="row"
+                alignItems="center"
+                justifyContent={"space-between"}
+                width="100%"
+                sx={{ marginTop: 1 }}
+              >
+                <p
+                  style={{
+                    color: "#5F5F5F",
+                    fontWeight: 600,
+                    fontSize: 20,
+                    width: "90%",
+                    marginLeft: "5%",
+                  }}
+                >
+                  Edit Profile
+                </p>
+                <p style={{ cursor: "pointer", marginRight: 16, fontWeight: "600" }} onClick={() => toggleShowEditProfileModal(false)}>x</p>
+
+              </Grid>
+              <div style={{ marginTop: "10px", display: "flex", justifyContent: "space-around", flexDirection: "row", width: "100%", alignItems: "center"}}>
+             
+                <div style={{ display: "flex", flexDirection: "column", width: "90%", flexShrink: 3, height: "100%", justifyContent: "space-around", alignItems: "start", }}>
+                  <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>Name</i>
+                  <input type="text" placeholder={"name"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                  <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>Role</i>
+                  <input type="text" placeholder={"role"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={role} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRole(e.target.value.split(", "))} />
+                  <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>Country</i>
+                  <input type="text" placeholder={"role"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={country} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCountry(e.target.value)} />
+                  <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>State</i>
+                  <input type="text" placeholder={"role"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={state} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setState(e.target.value)} />
+                  <i style={{ marginLeft: 3, display: "flex", alignSelf: "flex-start", fontSize: 10 }}>City</i>
+                  <input type="text" placeholder={"role"} style={{ padding: "3px", width: "93%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} value={city} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCity(e.target.value)} />
+                  {/* <Dropdown options={states} setResult={setLocation} location={location} /> */}
+                </div>
+              </div>
+              <div style={{ display: "flex", flex: 1,  marginTop: 10, flexDirection: "column", width: "100%", alignItems: "start", paddingLeft: "4%" }}>
+                <i style={{ marginLeft: 3, fontSize: 10 }}>Affiliation</i>
+                <input style={{ padding: 3, width: "96%", height: "36px", fontSize: 16, border: "1px solid #ccc", borderRadius: "4px" }} type="text" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAffiliation(e.target.value)} value={affiliation} />
+              </div>
+              <Grid
+                display="flex"
+                flexDirection="column"
+                justifyContent="space-around"
+                alignItems="center"
+                height="wrap-content"
+                sx={{ width: "100%", padding: 1, }}
+              >
+                <Button
+                  sx={{
+                    backgroundColor: "#FE9834",
+                    "&:hover": { backgroundColor: "#D87800" },
+                    fontWeight: 550,
+                    color: "white",
+                    width: "95%",
+                    marginBottom: 1
+                  }}
+                  onClick={editProfile}
+                >
+                  Submit
+                </Button>
+                <Button
+                  sx={{
+                    backgroundColor: "#5F5F5F",
+                    "&:hover": { backgroundColor: "#777777" },
+                    fontWeight: 550,
+                    color: "white",
+                    width: "95%"
+                  }}
+                  onClick={() => toggleShowEditProfileModal(false)}
+                >
+                  Cancel
+                </Button>
+              </Grid>
+            </Grid>
+          </dialog>
+
         </Grid>
         <Grid marginTop={2}>
             <div style={{border:"1.5px solid #C9C9C9", backgroundColor: "#F5F5F5", width:"50%", padding: 20, borderRadius: "5px"}}>
-                <p>{name} | {adminCity}, {adminState} | {affiliation}</p>
+                <p>{currAccount.fname} {currAccount.lname} | {currAccount.role} | {currAccount.city}, {currAccount.state} | {currAccount.affiliation}</p>
             </div>
         </Grid>
         <Grid display="flex" alignItems={"center"} marginTop={3}>
@@ -483,12 +538,19 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
             >
                 All Admin
             </h1>
-            <Button 
+           { account.isSuperAdmin == true && <div><Button 
+                    onClick={() => setShowSearch(true)}
                     sx={{ padding: 2, cursor: "pointer", height:"40px",fontFamily:"Epilogue",
                     fontWeight:"bold",color:"#5F5F5F",textTransform: 'none',outline:"none",backgroundColor:"#F3D39A",fontSize:"100%"
-                  }}>
+                  }} >
                 <p>Promote New Admin</p>
-            </Button>
+            </Button> 
+            <Modal open={showSearch} onClose={() => setShowSearch(false)}>
+                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "#FFFFFF", borderRadius: "8px", boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)", padding: "20px", width: "40vw" }}>
+                    <PromoteAdminSearchBar users={filteredVolunteers} admins={allAdmin}/>
+                </div>
+           </Modal>
+            </div>}
         </Grid>
         </Grid>
         
@@ -565,6 +627,7 @@ export const getServerSideProps = async (context: any) => {
         },
       };
     }
+
     const AdminAccountModel: mongoose.Model<AdminAccount> =
       getAdminAccountModel();
     const account: AdminAccount = (await AdminAccountModel.findOne({
@@ -579,10 +642,14 @@ export const getServerSideProps = async (context: any) => {
     getVolunteerAccountModel();
     const BookDriveModel: mongoose.Model<BookDrive> = getBookDriveModel();
     const ShipmentModel: mongoose.Model<Shipment> = getShipmentModel();
-    const VolunteerAccountModel: mongoose.Model<VolunteerAccount> =
+    const VolunteerAccount: mongoose.Model<VolunteerAccount> =
       getVolunteerAccountModel();
     const ReactivationRequestModel: mongoose.Model<ReactivationRequest> =
       getReactivationRequestModel();
+
+    const allVolunteers: VolunteerAccount[] = (await VolunteerAccount.find(
+        {}
+    )) as VolunteerAccount[];
     
   /*  const driveDataPromises: Promise<{
       drive: BookDrive;
@@ -627,7 +694,7 @@ export const getServerSideProps = async (context: any) => {
       props: {
         error: null,
         account: JSON.parse(JSON.stringify(account)),
-        //driveDataProps: JSON.parse(JSON.stringify(driveData)),
+        allVolunteers: JSON.parse(JSON.stringify(allVolunteers)),
         allAdmin: JSON.parse(JSON.stringify(allAdmin)),
       },
     };

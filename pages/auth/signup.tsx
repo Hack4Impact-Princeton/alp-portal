@@ -23,6 +23,29 @@ import {
 } from "react-country-state-city";
 import "react-country-state-city/dist/react-country-state-city.css";
 import { wrap } from 'module';
+import { styled } from '@mui/material/styles';
+
+const CustomTextField = styled(TextField)({
+    '& .MuiInputLabel-root': {
+      fontFamily: "Epilogue",    
+    },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: 'white', // Default border color
+      },
+      '&:hover fieldset': {
+        borderColor: '#5F5F5F', // Border color on hover
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: '#5F5F5F', // Border color when focused
+      },
+    },
+    '& .MuiInputBase-input': {
+      fontFamily: 'Epilogue',   // Change font family
+  
+    },
+  })
+
 
 const Signup = () => {
     const states = getStates()
@@ -141,24 +164,24 @@ const Signup = () => {
                             width: 350,
                             height: "wrap-content",
                         }}>
-                        <TextField size="small" fullWidth required error={submit && fname == ''} id="fname" label="First Name" variant="filled"
+                        <CustomTextField color="warning" size="small" fullWidth required error={submit && fname == ''} id="fname" label="First Name" variant="filled"
                             value={fname} onChange={handleSetFName}
                             sx={{
-                                mb: 3, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
+                                mb: 3, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white",fontFamily: 'Epilogue'
                             }} />
-                        <TextField size="small" fullWidth required error={submit && lname == ''} id="lname" label="Last Name" variant="filled"
+                        <CustomTextField size="small"color="warning" fullWidth required error={submit && lname == ''} id="lname" label="Last Name" variant="filled"
                             value={lname} onChange={handleSetLName}
                             sx={{
                                 mb: 3, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
                             }} />
-                        <TextField size="small" fullWidth required error={submit && email == ''} id="email" label="Email" variant="filled"
+                        <CustomTextField size="small" color="warning" fullWidth required error={submit && email == ''} id="email" label="Email" variant="filled"
                             value={email} onChange={handleSetEmail}
                             sx={{
                                 mb: 3, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "white"
 
                             }} />
 
-                        <TextField size="small" fullWidth required id="password" label="Password" variant="filled"
+                        <CustomTextField size="small" color="warning" fullWidth required id="password" label="Password" variant="filled"
                             type={showPassword ? 'text' : 'password'}
                             value={password}
                             onChange={handleSetPassword}
@@ -184,7 +207,7 @@ const Signup = () => {
                             width: 350,
                             height: "wrap-content",
                         }}>
-                            <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: isSmallScreen? 3: 4.5 }}>          
+                            <FormControl required variant="filled" size="medium" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: isSmallScreen? 3: 3,padding:0.7}}>          
                             <CountrySelect 
                                 onChange={(e : any) => {
                                 setCountryId(e.id);
@@ -195,7 +218,7 @@ const Signup = () => {
                             />
                             </FormControl> 
                             <br></br>
-                                   <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: isSmallScreen? 3: 4.5}}>            
+                                   <FormControl required variant="filled" size="medium" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: isSmallScreen? 3: 3,padding:0.7}}>            
                             <StateSelect
                                 countryid={countryId}
                                 onChange={(e: any) => {
@@ -206,7 +229,7 @@ const Signup = () => {
                             />
                         </FormControl>
                         <br></br>
-                        <FormControl required variant="filled" size="small" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: isSmallScreen? 3: 4.5 }}>
+                        <FormControl required variant="filled" size="medium" sx={{ width: 350, border: "2px solid #FE9834", borderRadius: 2, backgroundColor: "#F5F5F5", mb: isSmallScreen? 3: 4.5,padding:0.7 }}>
                                 <CitySelect
                                     countryid={countryId}
                                     stateid={stateId}
@@ -235,7 +258,7 @@ const Signup = () => {
                                 </div>
                         <br></br>
                         <div style={{width: isSmallScreen? 350:700}}> 
-                            <p style={{ fontSize: 15, color: "white" }}>You can unsubscribe at any time by clicking the link in the footer of our emails. For information about our privacy practices, please visit our website.</p>
+                            <p style={{ fontSize: 15, color: "white" }}>You can unsubscribe at any time by clicking the link in the footer of our emails. For information about our privacy practices, <a href="" target="_blank" style={{color:"white"}}>please visit our website.</a></p>
                         </div>
                     <Button variant="contained"
                     onClick={signUpHandler}

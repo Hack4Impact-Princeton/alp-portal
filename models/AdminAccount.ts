@@ -1,23 +1,27 @@
 import mongoose from 'mongoose'
 import {Schema, Document, Types} from 'mongoose'
-import { VolunteerAccount, VolunteerAccountSchema } from './VolunteerAccount'
-import {BookDrive, BookDriveSchema} from './BookDrive'
 
-export interface AdminAccount extends Document {
+
+export type AdminAccount = {
+    id: string,
     fname: string,
     lname: string,
     email: string,
     pwhash: string,
-    alp_id: string,
+    alp_id: number,
     broadcasts: string[],
     isSuperAdmin: boolean,
     city: string,
     state: string,
     country: string,
-    affiliation: string
+    affiliation: string,
+    role: string[],
 }
 
-const AdminAccountSchema = new Schema<AdminAccount>({
+export const AdminAccountSchema = new Schema<AdminAccount>({
+    id: {
+        type:String,
+    },
     fname: {
         type: String,
         required: true,
@@ -36,21 +40,47 @@ const AdminAccountSchema = new Schema<AdminAccount>({
         type: String,
         required: true
     },
-    id: {
-        type: String,
-        required: true
+    alp_id: {type: Number, required: true},
+    broadcasts: {type: [String], required:true    },
+    isSuperAdmin: {type: Boolean, required:true,
     },
-    broadcasts: {type: [String]},
-    isSuperAdmin: {type: Boolean},
-   // volunteerIds: [Number], 
-   // driveIds: [String]
+
+    city: {
+        type: String,
+        required:true,
+        default: ""
+
+    },
+    state: {
+        type: String,
+        required:true,
+        default: ""
+
+    },
+    country: {
+        type: String,
+        required:true,
+        default: ""
+
+    },
+    affiliation: {
+        type: String,
+        required:true,
+        default: ""
+
+    },
+    role: {
+        type: [String], required:false   
+    }
+   
+
+   
 }, {collection: 'adminAccounts'})
 
 
 function getAdminAccountModel() {
-    // ^?
     if ("AdminAccount" in mongoose.models) {
-        return mongoose.models.AdminAccount
+        return mongoose.models.AdminAccount;
     }
     return mongoose.model("AdminAccount", AdminAccountSchema)
 }
