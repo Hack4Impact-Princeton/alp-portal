@@ -24,8 +24,9 @@ async function run() {
 
     const update = {
       $set: {
-        pfpLink: "https://res.cloudinary.com/alp-portal/image/upload/c_thumb,g_face,h_150,w_150/v3fcorkg5wlesneukfnl"
-      }
+       // pfpLink: "https://res.cloudinary.com/alp-portal/image/upload/c_thumb,g_face,h_150,w_150/v3fcorkg5wlesneukfnl",
+        flagged: false
+    }
     }
     // Execute query
     const arr = await accounts.updateMany({}, update);
