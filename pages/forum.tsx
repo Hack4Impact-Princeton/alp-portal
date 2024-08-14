@@ -115,7 +115,7 @@ const Forum: NextPage<PostProps> = ({
                 sx={{ marginBottom: 1.5 }}
               >
                 <h1 style={{ color: "#FE9834", marginRight: 10 }}>Posts</h1>
-                <NewPost username={username} email={email} addPost={addPost} />
+                <NewPost pfpLink = {account.pfpLink} username={username} email={email} addPost={addPost} />
               </Grid2>
 
               <Grid2
