@@ -9,6 +9,7 @@ import {Typography} from '@mui/material'
 type dataType = {
   userName: string;
   userState: string;
+  userPfp: string;
   totalDrives: number;
   seasonalDrives: number;
 };
@@ -21,6 +22,7 @@ const Podium: React.FC<PodiumProps> = ({ data, boardType }) => {
   const firstPlace = data == null ? null : data[0];
   const secondPlace = data == null ? null : data[1];
   const thirdPlace = data == null ? null : data[2];
+
   return (
     <Grid2
       container
@@ -41,6 +43,7 @@ const Podium: React.FC<PodiumProps> = ({ data, boardType }) => {
         marginTop={-5}
 
       >
+        
         <Grid2 paddingTop={1}>
           <Typography
             sx={{
@@ -54,8 +57,13 @@ const Podium: React.FC<PodiumProps> = ({ data, boardType }) => {
           >
             2
           </Typography>
-          <AccountCircleIcon sx={{ fontSize: "5vw" }} />
+          {secondPlace ? (
+          <img src={secondPlace.userPfp} alt="PFP" style={{borderRadius:'50%',height:"5vw"}} /> ) :
+            ( <AccountCircleIcon sx={{ fontSize: "5vw" }} />
+          )}
         </Grid2>
+        
+       
         <Grid2>
         <Typography
             sx={{
@@ -70,8 +78,12 @@ const Podium: React.FC<PodiumProps> = ({ data, boardType }) => {
           >
             1
           </Typography>
-          <AccountCircleIcon sx={{ fontSize: "7vw" }} />
+          {firstPlace ? (
+          <img src={firstPlace.userPfp} alt="PFP" style={{borderRadius:'50%',height:"7vw"}} /> ) :
+            ( <AccountCircleIcon sx={{ fontSize: "7vw" }} />
+          )}
         </Grid2>
+        
         <Grid2 paddingTop={1}>
         <Typography
             sx={{
@@ -85,9 +97,12 @@ const Podium: React.FC<PodiumProps> = ({ data, boardType }) => {
           >
             3
           </Typography>
-          <AccountCircleIcon sx={{ fontSize: "5vw" }} />
+          {thirdPlace ? (
+          <img src={thirdPlace.userPfp} alt="PFP" style={{borderRadius:'50%',height:"5vw"}} /> ) :
+            ( <AccountCircleIcon sx={{ fontSize: "5vw" }} />
+          )}
+        </Grid2> 
         </Grid2>
-      </Grid2>
 
       <Grid2
         container

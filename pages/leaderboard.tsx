@@ -18,6 +18,7 @@ import StarOutlinedIcon from '@mui/icons-material/StarOutlined';
 type objtype = {
   userName: string;
   userState: string;
+  userPfp:string;
   totalDrives: number;
   seasonalDrives: number;
 };
@@ -193,6 +194,8 @@ export const getServerSideProps = async (context: any) => {
     for (const v of allVolunteers) {
       // if (v.allDrives == 0) continue;
       const userName = v.fname + " " + v.lname[0];
+      const userState = v.state
+      const pfpLink = v.pfpLink
       // const userState = states.find((state) => state.index === v.location);
       const totalDrives = v.allDrives;
       let seasonalDrives = 0;
@@ -203,7 +206,8 @@ export const getServerSideProps = async (context: any) => {
       }
       leaderboardData.push({
         userName: userName,
-        // userState: userState ? userState.name : "",
+        userState: userState,
+        userPfp: pfpLink,
         totalDrives: totalDrives,
         seasonalDrives: seasonalDrives,
       });

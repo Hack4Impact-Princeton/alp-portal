@@ -89,7 +89,7 @@ const Navbar: React.FC<NavbarProps> = ({active}) => {
                         <ListItemButton>
                             <ListItemIcon>
                                 <FilterFramesIcon fontSize = 'large' sx={{
-                                    color: '#9C9C9C',}}></FilterFramesIcon> 
+                                    color: active === 'forum' ? 'orange' : '#9C9C9C',}}></FilterFramesIcon> 
                                 
                             </ListItemIcon>
                         </ListItemButton>
