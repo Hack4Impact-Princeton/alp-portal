@@ -3,7 +3,7 @@ import { Posts, Comments } from "../../models/Post";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SendIcon from "@mui/icons-material/Send";
-import { Button, Link, IconButton, TextField } from "@mui/material";
+import { Button, Link, IconButton, TextField, Modal } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CommentIcon from "@mui/icons-material/Comment";
 import { useState, useRef, useEffect } from "react";
@@ -75,6 +75,36 @@ const PostContainer: React.FC<PostProps> = ({
   const [showAddComment, setShowAddComment] = useState(false);
   const [newCommentText, setNewCommentText] = useState("");
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const [showFlagModal, setShowFlagModal] = useState(false)
+  const styles = {
+    btn: {
+      backgroundColor: "#FE9834",
+      width: "45%",
+      fontFamily:"Epilogue",
+      fontWeight:'bold',
+      color:"white"
+  },
+    modal: {
+        position: 'absolute' as 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '40%',
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+        display:"flex",
+        flexDirection:"column",
+        //minHeight:"30%",
+        maxHeight: "70%",
+        overflowY: "auto",
+       // alignItems:"center",
+        //justifyContent:"center",
+    },
+
+};
 
   const parent = useRef(null);
   const popover = useRef(null);
@@ -287,17 +317,34 @@ const PostContainer: React.FC<PostProps> = ({
             </Popover>
           </Grid2>}
           {post.flagged && (
+            <>
             <Grid2
             container
             xs={1}
-            //onClick={} show modal
             ref={popover}
           >
-                <IconButton sx={{ position: "absolute", top: 0, right: 0 , cursor:"pointer"}}>
+                <IconButton sx={{ position: "absolute", top: 0, right: 0 , cursor:"pointer"}} onClick={()=>setShowFlagModal(true)}>
                 <FlagIcon  />
               </IconButton>
             </Grid2>
+            <Modal
+            open={showFlagModal} >
+              <Grid2 sx={styles.modal}>
+                <Grid2 display="flex" alignItems={"center"} justifyContent={"space-between"}>
+                  <h2>Flagged Post</h2>
+                  <Button onClick={()=>setShowFlagModal(false)}>X</Button>
+                </Grid2>
+                <Grid2 display="flex" justifyContent={"space-between"}>
+                  <Button sx = {styles.btn} onClick={()=>{flagPost(false, post.post_id); setShowFlagModal(false)}}>Unflag Post</Button>
+                  <Button sx = {styles.btn} onClick={()=>{deletePost(post.post_id); setShowFlagModal(false)}}>Delete Post</Button>
+                </Grid2>
+                
+
+              </Grid2>
+            </Modal>
+        </>
           )}
+          
         </Grid2>
         <Grid2
           sx={{

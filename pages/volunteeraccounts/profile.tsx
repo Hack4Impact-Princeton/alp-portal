@@ -391,7 +391,10 @@ const Profile: NextPage<ProfileProps> = ({ error, broadcasts, account, drives })
                 paddingLeft: '4px',
               }}
             >
-              <p style={{ fontWeight: 800, fontSize: 30, marginBottom: 2, color: "#5F5F5F" }}>{`${currAccount.fname} ${currAccount.lname}`}</p>
+              <Grid display="flex" alignItems={"center"}>
+                <p style={{ fontWeight: 800, fontSize: 30, marginBottom: 2, color: "#5F5F5F" }}>{`${currAccount.fname} ${currAccount.lname}`}</p>
+                {currAccount.admin && ( <p style={{ fontWeight: 800, fontSize: 25, marginBottom: 2, color: "#FE9834", marginLeft:10 }}>Admin</p>)}
+              </Grid>
               <p style={{ fontWeight: 500, marginBottom: 2, color: "#5F5F5F" }}>{currAccount.email}</p>
               <p style={{ fontWeight: 500, color: "#5F5F5F" }}>{`# of Bookdrives completed: ${drives!.length}`}</p>
               <p style={{ marginTop: 16, color: "#FE9834", fontWeight: 600, cursor: "pointer" }} onClick={() => toggleShowEditProfileModal(true)}>Edit Profile</p>

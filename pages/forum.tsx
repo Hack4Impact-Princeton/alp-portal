@@ -66,6 +66,8 @@ const Forum: NextPage<PostProps> = ({
 
   const refreshData = (post_id: string, flagged?: boolean) => {
     if (flagged){
+      // const flaggedPost = allPostsList.find((post)=>post.post_id == post_id)
+      // if (flaggedPost) {setflaggedPostsList([...flaggedPostList,flaggedPost])}
       setfriendPostsList(friendPostList.filter((post) => post.post_id !== post_id));
       setallPostsList(allPostsList.filter((post) => post.post_id !== post_id));
     }
