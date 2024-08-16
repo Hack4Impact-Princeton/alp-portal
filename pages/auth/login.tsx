@@ -130,10 +130,10 @@ const Login: NextPage = () => {
                 "&:hover": { backgroundColor: "#444444" },
                 marginTop: 2,
                 marginBottom: 5,
-                width: "48%",
+                width: "100%",
                 fontFamily: 'Epilogue'
-              }}>Volunteer Login</Button>
-            <Button variant="contained"
+              }}>Login</Button>
+            {/* <Button variant="contained"
               onClick={() => handleSubmit(true)}
               sx={{
                 fontFamily: 'Epilogue',
@@ -143,7 +143,7 @@ const Login: NextPage = () => {
                 marginLeft: 2,
                 marginBottom: 5,
                 width: "48%"
-              }}>Admin Login</Button>
+              }}>Admin Login</Button> */}
           </Box>
         </div>
         <br></br>
