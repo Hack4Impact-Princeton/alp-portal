@@ -77,6 +77,8 @@ const PostContainer: React.FC<PostProps> = ({
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const [showFlagModal, setShowFlagModal] = useState(false)
+  const [showFlaggingModal, setShowFlaggingModal] = useState(false)
+
   const styles = {
     btn: {
       backgroundColor: "#FE9834",
@@ -169,8 +171,9 @@ const PostContainer: React.FC<PostProps> = ({
     {
       label: "Flag Post",
       action: () => {
-        flagPost(true, post.post_id);
-        refreshPosts(post.post_id,true);
+        setShowFlaggingModal(true)
+        //flagPost(true, message, flagger, post.post_id);
+        //refreshPosts(post.post_id,true);
       },
     },
 
@@ -315,6 +318,18 @@ const PostContainer: React.FC<PostProps> = ({
 
               </div>
             </Popover>
+            <Modal open={showFlaggingModal} >
+              <Grid2 sx={styles.modal}>
+              <Grid2 display="flex" alignItems={"center"} justifyContent={"space-between"}>
+                  <h2>Flag this post</h2>
+                  <Button onClick={()=>setShowFlaggingModal(false)}>X</Button>
+                </Grid2>
+                <Grid2 display="flex" justifyContent={"space-between"}>
+                  <Button sx = {styles.btn} onClick={()=>{flagPost(true, "",email, post.post_id); setShowFlagModal(false)}}>Unflag Post</Button>
+                </Grid2>
+              </Grid2>
+
+            </Modal>
           </Grid2>}
           {post.flagged && (
             <>
@@ -335,7 +350,7 @@ const PostContainer: React.FC<PostProps> = ({
                   <Button onClick={()=>setShowFlagModal(false)}>X</Button>
                 </Grid2>
                 <Grid2 display="flex" justifyContent={"space-between"}>
-                  <Button sx = {styles.btn} onClick={()=>{flagPost(false, post.post_id); setShowFlagModal(false)}}>Unflag Post</Button>
+                  <Button sx = {styles.btn} onClick={()=>{flagPost(false, "","", post.post_id); setShowFlagModal(false)}}>Unflag Post</Button>
                   <Button sx = {styles.btn} onClick={()=>{deletePost(post.post_id); setShowFlagModal(false)}}>Delete Post</Button>
                 </Grid2>
                 
