@@ -120,7 +120,7 @@ const Navbar: React.FC<NavbarProps> = ({ active, admin }) => {
                     </CustomWidthTooltip>
                     </ListItem>
                 </Link>
-                {admin && <Link href="broadcast">
+                {admin && <Link href="/broadcast">
                     <ListItem key="Broadcasts">
                         <CustomWidthTooltip title="Broadcasts" placement="right" arrow>
                             <ListItemButton>

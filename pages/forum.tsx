@@ -30,6 +30,7 @@ type PostProps = {
   allPosts: Posts[];
   friendsPosts: Posts[];
   myPosts: Posts[];
+  flaggedPosts:Posts[];
   chatInfo: { chat: Chat; otherUser: VolunteerAccount }[];
   account: VolunteerAccount;
   username: string;
@@ -43,6 +44,7 @@ const Forum: NextPage<PostProps> = ({
   allPosts,
   friendsPosts,
   myPosts,
+  flaggedPosts,
   username,
   email,
   chatInfo,
@@ -55,12 +57,24 @@ const Forum: NextPage<PostProps> = ({
 
   const [myPostsList, setmyPostsList] = useState<Posts[]>(myPosts);
   const [allPostsList, setallPostsList] = useState<Posts[]>(allPosts);
+  const [friendPostList, setfriendPostsList] = useState<Posts[]>(friendsPosts);
+  const [flaggedPostList, setflaggedPostsList] = useState<Posts[]>(flaggedPosts);
+
+  
   const [showChat, setShowChat] = useState(false);
   const router = useRouter();
 
-  const refreshData = (post_id: string) => {
-    setmyPostsList(myPostsList.filter((post) => post.post_id !== post_id));
-    setallPostsList(allPostsList.filter((post) => post.post_id !== post_id));
+  const refreshData = (post_id: string, flagged?: boolean) => {
+    if (flagged){
+      // const flaggedPost = allPostsList.find((post)=>post.post_id == post_id)
+      // if (flaggedPost) {setflaggedPostsList([...flaggedPostList,flaggedPost])}
+      setfriendPostsList(friendPostList.filter((post) => post.post_id !== post_id));
+      setallPostsList(allPostsList.filter((post) => post.post_id !== post_id));
+    }
+    else {
+      setmyPostsList(myPostsList.filter((post) => post.post_id !== post_id));
+      setallPostsList(allPostsList.filter((post) => post.post_id !== post_id));
+    }
   };
 
   const addPost = (myPost: Posts) => {
@@ -194,6 +208,29 @@ const Forum: NextPage<PostProps> = ({
                     My Posts
                   </Button>
                 </Grid2>
+                {account.admin && (<Grid2  marginBottom={1}>
+                  <Button
+                    variant="contained"
+                    disableElevation
+                    sx={{
+                      borderRadius: 1,
+                      backgroundColor:
+                        active === "flagged" ? "#F3D39A" : "#F5F5F5",
+                      color: "#5F5F5F",
+                      fontFamily:"Epilogue",
+                      outline:"none",
+                      fontSize:"100%",
+                      fontWeight:"bold",
+                      '&:hover': {
+                        backgroundColor:"#D3A874", 
+                      },
+                      textTransform:"none",                      
+                    }}
+                    onClick={() => setActive("flagged")}
+                  >
+                    Flagged Posts
+                  </Button>
+                </Grid2>)}
               </Grid2>
               <Grid2
                 className="posts-container"
@@ -201,8 +238,8 @@ const Forum: NextPage<PostProps> = ({
                 flexDirection={"column"}
               >
                 {active == "friends" &&
-                  friendsPosts != undefined &&
-                  friendsPosts.map((post) => {
+                  friendPostList &&
+                  friendPostList.map((post) => {
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
                         <PostContainer
@@ -217,7 +254,7 @@ const Forum: NextPage<PostProps> = ({
                     );
                   })}
 
-                {active == "all" &&
+                {active == "all" && allPostsList &&
                   allPostsList.map((post) => {
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
@@ -232,8 +269,23 @@ const Forum: NextPage<PostProps> = ({
                       </div>
                     );
                   })}
-                {active == "my" &&
+                {active == "my" && myPostsList&&
                   myPostsList.map((post) => {
+                    return (
+                      <div style={{ width: "85%", marginTop: 10 }}>
+                        <PostContainer
+                          post={post}
+                          user={account}
+                          isOwner={true}
+                          refreshPosts={refreshData}
+                          username={username}
+                          email={email}
+                        />
+                      </div>
+                    );
+                  })}
+                  {active == "flagged" && flaggedPostList && 
+                  flaggedPostList.map((post) => {
                     return (
                       <div style={{ width: "85%", marginTop: 10 }}>
                         <PostContainer
@@ -412,6 +464,7 @@ export const getServerSideProps = async (context: any) => {
         friendsPosts: JSON.parse(JSON.stringify(friendsPosts)),
         allPosts: JSON.parse(JSON.stringify(filteredPublicPosts)),
         myPosts: JSON.parse(JSON.stringify(myPosts)),
+        flaggedPosts: JSON.parse(JSON.stringify(flaggedPosts)),
         chatInfo: JSON.parse(JSON.stringify(chatInfo)),
         account: JSON.parse(JSON.stringify(account)),
         username: userName,

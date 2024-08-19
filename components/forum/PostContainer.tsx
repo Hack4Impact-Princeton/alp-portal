@@ -3,12 +3,14 @@ import { Posts, Comments } from "../../models/Post";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SendIcon from "@mui/icons-material/Send";
-import { Button, Link, IconButton, TextField } from "@mui/material";
+import { Button, Link, IconButton, TextField, Modal } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CommentIcon from "@mui/icons-material/Comment";
 import { useState, useRef, useEffect } from "react";
 import Popover from "@mui/material/Popover";
 import { useRouter } from "next/router";
+import FlagIcon from '@mui/icons-material/Flag';
+
 
 import { nanoid } from "nanoid";
 import autoAnimate from "@formkit/auto-animate";
@@ -18,7 +20,7 @@ import getVolunteerAccountModel, {
 } from "../../models/VolunteerAccount";
 import RichEditor from "./RichEditor";
 
-import postComment, { deletePost } from "../../db_functions/forum";
+import postComment, { deletePost, flagPost } from "../../db_functions/forum";
 import { updateSupporterBadge , updateLeader} from "../../db_functions/badges";
 
 type PostProps = {
@@ -28,7 +30,7 @@ type PostProps = {
   // done on a per-post level, so people can del
   // their own posts on any page,
   // but currently this is what matches the design specs
-  refreshPosts: (post_id: string) => void;
+  refreshPosts: (post_id: string,flagged?:boolean) => void;
   email: string;
   username: string;
 };
@@ -73,6 +75,36 @@ const PostContainer: React.FC<PostProps> = ({
   const [showAddComment, setShowAddComment] = useState(false);
   const [newCommentText, setNewCommentText] = useState("");
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const [showFlagModal, setShowFlagModal] = useState(false)
+  const styles = {
+    btn: {
+      backgroundColor: "#FE9834",
+      width: "45%",
+      fontFamily:"Epilogue",
+      fontWeight:'bold',
+      color:"white"
+  },
+    modal: {
+        position: 'absolute' as 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '40%',
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+        display:"flex",
+        flexDirection:"column",
+        //minHeight:"30%",
+        maxHeight: "70%",
+        overflowY: "auto",
+       // alignItems:"center",
+        //justifyContent:"center",
+    },
+
+};
 
   const parent = useRef(null);
   const popover = useRef(null);
@@ -135,16 +167,16 @@ const PostContainer: React.FC<PostProps> = ({
 
   const globalPostActions = [
     {
-      label: "Some Action",
+      label: "Flag Post",
       action: () => {
-        console.log(user);
+        flagPost(true, post.post_id);
+        refreshPosts(post.post_id,true);
       },
     },
-    {
-      label: "Another Action!",
-      action: () => {},
-    },
+
   ];
+  
+
 
   const handleShowCommentActions = () => {
     setAnchorEl(anchorEl == null ? popover.current : null);
@@ -222,13 +254,13 @@ const PostContainer: React.FC<PostProps> = ({
             <p style={{ fontStyle: "italic" }}>{post.date}</p>
           </Grid2>
 
-          {/* <Grid2
+        {!post.flagged &&  <Grid2
             container
             xs={1}
             onClick={handleShowCommentActions}
             ref={popover}
           >
-            <MoreVertIcon sx={{ position: "absolute", top: 0, right: 0 }} />
+            <MoreVertIcon sx={{ position: "absolute", top: 0, right: 0 , cursor:"pointer"}} />
             <Popover
               id={id}
               open={open}
@@ -280,9 +312,39 @@ const PostContainer: React.FC<PostProps> = ({
                     {button.label}
                   </button>
                 ))}
+
               </div>
             </Popover>
-          </Grid2> */}
+          </Grid2>}
+          {post.flagged && (
+            <>
+            <Grid2
+            container
+            xs={1}
+            ref={popover}
+          >
+                <IconButton sx={{ position: "absolute", top: 0, right: 0 , cursor:"pointer"}} onClick={()=>setShowFlagModal(true)}>
+                <FlagIcon  />
+              </IconButton>
+            </Grid2>
+            <Modal
+            open={showFlagModal} >
+              <Grid2 sx={styles.modal}>
+                <Grid2 display="flex" alignItems={"center"} justifyContent={"space-between"}>
+                  <h2>Flagged Post</h2>
+                  <Button onClick={()=>setShowFlagModal(false)}>X</Button>
+                </Grid2>
+                <Grid2 display="flex" justifyContent={"space-between"}>
+                  <Button sx = {styles.btn} onClick={()=>{flagPost(false, post.post_id); setShowFlagModal(false)}}>Unflag Post</Button>
+                  <Button sx = {styles.btn} onClick={()=>{deletePost(post.post_id); setShowFlagModal(false)}}>Delete Post</Button>
+                </Grid2>
+                
+
+              </Grid2>
+            </Modal>
+        </>
+          )}
+          
         </Grid2>
         <Grid2
           sx={{
@@ -309,11 +371,11 @@ const PostContainer: React.FC<PostProps> = ({
         //style={{ width: "100%" }}
       >
         <div style={{ width: "100%" }}>
-          <div ref={parent} style={{ width: "100%" }}>
+          <div ref={parent} style={{ width: "100%" , paddingLeft: "5px"}}>
             <div>
-              <IconButton>
+              {/* <IconButton>
                 <FavoriteBorderIcon />
-              </IconButton>
+              </IconButton> */} 
               <IconButton>
                 <CommentIcon onClick={handleShowAddComment} />
               </IconButton>
