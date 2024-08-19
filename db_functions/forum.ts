@@ -2,12 +2,14 @@ import { Posts } from "../models/Post";
 import { Comments } from "../models/Post";
 import genUniqueId from "../lib/idGen";
 
-export const flagPost = async (status: boolean, post_id: string) => {
+export const flagPost = async (status: boolean, message: string, flagger: string, post_id: string) => {
   try {
     const res = await fetch(`/api/posts/${post_id}`, {
       method: "PUT",
       body: JSON.stringify({
-        flagged: status 
+        flagged: status,
+        flagMessage: message,
+        flaggerEmail: flagger
       }),
     });
     if (!res) throw new Error("Internal server error");

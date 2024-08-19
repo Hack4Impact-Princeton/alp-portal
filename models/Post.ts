@@ -24,6 +24,8 @@ export interface Posts {
   comments: Comments[];
   is_public?: boolean;
   flagged: boolean;
+  flagMessage: string;
+  flaggerEmail: string;
 }
 
 const CommentSchema = new Schema<Comments>({
@@ -49,6 +51,8 @@ const PostSchema = new Schema<Posts>(
     comments: { type: [CommentSchema] },
     is_public: { type: Boolean },
     flagged: {type: Boolean},
+    flagMessage: {type: String},
+    flaggerEmail: {type: String}
   },
   { collection: "posts" }
 );
@@ -67,6 +71,8 @@ const DeletedPostSchema = new Schema<Posts>(
     comments: { type: [CommentSchema] },
     is_public: { type: Boolean },
     flagged: {type: Boolean},
+    flagMessage: {type: String},
+    flaggerEmail: {type: String}
   },
   { collection: "deletedPosts" }
 );

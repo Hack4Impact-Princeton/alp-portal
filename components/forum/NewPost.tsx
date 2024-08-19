@@ -68,7 +68,7 @@ const style = {
   transform: "translate(-50%, -50%)",
   width: "50%",
   bgcolor: "#F5F5F5",
-  border: "2px solid #000",
+  border: "2px solid #5F5F5F",
   boxShadow: 24,
   p: 4,
 };
@@ -117,6 +117,8 @@ const NewPost: React.FC<NewPostProps> = ({ pfpLink,username, email, addPost }) =
         comments: [],
         is_public: (switchLabel === "Public"),
         flagged: false,
+        flagMessage:"",
+        flaggerEmail:"",
  
       };
       console.log(newPost)
