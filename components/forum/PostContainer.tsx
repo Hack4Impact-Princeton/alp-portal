@@ -6,11 +6,12 @@ import SendIcon from "@mui/icons-material/Send";
 import { Button, Link, IconButton, TextField, Modal } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CommentIcon from "@mui/icons-material/Comment";
+import CloseIcon from "@mui/icons-material/Close"
 import { useState, useRef, useEffect } from "react";
 import Popover from "@mui/material/Popover";
 import { useRouter } from "next/router";
 import FlagIcon from '@mui/icons-material/Flag';
-
+import CommentPopover from "./CommentPopover";
 
 import { nanoid } from "nanoid";
 import autoAnimate from "@formkit/auto-animate";
@@ -75,9 +76,14 @@ const PostContainer: React.FC<PostProps> = ({
   const [showAddComment, setShowAddComment] = useState(false);
   const [newCommentText, setNewCommentText] = useState("");
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null); // flagging comments popover 
+  const [currentItemId, setCurrentItemId] = useState<string | null>(null);
+
+
 
   const [showFlagModal, setShowFlagModal] = useState(false)
   const [showFlaggingModal, setShowFlaggingModal] = useState(false)
+  const [flagMessage,setFlagMessage] = useState("")
 
   const styles = {
     btn: {
@@ -94,7 +100,8 @@ const PostContainer: React.FC<PostProps> = ({
         transform: 'translate(-50%, -50%)',
         width: '40%',
         bgcolor: 'background.paper',
-        border: '2px solid #000',
+        border: '2px solid #5F5F5F',
+        borderRadius:"5px",
         boxShadow: 24,
         p: 4,
         display:"flex",
@@ -105,11 +112,26 @@ const PostContainer: React.FC<PostProps> = ({
        // alignItems:"center",
         //justifyContent:"center",
     },
+    flagTextField: {
+      width: "100%",
+      marginRight: "2rem",
+      marginLeft: "0rem",
+      marginTop:"1rem",
+      marginBottom:"1rem",
+      padding: "1rem",
+      height: "2.5rem",
+      outline: "none !important",
+      border: "2px solid #EEEEEE", // TODO, focused outline
+    },
+    xButton: {
+
+    }
 
 };
 
   const parent = useRef(null);
   const popover = useRef(null);
+  const popover2 = useRef(null);
 
   useEffect(() => {
     //post.comments = GEN_DUMMY_COMMENTS(4);
@@ -188,9 +210,21 @@ const PostContainer: React.FC<PostProps> = ({
   const handleCloseCommentActions = () => {
     setAnchorEl(null);
   };
-
   const open = Boolean(anchorEl);
   const id = open ? "popover" : undefined;
+
+  const handleShowFlagComment = (id: string) => () => {
+    setAnchorEl2(anchorEl2 == null ? popover2.current : null);
+    setCurrentItemId(id);
+
+  };
+  const handleCloseFlagComment = () => {
+    setAnchorEl2(null);
+    setCurrentItemId(null);
+
+  };
+  const open2 = Boolean(anchorEl2);
+  const id2 = open2 ? 'popover2' : undefined;
 
   useEffect(() => {
     parent.current && autoAnimate(parent.current);
@@ -257,7 +291,8 @@ const PostContainer: React.FC<PostProps> = ({
             <p style={{ fontStyle: "italic" }}>{post.date}</p>
           </Grid2>
 
-        {!post.flagged &&  <Grid2
+        {!post.flagged &&  <> 
+          <Grid2
             container
             xs={1}
             onClick={handleShowCommentActions}
@@ -318,19 +353,40 @@ const PostContainer: React.FC<PostProps> = ({
 
               </div>
             </Popover>
-            <Modal open={showFlaggingModal} >
+            
+          </Grid2>
+          <Modal open={showFlaggingModal} >
               <Grid2 sx={styles.modal}>
               <Grid2 display="flex" alignItems={"center"} justifyContent={"space-between"}>
-                  <h2>Flag this post</h2>
-                  <Button onClick={()=>setShowFlaggingModal(false)}>X</Button>
-                </Grid2>
+                  <h2>Flag Post</h2>
+                <IconButton
+                  sx={{ position: "absolute", top: 2, right: 4 }}
+                  onClick={()=>setShowFlaggingModal(false)}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </Grid2>
+                
+      
+                <input
+                  type="text"
+                  placeholder="Why would you like to flag this post?"
+                  // TODO should this be resizing, as a textarea instead? input might not be right
+                  value={flagMessage}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setFlagMessage(e.target.value);
+                  }}
+                  style={
+                    styles.flagTextField
+                  }
+                />
                 <Grid2 display="flex" justifyContent={"space-between"}>
-                  <Button sx = {styles.btn} onClick={()=>{flagPost(true, "",email, post.post_id); setShowFlagModal(false)}}>Unflag Post</Button>
+                  <Button sx = {styles.btn} onClick={()=>{flagPost(true, flagMessage, email, post.post_id); setShowFlaggingModal(false), setFlagMessage(""),refreshPosts(post.post_id,true)}}>Confirm Flag Post</Button>
                 </Grid2>
               </Grid2>
 
             </Modal>
-          </Grid2>}
+           </>}
           {post.flagged && (
             <>
             <Grid2
@@ -347,8 +403,20 @@ const PostContainer: React.FC<PostProps> = ({
               <Grid2 sx={styles.modal}>
                 <Grid2 display="flex" alignItems={"center"} justifyContent={"space-between"}>
                   <h2>Flagged Post</h2>
-                  <Button onClick={()=>setShowFlagModal(false)}>X</Button>
+                  <IconButton
+                  sx={{ position: "absolute", top: 2, right: 4 }}
+                  onClick={()=>setShowFlagModal(false)}
+                >
+                  <CloseIcon />
+                </IconButton>
                 </Grid2>
+                <Grid2 sx={{backgroundColor:"#F5F5F5", borderRadius:"5px",padding:1,margin:1, marginBottom:2}}>
+                  <p style={{fontWeight:'bold'}}>Flagged by: <span style={{fontWeight:'normal'}}>{post.flaggerEmail}</span></p>
+                  <br></br>
+                  <p style={{fontWeight:'bold'}}>Flag Reason: <span style={{fontWeight:'normal'}}>{post.flagMessage}</span></p>
+
+                </Grid2>
+                
                 <Grid2 display="flex" justifyContent={"space-between"}>
                   <Button sx = {styles.btn} onClick={()=>{flagPost(false, "","", post.post_id); setShowFlagModal(false)}}>Unflag Post</Button>
                   <Button sx = {styles.btn} onClick={()=>{deletePost(post.post_id); setShowFlagModal(false)}}>Delete Post</Button>
@@ -514,6 +582,7 @@ const PostContainer: React.FC<PostProps> = ({
                         width: "100%",
                       }}
                     >
+                        
                       <Grid2
                         container
                         display="flex"
@@ -524,6 +593,7 @@ const PostContainer: React.FC<PostProps> = ({
                         paddingX="1rem"
                         paddingTop="1rem"
                       >
+                        <CommentPopover key = {comment.comment_id}/>
                         <Grid2
                           container
                           xs={9}
