@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 import { authOptions } from "./api/auth/[...nextauth]";
 import { GridCellParams, GridRowParams } from "@mui/x-data-grid";
 import getShipmentModel, { Shipment } from "../models/Shipment";
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useEffect } from "react";
 import { BookDriveStatus } from "../lib/enums";
 import { useState, useRef } from "react";
 import Grid from "@mui/material/Grid";
@@ -25,8 +25,7 @@ import CompletedDriveTable from "../components/CompletedDriveTable";
 import QuickActionsTable from "../components/QuickActionsTable";
 import Link from "next/link";
 import PageContainer from "../components/PageContainer";
-import { DSVRowString } from "d3-dsv";
-import * as d3 from "d3";
+import * as CSV from 'csv-string';
 
 import { Box, Fab, Popper } from "@mui/material";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
@@ -43,52 +42,30 @@ type AdminDashboardProps = {
   }[]
   | null;
 };
+
+// interface CSVDrive {
+//   containerName: "Container Name";
+//   libraryOrganizationName: "Library: Organization Name";
+//   collectingOrganizationName: "Collecting Organization: Organization Name";
+//   countryName: "Country: Countries Name";
+//   driveCode: "Book Drive Code";
+//   driveName: "Book Drive Name";
+//   fullName: "Contact: Full Name";
+//   email: "Contact Email";
+//   mailingAddress: "Contact Mailing Address Line 2";
+//   boxesSent: "Boxes Sent";
+//   booksSent: "Books Sent";
+
+// }
 const fieldsToCheck = ["driveName", "driveCode", "organizer", "country", "email"];
 
-type BookDriveT = {
-  driveName: string;
-  driveCode: string;
-  organizer: string;
-  email: string;
-  startDate: Date;
-  country: string;
-  status: number;
-  booksGoal: number;
-  completedDate: Date;
-  mailDate: Date;
-  reactivationRequestId: number | null;
-  gs: {
-    fundraise: string;
-    terms: boolean;
-  };
-  cb: {
-    booksCurrent: number;
-    updateFreq: number;
-    lastUpdate: Date;
-  };
-  pts: {
-    intFee: number;
-    domFee: number;
-    materials: {
-      boxes: boolean;
-      extraCardboard: boolean;
-      tape: boolean;
-      mailingLabels: boolean;
-    };
-  };
-  fl: {
-    isFinalized: boolean;
-    shipments: any[];
-  };
-  [key: string]: string | number | boolean | null | Date | Record<string, any>;
-};
 
 type ErrorDriveMap = Map<number, string>;
 
 
-function hasBlankFields(obj: BookDriveT, fieldsToCheck: string[]): string {
+function hasBlankFields(obj: BookDrive, fieldsToCheck: string[]): string {
   for (const field of fieldsToCheck) {
-    let value = obj[field];
+    let value = obj[field as keyof BookDrive];
     if (value === "" || value === null) {
       return field; // At least one blank field found
     }
@@ -132,7 +109,9 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
   const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [bookDrives, setBookDrives] = useState<BookDriveT[]>([]); // Provide the correct initial type
+  const [uploadedDriveCodes, setUploadedDriveCodes] = useState<string[]>([]);
+  const [dupDrivesCodes, setDupeDriveCodes] = useState<string[]>([]);
+  const [bookDrives, setBookDrives] = useState<BookDrive[]>([]); // Provide the correct initial type
   const [errorDriveMap, setErrorDriveMap] = useState(new Map());
 
   const changeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -142,65 +121,74 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
       setUploaded(true);
     }
   };
+  useEffect(() => {
+    //do operation on state change
+    handleUploadCSV()
+    console.log(selectedFile)
+  }, [selectedFile])
 
+  useEffect(() => {
+    //do operation on state change
+    handleUploadCSV()
+    console.log(dupDrivesCodes)
+  }, [dupDrivesCodes])
+
+  useEffect(() => {
+    //do operation on state change
+    handleUploadCSV()
+    console.log(uploadedDriveCodes)
+  }, [uploadedDriveCodes])
+
+  const csvToJSON = (csv: string[][]) => {
+    const [headers, ...data] = csv
+    return data.map(row => {
+      const rowObject: Record<string, string> = {};
+      row.forEach((value, index) => {
+        rowObject[headers[index]] = value;
+      });
+      return rowObject
+    });
+  }
 
   // go inside csv file and extract (for now) first book drive
   const handleUploadCSV = () => {
     const reader = new FileReader();
-
     reader.onload = (event) => {
       if (event.target) {
         const csvData: string | ArrayBuffer | null = event.target.result;
-
-        // Use D3.js to parse the CSV data
         if (csvData !== null && typeof csvData === "string") {
-          const parsedData = d3.csvParse(csvData);
+          const data = csvToJSON(CSV.parse(csvData))
+          const newBookDrives = data.map((drive: Record<string, string>) => ({
+            driveName: drive['Book Drive Name'],
+            driveCode: drive['Book Drive Code'],
+            organizer: drive['Contact: Full Name'],
+            email: drive['Contact Email'],
+            startDate: new Date(),
+            country: drive["Country: Countries Name"],
+            status: 0,
+            booksGoal: (drive["Book Drive Name"].endsWith('h drive')) ? 500 : 1000,
+            completedDate: new Date(),
+            mailDate: new Date(),
+            reactivationRequestId: null,
+            gs: { fundraise: "fundraise", terms: true },
+            cb: { booksCurrent: 0, updateFreq: 0, lastUpdate: new Date() },
+            pts: {
+              intFee: 0,
+              domFee: 0,
+              materials: {
+                boxes: false,
+                extraCardboard: false,
+                tape: false,
+                mailingLabels: false,
+              },
+            },
+            fl: {
+              isFinalized: false,
+              shipments: [],
+            }
+          })
+          ) as unknown as BookDrive[];
 
-          // Now you can work with the parsed data
-          console.log(parsedData.length);
-
-          const newBookDrives = parsedData.map(
-            (
-              curBookDrive: DSVRowString<string>,
-              index: number,
-              array: DSVRowString<string>[]
-            ) => ({
-              driveName: `${curBookDrive["Book Drive Name"]}`,
-              driveCode: `${curBookDrive["Book Drive Code"]}`,
-              organizer: `${curBookDrive["Contact: Full Name"]}`,
-              email: `${curBookDrive["Contact Email"]}`,
-              startDate: new Date(),
-              country: `${curBookDrive["Country: Countries Name"]}`,
-              status: 0,
-              booksGoal: (curBookDrive["Book Drive Name"].endsWith('h drive')) ? 500 : 1000,
-              completedDate: new Date(),
-              mailDate: new Date(),
-              reactivationRequestId: null,
-              gs: {
-                fundraise: "fundraise",
-                terms: true,
-              },
-              cb: {
-                booksCurrent: 0,
-                updateFreq: 0,
-                lastUpdate: new Date(),
-              },
-              pts: {
-                intFee: 0,
-                domFee: 0,
-                materials: {
-                  boxes: false,
-                  extraCardboard: false,
-                  tape: false,
-                  mailingLabels: false,
-                },
-              },
-              fl: {
-                isFinalized: false,
-                shipments: [],
-              },
-            })
-          );
           setBookDrives(newBookDrives);
         }
       }
@@ -210,11 +198,14 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
       reader.readAsText(blob);
     }
     // reader.readAsText(selectedFile);
+
   };
 
   const uploadDrives = async () => {
     console.log("Uploading Drive to Mongo");
     setErrorDriveMap(new Map());
+    let dupDrives = []
+    let uploadedDrives = []
     for (let i = 0; i < bookDrives.length; i++) {
       // if any missing fields, don't upload drive and tell that there is an error
       const missingField = hasBlankFields(bookDrives[i], fieldsToCheck);
@@ -240,6 +231,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
         );
 
         if (response.ok) {
+          uploadedDrives.push(bookDrives[i]["driveCode"])
           console.log(
             `Uploaded book drive with code: ${bookDrives[i]["driveCode"]}`
           );
@@ -256,6 +248,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
             body: JSON.stringify(account)
           }).then(res => res.json())
         } else {
+          dupDrives.push(bookDrives[i].driveCode)
           setErrorDriveMap(
             (map) =>
               new Map(
@@ -271,6 +264,8 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
         console.log(e);
       }
     }
+    setUploadedDriveCodes(uploadedDrives)
+    setDupeDriveCodes(dupDrives)
 
   };
 
@@ -413,7 +408,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
       <PageContainer
         fName={account.fname}
         currPage="admin-dashboard"
-        admin= {account.admin}
+        admin={account.admin}
       ></PageContainer>
       <Grid sx={{ width: "100%", height: "100%", padding: 5 }}>
         <Grid sx={{ marginBottom: 3, width: "100%", marginLeft: 20 }}>
@@ -575,13 +570,6 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
               />
             </div>
             <button
-              onClick={handleUploadCSV}
-              disabled={!uploaded}
-              className="btn btn-primary"
-            >
-              {uploaded ? "Parse Different Drives" : "Parse Drives"}
-            </button>
-            <button
               onClick={uploadDrives}
               disabled={!uploaded}
               className="btn btn-primary"
@@ -606,7 +594,7 @@ export const getServerSideProps = async (context: any) => {
       authOptions
     );
     // console.log("session obj", session)
-    if (!session || session.user?.name != "true" ) {
+    if (!session || session.user?.name != "true") {
       return {
         redirect: {
           destination: "../auth/login",
@@ -643,7 +631,7 @@ export const getServerSideProps = async (context: any) => {
       shipments: Shipment[];
       volunteer: VolunteerAccount | EmptyVolunteerAccount;
       reactivationReq: ReactivationRequest | null;
-    }>[] = allBookDrives.map(async(bookdrive) => {
+    }>[] = allBookDrives.map(async (bookdrive) => {
       const drive = bookdrive as BookDrive;
       const shipmentPromises = drive.fl.shipments.map(
         async (shipmentId) => await ShipmentModel.findById(shipmentId)
@@ -655,14 +643,14 @@ export const getServerSideProps = async (context: any) => {
       })) as VolunteerAccount; //TODO: change this to be "contact email"
       let volunteer = null
       if (!findvolunteer) { // if the drive organizer hasn't made an account yet.
-         volunteer = {
+        volunteer = {
           fname: drive.organizer.split(" ")[0],
           lname: drive.organizer.split(" ")[1],
           email: drive.email,
         } as EmptyVolunteerAccount
       }
       else {
-         volunteer = findvolunteer as VolunteerAccount
+        volunteer = findvolunteer as VolunteerAccount
       }
       if (!drive.reactivationRequestId)
         return {
