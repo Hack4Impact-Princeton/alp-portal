@@ -29,6 +29,8 @@ import * as CSV from 'csv-string';
 
 import { Box, Fab, Popper } from "@mui/material";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import DriveCodeGrid from "../components/admindir/DriveCodeGrid";
+import ErrorCodeGrid from "../components/admindir/ErrorCodeGrid";
 
 type AdminDashboardProps = {
   account: VolunteerAccount;
@@ -58,6 +60,7 @@ type AdminDashboardProps = {
 
 // }
 const fieldsToCheck = ["driveName", "driveCode", "organizer", "country", "email"];
+const csvHeadingFields = ["Container Name",	"Library: Organization Name",	"Collecting Organization: Organization Name",	"Country: Countries Name",	"Book Drive Code",	"Book Drive Name",	"Contact: Full Name" , "Contact Email",	"Contact Mailing Address Line 2",	"Boxes Sent",	"Books Sent"]
 
 
 type ErrorDriveMap = Map<number, string>;
@@ -108,7 +111,9 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
   const [, setState] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState(false);
+  const[uploadDone, setUploadDone] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadButtonText, setUploadButtonText] = useState("Upload Bookdrives")
   const [uploadedDriveCodes, setUploadedDriveCodes] = useState<string[]>([]);
   const [dupDrivesCodes, setDupeDriveCodes] = useState<string[]>([]);
   const [bookDrives, setBookDrives] = useState<BookDrive[]>([]); // Provide the correct initial type
@@ -116,10 +121,20 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
 
   const changeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = event.target.files;
-    if (selectedFiles && selectedFiles.length > 0) {
-      setSelectedFile(selectedFiles[0]);
-      setUploaded(true);
+    if (selectedFiles && selectedFiles.length > 0 ) {
+      if (selectedFiles[0].name.split('.').pop()=='csv'){
+        setSelectedFile(selectedFiles[0]);
+        setUploaded(true);
+        setUploadDone(false)
+        setUploadButtonText("Upload Bookdrives")
+      }
+      else {
+        alert("Please upload a CSV file type")
+        setSelectedFile(null)
+        return
+      }
     }
+    
   };
   useEffect(() => {
     //do operation on state change
@@ -158,6 +173,26 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
         const csvData: string | ArrayBuffer | null = event.target.result;
         if (csvData !== null && typeof csvData === "string") {
           const data = csvToJSON(CSV.parse(csvData))
+          console.log(data)
+
+          if (data[0]) { // to do, finish this 
+            let alertmsg = ''
+            for( const field of csvHeadingFields ){
+                if (!(field in data[0])){
+                  alertmsg += field + ", "
+      
+                }
+            }
+            if (alertmsg){
+              alertmsg = "CSV is missing " + alertmsg + "please upload valid CSV"
+              alert(alertmsg)
+              setSelectedFile(null)
+              setUploaded(false);
+              return
+            }
+
+          }
+
           const newBookDrives = data.map((drive: Record<string, string>) => ({
             driveName: drive['Book Drive Name'],
             driveCode: drive['Book Drive Code'],
@@ -171,7 +206,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
             mailDate: new Date(),
             reactivationRequestId: null,
             gs: { fundraise: "fundraise", terms: true },
-            cb: { booksCurrent: 0, updateFreq: 0, lastUpdate: new Date() },
+            cb: { booksCurrent: drive["Books Sent"], updateFreq: 0, lastUpdate: new Date() },
             pts: {
               intFee: 0,
               domFee: 0,
@@ -193,16 +228,20 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
         }
       }
     };
-    if (selectedFile) {
+    if (selectedFile && selectedFile.name.split('.').pop()=='csv') {
+      console.log(selectedFile.name.split('.').pop())
       const blob = new Blob([selectedFile], { type: "text/csv" });
       reader.readAsText(blob);
     }
-    // reader.readAsText(selectedFile);
+    else {
+      console.log('not a csv')
+    }
 
   };
 
   const uploadDrives = async () => {
     console.log("Uploading Drive to Mongo");
+    setUploadButtonText("Uploading...")
     setErrorDriveMap(new Map());
     let dupDrives = []
     let uploadedDrives = []
@@ -214,8 +253,8 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
           (map) =>
             new Map(
               map.set(
-                i,
-                "The following information is missing: " + missingField
+                bookDrives[i]["driveCode"],
+                 missingField
               )
             )
         );
@@ -249,16 +288,16 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
           }).then(res => res.json())
         } else {
           dupDrives.push(bookDrives[i].driveCode)
-          setErrorDriveMap(
-            (map) =>
-              new Map(
-                map.set(
-                  i,
-                  "check if the drive you are trying to input already exists " +
-                  response.status
-                )
-              )
-          );
+          // setErrorDriveMap(
+          //   (map) =>
+          //     new Map(
+          //       map.set(
+          //         i,
+          //         "check if the drive you are trying to input already exists " +
+          //         response.status
+          //       )
+          //     )
+          // );
         }
       } catch (e) {
         console.log(e);
@@ -266,6 +305,8 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
     }
     setUploadedDriveCodes(uploadedDrives)
     setDupeDriveCodes(dupDrives)
+    setUploadDone(!uploadDone)
+    setUploadButtonText("Uploading Done")
 
   };
 
@@ -558,23 +599,85 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
               padding: "1rem",
               borderRadius: "5px",
               background: "#F5F5F5",
-              height: "20vh"
+              minHeight: "20vh",
+              width: "25vw"
             }}
           >
             <h3 className="page-header mb-4">Upload a CSV</h3>
-            <div className="mb-4">
+            <div className="mb-4" style={{marginTop:10, marginBottom:10, display:"flex", alignItems:"center"}}>
               <input
                 type="file"
                 className="form-control"
+                id="file-upload"
                 onChange={changeHandler}
+                style={ {display: 'none'}}
               />
+              <label htmlFor="file-upload"
+                
+               style={{
+                fontSize:"15px",
+                cursor:"pointer",
+                backgroundColor:  "#5F5F5F" ,
+                color:"white",
+                padding:5,
+                paddingLeft: 5,
+                paddingRight:5,
+                borderRadius:"2px",
+                marginRight:4
+
+               }}>
+                Choose File
+              </label>
+              {selectedFile && <p>{selectedFile.name}</p>}
+              {!selectedFile && <p>Please upload a valid .csv</p>}
             </div>
+            {uploadDone && (
+              <Grid>
+                {uploadedDriveCodes.length!=0 && ( 
+                  <Grid container display="flex" flexDirection={"column"} sx={{backgroundColor:"white",padding:1}}>
+                    <p style={{fontWeight:"bold"}}>UPLOAD SUCCESS: <span style={{fontWeight:"normal"}}>The following {uploadedDriveCodes.length} drives have been added to the database:</span></p>
+                    <DriveCodeGrid bookDriveCodes={uploadedDriveCodes}/>
+                  </Grid>)}
+                {uploadedDriveCodes.length==0 && (
+                  <Grid sx={{backgroundColor:"white",padding:1}}>
+                  <p style={{fontWeight:"bold",backgroundColor:"white",padding:1}}>UPLOAD DONE: <span style={{fontWeight:"normal"}}>There are no new drives in this file.</span></p>
+                  </Grid>
+                  )}
+                {dupDrivesCodes.length!=0 && (
+                  <Grid container display="flex" flexDirection={"column"} sx={{backgroundColor:"white",padding:1}}>
+                    <p style={{fontWeight:"bold"}}>DUPLICATE DRIVES: <span style={{fontWeight:"normal"}}>There were {dupDrivesCodes.length} duplicates found and will NOT be updated: </span></p>
+                    <DriveCodeGrid bookDriveCodes={dupDrivesCodes}/>
+                  </Grid>
+                  )}
+                {dupDrivesCodes.length==0 && (
+                  <Grid sx={{backgroundColor:"white",padding:1}}>
+                  <p >There were 0 duplicate drives found.</p>
+                  </Grid>
+                  )}
+                {errorDriveMap.size !=0 && (
+                  <Grid sx={{backgroundColor:"white",padding:1}}>
+                    <p style={{fontWeight:"bold",color:"red"}}>ERROR DRIVES: <span style={{fontWeight:"normal",color:"black"}}>The following {errorDriveMap.size} drives had errors and were NOT added: </span></p>
+                    <ErrorCodeGrid errorDrives={errorDriveMap}/>
+                  </Grid >
+                )}
+                {errorDriveMap.size==0 && 
+                (<Grid sx={{backgroundColor:"white",padding:1}}>
+                  <p> There were 0 drives with errors found.</p>
+                </Grid >)
+                }
+
+                
+
+             </Grid>
+            )
+
+            }
             <button
               onClick={uploadDrives}
-              disabled={!uploaded}
-              className="btn btn-primary"
+              disabled={!uploaded || uploadDone}
+              style={{border:"none",borderRadius:"2px",backgroundColor:uploaded && !uploadDone ? '#FE9834' : '#C9C9C9', width:"100%", height:"30px", cursor:uploaded && !uploadDone?"pointer" : "", marginTop:"10px"}}
             >
-              Upload Bookdrives
+              {uploadButtonText}
             </button>
           </div>
         </Grid>

@@ -2,11 +2,13 @@ form {
   width: 90%;
   margin: auto;
   max-width: 550px;
+
 }
 input,
 form button,
 label {
   display: block;
+
 }
 form button,
 input,
@@ -36,5 +38,6 @@ form button {
 
 .form-container {
   width: 90%;
+
 }
 
