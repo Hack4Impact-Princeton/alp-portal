@@ -635,8 +635,7 @@ const AdminDashboard: NextPage<AdminDashboardProps> = ({
               <Grid>
                 {uploadedDriveCodes.length!=0 && ( 
                   <Grid container display="flex" flexDirection={"column"} sx={{backgroundColor:"white",padding:1}}>
-                    <p style={{fontWeight:"bold"}}>UPLOAD SUCCESS:</p>
-                    <p style={{wordWrap:"normal"}}>The following {uploadedDriveCodes.length} drives have been added to the database:</p>
+                    <p style={{fontWeight:"bold"}}>UPLOAD SUCCESS: <span style={{fontWeight:"normal"}}>The following {uploadedDriveCodes.length} drives have been added to the database:</span></p>
                     <DriveCodeGrid bookDriveCodes={uploadedDriveCodes}/>
                   </Grid>)}
                 {uploadedDriveCodes.length==0 && (
