@@ -25,7 +25,7 @@ async function run() {
     const update = {
       $set: {
        // pfpLink: "https://res.cloudinary.com/alp-portal/image/upload/c_thumb,g_face,h_150,w_150/v3fcorkg5wlesneukfnl",
-        flagged: false
+        flaggedComments: []
     }
     }
     // Execute query

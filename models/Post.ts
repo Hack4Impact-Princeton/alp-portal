@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Date } from "mongoose";
 const { Schema } = mongoose;
 
 export interface Comments {
@@ -9,6 +9,11 @@ export interface Comments {
   downvotes: number;
   comment_id: string;
   username: string;
+  flagged: boolean;
+  flaggerEmail: string;
+  flaggedDate: string;
+  flagMessage: string;
+  
 }
 
 export interface Posts {
@@ -24,6 +29,7 @@ export interface Posts {
   comments: Comments[];
   is_public?: boolean;
   flagged: boolean;
+  flaggedComment: boolean;
   flagMessage: string;
   flaggerEmail: string;
 }
@@ -35,6 +41,11 @@ const CommentSchema = new Schema<Comments>({
   text: { type: String },
   upvotes: { type: Number },
   downvotes: { type: Number },
+  flagged: {type: Boolean},
+  flaggerEmail: { type: String },
+  flaggedDate: { type: String },
+  flagMessage: { type: String },
+  comment_id: { type: String },
 });
 
 const PostSchema = new Schema<Posts>(
@@ -49,6 +60,7 @@ const PostSchema = new Schema<Posts>(
     upvotes: { type: [String] },
     downvotes: { type: [String] },
     comments: { type: [CommentSchema] },
+    flaggedComment: { type: Boolean},
     is_public: { type: Boolean },
     flagged: {type: Boolean},
     flagMessage: {type: String},
@@ -70,7 +82,7 @@ const DeletedPostSchema = new Schema<Posts>(
     downvotes: { type: [String] },
     comments: { type: [CommentSchema] },
     is_public: { type: Boolean },
-    flagged: {type: Boolean},
+    flagged: {type: Boolean, default: false},
     flagMessage: {type: String},
     flaggerEmail: {type: String}
   },
@@ -87,5 +99,6 @@ function getDeletedPostModel() {
   return mongoose.model("DeletedPost", DeletedPostSchema);
 }
 
+
 export default getPostModel;
-export { getDeletedPostModel };
+export { getDeletedPostModel};

@@ -249,6 +249,7 @@ const Forum: NextPage<PostProps> = ({
                           refreshPosts={refreshData}
                           email={email}
                           username={username}
+                          active={active}
                         />
                       </div>
                     );
@@ -265,6 +266,7 @@ const Forum: NextPage<PostProps> = ({
                           refreshPosts={refreshData}
                           username={username}
                           email={email}
+                          active={active}
                         />
                       </div>
                     );
@@ -280,6 +282,7 @@ const Forum: NextPage<PostProps> = ({
                           refreshPosts={refreshData}
                           username={username}
                           email={email}
+                          active={active}
                         />
                       </div>
                     );
@@ -295,6 +298,7 @@ const Forum: NextPage<PostProps> = ({
                           refreshPosts={refreshData}
                           username={username}
                           email={email}
+                          active={active}
                         />
                       </div>
                     );
@@ -431,7 +435,7 @@ export const getServerSideProps = async (context: any) => {
     let flaggedPosts: Posts[]=[];
 
     pPosts.forEach((p) => {
-      if (p.flagged) {
+      if (p.flagged || p.flaggedComment) {
         flaggedPosts.push(p)
       }
       else {

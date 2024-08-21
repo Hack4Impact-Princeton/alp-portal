@@ -22,7 +22,8 @@ import getVolunteerAccountModel, {
 import RichEditor from "./RichEditor";
 
 import postComment, { deletePost, flagPost } from "../../db_functions/forum";
-import { updateSupporterBadge , updateLeader} from "../../db_functions/badges";
+import { updateSupporterBadge, updateLeader } from "../../db_functions/badges";
+import { red } from "@mui/material/colors";
 
 type PostProps = {
   post: Posts;
@@ -31,9 +32,10 @@ type PostProps = {
   // done on a per-post level, so people can del
   // their own posts on any page,
   // but currently this is what matches the design specs
-  refreshPosts: (post_id: string,flagged?:boolean) => void;
+  refreshPosts: (post_id: string, flagged?: boolean) => void;
   email: string;
   username: string;
+  active: string;
 };
 
 const genRandomDate = () => {
@@ -46,23 +48,24 @@ const genRandomDate = () => {
   return formattedRandomDate;
 };
 
-const GEN_DUMMY_COMMENTS = (n: number) => {
-  let comments: Comments[] = [];
-  for (let i = 0; i < n; i++) {
-    comments.push({
-      email: "email@string.domain",
-      date: genRandomDate(),
-      text: `
-      something very insightul.
-      `,
-      upvotes: 0,
-      downvotes: 0,
-      comment_id: nanoid(),
-      username: nanoid(4),
-    });
-  }
-  return comments;
-};
+// const GEN_DUMMY_COMMENTS = (n: number) => {
+//   let comments: Comments[] = [];
+//   for (let i = 0; i < n; i++) {
+//     comments.push({
+//       email: "email@string.domain",
+//       date: genRandomDate(),
+//       text: `
+//       something very insightul.
+//       `,
+//       upvotes: 0,
+//       downvotes: 0,
+//       comment_id: nanoid(),
+//       username: nanoid(4),
+
+//     });
+//   }
+//   return comments;
+// };
 
 const PostContainer: React.FC<PostProps> = ({
   post,
@@ -71,6 +74,7 @@ const PostContainer: React.FC<PostProps> = ({
   refreshPosts,
   username,
   email,
+  active,
 }) => {
   const [showComments, setShowComments] = useState(false);
   const [showAddComment, setShowAddComment] = useState(false);
@@ -83,41 +87,41 @@ const PostContainer: React.FC<PostProps> = ({
 
   const [showFlagModal, setShowFlagModal] = useState(false)
   const [showFlaggingModal, setShowFlaggingModal] = useState(false)
-  const [flagMessage,setFlagMessage] = useState("")
+  const [flagMessage, setFlagMessage] = useState("")
 
   const styles = {
     btn: {
       backgroundColor: "#FE9834",
       width: "45%",
-      fontFamily:"Epilogue",
-      fontWeight:'bold',
-      color:"white"
-  },
+      fontFamily: "Epilogue",
+      fontWeight: 'bold',
+      color: "white"
+    },
     modal: {
-        position: 'absolute' as 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '40%',
-        bgcolor: 'background.paper',
-        border: '2px solid #5F5F5F',
-        borderRadius:"5px",
-        boxShadow: 24,
-        p: 4,
-        display:"flex",
-        flexDirection:"column",
-        //minHeight:"30%",
-        maxHeight: "70%",
-        overflowY: "auto",
-       // alignItems:"center",
-        //justifyContent:"center",
+      position: 'absolute' as 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: '40%',
+      bgcolor: 'background.paper',
+      border: '2px solid #5F5F5F',
+      borderRadius: "5px",
+      boxShadow: 24,
+      p: 4,
+      display: "flex",
+      flexDirection: "column",
+      //minHeight:"30%",
+      maxHeight: "70%",
+      overflowY: "auto",
+      // alignItems:"center",
+      //justifyContent:"center",
     },
     flagTextField: {
       width: "100%",
       marginRight: "2rem",
       marginLeft: "0rem",
-      marginTop:"1rem",
-      marginBottom:"1rem",
+      marginTop: "1rem",
+      marginBottom: "1rem",
       padding: "1rem",
       height: "2.5rem",
       outline: "none !important",
@@ -127,7 +131,7 @@ const PostContainer: React.FC<PostProps> = ({
 
     }
 
-};
+  };
 
   const parent = useRef(null);
   const popover = useRef(null);
@@ -168,6 +172,10 @@ const PostContainer: React.FC<PostProps> = ({
       downvotes: 0,
       comment_id: nanoid(),
       username: username,
+      flagged: false,
+      flaggerEmail: "",
+      flaggedDate: "",
+      flagMessage: ""
     };
     console.log(post.post_id);
     postComment(newComment, post.post_id);
@@ -200,7 +208,7 @@ const PostContainer: React.FC<PostProps> = ({
     },
 
   ];
-  
+
 
 
   const handleShowCommentActions = () => {
@@ -273,8 +281,8 @@ const PostContainer: React.FC<PostProps> = ({
               alignItems: "center",
               height: "100%",
             }}
-          >{user && 
-            <img src={post.pfpLink} alt="PFP" style={{borderRadius:'50%',height:"80%"}} /> 
+          >{user &&
+            <img src={post.pfpLink} alt="PFP" style={{ borderRadius: '50%', height: "80%" }} />
             /*TODO: Fix so that this shows the poster's pfp */}
           </Grid2>
           <Grid2
@@ -291,83 +299,83 @@ const PostContainer: React.FC<PostProps> = ({
             <p style={{ fontStyle: "italic" }}>{post.date}</p>
           </Grid2>
 
-        {!post.flagged &&  <> 
-          <Grid2
-            container
-            xs={1}
-            onClick={handleShowCommentActions}
-            ref={popover}
-          >
-            <MoreVertIcon sx={{ position: "absolute", top: 0, right: 0 , cursor:"pointer"}} />
-            <Popover
-              id={id}
-              open={open}
-              anchorEl={anchorEl}
-              onClose={handleCloseCommentActions}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              style={{ marginTop: "30px" }}
+          {!post.flagged && <>
+            <Grid2
+              container
+              xs={1}
+              onClick={handleShowCommentActions}
+              ref={popover}
             >
-              <div
-                style={{
-                  //marginTop: "20px",
-                  display: "flex",
-                  flexDirection: "column",
-                  //padding: "10px"
-                  width: "150px",
+              <MoreVertIcon sx={{ position: "absolute", top: 0, right: 0, cursor: "pointer" }} />
+              <Popover
+                id={id}
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handleCloseCommentActions}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
                 }}
+                style={{ marginTop: "30px" }}
               >
-                {isOwner &&
-                  myPostActions.map((button, index) => (
+                <div
+                  style={{
+                    //marginTop: "20px",
+                    display: "flex",
+                    flexDirection: "column",
+                    //padding: "10px"
+                    width: "150px",
+                  }}
+                >
+                  {isOwner &&
+                    myPostActions.map((button, index) => (
+                      <button
+                        key={index}
+                        onClick={button.action}
+                        className="popover-button"
+                      >
+                        {button.label}
+                      </button>
+                    ))}
+                  {isOwner && (
+                    <svg height="1">
+                      <line
+                        x1="0"
+                        y1="0"
+                        x2="100%"
+                        y2="0"
+                        stroke="gray"
+                        strokeWidth="1"
+                      />
+                    </svg>
+                  )}
+                  {globalPostActions.map((button, index) => (
                     <button
                       key={index}
                       onClick={button.action}
-                      className="popover-button"
+                      className={"popover-button"}
                     >
                       {button.label}
                     </button>
                   ))}
-                {isOwner && (
-                  <svg height="1">
-                    <line
-                      x1="0"
-                      y1="0"
-                      x2="100%"
-                      y2="0"
-                      stroke="gray"
-                      strokeWidth="1"
-                    />
-                  </svg>
-                )}
-                {globalPostActions.map((button, index) => (
-                  <button
-                    key={index}
-                    onClick={button.action}
-                    className={"popover-button"}
-                  >
-                    {button.label}
-                  </button>
-                ))}
 
-              </div>
-            </Popover>
-            
-          </Grid2>
-          <Modal open={showFlaggingModal} >
+                </div>
+              </Popover>
+
+            </Grid2>
+            <Modal open={showFlaggingModal} >
               <Grid2 sx={styles.modal}>
-              <Grid2 display="flex" alignItems={"center"} justifyContent={"space-between"}>
+                <Grid2 display="flex" alignItems={"center"} justifyContent={"space-between"}>
                   <h2>Flag Post</h2>
-                <IconButton
-                  sx={{ position: "absolute", top: 2, right: 4 }}
-                  onClick={()=>setShowFlaggingModal(false)}
-                >
-                  <CloseIcon />
-                </IconButton>
-              </Grid2>
-                
-      
+                  <IconButton
+                    sx={{ position: "absolute", top: 2, right: 4 }}
+                    onClick={() => setShowFlaggingModal(false)}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </Grid2>
+
+
                 <input
                   type="text"
                   placeholder="Why would you like to flag this post?"
@@ -381,53 +389,53 @@ const PostContainer: React.FC<PostProps> = ({
                   }
                 />
                 <Grid2 display="flex" justifyContent={"space-between"}>
-                  <Button sx = {styles.btn} onClick={()=>{flagPost(true, flagMessage, email, post.post_id); setShowFlaggingModal(false), setFlagMessage(""),refreshPosts(post.post_id,true)}}>Confirm Flag Post</Button>
+                  <Button sx={styles.btn} onClick={() => { flagPost(true, flagMessage, email, post.post_id); setShowFlaggingModal(false), setFlagMessage(""), refreshPosts(post.post_id, true) }}>Confirm Flag Post</Button>
                 </Grid2>
               </Grid2>
 
             </Modal>
-           </>}
-          {post.flagged && (
+          </>}
+          {(post.flagged || post.flaggedComment)&& (
             <>
-            <Grid2
-            container
-            xs={1}
-            ref={popover}
-          >
-                <IconButton sx={{ position: "absolute", top: 0, right: 0 , cursor:"pointer"}} onClick={()=>setShowFlagModal(true)}>
-                <FlagIcon  />
-              </IconButton>
-            </Grid2>
-            <Modal
-            open={showFlagModal} >
-              <Grid2 sx={styles.modal}>
-                <Grid2 display="flex" alignItems={"center"} justifyContent={"space-between"}>
-                  <h2>Flagged Post</h2>
-                  <IconButton
-                  sx={{ position: "absolute", top: 2, right: 4 }}
-                  onClick={()=>setShowFlagModal(false)}
-                >
-                  <CloseIcon />
+              <Grid2
+                container
+                xs={1}
+                ref={popover}
+              >
+                <IconButton sx={{ position: "absolute", top: 0, right: 0, cursor: "pointer" }} onClick={() => setShowFlagModal(true)}>
+                  <FlagIcon />
                 </IconButton>
-                </Grid2>
-                <Grid2 sx={{backgroundColor:"#F5F5F5", borderRadius:"5px",padding:1,margin:1, marginBottom:2}}>
-                  <p style={{fontWeight:'bold'}}>Flagged by: <span style={{fontWeight:'normal'}}>{post.flaggerEmail}</span></p>
-                  <br></br>
-                  <p style={{fontWeight:'bold'}}>Flag Reason: <span style={{fontWeight:'normal'}}>{post.flagMessage}</span></p>
-
-                </Grid2>
-                
-                <Grid2 display="flex" justifyContent={"space-between"}>
-                  <Button sx = {styles.btn} onClick={()=>{flagPost(false, "","", post.post_id); setShowFlagModal(false)}}>Unflag Post</Button>
-                  <Button sx = {styles.btn} onClick={()=>{deletePost(post.post_id); setShowFlagModal(false)}}>Delete Post</Button>
-                </Grid2>
-                
-
               </Grid2>
-            </Modal>
-        </>
+              <Modal
+                open={showFlagModal} >
+                <Grid2 sx={styles.modal}>
+                  <Grid2 display="flex" alignItems={"center"} justifyContent={"space-between"}>
+                    <h2>Flagged Post</h2>
+                    <IconButton
+                      sx={{ position: "absolute", top: 2, right: 4 }}
+                      onClick={() => setShowFlagModal(false)}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  </Grid2>
+                  <Grid2 sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px", padding: 1, margin: 1, marginBottom: 2 }}>
+                    <p style={{ fontWeight: 'bold' }}>Flagged by: <span style={{ fontWeight: 'normal' }}>{post.flaggerEmail}</span></p>
+                    <br></br>
+                    <p style={{ fontWeight: 'bold' }}>Flag Reason: <span style={{ fontWeight: 'normal' }}>{post.flagMessage}</span></p>
+
+                  </Grid2>
+
+                  <Grid2 display="flex" justifyContent={"space-between"}>
+                    <Button sx={styles.btn} onClick={() => { flagPost(false, "", "", post.post_id); setShowFlagModal(false) }}>Unflag Post</Button>
+                    <Button sx={styles.btn} onClick={() => { deletePost(post.post_id); setShowFlagModal(false) }}>Delete Post</Button>
+                  </Grid2>
+
+
+                </Grid2>
+              </Modal>
+            </>
           )}
-          
+
         </Grid2>
         <Grid2
           sx={{
@@ -441,7 +449,7 @@ const PostContainer: React.FC<PostProps> = ({
           <RichEditor
             readOnly={true}
             initialValue={post.text}
-            onChange={() => {}} // yeah these should be default args
+            onChange={() => { }} // yeah these should be default args
             post_id={post.post_id}
           />
 
@@ -451,14 +459,14 @@ const PostContainer: React.FC<PostProps> = ({
         container
         display="flex"
         sx={{ backgroundColor: "white", margin: 0.5 }}
-        //style={{ width: "100%" }}
+      //style={{ width: "100%" }}
       >
         <div style={{ width: "100%" }}>
-          <div ref={parent} style={{ width: "100%" , paddingLeft: "5px"}}>
+          <div ref={parent} style={{ width: "100%", paddingLeft: "5px" }}>
             <div>
               {/* <IconButton>
                 <FavoriteBorderIcon />
-              </IconButton> */} 
+              </IconButton> */}
               <IconButton>
                 <CommentIcon onClick={handleShowAddComment} />
               </IconButton>
@@ -557,10 +565,10 @@ const PostContainer: React.FC<PostProps> = ({
                 </div>
               </div>
             )}
-            {showComments &&
+            {(showComments || (post.flaggedComment && active == 'flagged'))&&
               post.comments.map((comment) => {
                 return (
-                  <div
+                  (active == "flagged" || !comment.flagged) && <div
                     key={comment.comment_id}
                     style={{
                       display: "flex",
@@ -577,12 +585,12 @@ const PostContainer: React.FC<PostProps> = ({
 
                     <div
                       style={{
-                        backgroundColor: "#F5F5F5",
+                        backgroundColor: (comment.flagged)? "pink" :"#F5F5F5",
                         borderRadius: "2px",
                         width: "100%",
                       }}
                     >
-                        
+
                       <Grid2
                         container
                         display="flex"
@@ -593,7 +601,7 @@ const PostContainer: React.FC<PostProps> = ({
                         paddingX="1rem"
                         paddingTop="1rem"
                       >
-                        <CommentPopover key = {comment.comment_id}/>
+                        <CommentPopover key={comment.comment_id} />
                         <Grid2
                           container
                           xs={9}

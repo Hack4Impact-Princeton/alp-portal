@@ -21,6 +21,40 @@ export const flagPost = async (status: boolean, message: string, flagger: string
     return { success: false, error: e };
   }
 };
+export const flagComment = async (status: boolean, message: string, flagger: string, post_id: string, comment_id : string) => {
+  try {
+    const res = await fetch(`/api/posts/${post_id}`, {
+      method: "GET",
+    });
+    if (!res) throw new Error("Internal server error");
+    const resJson = await res.json();
+    if (res.status !== 200) throw new Error(resJson.data);
+    let comments : Comments[] = resJson.data.comments
+    for (let i = 0; i < comments.length; i++)
+      if (comments[i].comment_id == comment_id) {
+        comments[i].flagged =true
+        comments[i].flaggedDate = ""
+        comments[i].flagMessage = message 
+        comments[i].flaggerEmail = flagger
+      }
+
+    
+    const resFlag = await fetch(`/api/posts/${post_id}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        flaggedComment: status,
+        comments: comments
+      }),
+    });
+    if (!resFlag) throw new Error("Internal server error");
+    const resFlagJson = await res.json();
+    if (res.status !== 200) throw new Error(resFlagJson.data);
+    console.log("successfully flagged", resFlagJson.data);
+  } catch (e: Error | any) {
+    console.error("Error flagging", e);
+    return { success: false, error: e };
+  }
+};
 
 export const postComment = async (newComment: Comments, post_id: string) => {
   try {
