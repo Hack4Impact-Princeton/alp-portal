@@ -14,11 +14,10 @@ const RecipientList: React.FC<RecipientListProps> = ({
   return (
     <Grid container sx={{ pt: 2 }}>
       {recipients &&
-        recipients.map((recipient) => {
+        recipients.map((recipient, index) => {
           return (
-            <Grid >
+            <Grid key={index}>
               <Box
-                key={recipient}
                 display="flex"
                 sx={{
                   justifyContent: "space-between",

@@ -10,7 +10,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const id = req.query.id
     await dbConnect()
     const Broadcast: mongoose.Model<Broadcast> = getBroadcastModel()
-    const AdminAccount: mongoose.Model<AdminAccount> = getAdminAccountModel()
+    // const AdminAccount: mongoose.Model<AdminAccount> = getAdminAccountModel()
     const VolunteerAccount: mongoose.Model<VolunteerAccount> = getVolunteerAccountModel()
     switch (req.method) {
         case 'POST':
@@ -19,7 +19,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 const broadcastInfo: Broadcast = JSON.parse(req.body)
                 const errorStrings: string[] = []
                 // update the sender's broadcast array
-                const updatedSender = await AdminAccount.findOneAndUpdate({ email: broadcastInfo.senderEmail }, { $push: { broadcasts: { $each: [broadcastInfo.id], $position: 0 } } }, { new: true })
+                const updatedSender = await VolunteerAccount.findOneAndUpdate({ email: broadcastInfo.senderEmail }, { $push: { broadcasts: { $each: [broadcastInfo.id], $position: 0 } } }, { new: true })
                 if (!updatedSender) throw new Error("Failure to add broadcast to admin")
                 broadcastInfo.receiverEmails.map(async email => {
                     const volunteerRecipient = await VolunteerAccount.findOneAndUpdate({ email: email }, {

@@ -67,6 +67,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
       setRecipients([]);
       setMessage("");
       setSubject("");
+
     } catch (e: Error | any) {
       console.error(e);
     }
@@ -175,6 +176,7 @@ const BroadcastForm: React.FC<BroadcastFormProps> = ({
               <Select sx={styles.select}
                 onChange={updateRecipients}
                 input={<OutlinedInput sx={{ fontFamily: "Epilogue" }} label="Volunteer" />}
+                displayEmpty
               >
                 {volunteers.map((volunteer) => (
                   <MenuItem sx={{ fontFamily: "Epilogue" }} key={volunteer.alp_id} value={volunteer.email}>{`${volunteer.fname

@@ -10,7 +10,7 @@ const BroadcastMessage: React.FC<BroadcastMessageProps> = ({ broadcast }) => {
         <Grid style={{ display: "flex", flexDirection: "column", padding: 15, margin: 10, borderRadius: "5px", whiteSpace: 'normal', width: "80%", backgroundColor: "#F5F5F5" }}>
             <h2 style={{ marginTop: 2, marginBottom: 2, color: "#5F5F5F" }}>{subject}</h2>
             <br />
-            <p style={{ marginBottom: 2, marginTop: 2, fontStyle: "italic" }}>{senderName}</p>
+            <p style={{ marginBottom: 2, marginTop: 2, fontStyle: "italic" }}>from: {senderName}</p>
             <p style={{ marginBottom: 2, marginTop: 2, fontStyle: "italic" }}>{`${sentTime.substring(0, 21)}`}</p>
             {receiverEmails &&
                 <>

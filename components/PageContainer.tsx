@@ -289,8 +289,9 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
                         cursor: 'pointer',
                         backgroundColor: '#f2f2f2',
                       }}
-                        onClick={() => handleBroadcastClick(index)}
+                        
                       >
+                        <Button onClick={() => handleBroadcastClick(index)}>X</Button>
                         <Typography variant="h6" sx={{ marginBottom: '8px', lineHeight: 1, fontWeight: 'bold', color: '#5F5F5F' }}>{broadcast.subject}</Typography>
                         <Typography variant="body2" sx={{ fontSize: '.9rem', fontWeight: "500", color: '#666', }}><i>{broadcast.senderName}</i></Typography>
                         <Typography variant="body2" sx={{ marginBottom: '4px', fontSize: '0.9rem', color: '#666' }}><i>{formatDate(broadcast.sentTime)}</i></Typography>
