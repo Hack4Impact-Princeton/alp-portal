@@ -178,6 +178,7 @@ const PostContainer: React.FC<PostProps> = ({
       flagMessage: ""
     };
     console.log(post.post_id);
+    console.log("date",new Date().toString())
     postComment(newComment, post.post_id);
     addComment(newComment);
     updateSupporterBadge(user.email);
@@ -221,16 +222,6 @@ const PostContainer: React.FC<PostProps> = ({
   const open = Boolean(anchorEl);
   const id = open ? "popover" : undefined;
 
-  const handleShowFlagComment = (id: string) => () => {
-    setAnchorEl2(anchorEl2 == null ? popover2.current : null);
-    setCurrentItemId(id);
-
-  };
-  const handleCloseFlagComment = () => {
-    setAnchorEl2(null);
-    setCurrentItemId(null);
-
-  };
   const open2 = Boolean(anchorEl2);
   const id2 = open2 ? 'popover2' : undefined;
 
@@ -239,15 +230,22 @@ const PostContainer: React.FC<PostProps> = ({
   }, [parent]);
 
   const formatDate = (d: string) => {
-    const NATURAL_FORMATTING_DISTANCE = 30 * 6; // 6 months
+    const NATURAL_FORMATTING_DISTANCE = 3*30 // 6 months
     const date = Date.parse(d);
 
     const diff = Math.floor(
       (new Date().getTime() - date) / (24 * 60 * 60 * 1000)
     );
 
-    if (diff <= NATURAL_FORMATTING_DISTANCE) {
-      return formatDistance(date, new Date(), { addSuffix: true });
+    if (diff <= 0) {
+      return "Today"
+    }
+    else if (diff <= 1) {
+      return "Yesterday"
+    }
+    else if (diff <= NATURAL_FORMATTING_DISTANCE) {
+      const today = Date.parse(new Date().toDateString())      
+      return formatDistance(date, today, { addSuffix: true });
     } else {
       return format(date, "MMMM do, yyyy");
     }
@@ -395,7 +393,7 @@ const PostContainer: React.FC<PostProps> = ({
 
             </Modal>
           </>}
-          {(post.flagged || post.flaggedComment)&& (
+          {(post.flagged )&& (
             <>
               <Grid2
                 container
@@ -435,6 +433,46 @@ const PostContainer: React.FC<PostProps> = ({
               </Modal>
             </>
           )}
+          {/* {(post.flaggedComment)&& (
+            <>
+              <Grid2
+                container
+                xs={1}
+                ref={popover}
+              >
+                <IconButton sx={{ position: "absolute", top: 0, right: 0, cursor: "pointer" }} onClick={() => setShowFlagModal(true)}>
+                  <FlagIcon />
+                </IconButton>
+              </Grid2>
+              <Modal
+                open={showFlagModal} >
+                <Grid2 sx={styles.modal}>
+                  <Grid2 display="flex" alignItems={"center"} justifyContent={"space-between"}>
+                    <h2>Flagged Post</h2>
+                    <IconButton
+                      sx={{ position: "absolute", top: 2, right: 4 }}
+                      onClick={() => setShowFlagModal(false)}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  </Grid2>
+                  <Grid2 sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px", padding: 1, margin: 1, marginBottom: 2 }}>
+                    <p style={{ fontWeight: 'bold' }}>Flagged by: <span style={{ fontWeight: 'normal' }}>{post.flaggerEmail}</span></p>
+                    <br></br>
+                    <p style={{ fontWeight: 'bold' }}>Flag Reason: <span style={{ fontWeight: 'normal' }}>{post.flagMessage}</span></p>
+
+                  </Grid2>
+
+                  <Grid2 display="flex" justifyContent={"space-between"}>
+                    <Button sx={styles.btn} onClick={() => { flagPost(false, "", "", post.post_id); setShowFlagModal(false) }}>Unflag Post</Button>
+                    <Button sx={styles.btn} onClick={() => { deletePost(post.post_id); setShowFlagModal(false) }}>Delete Post</Button>
+                  </Grid2>
+
+
+                </Grid2>
+              </Modal>
+            </>
+          )} */}
 
         </Grid2>
         <Grid2
@@ -601,7 +639,7 @@ const PostContainer: React.FC<PostProps> = ({
                         paddingX="1rem"
                         paddingTop="1rem"
                       >
-                        <CommentPopover key={comment.comment_id} />
+                        <CommentPopover comment={comment} post_id={post.post_id} email={email} flagged={comment.flagged}/>
                         <Grid2
                           container
                           xs={9}

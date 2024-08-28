@@ -117,6 +117,7 @@ const NewPost: React.FC<NewPostProps> = ({ pfpLink,username, email, addPost }) =
         comments: [],
         is_public: (switchLabel === "Public"),
         flagged: false,
+        flaggedComment: false,
         flagMessage:"",
         flaggerEmail:"",
  

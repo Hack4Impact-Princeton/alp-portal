@@ -32,7 +32,7 @@ export const flagComment = async (status: boolean, message: string, flagger: str
     let comments : Comments[] = resJson.data.comments
     for (let i = 0; i < comments.length; i++)
       if (comments[i].comment_id == comment_id) {
-        comments[i].flagged =true
+        comments[i].flagged =status
         comments[i].flaggedDate = ""
         comments[i].flagMessage = message 
         comments[i].flaggerEmail = flagger
