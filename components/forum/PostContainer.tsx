@@ -274,7 +274,7 @@ const PostContainer: React.FC<PostProps> = ({
               height: "100%",
             }}
           >{user && 
-            <img src={post.pfpLink} alt="PFP" style={{borderRadius:'50%',height:"80%"}} /> 
+            <img src={post.pfpLink} alt="PFP" style={{borderRadius:'50%',width:"75%"}} /> 
             /*TODO: Fix so that this shows the poster's pfp */}
           </Grid2>
           <Grid2

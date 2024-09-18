@@ -47,22 +47,16 @@ const RequestList: React.FC<RequestListProps> = ({
   const reqEmailSet = new Set(friendRequests);
   const states = getStates();
 
-  const friendInfo: FriendInfo[] = allVolunteers
+  const friendInfo: VolunteerAccount[] = allVolunteers
     .map((account) =>
       reqEmailSet.has(account.email)
-        ? {
-            pfp: account.pfpLink,
-            email: account.email,
-            fname: account.fname,
-            lname: account.lname[0],
-            // state: states.find((state) => state.index === account.location),
-          }
+        ? account
         : null
     )
-    .filter((item) => item !== null) as FriendInfo[];
+    .filter((item) => item !== null) as VolunteerAccount[];
 
   const [friendInfoList, setFriendInfoList] =
-    useState<FriendInfo[]>(friendInfo);
+    useState<VolunteerAccount[]>(friendInfo);
 
   const [selectedFriendRequest, setSelectedFriendRequest] =
     useState<string | null>(null);
@@ -95,14 +89,10 @@ const RequestList: React.FC<RequestListProps> = ({
                   <Overlay onClick={() => setSelectedFriendRequest(null)} />
                 )}
                 <RequestPreview
-                  fname={user.fname}
-                  lname={user.lname}
-                  state={user.state ? user.state.name : ""}
+                  reqAccount = {user}
                   myEmail={myEmail}
-                  reqEmail={user.email}
                   updateFunction={updateFriendReqs}
                   request={true}
-                  pfp={user.pfp}
                 />
               </div>
             ) : null
