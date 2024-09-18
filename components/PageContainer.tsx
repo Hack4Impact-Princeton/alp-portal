@@ -8,7 +8,7 @@ import { signOut } from "next-auth/react"
 import useDynamicPadding from '../lib/useDynamicPadding';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import React, { useState, useEffect } from 'react';
-import { Popover, Typography } from '@mui/material';
+import { Popover, Typography,IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Broadcast } from "../models/Broadcast";
 import FriendRequestCard from '../components/FriendRequestCard';
@@ -20,15 +20,6 @@ import { VolunteerAccount } from "../models/VolunteerAccount";
 import { getStates } from "../lib/enums";
 import CircularIcon from './CircularIcon';
 
-interface FriendInfo {
-  email: string;
-  fname: string;
-  lname: string;
-  state: string;
-  pfp: string;
-
-  // Add or modify properties as needed
-}
 
 type PageContainerProps = {
   fName: String;
@@ -62,25 +53,18 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
   // friend request stuff
   const reqEmailSet = new Set(friendRequests);
   const states = getStates();
-  let friendInfo: FriendInfo[] = []
+  let friendInfo: VolunteerAccount[] = []
   const myEmail = userEmail || "";
   const [friendInfoList, setFriendInfoList] =
-    useState<FriendInfo[]>([]);
+    useState<VolunteerAccount[]>([]);
   if (allVolunteers) {
     friendInfo = allVolunteers
       .map((account) =>
         reqEmailSet.has(account.email)
-          ? {
-            email: account.email,
-            fname: account.fname,
-            lname: account.lname[0],
-            state: account.state,
-            pfp: account.pfpLink,
-            // Add or modify properties as needed
-          }
+          ? account
           : null
       )
-      .filter((item) => item !== null) as FriendInfo[];
+      .filter((item) => item !== null) as VolunteerAccount[];
   }
 
   /*const updateFriendReqs = (friendReqEmail: string) => {
@@ -235,7 +219,7 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
                 }}
                 sx={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
               >
-                <Box p={2}>
+                <Box p={2} >
                   <Typography variant="h6" sx={{ color: '#fe9834' }}>Inbox</Typography>
                   {/* Add buttons to filter friend requests and broadcasts */}
                   <Button
@@ -291,9 +275,24 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
                       }}
                         
                       >
-                        <Button onClick={() => handleBroadcastClick(index)}>X</Button>
-                        <Typography variant="h6" sx={{ marginBottom: '8px', lineHeight: 1, fontWeight: 'bold', color: '#5F5F5F' }}>{broadcast.subject}</Typography>
-                        <Typography variant="body2" sx={{ fontSize: '.9rem', fontWeight: "500", color: '#666', }}><i>{broadcast.senderName}</i></Typography>
+                        
+                        <Grid display={"flex"} alignContent={"center"} justifyContent={"space-between"} >
+                          <Grid  alignContent={"center"}>
+                            <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: 'bold', color: '#5F5F5F' }}>{broadcast.subject}</Typography>
+                          </Grid>
+                          <Grid >
+                          <IconButton
+                            sx={{  color: "#5F5F5F", margin:"0"}}
+                            size={"small"}
+                            onClick={() => handleBroadcastClick(index)}
+                          >
+                            <CloseIcon sx={{fontSize:"20px"}}/>
+                          </IconButton>
+                          </Grid>
+                          
+                        </Grid>
+                        
+                        <Typography variant="body2" sx={{ marginTop:"5px",fontSize: '.9rem', fontWeight: "500", color: '#666', }}><i>{broadcast.senderName}</i></Typography>
                         <Typography variant="body2" sx={{ marginBottom: '4px', fontSize: '0.9rem', color: '#666' }}><i>{formatDate(broadcast.sentTime)}</i></Typography>
                         <Typography variant="body1" sx={{ fontSize: '0.9rem', color: '#666' }}>{broadcast.message}</Typography>
                       </Box>
@@ -304,8 +303,9 @@ const PageContainer: React.FC<PageContainerProps> = ({ fName, userEmail, currPag
                       <div key={index} style={{ marginBottom: '10px' }}>
                         <FriendRequestCard
                           key={index}
-                          profilePicture={request.pfp}
+                          profilePicture={request.pfpLink}
                           name={request.fname}
+                          affiliation={request.affiliation}
                           reqEmail={request.email}
                           state={request.state}
                           myEmail={myEmail}

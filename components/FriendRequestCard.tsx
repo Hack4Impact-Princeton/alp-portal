@@ -13,7 +13,9 @@ import approveFriendRequest, {
 type FriendRequestCardProps = {
   profilePicture: string; // URL of the profile picture
   name: string;
+  affiliation: string;
   reqEmail: string;
+
   //date: string; // Date of the friend request
   state: string; // State of the friend request (e.g., pending, approved, rejected)
   myEmail: string;
@@ -27,6 +29,7 @@ type FriendRequestCardProps = {
 const FriendRequestCard: React.FC<FriendRequestCardProps> = ({
   profilePicture,
   name,
+  affiliation,
   reqEmail,
   state,
   myEmail,
@@ -40,18 +43,19 @@ const FriendRequestCard: React.FC<FriendRequestCardProps> = ({
   return (
     <Card>
       <CardContent style={{ display: 'flex', alignItems: 'center' }}>
-        <Badge
+        {/* <Badge
           anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
           badgeContent={requeststate === 'pending' ? 'New' : ' '}
           color={requeststate === 'pending' ? 'primary' : 'default'}
         >
           <Avatar variant= "square" alt={name} src={profilePicture} sx={{ width: 80, height: 80 }} />
-        </Badge>
+        </Badge> */}
+        <Avatar variant= "square" alt={name} src={profilePicture} sx={{ width: 80, height: 80 }} />
         <div style={{ marginLeft: '10px', flex: 1 }}> {/* Add margin to separate profile picture and information */}
-          <Typography variant="h6">{name}</Typography>
-          <Typography variant="subtitle1">affiliation here</Typography>
-          <Typography variant="caption" color="textSecondary">
-            {"Date here"} | {state}
+          <Typography variant="h6" fontFamily={"Epilogue"}>{name}</Typography>
+          <Typography variant="subtitle1" fontFamily={"Epilogue"}>{state}</Typography>
+          <Typography variant="caption" fontFamily={"Epilogue"} color="textSecondary">
+          {affiliation ? affiliation : "Unaffiliated"}
           </Typography>
         </div>
       </CardContent>
@@ -60,12 +64,16 @@ const FriendRequestCard: React.FC<FriendRequestCardProps> = ({
           <>
             <Button size="small"
               fullWidth
-              style={{
+              sx={{
                 borderRadius: 0,
                 backgroundColor: '#F3D39A',
                 color: '#5F5F5F',
                 margin: '0px 4px', // Updated margin
                 fontWeight: 'bold', // Bold when active
+                '&:hover': {
+                  backgroundColor: '#D3A874', 
+                },
+                fontFamily:"Epilogue"
               }}
               onClick={() => {
                 onApprove(reqEmail);
@@ -76,12 +84,16 @@ const FriendRequestCard: React.FC<FriendRequestCardProps> = ({
             </Button>
             <Button size="small"              
               fullWidth
-              style={{
+              sx={{
                 borderRadius: 0,
                 backgroundColor: '#F3D39A',
                 color: '#5F5F5F',
                 margin: '0 2px', // Updated margin
                 fontWeight: 'bold', // Bold when active
+                '&:hover': {
+                  backgroundColor: '#D3A874', 
+                },
+                fontFamily:"Epilogue"
               }}onClick={() => {
                 onReject(reqEmail);
                 removeFriendRequest(myEmail, reqEmail);

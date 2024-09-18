@@ -15,36 +15,28 @@ import { VolunteerAccount } from "../../models/VolunteerAccount";
 import Link from 'next/link';
 
 type ReqProps = {
-  fname: string;
-  lname: string;
-  state: string;
+  reqAccount: VolunteerAccount;
   myEmail: string;
-  reqEmail: string;
   updateFunction: (friendReqEmail: string) => void;
   request: boolean;
-  pfp: string;
   myAccount?: VolunteerAccount;
-  friendAccount?: VolunteerAccount;
+  friendAccount?: VolunteerAccount
+  
 };
 
 const RequestPreview: React.FC<ReqProps> = ({
-  fname,
-  lname,
-  state,
+  reqAccount,
   myEmail,
-  reqEmail,
   updateFunction,
   request,
-  pfp,
   myAccount,
   friendAccount
+  
 }) => {
   const [showFriendRequestCard, setShowFriendRequestCard] = useState(false);
-
   const closeFriendRequestCard = () => {
     setShowFriendRequestCard(false);
   };
-  if (friendAccount) {console.log(friendAccount._id)}
   return (
     <div style={{ borderColor: "black", borderWidth: 4, borderRadius: 1 }}>
       <Grid
@@ -72,7 +64,8 @@ const RequestPreview: React.FC<ReqProps> = ({
             onClick={closeFriendRequestCard}
           />
         )}
-
+        
+        <>
         <Grid
           xs={2.5}
           display="flex"
@@ -83,7 +76,7 @@ const RequestPreview: React.FC<ReqProps> = ({
             style={{ cursor: "pointer" , display:"flex", alignItems:"center"}}
             onClick={() => {setShowFriendRequestCard(!showFriendRequestCard)}}
           >
-            <img src={pfp} alt="PFP" style={{borderRadius:'50%',height:"80%"}} />
+            <img src={reqAccount.pfpLink} alt="PFP" style={{borderRadius:'50%',width:"85%"}} />
           </span>
         </Grid>
         <Grid
@@ -93,21 +86,21 @@ const RequestPreview: React.FC<ReqProps> = ({
           sx={{ height: "100%", justifyContent: "center",textOverflow:'wrap',pr:2 }}
         >
           <h3 style={{wordWrap: 'break-word'}}>
-            {fname} {lname}.
+            {reqAccount.fname} {reqAccount.lname ? reqAccount.lname[0] : ""}.
           </h3>
-          <p>{state}</p>
-        </Grid>
+          <p>{reqAccount.state}</p>
+        </Grid></>  
         {!request && myAccount && friendAccount && (
           <Grid xs={4} container alignContent={"center"}>
             <Grid xs={7} display={"flex"} justifyContent={"center"} >
               <IconButton
-                sx={{ backgroundColor: "#5F5F5F", color: "#FFFFFF",borderRadius:"30px",pl:2,pr:2}}
+                sx={{ backgroundColor: "#5F5F5F", color: "#FFFFFF",borderRadius:"30px",pl:2,pr:2, width:"80%"}}
                 size={"small"}
                 onClick={() => {
                 }}
               >
                 <Link href={`/friendprofile?data=${encodeURIComponent(JSON.stringify(friendAccount._id))}`}>
-                    <p >view</p>
+                    <p style={{fontSize:"1vw"}} >view</p>
                 </Link>
                 {/*<VisibilityIcon />*/}
               </IconButton>
@@ -117,8 +110,8 @@ const RequestPreview: React.FC<ReqProps> = ({
                 sx={{ backgroundColor: "#5F5F5F", color: "#FFFFFF" }}
                 size={"small"}
                 onClick={() => {
-                  createChat(reqEmail,myAccount);
-                  console.log(reqEmail,myAccount.email)
+                  createChat(friendAccount.email,myAccount);
+                  console.log(friendAccount.email,myAccount.email)
                 }}
               >
                 <MessageIcon />
@@ -149,10 +142,11 @@ const RequestPreview: React.FC<ReqProps> = ({
                 }}
               >
                 <FriendRequestCard
-                  profilePicture={pfp}
-                  name={`${fname} ${lname}`}
-                  reqEmail={reqEmail}
-                  state={state}
+                  profilePicture={reqAccount.pfpLink}
+                  name={`${reqAccount.fname} ${reqAccount.lname ?reqAccount.lname[0]+"." : ""}`}
+                  affiliation={reqAccount.affiliation}
+                  reqEmail={reqAccount.email}
+                  state={reqAccount.state}
                   myEmail={myEmail}
                   onApprove={(email) => {
                     approveFriendRequest(myEmail, email);
@@ -176,8 +170,8 @@ const RequestPreview: React.FC<ReqProps> = ({
                 sx={{ backgroundColor: "#5F5F5F", color: "#FFFFFF" }}
                 size={"small"}
                 onClick={() => {
-                  approveFriendRequest(myEmail, reqEmail);
-                  updateFunction(reqEmail);
+                  approveFriendRequest(myEmail, reqAccount.email);
+                  updateFunction(reqAccount.email);
                 }}
               >
                 <DoneIcon />
@@ -188,8 +182,8 @@ const RequestPreview: React.FC<ReqProps> = ({
                 sx={{ backgroundColor: "#5F5F5F", color: "#FFFFFF" }}
                 size={"small"}
                 onClick={() => {
-                  removeFriendRequest(myEmail, reqEmail);
-                  updateFunction(reqEmail);
+                  removeFriendRequest(myEmail, reqAccount.email);
+                  updateFunction(reqAccount.email);
                 }}
               >
                 <CloseIcon />
