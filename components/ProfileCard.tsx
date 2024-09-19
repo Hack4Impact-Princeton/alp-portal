@@ -6,6 +6,7 @@ import {
   removeFriendRequest,
   removeFriend,
 } from "../db_functions/friending";
+import { Button } from "@mui/material";
 //import {sendFriendRequest, approveFriendRequest, removeFriendRequest, removeFriend} from "../db_functions/friending"
 
 type ProfileCardProps = {
@@ -15,6 +16,7 @@ type ProfileCardProps = {
   email: string;
   profilePicture: string;
   affiliation: string;
+  isAdmin:boolean;
   // badges: BadgeType;
   useBadges?: boolean;
   style?: React.CSSProperties;
@@ -30,6 +32,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   email,
   profilePicture,
   affiliation,
+  isAdmin,
   /*badges,*/ useBadges = true,
   style,
   userEmail,
@@ -149,24 +152,26 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   };
 
   const buttonStyle: React.CSSProperties = {
-    padding: "8px 110px",
+    padding: "5px 110px",
     borderRadius: "4px",
-   // border: "none",
-    borderColor: "#5F5F5F",
     backgroundColor: getButtonColor(),
     color: "white",
     cursor: "pointer",
     margin: "4px 0",
+    width:"95%",
+    fontFamily:"Epilogue"
+    
   };
 
   const revokeButtonStyle: React.CSSProperties = {
-    padding: "8px 80px", // check this
-    borderRadius: "4px",
-     backgroundColor: getButtonColor(),
+    padding: "5px 60px", // check this
+    backgroundColor: getButtonColor(),
     color: "white",
     border:"none",
     cursor: "pointer",
     margin: "4px 0",
+    width:"95%",
+    fontFamily:"Epilogue",
   };
 
   const handleSendFriendRequest = (userEmail: string, email: string) => {
@@ -199,26 +204,27 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         <img src={profilePicture} alt="Profile" style={imageStyle} />
         <div style={userInfoStyle}>
           <p style={{...userInfoItemStyle, fontWeight:"bold"}}>{name}</p>
+          <p style={{...userInfoItemStyle, fontStyle:"italic"}}>{isAdmin ? "Admin":"Volunteer"}</p>
           <p style={userInfoItemStyle}>{state}</p>
-          <p style={{...userInfoItemStyle, fontStyle:"italic"}}>{affiliation}</p>
+          <p style={userInfoItemStyle}>{affiliation}</p>
         </div>
       </div>
 
       <div style={buttonsContainerStyle}>
         {friendStatus === "none" && (
           <div>
-            <button
+            <Button
               onClick={() => {
                 handleSendFriendRequest(userEmail, email);
               }}
-              style={buttonStyle}
+              sx={buttonStyle}
             >
               Request
-            </button>
+            </Button>
           </div>
         )}
         {friendStatus === "sent" && (
-          <button
+          <Button
             style={revokeButtonStyle}
             onClick={() => {
               handleRevokeFriendRequest(userEmail, email);
@@ -226,18 +232,18 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             }}
           >
             Cancel Request
-          </button>
+          </Button>
         )}
         {(/*friendStatus === "received" ||*/ friendStatus === "friends") &&
           showRevokeButton && (
-            <button style={revokeButtonStyle} onClick={()=> handleRemoveFriends(userEmail, email)}>
+            <Button style={revokeButtonStyle} onClick={()=> handleRemoveFriends(userEmail, email)}>
               Remove Friend
-            </button>
+            </Button>
           )}
         {friendStatus === "received" && (
-          <button style={buttonStyle} onClick={() => handleAcceptFriendRequest(userEmail, email)}>
+          <Button style={buttonStyle} onClick={() => handleAcceptFriendRequest(userEmail, email)}>
             Accept
-          </button>
+          </Button>
         )}
       </div>
     </div>

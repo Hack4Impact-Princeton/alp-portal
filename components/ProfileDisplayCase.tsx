@@ -17,6 +17,7 @@ type ProfileInfoProps = {
   badges: BadgeType;
   affiliation: string;
   useBadges?: boolean;
+  isAdmin: boolean;
 };
 
 const ProfileDisplayCase: React.FC<{account: VolunteerAccount; userEmail: string; profiles: ProfileInfoProps[]; useBadges?: boolean; receivedFriendRequestList: string[]; sentFriendRequestList: string[]}> = ({ account, userEmail, profiles, useBadges = true, receivedFriendRequestList, sentFriendRequestList}) => {
@@ -61,6 +62,7 @@ const ProfileDisplayCase: React.FC<{account: VolunteerAccount; userEmail: string
               email={profile.email}
               affiliation={profile.affiliation}
               profilePicture={profile.profilePicture}
+              isAdmin={profile.isAdmin}
               //badges={profile.badges}
               useBadges={useBadges}
               userEmail={userEmail}

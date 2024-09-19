@@ -52,7 +52,7 @@ const FriendProfile: NextPage<FriendProfileProps> = ({ admin, friendAccount, fri
                     <img src={friendAccount.pfpLink} style={{borderRadius: "50%", height:"100px",marginRight:"20px"}}/>
                     <Grid display={"flex"} flexDirection={"column"}>
                         <h1 style={{fontSize:"50px", marginBottom:"5px"}}>{friendAccount.fname} {friendAccount.lname}</h1> {/*TODO: UPDATE FIELDS*/}
-                        <p style={{fontSize:"20px"}}>AZ | {friendAccount.allDrives} book drives completed</p>
+                        <p style={{fontSize:"20px"}}>{friendAccount.admin ? "Admin" : "Volunteer"} | {friendAccount.state} | {friendAccount.allDrives} book drives completed</p>
                     </Grid>
                 </Grid>
                 <Grid className="first body container" display={"flex"} flexDirection="row"padding={0} marginTop={3} height="60vh">

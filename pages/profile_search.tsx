@@ -82,6 +82,7 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
     profilePicture: `${account.pfpLink}`,
     badges: account.badges,
     affiliation: `${account.affiliation}`,
+    isAdmin: account.admin
   }));
   
   const handleQueryChange = (query: string, filteredUsers: VolunteerAccount[]) => {
@@ -111,6 +112,7 @@ const profile_search: NextPage<ProfileProps> = ({ broadcasts, account, drives, e
       profilePicture: string;
       badges: BadgeType;
       affiliation: string;
+      isAdmin: boolean;
     }>
   >([]);
   const users: VolunteerAccount[] = [ /* Add your user data here */];
