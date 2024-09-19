@@ -22,7 +22,7 @@ async function run() {
 
     // Get the database and collection on which to run the operation
     const database = client.db("alp_portal");
-    const accounts = database.collection("posts");
+    const accounts = database.collection("bookDrive");
 
     // Query for a movie that has the title 'The Room'
     // const query = { title: "The Room" };
@@ -36,8 +36,9 @@ async function run() {
 
     const update = {
       $set: {
-       // pfpLink: "https://res.cloudinary.com/alp-portal/image/upload/c_thumb,g_face,h_150,w_150/v3fcorkg5wlesneukfnl",
-        //flagged: false
+        fl: {
+            shipment: []
+          },
        
     }
     }
@@ -51,3 +52,8 @@ async function run() {
   }
 }
 run().catch(console.dir);
+
+
+
+
+

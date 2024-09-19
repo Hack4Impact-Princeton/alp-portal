@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
+import  { Shipment, ShipmentSchema } from "./Shipment";
 
 export type BookDrive = {
   driveName: string;
@@ -27,7 +28,7 @@ export type BookDrive = {
   };
   fl: {
     isFinalized: boolean;
-    shipments: number[];
+    shipments: Shipment[];
   };
 };
 
@@ -65,7 +66,7 @@ export const BookDriveSchema = new Schema<BookDrive>(
     },
     fl: {
       isFinalized: { type: Boolean },
-      shipments: { type: [String] },
+      shipments: { type: ShipmentSchema},
     },
   },
   { collection: "bookDrive" }

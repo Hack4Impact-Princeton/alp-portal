@@ -526,10 +526,10 @@ const AdminSidebar: React.FC<{
             Update History
           </Typography>
           {!showUpdateHistory && (
-            <UpCaret onClick={toggleShowUpdateHistory} key="no" />
+            <UpCaret onClick={toggleShowUpdateHistory} key="1" />
           )}
           {showUpdateHistory && (
-            <DownCaret onClick={toggleShowUpdateHistory} key="hi" />
+            <DownCaret onClick={toggleShowUpdateHistory} key="2" />
           )}
         </Grid>
         <div ref={showUpdateHistoryRef} style={showUpdateHistoryStyles}>
@@ -593,7 +593,7 @@ const AdminSidebar: React.FC<{
               variant={"h6"}
               sx={{ fontWeight: 600, color: "#5F5F5F",fontFamily:"Epilogue" }}
             >
-              Collection Progress
+              Current Collection Progress
             </Typography>
             <Grid
               display={"flex"}
@@ -602,7 +602,7 @@ const AdminSidebar: React.FC<{
               alignItems={"flex-start"}
             >
               <Typography sx={{ marginRight: 1, color: "#5F5F5F",fontFamily:"Epilogue" }}>
-                {new Date(cb.lastUpdate).toLocaleDateString()}
+                Last Update: {new Date(cb.lastUpdate).toLocaleDateString()} |
               </Typography>
               <Typography sx={{ color: "#5F5F5F",fontFamily:"Epilogue" }}>{`${cb.booksCurrent} book${
                 cb.booksCurrent != 1 ? "s" : ""

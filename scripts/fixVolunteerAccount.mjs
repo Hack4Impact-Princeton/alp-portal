@@ -5,6 +5,19 @@ const uri = "mongodb+srv://dgeng:D9gOMdyBnauqNQEZ@alp-portal.hh41pen.mongodb.net
 
 const client = new MongoClient(uri);
 
+const genUniqueId = () => {
+  const dateStr = Date
+    .now()
+    .toString(36); // convert num to base 36 and stringify
+
+  const randomStr = Math
+    .random()
+    .toString(36)
+    .substring(2, 8); // start at index 2 to skip decimal point
+
+  return `${dateStr}-${randomStr}`;
+}
+
 async function run() {
   try {
 
@@ -23,9 +36,11 @@ async function run() {
     // };
 
     const update = {
-      $set: {
-        isSuperAdmin: false,
-        role: []
+      $unset: {
+        //isSuperAdmin: false,
+        //role: []
+        fl:{}
+        
       }
     }
     // Execute query
